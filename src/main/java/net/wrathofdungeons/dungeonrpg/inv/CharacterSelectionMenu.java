@@ -112,7 +112,7 @@ public class CharacterSelectionMenu {
 
             item.setItemMeta(itemMeta);
 
-            inv.withItem(slot,ItemUtil.hideFlags(item),((player, action, item1) -> c.play()), ClickType.LEFT);
+            inv.withItem(slot,ItemUtil.hideFlags(item),((player, action, item1) -> u.playCharacter(c)), ClickType.LEFT);
         }
     }
 

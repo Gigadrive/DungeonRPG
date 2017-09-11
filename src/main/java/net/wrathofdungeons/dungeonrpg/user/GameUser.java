@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -110,6 +111,28 @@ public class GameUser extends User {
         }
     }
 
+    public void playCharacter(Character c){
+        if(c != null && c.getOwner().toString().equals(p.getUniqueId().toString())){
+            p.closeInventory();
+            setCurrentCharacter(c);
+            c.setLastLogin(new Timestamp(System.currentTimeMillis()));
+
+            bukkitReset();
+            p.teleport(c.getStoredLocation());
+            updateLevelBar();
+        }
+    }
+
+    public void updateLevelBar(){
+        if(getCurrentCharacter() != null){
+            p.setLevel(getCurrentCharacter().getLevel());
+            // TODO: Show exp
+        } else {
+            p.setLevel(0);
+            p.setExp(0);
+        }
+    }
+
     public void init(Player p){
         if(init) return;
 
@@ -152,6 +175,6 @@ public class GameUser extends User {
     public void saveData(){
         super.saveData();
 
-        if(getCurrentCharacter() != null) getCurrentCharacter().saveData();
+        if(getCurrentCharacter() != null) getCurrentCharacter().saveData(p);
     }
 }
