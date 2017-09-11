@@ -20,6 +20,8 @@ public class CharacterSelectionMenu {
     public static ArrayList<Player> CREATING = new ArrayList<Player>();
 
     public static void openSelection(Player p){
+        if(CREATING.contains(p)) return;
+
         GameUser u = GameUser.getUser(p);
         InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.INVENTORY_2ROWS);
         inv.withTitle("Select your character");
@@ -99,14 +101,23 @@ public class CharacterSelectionMenu {
         } else {
             ItemStack item = new ItemStack(c.getRpgClass().getIcon());
             ItemMeta itemMeta = item.getItemMeta();
+            itemMeta.setDisplayName(ChatColor.GREEN + c.getRpgClass().getName());
+            ArrayList<String> itemLore = new ArrayList<String>();
+
+            itemLore.add(ChatColor.GOLD + "Level: " + ChatColor.YELLOW + String.valueOf(c.getLevel()));
+            itemLore.add(ChatColor.GOLD + "Class: " + ChatColor.YELLOW + String.valueOf(c.getRpgClass().getName()));
+            itemLore.add(" ");
+            itemLore.add(ChatColor.LIGHT_PURPLE + "Click to play!");
 
             item.setItemMeta(itemMeta);
 
-            inv.withItem(slot,item,((player, action, item1) -> c.play()), ClickType.LEFT);
+            inv.withItem(slot,ItemUtil.hideFlags(item),((player, action, item1) -> c.play()), ClickType.LEFT);
         }
     }
 
     public static void openCreation(Player p){
+        if(CREATING.contains(p)) return;
+
         GameUser u = GameUser.getUser(p);
         InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.INVENTORY_1ROW);
         inv.withTitle("Select your class");
