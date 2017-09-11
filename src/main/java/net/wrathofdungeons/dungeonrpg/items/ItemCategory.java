@@ -5,5 +5,6 @@ public enum ItemCategory {
     WEAPON_SHEARS,
     WEAPON_BOW,
     WEAPON_STICK,
-    MISC
+    MISC,
+    ARMOR
 }

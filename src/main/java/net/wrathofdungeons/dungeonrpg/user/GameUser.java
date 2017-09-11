@@ -7,6 +7,7 @@ import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
+import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -120,6 +121,13 @@ public class GameUser extends User {
             bukkitReset();
             p.teleport(c.getStoredLocation());
             updateLevelBar();
+
+            PlayerInventory inventory = c.getStoredInventory();
+            if(inventory != null){
+                inventory.loadToPlayer(p);
+            } else {
+                // GIVE DEFAULT ITEMS
+            }
         }
     }
 

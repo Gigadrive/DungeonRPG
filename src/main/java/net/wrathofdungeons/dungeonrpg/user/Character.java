@@ -3,6 +3,8 @@ package net.wrathofdungeons.dungeonrpg.user;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -20,6 +22,7 @@ public class Character {
     private int level;
     private double exp;
     private Location storedLocation;
+    private PlayerInventory storedInventory;
     private Timestamp creationTime;
     private Timestamp lastLogin;
 
@@ -37,6 +40,7 @@ public class Character {
                 this.level = rs.getInt("level");
                 this.exp = rs.getDouble("exp");
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
+                if(rs.getString("inventory") != null) this.storedInventory = PlayerInventory.fromString(rs.getString("inventory"));
                 this.creationTime = rs.getTimestamp("time");
                 this.lastLogin = rs.getTimestamp("lastLogin");
 
@@ -73,6 +77,14 @@ public class Character {
         return storedLocation;
     }
 
+    public PlayerInventory getStoredInventory() {
+        return storedInventory;
+    }
+
+    public PlayerInventory getConvertedInventory(Player p){
+        return PlayerInventory.fromInventory(p);
+    }
+
     public Timestamp getCreationTime() {
         return creationTime;
     }
@@ -88,7 +100,7 @@ public class Character {
     public void saveData(Player p){
         DungeonAPI.async(() -> {
             try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `lastLogin` = ? WHERE `id` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `inventory` = ?, `lastLogin` = ? WHERE `id` = ?");
                 ps.setInt(1,getLevel());
                 ps.setDouble(2,getExp());
                 ps.setString(3,p.getLocation().getWorld().getName());
@@ -97,8 +109,9 @@ public class Character {
                 ps.setDouble(6,p.getLocation().getZ());
                 ps.setFloat(7,p.getLocation().getYaw());
                 ps.setFloat(8,p.getLocation().getPitch());
-                ps.setTimestamp(9,lastLogin);
-                ps.setInt(10,getId());
+                ps.setString(9,getConvertedInventory(p).toString());
+                ps.setTimestamp(10,lastLogin);
+                ps.setInt(11,getId());
                 ps.executeUpdate();
                 ps.close();
             } catch(Exception e){

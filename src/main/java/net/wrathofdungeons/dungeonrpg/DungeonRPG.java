@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg;
 
 import net.wrathofdungeons.dungeonrpg.cmd.GiveItemCommand;
+import net.wrathofdungeons.dungeonrpg.cmd.ItemInfoCommand;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.CharacterCreationListener;
 import net.wrathofdungeons.dungeonrpg.listener.PlayerJoinListener;
@@ -42,6 +43,7 @@ public class DungeonRPG extends JavaPlugin {
 
     private void registerCommands(){
         new GiveItemCommand();
+        new ItemInfoCommand();
     }
 
     public static DungeonRPG getInstance() {

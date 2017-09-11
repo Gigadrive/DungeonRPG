@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 public class GiveItemCommand extends Command {
     public GiveItemCommand(){
-        super("giveitem", Rank.ADMIN);
+        super("giveitem", Rank.GM);
     }
 
     @Override
