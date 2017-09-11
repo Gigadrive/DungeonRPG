@@ -108,6 +108,7 @@ public class CharacterSelectionMenu {
             itemLore.add(ChatColor.GOLD + "Class: " + ChatColor.YELLOW + String.valueOf(c.getRpgClass().getName()));
             itemLore.add(" ");
             itemLore.add(ChatColor.LIGHT_PURPLE + "Click to play!");
+            itemMeta.setLore(itemLore);
 
             item.setItemMeta(itemMeta);
 
