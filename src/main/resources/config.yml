@@ -1,0 +1,16 @@
+locations:
+  charsel:
+    world: wod
+    x: -2631
+    y: 90
+    z: -512
+    yaw: 0
+    pitch: 0
+  startLocation:
+    world: wod
+    x: -2449.5
+    y: 44
+    z: -142.5
+    yaw: 180
+    pitch: 0
+max-lvl: 60

@@ -1,6 +1,8 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
 import net.wrathofdungeons.dungeonapi.MySQLManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 import javax.naming.ldap.PagedResultsControl;
 import java.sql.PreparedStatement;
@@ -14,6 +16,7 @@ public class Character {
     private RPGClass rpgClass;
     private int level;
     private double exp;
+    private Location storedLocation;
     private Timestamp creationTime;
     private Timestamp lastLogin;
 
@@ -30,6 +33,7 @@ public class Character {
                 this.rpgClass = RPGClass.valueOf(rs.getString("class"));
                 this.level = rs.getInt("level");
                 this.exp = rs.getDouble("exp");
+                this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
                 this.creationTime = rs.getTimestamp("creationTime");
                 this.lastLogin = rs.getTimestamp("lastLogin");
             }
@@ -58,6 +62,14 @@ public class Character {
 
     public double getExp() {
         return exp;
+    }
+
+    public Location getStoredLocation() {
+        return storedLocation;
+    }
+
+    public void play(){
+
     }
 
     public Timestamp getCreationTime() {
