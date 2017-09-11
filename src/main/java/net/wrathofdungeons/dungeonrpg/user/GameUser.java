@@ -6,6 +6,7 @@ import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
+import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -124,6 +125,9 @@ public class GameUser extends User {
                 User.STORAGE.remove(p);
                 User.STORAGE.put(p,this);
                 init = true;
+
+                FinalDataLoadedEvent event = new FinalDataLoadedEvent(p);
+                Bukkit.getPluginManager().callEvent(event);
             } catch(Exception e){
                 e.printStackTrace();
             }
