@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg;
 
+import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.CharacterCreationListener;
 import net.wrathofdungeons.dungeonrpg.listener.PlayerJoinListener;
 import net.wrathofdungeons.dungeonrpg.listener.PlayerQuitListener;
@@ -16,6 +17,8 @@ public class DungeonRPG extends JavaPlugin {
 
         registerListeners();
         registerCommands();
+
+        ItemData.init();
     }
 
     public static int getMaxLevel(){
