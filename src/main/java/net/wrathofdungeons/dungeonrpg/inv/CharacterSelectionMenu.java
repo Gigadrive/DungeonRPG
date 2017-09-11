@@ -54,7 +54,7 @@ public class CharacterSelectionMenu {
             charC(p, inv,u.getCharacters().get(4),10);
         } else {
             if(!u.hasPermission(Rank.DONATOR)){
-                inv.withItem(10, ItemUtil.namedItem(Material.STAINED_GLASS_PANE, ChatColor.RED + "Donators only",new String[]{ChatColor.GRAY + "Visit our website to buy a donator rank",ChatColor.GRAY + "and get access to more slots!"}));
+                inv.withItem(10, ItemUtil.namedItem(Material.STAINED_GLASS_PANE, ChatColor.RED + "Donators only",new String[]{ChatColor.GRAY + "Visit our website to buy a donator rank",ChatColor.GRAY + "and get access to more slots!"}, 14));
             } else {
                 charC(p, inv,null,10);
             }
@@ -64,7 +64,7 @@ public class CharacterSelectionMenu {
             charC(p, inv,u.getCharacters().get(5),12);
         } else {
             if(!u.hasPermission(Rank.DONATOR)){
-                inv.withItem(12, ItemUtil.namedItem(Material.STAINED_GLASS_PANE, ChatColor.RED + "Donators only",new String[]{ChatColor.GRAY + "Visit our website to buy a donator rank",ChatColor.GRAY + "and get access to more slots!"}));
+                inv.withItem(12, ItemUtil.namedItem(Material.STAINED_GLASS_PANE, ChatColor.RED + "Donators only",new String[]{ChatColor.GRAY + "Visit our website to buy a donator rank",ChatColor.GRAY + "and get access to more slots!"}, 14));
             } else {
                 charC(p, inv,null,12);
             }
@@ -74,7 +74,7 @@ public class CharacterSelectionMenu {
             charC(p, inv,u.getCharacters().get(6),14);
         } else {
             if(!u.hasPermission(Rank.DONATOR)){
-                inv.withItem(14, ItemUtil.namedItem(Material.STAINED_GLASS_PANE, ChatColor.RED + "Donators only",new String[]{ChatColor.GRAY + "Visit our website to buy a donator rank",ChatColor.GRAY + "and get access to more slots!"}));
+                inv.withItem(14, ItemUtil.namedItem(Material.STAINED_GLASS_PANE, ChatColor.RED + "Donators only",new String[]{ChatColor.GRAY + "Visit our website to buy a donator rank",ChatColor.GRAY + "and get access to more slots!"}, 14));
             } else {
                 charC(p, inv,null,14);
             }
@@ -84,7 +84,7 @@ public class CharacterSelectionMenu {
             charC(p, inv,u.getCharacters().get(7),16);
         } else {
             if(!u.hasPermission(Rank.DONATOR)){
-                inv.withItem(16, ItemUtil.namedItem(Material.STAINED_GLASS_PANE, ChatColor.RED + "Donators only",new String[]{ChatColor.GRAY + "Visit our website to buy a donator rank",ChatColor.GRAY + "and get access to more slots!"}));
+                inv.withItem(16, ItemUtil.namedItem(Material.STAINED_GLASS_PANE, ChatColor.RED + "Donators only",new String[]{ChatColor.GRAY + "Visit our website to buy a donator rank",ChatColor.GRAY + "and get access to more slots!"}, 14));
             } else {
                 charC(p, inv,null,16);
             }
@@ -97,7 +97,7 @@ public class CharacterSelectionMenu {
         GameUser u = GameUser.getUser(p);
 
         if(c == null){
-            inv.withItem(slot,ItemUtil.namedItem(Material.STAINED_GLASS_PANE,ChatColor.AQUA + "Click to create a character",null), ((player, action, item) -> openCreation(player)), ClickType.LEFT);
+            inv.withItem(slot,ItemUtil.namedItem(Material.STAINED_GLASS_PANE,ChatColor.AQUA + "Click to create a character",null, 3), ((player, action, item) -> openCreation(player)), ClickType.LEFT);
         } else {
             ItemStack item = new ItemStack(c.getRpgClass().getIcon());
             ItemMeta itemMeta = item.getItemMeta();
