@@ -34,7 +34,7 @@ public class Character {
                 this.level = rs.getInt("level");
                 this.exp = rs.getDouble("exp");
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
-                this.creationTime = rs.getTimestamp("creationTime");
+                this.creationTime = rs.getTimestamp("time");
                 this.lastLogin = rs.getTimestamp("lastLogin");
             }
 
