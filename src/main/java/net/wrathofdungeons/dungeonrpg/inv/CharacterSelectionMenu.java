@@ -23,31 +23,31 @@ public class CharacterSelectionMenu {
         InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.INVENTORY_2ROWS);
         inv.withTitle("Select your character");
 
-        if(u.getCharacters().size() <= 1){
+        if(u.getCharacters().size() >= 1){
             charC(p, inv,u.getCharacters().get(0),1);
         } else {
             charC(p, inv,null,1);
         }
 
-        if(u.getCharacters().size() <= 2){
+        if(u.getCharacters().size() >= 2){
             charC(p, inv,u.getCharacters().get(1),3);
         } else {
             charC(p, inv,null,3);
         }
 
-        if(u.getCharacters().size() <= 3){
+        if(u.getCharacters().size() >= 3){
             charC(p, inv,u.getCharacters().get(2),5);
         } else {
             charC(p, inv,null,5);
         }
 
-        if(u.getCharacters().size() <= 4){
+        if(u.getCharacters().size() >= 4){
             charC(p, inv,u.getCharacters().get(3),7);
         } else {
             charC(p, inv,null,7);
         }
 
-        if(u.getCharacters().size() <= 5){
+        if(u.getCharacters().size() >= 5){
             charC(p, inv,u.getCharacters().get(4),10);
         } else {
             if(!u.hasPermission(Rank.DONATOR)){
@@ -57,7 +57,7 @@ public class CharacterSelectionMenu {
             }
         }
 
-        if(u.getCharacters().size() <= 6){
+        if(u.getCharacters().size() >= 6){
             charC(p, inv,u.getCharacters().get(5),12);
         } else {
             if(!u.hasPermission(Rank.DONATOR)){
@@ -67,7 +67,7 @@ public class CharacterSelectionMenu {
             }
         }
 
-        if(u.getCharacters().size() <= 7){
+        if(u.getCharacters().size() >= 7){
             charC(p, inv,u.getCharacters().get(6),14);
         } else {
             if(!u.hasPermission(Rank.DONATOR)){
@@ -77,7 +77,7 @@ public class CharacterSelectionMenu {
             }
         }
 
-        if(u.getCharacters().size() <= 8){
+        if(u.getCharacters().size() >= 8){
             charC(p, inv,u.getCharacters().get(7),16);
         } else {
             if(!u.hasPermission(Rank.DONATOR)){
