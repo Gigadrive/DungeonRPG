@@ -45,6 +45,14 @@ public class ItemData {
     private int defMin;
     private int defMax;
 
+    public static ItemData getData(int id){
+        for(ItemData d : STORAGE){
+            if(d.getId() == id) return d;
+        }
+
+        return null;
+    }
+
     public ItemData(int id){
         try {
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `items` WHERE `id` = ?");
