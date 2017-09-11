@@ -8,6 +8,7 @@ import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.inventivetalent.menubuilder.inventory.InventoryMenuBuilder;
@@ -94,14 +95,14 @@ public class CharacterSelectionMenu {
         GameUser u = GameUser.getUser(p);
 
         if(c == null){
-            inv.withItem(slot,ItemUtil.namedItem(Material.STAINED_GLASS_PANE,ChatColor.AQUA + "Click to create a character",null), ((player, action, item) -> openCreation(player)));
+            inv.withItem(slot,ItemUtil.namedItem(Material.STAINED_GLASS_PANE,ChatColor.AQUA + "Click to create a character",null), ((player, action, item) -> openCreation(player)), ClickType.LEFT);
         } else {
             ItemStack item = new ItemStack(c.getRpgClass().getIcon());
             ItemMeta itemMeta = item.getItemMeta();
 
             item.setItemMeta(itemMeta);
 
-            inv.withItem(slot,item,((player, action, item1) -> c.play()));
+            inv.withItem(slot,item,((player, action, item1) -> c.play()), ClickType.LEFT);
         }
     }
 
