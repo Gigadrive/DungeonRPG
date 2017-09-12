@@ -139,6 +139,7 @@ public class GameUser extends User {
                 }
 
                 p.getInventory().setItem(8,new CustomItem(5).build(p));
+                p.getInventory().setItem(17,new CustomItem(6,64).build(p));
             }
 
             checkRequirements();
