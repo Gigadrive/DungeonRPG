@@ -10,6 +10,7 @@ import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -24,21 +25,6 @@ public class DungeonRPG extends JavaPlugin {
         registerCommands();
 
         ItemData.init();
-
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                for(Player p : Bukkit.getOnlinePlayers()){
-                    if(GameUser.isLoaded(p)){
-                        GameUser u = GameUser.getUser(p);
-
-                        if(u.getCurrentCharacter() == null && p.getOpenInventory() == null){
-                            CharacterSelectionMenu.openSelection(p);
-                        }
-                    }
-                }
-            }
-        }.runTaskTimer(this,2*20,2*20);
     }
 
     public static int getMaxLevel(){
@@ -60,6 +46,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new FoodListener(),this);
         Bukkit.getPluginManager().registerEvents(new InteractListener(),this);
         Bukkit.getPluginManager().registerEvents(new InventoryClickListener(),this);
+        Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerDropListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(),this);
