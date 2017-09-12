@@ -20,7 +20,7 @@ public class PlayerDropListener implements Listener {
                     CustomItem item = CustomItem.fromItemStack(e.getItemDrop().getItemStack());
 
                     if(item != null){
-                        if(item.getData().getId() == 5){
+                        if(item.getData().getId() == 5 || item.getData().getId() == 6){
                             e.setCancelled(true);
                         }
                     }

@@ -21,6 +21,7 @@ public class CustomItem {
 
     private int id;
     private int dataID;
+    private int amount = 1;
 
     public CustomItem(int data){
         while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
@@ -28,9 +29,23 @@ public class CustomItem {
         STORAGE.put(id,this);
     }
 
+    public CustomItem(int data, int amount){
+        while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
+        this.dataID = data;
+        this.amount = amount;
+        STORAGE.put(id,this);
+    }
+
     public CustomItem(ItemData data){
         while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
         this.dataID = data.getId();
+        STORAGE.put(id,this);
+    }
+
+    public CustomItem(ItemData data, int amount){
+        while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
+        this.dataID = data.getId();
+        this.amount = amount;
         STORAGE.put(id,this);
     }
 
@@ -68,6 +83,10 @@ public class CustomItem {
         }
     }
 
+    public void updateAmount(ItemStack i){
+        if(fromItemStack(i) == this && this.amount != i.getAmount()) this.amount = i.getAmount();
+    }
+
     public ItemStack build(Player p){
         GameUser u = GameUser.getUser(p);
 
@@ -75,6 +94,7 @@ public class CustomItem {
             return new ItemStack(Material.AIR);
         } else {
             ItemStack i = new ItemStack(getData().getIcon());
+            i.setAmount(amount);
             i.setDurability((short)getData().getDurability());
             ItemMeta iM = i.getItemMeta();
             iM.setDisplayName(getData().getRarity().getColor() + getData().getName());
