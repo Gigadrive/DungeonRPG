@@ -117,6 +117,7 @@ public class GameUser extends User {
         if(getCurrentCharacter() == null && c != null && c.getOwner().toString().equals(p.getUniqueId().toString())){
             p.closeInventory();
             setCurrentCharacter(c);
+            DungeonRPG.updateVanishing();
             c.setLastLogin(new Timestamp(System.currentTimeMillis()));
 
             bukkitReset();
@@ -144,6 +145,27 @@ public class GameUser extends User {
 
             checkRequirements();
         }
+    }
+
+    public void updateVanishing(){
+        for(Player all : Bukkit.getOnlinePlayers()){
+            if(all == p) continue;
+            GameUser a = GameUser.getUser(all);
+
+            if(getCurrentCharacter() == null){
+                p.hidePlayer(all);
+            } else {
+                if(a.getCurrentCharacter() == null){
+                    p.hidePlayer(all);
+                } else {
+                    p.showPlayer(all);
+                }
+            }
+        }
+    }
+
+    public void updateName(){
+
     }
 
     public void updateArrows(){

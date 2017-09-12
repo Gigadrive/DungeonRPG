@@ -17,6 +17,7 @@ public class PlayerJoinListener implements Listener {
         Player p = e.getPlayer();
         GameUser.load(p);
         e.setJoinMessage(null);
+        DungeonRPG.updateVanishing();
     }
 
     @EventHandler
@@ -32,6 +33,7 @@ public class PlayerJoinListener implements Listener {
         Player p = e.getPlayer();
         GameUser u = GameUser.getUser(p);
 
+        DungeonRPG.updateVanishing();
         u.bukkitReset();
         p.teleport(DungeonRPG.getCharSelLocation());
         CharacterSelectionMenu.openSelection(p);

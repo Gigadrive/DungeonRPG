@@ -39,6 +39,12 @@ public class DungeonRPG extends JavaPlugin {
         return new Location(Bukkit.getWorld(getInstance().getConfig().getString("locations.startLocation.world")), getInstance().getConfig().getDouble("locations.startLocation.x"), getInstance().getConfig().getDouble("locations.startLocation.y"), getInstance().getConfig().getDouble("locations.startLocation.z"), getInstance().getConfig().getInt("locations.startLocation.yaw"), getInstance().getConfig().getInt("locations.startLocation.pitch"));
     }
 
+    public static void updateVanishing(){
+        for(Player all : Bukkit.getOnlinePlayers()){
+            if(GameUser.isLoaded(all)) GameUser.getUser(all).updateVanishing();
+        }
+    }
+
     private void registerListeners(){
         Bukkit.getPluginManager().registerEvents(new BlockListener(),this);
         Bukkit.getPluginManager().registerEvents(new CharacterCreationListener(),this);
@@ -49,6 +55,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerDropListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(),this);
+        Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(),this);
         Bukkit.getPluginManager().registerEvents(new ProjectileHitListener(),this);
         Bukkit.getPluginManager().registerEvents(new ShootBowListener(),this);
