@@ -62,12 +62,12 @@ public class ItemData {
 
             if(rs.first()){
                 this.id = id;
-                this.name = ChatColor.translateAlternateColorCodes('&',rs.getString("name"));
+                if(rs.getString("name") != null) this.name = ChatColor.translateAlternateColorCodes('&',rs.getString("name"));
                 this.icon = Material.getMaterial(rs.getInt("icon"));
                 this.durability = rs.getInt("durability");
                 this.category = ItemCategory.valueOf(rs.getString("category"));
                 this.rarity = ItemRarity.valueOf(rs.getString("rarity"));
-                this.description = ChatColor.translateAlternateColorCodes('&',rs.getString("description"));
+                if(rs.getString("description") != null) this.description = ChatColor.translateAlternateColorCodes('&',rs.getString("description"));
 
                 this.atkMin = rs.getInt("atk.min");
                 this.atkMax = rs.getInt("atk.max");
