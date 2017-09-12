@@ -92,7 +92,7 @@ public class GameUser extends User {
     public void updateHPBar(){
         BountifulAPI.sendActionBar(p, ChatColor.DARK_RED + "HP: " + ChatColor.RED + getHP() + "/" + getMaxHP() + "       " + ChatColor.BLUE + "MP: " + ChatColor.AQUA + getMP() + "/" + getMaxMP());
         p.setMaxHealth(20);
-        p.setHealth(getHPPercentage());
+        p.setHealth(20*(getHPPercentage()/100));
     }
 
     @Deprecated
