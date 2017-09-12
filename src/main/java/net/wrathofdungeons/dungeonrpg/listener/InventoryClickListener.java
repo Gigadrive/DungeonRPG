@@ -12,6 +12,19 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public class InventoryClickListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e){
+        boolean deny = false;
+
+        switch(e.getAction()){
+            case HOTBAR_SWAP:
+                deny = true;
+                break;
+        }
+
+        if(deny){
+            e.setCancelled(true);
+            return;
+        }
+
         if(e.getWhoClicked() instanceof Player){
             Player p = (Player)e.getWhoClicked();
             p.sendMessage("SLOT: " + e.getSlot() + " RAWSLOT: " + e.getRawSlot() + " ACTION: " + e.getAction().toString());
