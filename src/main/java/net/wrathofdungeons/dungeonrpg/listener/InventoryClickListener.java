@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class InventoryClickListener implements Listener {
@@ -13,6 +14,7 @@ public class InventoryClickListener implements Listener {
     public void onClick(InventoryClickEvent e){
         if(e.getWhoClicked() instanceof Player){
             Player p = (Player)e.getWhoClicked();
+            p.sendMessage("SLOT: " + e.getSlot() + " RAWSLOT: " + e.getRawSlot() + " ACTION: " + e.getAction().toString());
 
             if(GameUser.isLoaded(p)){
                 GameUser u = GameUser.getUser(p);
