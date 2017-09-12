@@ -55,6 +55,13 @@ public class CustomItem {
         }
     }
 
+    public void assignID(){
+        if(!STORAGE.containsValue(this)){
+            while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
+            STORAGE.put(id,this);
+        }
+    }
+
     public ItemStack build(Player p){
         GameUser u = GameUser.getUser(p);
 

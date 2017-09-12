@@ -124,6 +124,7 @@ public class GameUser extends User {
 
             PlayerInventory inventory = c.getStoredInventory();
             if(inventory != null){
+                inventory.update();
                 inventory.loadToPlayer(p);
             } else {
                 // GIVE DEFAULT ITEMS

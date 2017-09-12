@@ -98,7 +98,16 @@ public class PlayerInventory {
     public static PlayerInventory fromString(String s){
         Gson gson = new Gson();
         PlayerInventory inv = gson.fromJson(s,PlayerInventory.class);
+        inv.update();
         return inv;
+    }
+
+    public void update(){
+        CustomItem[] all = new CustomItem[]{helmet,chestplate,leggings,boots,slot0,slot1,slot2,slot3,slot4,slot5,slot6,slot7,slot8,slot9,slot10,slot11,slot12,slot13,slot14,slot15,slot16,slot17,slot18,slot19,slot20,slot21,slot22,slot23,slot24,slot25,slot26,slot27,slot28,slot29,slot30,slot31,slot32,slot33,slot34,slot35};
+
+        for(CustomItem c : all){
+            if(c != null) c.assignID();
+        }
     }
 
     public void loadToPlayer(Player p){
