@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.items;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 import java.sql.PreparedStatement;
@@ -61,12 +62,12 @@ public class ItemData {
 
             if(rs.first()){
                 this.id = id;
-                this.name = rs.getString("name");
+                this.name = ChatColor.translateAlternateColorCodes('&',rs.getString("name"));
                 this.icon = Material.getMaterial(rs.getInt("icon"));
                 this.durability = rs.getInt("durability");
                 this.category = ItemCategory.valueOf(rs.getString("category"));
                 this.rarity = ItemRarity.valueOf(rs.getString("rarity"));
-                this.description = rs.getString("description");
+                this.description = ChatColor.translateAlternateColorCodes('&',rs.getString("description"));
 
                 this.atkMin = rs.getInt("atk.min");
                 this.atkMax = rs.getInt("atk.max");

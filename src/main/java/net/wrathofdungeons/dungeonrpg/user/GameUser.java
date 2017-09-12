@@ -7,6 +7,7 @@ import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
+import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -113,7 +114,7 @@ public class GameUser extends User {
     }
 
     public void playCharacter(Character c){
-        if(c != null && c.getOwner().toString().equals(p.getUniqueId().toString())){
+        if(getCurrentCharacter() == null && c != null && c.getOwner().toString().equals(p.getUniqueId().toString())){
             p.closeInventory();
             setCurrentCharacter(c);
             c.setLastLogin(new Timestamp(System.currentTimeMillis()));
@@ -127,9 +128,25 @@ public class GameUser extends User {
                 inventory.update();
                 inventory.loadToPlayer(p);
             } else {
-                // GIVE DEFAULT ITEMS
+                if(c.getRpgClass() == RPGClass.ARCHER || c.getRpgClass() == RPGClass.HUNTER || c.getRpgClass() == RPGClass.RANGER){
+                    p.getInventory().addItem(new CustomItem(1).build(p));
+                } else if(c.getRpgClass() == RPGClass.MERCENARY || c.getRpgClass() == RPGClass.KNIGHT || c.getRpgClass() == RPGClass.SOLDIER){
+                    p.getInventory().addItem(new CustomItem(2).build(p));
+                } else if(c.getRpgClass() == RPGClass.MAGICIAN || c.getRpgClass() == RPGClass.WIZARD || c.getRpgClass() == RPGClass.ALCHEMIST){
+                    p.getInventory().addItem(new CustomItem(3).build(p));
+                } else if(c.getRpgClass() == RPGClass.ASSASSIN || c.getRpgClass() == RPGClass.NINJA || c.getRpgClass() == RPGClass.BLADEMASTER){
+                    p.getInventory().addItem(new CustomItem(4).build(p));
+                }
+
+                p.getInventory().setItem(8,new CustomItem(5).build(p));
             }
+
+            checkRequirements();
         }
+    }
+
+    public void checkRequirements(){
+        // TODO: Check items for level and class requirements
     }
 
     public void updateLevelBar(){

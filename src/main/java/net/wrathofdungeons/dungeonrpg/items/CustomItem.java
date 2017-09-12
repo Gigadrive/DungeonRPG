@@ -22,6 +22,12 @@ public class CustomItem {
     private int id;
     private int dataID;
 
+    public CustomItem(int data){
+        while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
+        this.dataID = data;
+        STORAGE.put(id,this);
+    }
+
     public CustomItem(ItemData data){
         while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
         this.dataID = data.getId();
