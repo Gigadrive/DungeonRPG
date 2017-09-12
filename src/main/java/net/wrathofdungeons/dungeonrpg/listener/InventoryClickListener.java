@@ -27,7 +27,6 @@ public class InventoryClickListener implements Listener {
 
         if(e.getWhoClicked() instanceof Player){
             Player p = (Player)e.getWhoClicked();
-            p.sendMessage("SLOT: " + e.getSlot() + " RAWSLOT: " + e.getRawSlot() + " ACTION: " + e.getAction().toString());
 
             if(GameUser.isLoaded(p)){
                 GameUser u = GameUser.getUser(p);
