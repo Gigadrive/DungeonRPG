@@ -25,6 +25,21 @@ public class DungeonRPG extends JavaPlugin {
         registerCommands();
 
         ItemData.init();
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Player p : Bukkit.getOnlinePlayers()){
+                    if(GameUser.isLoaded(p)){
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null){
+                            u.updateHPBar();
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(this,20,20);
     }
 
     public static int getMaxLevel(){

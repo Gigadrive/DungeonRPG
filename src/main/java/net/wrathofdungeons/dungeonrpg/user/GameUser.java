@@ -4,12 +4,14 @@ import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.user.User;
+import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
@@ -41,12 +43,61 @@ public class GameUser extends User {
     private ArrayList<Character> characters;
     private Character currentCharacter;
 
+    private int hp = 20;
+
     private boolean init = false;
 
     public GameUser(Player p){
         super(p);
 
         TEMP.put(p,this);
+    }
+
+    public int getHP(){
+        return this.hp;
+    }
+
+    public void setHP(int hp){
+        this.hp = hp;
+        if(this.hp > getMaxHP()) this.hp = getMaxHP();
+        updateHPBar();
+    }
+
+    public int getMaxHP(){
+        return 50; // TODO: Calculate max hp
+    }
+
+    public int getHPPercentage(){
+        return (getHP()/getMaxHP())*100;
+    }
+
+    public int getMP(){
+        return p.getFoodLevel();
+    }
+
+    public void setMP(int mp){
+        if(mp > getMaxMP()) mp = getMaxMP();
+        p.setFoodLevel(mp);
+        updateHPBar();
+    }
+
+    public int getMaxMP(){
+        return 20;
+    }
+
+    public int getMPPercentage(){
+        return (getMP()/getMaxMP())*100;
+    }
+
+    public void updateHPBar(){
+        BountifulAPI.sendActionBar(p, ChatColor.DARK_RED + "HP: " + ChatColor.RED + getHP() + "/" + getMaxHP() + "       " + ChatColor.BLUE + "MP: " + ChatColor.AQUA + getMP() + "/" + getMaxMP());
+        p.setMaxHealth(20);
+        p.setHealth(getHPPercentage());
+    }
+
+    @Deprecated
+    public void updateMPBar(){
+        updateHPBar();
     }
 
     public ArrayList<Character> getCharacters() {
@@ -143,6 +194,8 @@ public class GameUser extends User {
                 p.getInventory().setItem(17,new CustomItem(6,64).build(p));
             }
 
+            setHP(getMaxHP());
+            setMP(getMaxMP());
             checkRequirements();
         }
     }
