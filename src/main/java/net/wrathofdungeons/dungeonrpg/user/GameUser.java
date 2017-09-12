@@ -146,6 +146,10 @@ public class GameUser extends User {
         }
     }
 
+    public void updateArrows(){
+        if(getCurrentCharacter() != null) p.getInventory().setItem(17,new CustomItem(6,64).build(p));
+    }
+
     public void checkRequirements(){
         // TODO: Check items for level and class requirements
     }
