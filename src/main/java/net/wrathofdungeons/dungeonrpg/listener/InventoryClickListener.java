@@ -22,7 +22,7 @@ public class InventoryClickListener implements Listener {
                         CustomItem item = CustomItem.fromItemStack(e.getCurrentItem());
 
                         if(item != null){
-                            if(item.getId() == 5){
+                            if(item.getData().getId() == 5){
                                 e.setCancelled(true);
                             }
                         }
