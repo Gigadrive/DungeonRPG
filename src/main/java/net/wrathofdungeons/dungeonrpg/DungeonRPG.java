@@ -3,10 +3,7 @@ package net.wrathofdungeons.dungeonrpg;
 import net.wrathofdungeons.dungeonrpg.cmd.GiveItemCommand;
 import net.wrathofdungeons.dungeonrpg.cmd.ItemInfoCommand;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
-import net.wrathofdungeons.dungeonrpg.listener.CharacterCreationListener;
-import net.wrathofdungeons.dungeonrpg.listener.CraftListener;
-import net.wrathofdungeons.dungeonrpg.listener.PlayerJoinListener;
-import net.wrathofdungeons.dungeonrpg.listener.PlayerQuitListener;
+import net.wrathofdungeons.dungeonrpg.listener.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,6 +36,7 @@ public class DungeonRPG extends JavaPlugin {
     private void registerListeners(){
         Bukkit.getPluginManager().registerEvents(new CharacterCreationListener(),this);
         Bukkit.getPluginManager().registerEvents(new CraftListener(),this);
+        Bukkit.getPluginManager().registerEvents(new FoodListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(),this);
     }
