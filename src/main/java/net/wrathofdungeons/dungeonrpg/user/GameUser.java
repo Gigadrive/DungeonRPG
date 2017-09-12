@@ -150,16 +150,21 @@ public class GameUser extends User {
     public void updateVanishing(){
         for(Player all : Bukkit.getOnlinePlayers()){
             if(all == p) continue;
-            GameUser a = GameUser.getUser(all);
 
-            if(getCurrentCharacter() == null){
-                p.hidePlayer(all);
-            } else {
-                if(a.getCurrentCharacter() == null){
+            if(GameUser.isLoaded(all)){
+                GameUser a = GameUser.getUser(all);
+
+                if(getCurrentCharacter() == null){
                     p.hidePlayer(all);
                 } else {
-                    p.showPlayer(all);
+                    if(a.getCurrentCharacter() == null){
+                        p.hidePlayer(all);
+                    } else {
+                        p.showPlayer(all);
+                    }
                 }
+            } else {
+                p.hidePlayer(all);
             }
         }
     }
