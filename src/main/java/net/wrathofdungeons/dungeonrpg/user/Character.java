@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.user;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import org.bukkit.Bukkit;
@@ -128,6 +129,10 @@ public class Character {
     }
 
     public void saveData(Player p){
+
+    }
+
+    public void saveData(Player p, boolean continueCharsel){
         DungeonAPI.async(() -> {
             try {
                 this.storedLocation = p.getLocation();
@@ -146,6 +151,15 @@ public class Character {
                 ps.setInt(11,getId());
                 ps.executeUpdate();
                 ps.close();
+
+                if(continueCharsel){
+                    GameUser.getUser(p).setCurrentCharacter(null);
+                    GameUser.getUser(p).bukkitReset();
+                    p.teleport(DungeonRPG.getCharSelLocation());
+                    DungeonRPG.updateVanishing();
+
+                    CharacterSelectionMenu.openSelection(p);
+                }
             } catch(Exception e){
                 e.printStackTrace();
             }

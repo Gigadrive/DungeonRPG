@@ -8,6 +8,7 @@ import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
+import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
@@ -425,8 +426,12 @@ public class GameUser extends User {
     }
 
     public void saveData(){
+        saveData(false);
+    }
+
+    public void saveData(boolean continueCharsel){
         super.saveData();
 
-        if(getCurrentCharacter() != null) getCurrentCharacter().saveData(p);
+        if(getCurrentCharacter() != null) getCurrentCharacter().saveData(p,continueCharsel);
     }
 }
