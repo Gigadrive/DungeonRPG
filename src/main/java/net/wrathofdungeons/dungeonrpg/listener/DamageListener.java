@@ -10,12 +10,14 @@ import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class DamageListener implements Listener {
@@ -164,18 +166,14 @@ public class DamageListener implements Listener {
                                 return;
                             }
 
-                            if(e.getEntity() instanceof Player){
-                                e.setCancelled(true);
+                            if(data.getType() == DungeonProjectileType.ARROW_RAIN){
+                                e.setDamage(data.getDamage());
+                                DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                // TODO: Spawn damage indicator
                             } else {
-                                if(data.getType() == DungeonProjectileType.ARROW_RAIN){
-                                    e.setDamage(data.getDamage());
-                                    DungeonRPG.showBloodEffect(e.getEntity().getLocation());
-                                    // TODO: Spawn damage indicator
-                                } else {
-                                    e.setDamage(DamageManager.calculateDamage(data.getPlayer(), (LivingEntity)e.getEntity(), DamageSource.PVE, false, false, 0, true, data.getForce()));
-                                    DungeonRPG.showBloodEffect(e.getEntity().getLocation());
-                                    adjustKnockback = true;
-                                }
+                                e.setDamage(DamageManager.calculateDamage(data.getPlayer(), (LivingEntity)e.getEntity(), DamageSource.PVE, false, false, 0, true, data.getForce()));
+                                DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                adjustKnockback = true;
                             }
 
                             DungeonRPG.SHOT_PROJECTILE_DATA.remove(e.getDamager().getUniqueId());
@@ -185,6 +183,17 @@ public class DamageListener implements Listener {
 
                 if(adjustKnockback){
 
+                }
+            } else {
+                if(e.getDamager() instanceof Arrow) {
+                    if (((Arrow) e.getDamager()).getShooter() == e.getEntity()) {
+                        e.setCancelled(true);
+                        return;
+                    }
+
+                    if(e.getEntity() instanceof Player){
+                        e.setCancelled(true);
+                    }
                 }
             }
         }
