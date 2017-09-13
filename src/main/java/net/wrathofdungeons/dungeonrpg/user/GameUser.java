@@ -114,6 +114,7 @@ public class GameUser extends User {
         p.setMaxHealth(20);
 
         if(hp > getMaxHP()) hp = getMaxHP();
+        if(hp < 0) hp = 0;
         double healthDis = (((double)hp)/((double)getMaxHP()))*20;
         if(healthDis > p.getMaxHealth()) healthDis = p.getMaxHealth();
 
