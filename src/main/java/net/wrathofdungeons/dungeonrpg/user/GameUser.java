@@ -294,7 +294,7 @@ public class GameUser extends User {
     public void updateLevelBar(){
         if(getCurrentCharacter() != null){
             p.setLevel(getCurrentCharacter().getLevel());
-            // TODO: Show exp
+            p.setExp((float)((double)(getCurrentCharacter().getExp()/FormularUtils.getExpNeededForLevel(getCurrentCharacter().getLevel()+1))));
         } else {
             p.setLevel(0);
             p.setExp(0);
