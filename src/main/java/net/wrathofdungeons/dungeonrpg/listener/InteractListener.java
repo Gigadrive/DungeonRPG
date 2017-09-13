@@ -48,11 +48,16 @@ public class InteractListener implements Listener {
                         String dis = p.getItemInHand().getItemMeta().getDisplayName();
 
                         if(DungeonRPG.SETUP_REGION > 0){
+                            Location loc = e.getClickedBlock().getLocation().clone().add(0,1,0);
+
+                            if(e.getClickedBlock() != null && e.getClickedBlock().getType() != null && DungeonRPG.SETUP_ADD_NO_Y.contains(e.getClickedBlock().getType())){
+                                loc = e.getClickedBlock().getLocation();
+                            }
+
                             if(dis.equals("Mob Spawn Setter")){
                                 Region region = Region.getRegion(DungeonRPG.SETUP_REGION);
 
                                 if(region != null){
-                                    Location loc = e.getClickedBlock().getLocation().clone().add(0,1,0);
                                     RegionLocation rl = new RegionLocation();
                                     rl.type = MOB_LOCATION;
                                     rl.world = loc.getWorld().getName();
@@ -74,7 +79,6 @@ public class InteractListener implements Listener {
                                 Region region = Region.getRegion(DungeonRPG.SETUP_REGION);
 
                                 if(region != null){
-                                    Location loc = e.getClickedBlock().getLocation().clone().add(0,1,0);
                                     RegionLocation rl = new RegionLocation();
                                     rl.type = MOB_LOCATION;
                                     rl.world = loc.getWorld().getName();

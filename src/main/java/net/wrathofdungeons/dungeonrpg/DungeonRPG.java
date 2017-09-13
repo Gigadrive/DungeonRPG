@@ -32,6 +32,7 @@ public class DungeonRPG extends JavaPlugin {
     public static HashMap<String, DungeonProjectile> SHOT_PROJECTILE_DATA = new HashMap<String, DungeonProjectile>();
     public static ArrayList<Material> DISALLOWED_BLOCKS = new ArrayList<Material>();
     public static ArrayList<Material> DISALLOWED_ITEMS = new ArrayList<Material>();
+    public static ArrayList<Material> SETUP_ADD_NO_Y = new ArrayList<Material>();
 
     public static int SETUP_REGION = 0;
 
@@ -143,6 +144,33 @@ public class DungeonRPG extends JavaPlugin {
         DISALLOWED_ITEMS.add(Material.NAME_TAG);
         DISALLOWED_ITEMS.add(Material.LEASH);
         DISALLOWED_ITEMS.add(Material.SAPLING);
+
+        SETUP_ADD_NO_Y.add(Material.LONG_GRASS);
+        SETUP_ADD_NO_Y.add(Material.LADDER);
+        SETUP_ADD_NO_Y.add(Material.TORCH);
+        SETUP_ADD_NO_Y.add(Material.REDSTONE_TORCH_OFF);
+        SETUP_ADD_NO_Y.add(Material.REDSTONE_TORCH_ON);
+        SETUP_ADD_NO_Y.add(Material.STONE_BUTTON);
+        SETUP_ADD_NO_Y.add(Material.WOOD_BUTTON);
+        SETUP_ADD_NO_Y.add(Material.YELLOW_FLOWER);
+        SETUP_ADD_NO_Y.add(Material.DEAD_BUSH);
+        SETUP_ADD_NO_Y.add(Material.VINE);
+        SETUP_ADD_NO_Y.add(Material.WATER_LILY);
+        SETUP_ADD_NO_Y.add(Material.SNOW);
+        SETUP_ADD_NO_Y.add(Material.CARPET);
+        SETUP_ADD_NO_Y.add(Material.DOUBLE_PLANT);
+        SETUP_ADD_NO_Y.add(Material.GOLD_PLATE);
+        SETUP_ADD_NO_Y.add(Material.IRON_PLATE);
+        SETUP_ADD_NO_Y.add(Material.STONE_PLATE);
+        SETUP_ADD_NO_Y.add(Material.WOOD_PLATE);
+        SETUP_ADD_NO_Y.add(Material.RAILS);
+        SETUP_ADD_NO_Y.add(Material.ACTIVATOR_RAIL);
+        SETUP_ADD_NO_Y.add(Material.DETECTOR_RAIL);
+        SETUP_ADD_NO_Y.add(Material.POWERED_RAIL);
+        SETUP_ADD_NO_Y.add(Material.SIGN);
+        SETUP_ADD_NO_Y.add(Material.SIGN_POST);
+        SETUP_ADD_NO_Y.add(Material.WALL_SIGN);
+        SETUP_ADD_NO_Y.add(Material.getMaterial(38));
 
         if(SHOW_HP_IN_ACTION_BAR){
             new BukkitRunnable(){
