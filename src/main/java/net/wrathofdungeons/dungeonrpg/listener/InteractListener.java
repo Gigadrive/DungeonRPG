@@ -54,46 +54,40 @@ public class InteractListener implements Listener {
                                 loc = e.getClickedBlock().getLocation();
                             }
 
-                            if(dis.equals("Mob Spawn Setter")){
-                                Region region = Region.getRegion(DungeonRPG.SETUP_REGION);
+                            Region region = Region.getRegion(DungeonRPG.SETUP_REGION);
+                            if(region != null){
+                                boolean b = true;
 
-                                if(region != null){
+                                for(RegionLocation l : region.getLocations()){
+                                    if(Util.isLocationEqual(loc,l.toBukkitLocation())) b = false;
+                                }
+
+                                if(b){
                                     RegionLocation rl = new RegionLocation();
-                                    rl.type = MOB_LOCATION;
+
                                     rl.world = loc.getWorld().getName();
                                     rl.x = loc.getBlockX();
                                     rl.y = loc.getBlockY();
                                     rl.z = loc.getBlockZ();
 
-                                    region.getLocations().add(rl);
-                                    loc.getBlock().setType(Material.WOOL);
-                                    loc.getBlock().setData((byte)5);
-
-                                    p.sendMessage(ChatColor.GREEN + "Location added!");
+                                    if(dis.equals("Mob Spawn Setter")){
+                                        rl.type = MOB_LOCATION;
+                                        region.getLocations().add(rl);
+                                        loc.getBlock().setType(Material.WOOL);
+                                        loc.getBlock().setData((byte)5);
+                                        p.sendMessage(ChatColor.GREEN + "Location added!");
+                                    } else if(dis.equals("Town Spawn Setter")){
+                                        rl.type = TOWN_LOCATION;
+                                        region.getLocations().add(rl);
+                                        loc.getBlock().setType(Material.WOOL);
+                                        loc.getBlock().setData((byte)3);
+                                        p.sendMessage(ChatColor.GREEN + "Location added!");
+                                    }
                                 } else {
-                                    p.sendMessage(ChatColor.RED + "Unknown region.");
+                                    p.sendMessage(ChatColor.RED + "That block already holds a location.");
                                 }
-                            }
-
-                            if(dis.equals("Town Spawn Setter")){
-                                Region region = Region.getRegion(DungeonRPG.SETUP_REGION);
-
-                                if(region != null){
-                                    RegionLocation rl = new RegionLocation();
-                                    rl.type = TOWN_LOCATION;
-                                    rl.world = loc.getWorld().getName();
-                                    rl.x = loc.getBlockX();
-                                    rl.y = loc.getBlockY();
-                                    rl.z = loc.getBlockZ();
-
-                                    region.getLocations().add(rl);
-                                    loc.getBlock().setType(Material.WOOL);
-                                    loc.getBlock().setData((byte)3);
-
-                                    p.sendMessage(ChatColor.GREEN + "Location added!");
-                                } else {
-                                    p.sendMessage(ChatColor.RED + "Unknown region.");
-                                }
+                            } else {
+                                p.sendMessage(ChatColor.RED + "Unknown region.");
                             }
                         } else {
                             p.sendMessage(ChatColor.RED + "No region loaded.");
