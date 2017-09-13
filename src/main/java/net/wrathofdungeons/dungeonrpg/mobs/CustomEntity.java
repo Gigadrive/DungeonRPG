@@ -7,7 +7,9 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Zombie;
 
 import java.util.HashMap;
 
@@ -72,6 +74,19 @@ public class CustomEntity {
 
             bukkitEntity.setNoDamageTicks(0);
             bukkitEntity.setRemoveWhenFarAway(false);
+
+            if(bukkitEntity instanceof Zombie){
+                Zombie z = (Zombie)bukkitEntity;
+                z.setVillager(false);
+            }
+
+            if(bukkitEntity instanceof Ageable){
+                if(getData().isAdult()){
+                    ((Ageable)bukkitEntity).setAdult();
+                } else {
+                    ((Ageable)bukkitEntity).setBaby();
+                }
+            }
 
             hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(),getSupposedHologramLocation());
             hologram.appendTextLine(getData().getMobType().getColor() + getData().getName() + " " + ChatColor.GOLD + "- Lv. " + getData().getLevel());
