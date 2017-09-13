@@ -16,16 +16,20 @@ public class PlayerDropListener implements Listener {
         if(GameUser.isLoaded(p)){
             GameUser u = GameUser.getUser(p);
 
-            if(u.getCurrentCharacter() != null){
-                if(e.getItemDrop() != null && e.getItemDrop().getItemStack() != null){
-                    CustomItem item = CustomItem.fromItemStack(e.getItemDrop().getItemStack());
+            if(!u.isInSetupMode()){
+                if(u.getCurrentCharacter() != null){
+                    if(e.getItemDrop() != null && e.getItemDrop().getItemStack() != null){
+                        CustomItem item = CustomItem.fromItemStack(e.getItemDrop().getItemStack());
 
-                    if(item != null){
-                        if(item.getData().getId() == 5 || ((DungeonRPG.ENABLE_BOWDRAWBACK) && item.getData().getId() == 6)){
-                            e.setCancelled(true);
+                        if(item != null){
+                            if(item.getData().getId() == 5 || ((DungeonRPG.ENABLE_BOWDRAWBACK) && item.getData().getId() == 6)){
+                                e.setCancelled(true);
+                            }
                         }
                     }
                 }
+            } else {
+                e.setCancelled(true);
             }
         }
     }

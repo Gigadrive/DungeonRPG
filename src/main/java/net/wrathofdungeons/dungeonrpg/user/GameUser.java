@@ -5,6 +5,7 @@ import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
+import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
@@ -315,6 +316,9 @@ public class GameUser extends User {
             bukkitReset();
             p.setGameMode(GameMode.CREATIVE);
             p.sendMessage(ChatColor.GREEN + "You are now in setup mode!");
+
+            p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Spawn Setter",null));
+            p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Town Spawn Setter",null));
         } else {
             bukkitReset();
             setCurrentCharacter(null);

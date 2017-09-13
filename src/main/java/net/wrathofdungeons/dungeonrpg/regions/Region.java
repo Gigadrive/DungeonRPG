@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
+import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 
 import javax.naming.ldap.PagedResultsControl;
 import java.sql.PreparedStatement;
@@ -41,6 +42,8 @@ public class Region {
     }
 
     private int id;
+    private int mobDataID;
+    private int mobLimit;
     private ArrayList<RegionLocation> locations;
 
     public Region(int id){
@@ -52,6 +55,8 @@ public class Region {
 
                 if(rs.first()){
                     this.id = rs.getInt("id");
+                    this.mobDataID = rs.getInt("mobDataID");
+                    this.mobLimit = rs.getInt("mobLimit");
                     String locationString = rs.getString("locations");
                     Gson gson = new Gson();
                     if(locationString != null){
@@ -86,7 +91,32 @@ public class Region {
         return id;
     }
 
+    public MobData getMobData(){
+        return MobData.getData(mobDataID);
+    }
+
+    public int getMobLimit(){
+        return mobLimit;
+    }
+
     public ArrayList<RegionLocation> getLocations() {
         return locations;
+    }
+
+    public void saveData(){
+        try {
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `regions` SET `locations` = ?  WHERE `id` = ?");
+            ps.setString(1,new Gson().toJson(getLocations()));
+            ps.setInt(2,getID());
+            ps.executeUpdate();
+            ps.close();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void reload(){
+        STORAGE.remove(this);
+        new Region(1);
     }
 }

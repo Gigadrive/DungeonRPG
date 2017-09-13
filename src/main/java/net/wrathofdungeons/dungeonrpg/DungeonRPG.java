@@ -33,6 +33,8 @@ public class DungeonRPG extends JavaPlugin {
     public static ArrayList<Material> DISALLOWED_BLOCKS = new ArrayList<Material>();
     public static ArrayList<Material> DISALLOWED_ITEMS = new ArrayList<Material>();
 
+    public static int SETUP_REGION = 0;
+
     public void onEnable(){
         instance = this;
         saveDefaultConfig();
@@ -250,9 +252,12 @@ public class DungeonRPG extends JavaPlugin {
     }
 
     private void registerCommands(){
+        new CreateRegionCommand();
         new CharSelCommand();
         new GiveItemCommand();
         new ItemInfoCommand();
+        new LoadRegionCommand();
+        new SaveRegionCommand();
         new SetupCommand();
         new SummonCommand();
     }
