@@ -67,117 +67,122 @@ public class DamageListener implements Listener {
 
             if(c != null){
                 c.updateHealthBar();
-            }
 
-            boolean adjustKnockback = false;
+                boolean adjustKnockback = false;
 
-            if(e.getDamager() instanceof Player){
-                Player p = (Player)e.getDamager();
+                if(e.getDamager() instanceof Player){
+                    Player p = (Player)e.getDamager();
 
-                if(GameUser.isLoaded(p)){
-                    GameUser u = GameUser.getUser(p);
+                    if(GameUser.isLoaded(p)){
+                        GameUser u = GameUser.getUser(p);
 
-                    if(u.getCurrentCharacter() != null){
-                        if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null){
-                            CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
-                            long itemCooldown = 10; // TODO: Add attack speed
+                        if(u.getCurrentCharacter() != null){
+                            if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null){
+                                CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
+                                long itemCooldown = 10; // TODO: Add attack speed
 
-                            boolean wrongClass = false;
+                                boolean wrongClass = false;
 
-                            if(item.getData().getCategory() == ItemCategory.WEAPON_BOW && !(u.getCurrentCharacter().getRpgClass() == RPGClass.ARCHER || u.getCurrentCharacter().getRpgClass() == RPGClass.RANGER || u.getCurrentCharacter().getRpgClass() == RPGClass.HUNTER)){
-                                wrongClass = true;
-                            }
+                                if(item.getData().getCategory() == ItemCategory.WEAPON_BOW && !(u.getCurrentCharacter().getRpgClass() == RPGClass.ARCHER || u.getCurrentCharacter().getRpgClass() == RPGClass.RANGER || u.getCurrentCharacter().getRpgClass() == RPGClass.HUNTER)){
+                                    wrongClass = true;
+                                }
 
-                            if(item.getData().getCategory() == ItemCategory.WEAPON_STICK && !(u.getCurrentCharacter().getRpgClass() == RPGClass.MAGICIAN || u.getCurrentCharacter().getRpgClass() == RPGClass.WIZARD || u.getCurrentCharacter().getRpgClass() == RPGClass.ALCHEMIST)){
-                                wrongClass = true;
-                            }
+                                if(item.getData().getCategory() == ItemCategory.WEAPON_STICK && !(u.getCurrentCharacter().getRpgClass() == RPGClass.MAGICIAN || u.getCurrentCharacter().getRpgClass() == RPGClass.WIZARD || u.getCurrentCharacter().getRpgClass() == RPGClass.ALCHEMIST)){
+                                    wrongClass = true;
+                                }
 
-                            if(item.getData().getCategory() == ItemCategory.WEAPON_AXE && !(u.getCurrentCharacter().getRpgClass() == RPGClass.MERCENARY || u.getCurrentCharacter().getRpgClass() == RPGClass.KNIGHT || u.getCurrentCharacter().getRpgClass() == RPGClass.SOLDIER)){
-                                wrongClass = true;
-                            }
+                                if(item.getData().getCategory() == ItemCategory.WEAPON_AXE && !(u.getCurrentCharacter().getRpgClass() == RPGClass.MERCENARY || u.getCurrentCharacter().getRpgClass() == RPGClass.KNIGHT || u.getCurrentCharacter().getRpgClass() == RPGClass.SOLDIER)){
+                                    wrongClass = true;
+                                }
 
-                            if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS && !(u.getCurrentCharacter().getRpgClass() == RPGClass.ASSASSIN || u.getCurrentCharacter().getRpgClass() == RPGClass.BLADEMASTER || u.getCurrentCharacter().getRpgClass() == RPGClass.NINJA)){
-                                wrongClass = true;
-                            }
+                                if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS && !(u.getCurrentCharacter().getRpgClass() == RPGClass.ASSASSIN || u.getCurrentCharacter().getRpgClass() == RPGClass.BLADEMASTER || u.getCurrentCharacter().getRpgClass() == RPGClass.NINJA)){
+                                    wrongClass = true;
+                                }
 
-                            if(item.getData().getNeededClass() != RPGClass.NONE){
-                                if(item.getData().getNeededClass() == RPGClass.MERCENARY){
-                                    if(u.getCurrentCharacter().getRpgClass() != RPGClass.MERCENARY && u.getCurrentCharacter().getRpgClass() != RPGClass.KNIGHT && u.getCurrentCharacter().getRpgClass() != RPGClass.SOLDIER) wrongClass = true;
-                                } else if(item.getData().getNeededClass() == RPGClass.MAGICIAN){
-                                    if(u.getCurrentCharacter().getRpgClass() != RPGClass.MAGICIAN && u.getCurrentCharacter().getRpgClass() != RPGClass.WIZARD && u.getCurrentCharacter().getRpgClass() != RPGClass.ALCHEMIST) wrongClass = true;
-                                } else if(item.getData().getNeededClass() == RPGClass.ASSASSIN){
-                                    if(u.getCurrentCharacter().getRpgClass() != RPGClass.ASSASSIN && u.getCurrentCharacter().getRpgClass() != RPGClass.BLADEMASTER && u.getCurrentCharacter().getRpgClass() != RPGClass.NINJA) wrongClass = true;
-                                } else if(item.getData().getNeededClass() == RPGClass.ARCHER){
-                                    if(u.getCurrentCharacter().getRpgClass() != RPGClass.ARCHER && u.getCurrentCharacter().getRpgClass() != RPGClass.RANGER && u.getCurrentCharacter().getRpgClass() != RPGClass.HUNTER) wrongClass = true;
+                                if(item.getData().getNeededClass() != RPGClass.NONE){
+                                    if(item.getData().getNeededClass() == RPGClass.MERCENARY){
+                                        if(u.getCurrentCharacter().getRpgClass() != RPGClass.MERCENARY && u.getCurrentCharacter().getRpgClass() != RPGClass.KNIGHT && u.getCurrentCharacter().getRpgClass() != RPGClass.SOLDIER) wrongClass = true;
+                                    } else if(item.getData().getNeededClass() == RPGClass.MAGICIAN){
+                                        if(u.getCurrentCharacter().getRpgClass() != RPGClass.MAGICIAN && u.getCurrentCharacter().getRpgClass() != RPGClass.WIZARD && u.getCurrentCharacter().getRpgClass() != RPGClass.ALCHEMIST) wrongClass = true;
+                                    } else if(item.getData().getNeededClass() == RPGClass.ASSASSIN){
+                                        if(u.getCurrentCharacter().getRpgClass() != RPGClass.ASSASSIN && u.getCurrentCharacter().getRpgClass() != RPGClass.BLADEMASTER && u.getCurrentCharacter().getRpgClass() != RPGClass.NINJA) wrongClass = true;
+                                    } else if(item.getData().getNeededClass() == RPGClass.ARCHER){
+                                        if(u.getCurrentCharacter().getRpgClass() != RPGClass.ARCHER && u.getCurrentCharacter().getRpgClass() != RPGClass.RANGER && u.getCurrentCharacter().getRpgClass() != RPGClass.HUNTER) wrongClass = true;
+                                    } else {
+                                        if(u.getCurrentCharacter().getRpgClass() != item.getData().getNeededClass()) wrongClass = true;
+                                    }
+                                }
+
+                                if(wrongClass){
+                                    p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
+                                    e.setCancelled(true);
+                                    return;
+                                }
+
+                                if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS || item.getData().getCategory() == ItemCategory.WEAPON_AXE){
+                                    if(u.isInAttackCooldown()){
+                                        e.setCancelled(true);
+                                        return;
+                                    } else {
+                                        u.setAttackCooldown(true);
+                                        e.setDamage(DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false));
+                                        DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+
+                                        new BukkitRunnable(){
+                                            @Override
+                                            public void run() {
+                                                u.setAttackCooldown(false);
+                                            }
+                                        }.runTaskLater(DungeonRPG.getInstance(),itemCooldown);
+                                    }
                                 } else {
-                                    if(u.getCurrentCharacter().getRpgClass() != item.getData().getNeededClass()) wrongClass = true;
+                                    e.setDamage(0);
+                                    DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                    adjustKnockback = true;
                                 }
                             }
+                        }
+                    }
+                }
 
-                            if(wrongClass){
-                                p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
+                if(e.getDamager() instanceof Arrow){
+                    if(((Arrow)e.getDamager()).getShooter() == e.getEntity()){
+                        e.setCancelled(true);
+                        return;
+                    }
+
+                    if(!e.isCancelled()) {
+                        if (DungeonRPG.SHOT_PROJECTILE_DATA.containsKey(e.getDamager().getUniqueId())) {
+                            DungeonProjectile data = DungeonRPG.SHOT_PROJECTILE_DATA.get(e.getDamager().getUniqueId());
+
+                            if(data.getType() == DungeonProjectileType.EXPLOSION_ARROW){
                                 e.setCancelled(true);
                                 return;
                             }
 
-                            if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS || item.getData().getCategory() == ItemCategory.WEAPON_AXE){
-                                if(u.isInAttackCooldown()){
-                                    e.setCancelled(true);
-                                    return;
+                            if(e.getEntity() instanceof Player){
+                                // TODO: Handle duel
+                                e.setCancelled(true);
+                            } else {
+                                if(data.getType() == DungeonProjectileType.ARROW_RAIN){
+                                    e.setDamage(data.getDamage());
+                                    DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                    // TODO: Spawn damage indicator
                                 } else {
-                                    u.setAttackCooldown(true);
-                                    e.setDamage(DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false));
-
-                                    new BukkitRunnable(){
-                                        @Override
-                                        public void run() {
-                                            u.setAttackCooldown(false);
-                                        }
-                                    }.runTaskLater(DungeonRPG.getInstance(),itemCooldown);
+                                    e.setDamage(DamageManager.calculateDamage(data.getPlayer(), (LivingEntity)e.getEntity(), DamageSource.PVE, false, false, 0, true, data.getForce()));
+                                    DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                    adjustKnockback = true;
                                 }
-                            } else {
-                                e.setDamage(0);
-                                adjustKnockback = true;
                             }
+
+                            DungeonRPG.SHOT_PROJECTILE_DATA.remove(e.getDamager().getUniqueId());
                         }
                     }
                 }
-            }
 
-            if(e.getDamager() instanceof Arrow){
-                if(((Arrow)e.getDamager()).getShooter() == e.getEntity()){
-                    e.setCancelled(true);
-                    return;
+                if(adjustKnockback){
+
                 }
-
-                if(!e.isCancelled()) {
-                    if (DungeonRPG.SHOT_PROJECTILE_DATA.containsKey(e.getDamager().getUniqueId())) {
-                        DungeonProjectile data = DungeonRPG.SHOT_PROJECTILE_DATA.get(e.getDamager().getUniqueId());
-
-                        if(data.getType() == DungeonProjectileType.EXPLOSION_ARROW){
-                            e.setCancelled(true);
-                            return;
-                        }
-
-                        if(e.getEntity() instanceof Player){
-                            // TODO: Handle duel
-                            e.setCancelled(true);
-                        } else {
-                            if(data.getType() == DungeonProjectileType.ARROW_RAIN){
-                                e.setDamage(data.getDamage());
-                                // TODO: Spawn damage indicator
-                            } else {
-                                e.setDamage(DamageManager.calculateDamage(data.getPlayer(), (LivingEntity)e.getEntity(), DamageSource.PVE, false, false, 0, true, data.getForce()));
-                            }
-                        }
-
-                        DungeonRPG.SHOT_PROJECTILE_DATA.remove(e.getDamager().getUniqueId());
-                    }
-                }
-            }
-
-            if(adjustKnockback){
-
             }
         }
     }

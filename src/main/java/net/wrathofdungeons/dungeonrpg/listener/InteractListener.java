@@ -156,6 +156,7 @@ public class InteractListener implements Listener {
                                         for (LivingEntity target : DungeonRPG.getTargets(p, range, 2.0)) {
                                             if (target.getType() != EntityType.PLAYER) {
                                                 target.damage(DamageManager.calculateDamage(p, target, DamageSource.PVE, false, false), p);
+                                                DungeonRPG.showBloodEffect(target.getLocation());
                                             }
                                         }
 
