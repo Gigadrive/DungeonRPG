@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.mobs;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
@@ -19,7 +20,9 @@ public class CustomEntity {
     private int mobDataID;
     private int origin;
     private LivingEntity bukkitEntity;
+
     private Hologram hologram;
+    private TextLine healthLine;
 
     public CustomEntity(MobData data){
         this.mobDataID = data.getId();
@@ -61,7 +64,11 @@ public class CustomEntity {
         if(bukkitEntity != null){
             Location loc = bukkitEntity.getEyeLocation();
 
-            return loc.clone().add(0,1,0);
+            if(healthLine != null){
+                return loc.clone().add(0,1.25,0);
+            } else {
+                return loc.clone().add(0,1,0);
+            }
         }
 
         return null;
@@ -120,8 +127,38 @@ public class CustomEntity {
         }
     }
 
+    private String healthBarText(){
+        int div = ((Double)((bukkitEntity.getHealth()/bukkitEntity.getMaxHealth())*10)).intValue();
+
+        String text = "";
+        if(div == 10) text = ChatColor.DARK_RED + "[" + ChatColor.RED + "||||||||||" + ChatColor.DARK_RED + "]";
+        if(div == 9) text = ChatColor.DARK_RED + "[" + ChatColor.RED + "|||||||||" + ChatColor.DARK_GRAY + "|" + ChatColor.DARK_RED + "]";
+        if(div == 8) text = ChatColor.DARK_RED + "[" + ChatColor.RED + "||||||||" + ChatColor.DARK_GRAY + "||" + ChatColor.DARK_RED + "]";
+        if(div == 7) text = ChatColor.DARK_RED + "[" + ChatColor.RED + "|||||||" + ChatColor.DARK_GRAY + "|||" + ChatColor.DARK_RED + "]";
+        if(div == 6) text = ChatColor.DARK_RED + "[" + ChatColor.RED + "||||||" + ChatColor.DARK_GRAY + "||||" + ChatColor.DARK_RED + "]";
+        if(div == 5) text = ChatColor.DARK_RED + "[" + ChatColor.RED + "|||||" + ChatColor.DARK_GRAY + "|||||" + ChatColor.DARK_RED + "]";
+        if(div == 4) text = ChatColor.DARK_RED + "[" + ChatColor.RED + "||||" + ChatColor.DARK_GRAY + "||||||" + ChatColor.DARK_RED + "]";
+        if(div == 3) text = ChatColor.DARK_RED + "[" + ChatColor.RED + "|||" + ChatColor.DARK_GRAY + "|||||||" + ChatColor.DARK_RED + "]";
+        if(div == 2) text = ChatColor.DARK_RED + "[" + ChatColor.RED + "||" + ChatColor.DARK_GRAY + "||||||||" + ChatColor.DARK_RED + "]";
+        if(div == 1) text = ChatColor.DARK_RED + "[" + ChatColor.RED + "|" + ChatColor.DARK_GRAY + "|||||||||" + ChatColor.DARK_RED + "]";
+        if(div == 0) text = ChatColor.DARK_RED + "[" + ChatColor.DARK_GRAY + "||||||||||" + ChatColor.DARK_RED + "]";
+
+        return text;
+    }
+
     public void updateHealthBar(){
-        // TODO: Show health in name tag
+        if(getHologram() != null){
+            if(getHologram().size() == 1){
+                healthLine = getHologram().appendTextLine(healthBarText());
+            } else {
+                if(healthLine != null){
+                    healthLine.setText(healthBarText());
+                } else {
+                    hologram.getLine(1).removeLine();
+                    healthLine = hologram.appendTextLine(healthBarText());
+                }
+            }
+        }
     }
 
     public static CustomEntity fromEntity(LivingEntity e){
