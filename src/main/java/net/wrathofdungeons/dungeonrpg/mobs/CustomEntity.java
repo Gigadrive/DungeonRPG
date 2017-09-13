@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.mobs;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import org.bukkit.ChatColor;
@@ -67,6 +68,7 @@ public class CustomEntity {
     public void spawn(Location loc){
         if(bukkitEntity == null && !STORAGE.containsValue(this)){
             bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
+            DungeonAPI.nmsMakeSilent(bukkitEntity);
 
             bukkitEntity.setNoDamageTicks(0);
             bukkitEntity.setRemoveWhenFarAway(false);
