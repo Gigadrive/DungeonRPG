@@ -197,6 +197,32 @@ public class DamageListener implements Listener {
                         e.setCancelled(true);
                     }
                 }
+
+                if(e.getEntity() instanceof Player && !(e.getDamager() instanceof Player)){
+                    Player p = (Player)e.getEntity();
+
+                    if(GameUser.isLoaded(p)){
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() == null){
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(!e.isCancelled()){
+                            if(e.getDamager() instanceof LivingEntity){
+                                if(u.__associateDamageWithSystem){
+                                    e.setDamage(0);
+                                    u.damage(DamageManager.calculateDamage(p, (LivingEntity)e.getDamager(), DamageSource.PVE, true, false), (LivingEntity)e.getDamager());
+                                    DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                }
+                            }
+                        }
+                    } else {
+                        e.setCancelled(true);
+                        return;
+                    }
+                }
             }
         }
     }
