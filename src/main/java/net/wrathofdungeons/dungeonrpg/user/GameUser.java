@@ -110,15 +110,17 @@ public class GameUser extends User {
     }
 
     public void updateHPBar(){
-        BountifulAPI.sendActionBar(p, ChatColor.DARK_RED + "HP: " + ChatColor.RED + getHP() + "/" + getMaxHP() + "       " + ChatColor.BLUE + "MP: " + ChatColor.AQUA + getMP() + "/" + getMaxMP());
-        p.setMaxHealth(20);
+        if(!p.isDead()){
+            BountifulAPI.sendActionBar(p, ChatColor.DARK_RED + "HP: " + ChatColor.RED + getHP() + "/" + getMaxHP() + "       " + ChatColor.BLUE + "MP: " + ChatColor.AQUA + getMP() + "/" + getMaxMP());
+            p.setMaxHealth(20);
 
-        if(hp > getMaxHP()) hp = getMaxHP();
-        if(hp < 0) hp = 0;
-        double healthDis = (((double)hp)/((double)getMaxHP()))*20;
-        if(healthDis > p.getMaxHealth()) healthDis = p.getMaxHealth();
+            if(hp > getMaxHP()) hp = getMaxHP();
+            if(hp < 0) hp = 0;
+            double healthDis = (((double)hp)/((double)getMaxHP()))*20;
+            if(healthDis > p.getMaxHealth()) healthDis = p.getMaxHealth();
 
-        p.setHealth(healthDis);
+            p.setHealth(healthDis);
+        }
     }
 
     @Deprecated
