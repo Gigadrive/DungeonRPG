@@ -10,20 +10,31 @@ import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
+import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BlockIterator;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class DungeonRPG extends JavaPlugin {
     private static DungeonRPG instance;
     public static final boolean ENABLE_BOWDRAWBACK = false;
     public static final int PLAYER_MOB_LEVEL_DIFFERENCE = 7;
+    public static HashMap<UUID, DungeonProjectile> SHOT_PROJECTILE_DATA = new HashMap<UUID, DungeonProjectile>();
+    public static ArrayList<Material> DISALLOWED_BLOCKS = new ArrayList<Material>();
 
     public void onEnable(){
         instance = this;
@@ -83,6 +94,37 @@ public class DungeonRPG extends JavaPlugin {
 
     public static void showBloodEffect(Location loc){
 
+    }
+
+    public static ArrayList<LivingEntity> getTargets(LivingEntity ent){
+        return getTargets(ent, 10, 2.0);
+    }
+
+    public static ArrayList<LivingEntity> getTargets(LivingEntity ent, int range){
+        return getTargets(ent, range, 2.0);
+    }
+
+    public static ArrayList<LivingEntity> getTargets(LivingEntity ent, int range, double maxDistance){
+        ArrayList<LivingEntity> a = new ArrayList<LivingEntity>();
+
+        List<Entity> nearby = ent.getNearbyEntities(range, range, range);
+        BlockIterator itr = new BlockIterator(ent, range);
+
+        while(itr.hasNext()){
+            Location loc = itr.next().getLocation().add(0.5, 0.5, 0.5);
+
+            for(Entity e : nearby){
+                if(e instanceof LivingEntity){
+                    if(e.getLocation().distance(loc) <= maxDistance){
+                        if(!a.contains((LivingEntity)e)){
+                            a.add((LivingEntity)e);
+                        }
+                    }
+                }
+            }
+        }
+
+        return a;
     }
 
     private void registerListeners(){

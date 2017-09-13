@@ -53,6 +53,7 @@ public class GameUser extends User {
     private boolean init = false;
     public boolean __associateDamageWithSystem = true;
     private boolean attackCooldown = false;
+    public String currentCombo = "";
 
     public GameUser(Player p){
         super(p);

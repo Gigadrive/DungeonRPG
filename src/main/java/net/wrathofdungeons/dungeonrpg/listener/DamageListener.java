@@ -6,13 +6,12 @@ import net.wrathofdungeons.dungeonrpg.damage.DamageSource;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
+import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -141,6 +140,38 @@ public class DamageListener implements Listener {
                                 adjustKnockback = true;
                             }
                         }
+                    }
+                }
+            }
+
+            if(e.getDamager() instanceof Arrow){
+                if(((Arrow)e.getDamager()).getShooter() == e.getEntity()){
+                    e.setCancelled(true);
+                    return;
+                }
+
+                if(!e.isCancelled()) {
+                    if (DungeonRPG.SHOT_PROJECTILE_DATA.containsKey(e.getDamager().getUniqueId())) {
+                        DungeonProjectile data = DungeonRPG.SHOT_PROJECTILE_DATA.get(e.getDamager().getUniqueId());
+
+                        if(data.getType() == DungeonProjectileType.EXPLOSION_ARROW){
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(e.getEntity() instanceof Player){
+                            // TODO: Handle duel
+                            e.setCancelled(true);
+                        } else {
+                            if(data.getType() == DungeonProjectileType.ARROW_RAIN){
+                                e.setDamage(data.getDamage());
+                                // TODO: Spawn damage indicator
+                            } else {
+                                e.setDamage(DamageManager.calculateDamage(data.getPlayer(), (LivingEntity)e.getEntity(), DamageSource.PVE, false, false, 0, true, data.getForce()));
+                            }
+                        }
+
+                        DungeonRPG.SHOT_PROJECTILE_DATA.remove(e.getDamager().getUniqueId());
                     }
                 }
             }
