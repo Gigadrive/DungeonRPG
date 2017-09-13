@@ -48,7 +48,7 @@ public class CreateRegionCommand extends Command {
                                 MySQLManager.getInstance().closeResources(rs,ps);
 
                                 if(regionID > 0){
-                                    new Region(1);
+                                    new Region(regionID);
                                     p.sendMessage(ChatColor.GREEN + "Region with Mob #" + mobID + " (" + data.getName() + ") added! ID: " + regionID);
                                 } else {
                                     p.sendMessage(ChatColor.RED + "An error occurred.");
@@ -84,7 +84,7 @@ public class CreateRegionCommand extends Command {
                     MySQLManager.getInstance().closeResources(rs,ps);
 
                     if(regionID > 0){
-                        new Region(1);
+                        new Region(regionID);
                         p.sendMessage(ChatColor.GREEN + "Region with NO mobdata added! ID: " + regionID);
                     } else {
                         p.sendMessage(ChatColor.RED + "An error occurred.");
