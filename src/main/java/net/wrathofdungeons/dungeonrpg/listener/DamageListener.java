@@ -158,8 +158,8 @@ public class DamageListener implements Listener {
                     }
 
                     if(!e.isCancelled()) {
-                        if (DungeonRPG.SHOT_PROJECTILE_DATA.containsKey(e.getDamager())) {
-                            DungeonProjectile data = DungeonRPG.SHOT_PROJECTILE_DATA.get(e.getDamager());
+                        if (DungeonRPG.SHOT_PROJECTILE_DATA.containsKey(e.getDamager().getUniqueId().toString())) {
+                            DungeonProjectile data = DungeonRPG.SHOT_PROJECTILE_DATA.get(e.getDamager().getUniqueId().toString());
 
                             if(data.getType() == DungeonProjectileType.EXPLOSION_ARROW){
                                 e.setCancelled(true);
@@ -176,7 +176,9 @@ public class DamageListener implements Listener {
                                 adjustKnockback = true;
                             }
 
-                            DungeonRPG.SHOT_PROJECTILE_DATA.remove(e.getDamager().getUniqueId());
+                            DungeonRPG.SHOT_PROJECTILE_DATA.remove(e.getDamager().getUniqueId().toString());
+                        } else {
+                            e.setCancelled(true);
                         }
                     }
                 }
