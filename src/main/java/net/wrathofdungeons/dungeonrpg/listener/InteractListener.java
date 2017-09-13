@@ -46,49 +46,49 @@ public class InteractListener implements Listener {
 
                 if(item.getData().getCategory() == ItemCategory.WEAPON_BOW){
                     if(u.getCurrentCharacter().getRpgClass() != RPGClass.ARCHER && u.getCurrentCharacter().getRpgClass() != RPGClass.HUNTER && u.getCurrentCharacter().getRpgClass() != RPGClass.RANGER){
-                        p.sendMessage("This weapon is for a different class.");
+                        p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
                         e.setCancelled(true);
                         return;
                     }
 
                     if(u.getCurrentCharacter().getLevel() < item.getData().getNeededLevel()){
-                        p.sendMessage("This weapon is for a different class.");
+                        p.sendMessage(ChatColor.DARK_RED + "This weapon is for level " + item.getData().getNeededLevel() + "+ only.");
                         e.setCancelled(true);
                         return;
                     }
                 } else if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS){
                     if(u.getCurrentCharacter().getRpgClass() != RPGClass.ASSASSIN && u.getCurrentCharacter().getRpgClass() != RPGClass.NINJA && u.getCurrentCharacter().getRpgClass() != RPGClass.BLADEMASTER){
-                        p.sendMessage("This weapon is for a different class.");
+                        p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
                         e.setCancelled(true);
                         return;
                     }
 
                     if(u.getCurrentCharacter().getLevel() < item.getData().getNeededLevel()){
-                        p.sendMessage("This weapon is for a different class.");
+                        p.sendMessage(ChatColor.DARK_RED + "This weapon is for level " + item.getData().getNeededLevel() + "+ only.");
                         e.setCancelled(true);
                         return;
                     }
                 } else if(item.getData().getCategory() == ItemCategory.WEAPON_STICK){
                     if(u.getCurrentCharacter().getRpgClass() != RPGClass.MAGICIAN && u.getCurrentCharacter().getRpgClass() != RPGClass.WIZARD && u.getCurrentCharacter().getRpgClass() != RPGClass.ALCHEMIST){
-                        p.sendMessage("This weapon is for a different class.");
+                        p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
                         e.setCancelled(true);
                         return;
                     }
 
                     if(u.getCurrentCharacter().getLevel() < item.getData().getNeededLevel()){
-                        p.sendMessage("This weapon is for a different class.");
+                        p.sendMessage(ChatColor.DARK_RED + "This weapon is for level " + item.getData().getNeededLevel() + "+ only.");
                         e.setCancelled(true);
                         return;
                     }
                 } else if(item.getData().getCategory() == ItemCategory.WEAPON_AXE){
                     if(u.getCurrentCharacter().getRpgClass() != RPGClass.MERCENARY && u.getCurrentCharacter().getRpgClass() != RPGClass.SOLDIER && u.getCurrentCharacter().getRpgClass() != RPGClass.KNIGHT){
-                        p.sendMessage("This weapon is for a different class.");
+                        p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
                         e.setCancelled(true);
                         return;
                     }
 
                     if(u.getCurrentCharacter().getLevel() < item.getData().getNeededLevel()){
-                        p.sendMessage("This weapon is for a different class.");
+                        p.sendMessage(ChatColor.DARK_RED + "This weapon is for level " + item.getData().getNeededLevel() + "+ only.");
                         e.setCancelled(true);
                         return;
                     }
