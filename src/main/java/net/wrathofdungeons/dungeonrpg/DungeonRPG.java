@@ -60,7 +60,7 @@ public class DungeonRPG extends JavaPlugin {
                     }
                 }
             }
-        }.runTaskTimer(this,1,1);
+        }.runTaskTimerAsynchronously(this,1,1);
     }
 
     public static int getMaxLevel(){
