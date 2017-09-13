@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.mobs;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
 
@@ -45,7 +46,22 @@ public class CustomEntity {
         if(bukkitEntity == null && !STORAGE.containsValue(this)){
             bukkitEntity = loc.getWorld().spawnEntity(loc,getData().getEntityType());
 
+            if(bukkitEntity instanceof LivingEntity){
+                LivingEntity l = (LivingEntity)bukkitEntity;
+
+                l.setNoDamageTicks(0);
+                l.setRemoveWhenFarAway(false);
+            }
+
             STORAGE.put(bukkitEntity,this);
+        }
+    }
+
+    public void remove(){
+        if(bukkitEntity != null){
+            STORAGE.remove(bukkitEntity);
+            bukkitEntity.remove();
+            bukkitEntity = null;
         }
     }
 
