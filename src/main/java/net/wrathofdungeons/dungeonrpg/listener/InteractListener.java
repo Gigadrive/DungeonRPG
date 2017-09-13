@@ -41,6 +41,17 @@ public class InteractListener implements Listener {
                 }
             }
 
+            if(e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                if (p.getInventory().getItemInHand() != null) {
+                    if (DungeonRPG.DISALLOWED_ITEMS.contains(p.getInventory().getItemInHand().getType())) {
+                        e.setCancelled(true);
+                        e.setUseInteractedBlock(Event.Result.DENY);
+                        e.setUseItemInHand(Event.Result.DENY);
+                        p.updateInventory();
+                    }
+                }
+            }
+
             if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null && e.getAction() != Action.PHYSICAL) {
                 CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
 
@@ -101,6 +112,7 @@ public class InteractListener implements Listener {
                         e.setCancelled(true);
                         e.setUseInteractedBlock(Event.Result.DENY);
                         e.setUseItemInHand(Event.Result.DENY);
+                        return;
                     }
                 }
 
