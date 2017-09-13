@@ -1,10 +1,7 @@
 package net.wrathofdungeons.dungeonrpg;
 
 import net.wrathofdungeons.dungeonapi.user.User;
-import net.wrathofdungeons.dungeonrpg.cmd.CharSelCommand;
-import net.wrathofdungeons.dungeonrpg.cmd.GiveItemCommand;
-import net.wrathofdungeons.dungeonrpg.cmd.ItemInfoCommand;
-import net.wrathofdungeons.dungeonrpg.cmd.SummonCommand;
+import net.wrathofdungeons.dungeonrpg.cmd.*;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
@@ -256,6 +253,7 @@ public class DungeonRPG extends JavaPlugin {
         new CharSelCommand();
         new GiveItemCommand();
         new ItemInfoCommand();
+        new SetupCommand();
         new SummonCommand();
     }
 

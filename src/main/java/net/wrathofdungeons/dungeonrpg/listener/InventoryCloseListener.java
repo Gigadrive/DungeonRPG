@@ -22,7 +22,7 @@ public class InventoryCloseListener implements Listener {
                 new BukkitRunnable(){
                     @Override
                     public void run() {
-                        if(u.getCurrentCharacter() == null){
+                        if(u.getCurrentCharacter() == null && !u.isInSetupMode()){
                             if(p.getOpenInventory() == null || p.getOpenInventory().getType() == null || p.getOpenInventory().getType() == InventoryType.CRAFTING || p.getOpenInventory().getTitle().equals("container.crafting")){
                                 CharacterSelectionMenu.openSelection(p);
                             }

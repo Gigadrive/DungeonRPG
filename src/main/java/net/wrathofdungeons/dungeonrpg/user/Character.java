@@ -129,11 +129,17 @@ public class Character {
     }
 
     public void saveData(Player p){
-
+        saveData(p,false,true);
     }
 
-    public void saveData(Player p, boolean continueCharsel){
-        DungeonAPI.async(() -> {
+    public void saveData(Player p,boolean continueCharsel){
+        saveData(p,continueCharsel,true);
+    }
+
+    public void saveData(Player p, boolean continueCharsel, boolean async){
+        if(async){
+            DungeonAPI.async(() -> saveData(p,continueCharsel,false));
+        } else {
             try {
                 this.storedLocation = p.getLocation();
 
@@ -163,6 +169,6 @@ public class Character {
             } catch(Exception e){
                 e.printStackTrace();
             }
-        });
+        }
     }
 }

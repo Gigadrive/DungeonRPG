@@ -12,10 +12,7 @@ import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -54,6 +51,7 @@ public class GameUser extends User {
     private boolean init = false;
     public boolean __associateDamageWithSystem = true;
     private boolean attackCooldown = false;
+    private boolean setupMode = false;
     public String currentCombo = "";
 
     public GameUser(Player p){
@@ -303,6 +301,29 @@ public class GameUser extends User {
         // TODO: Check items for level and class requirements
     }
 
+    public boolean isInSetupMode() {
+        return setupMode;
+    }
+
+    public void setSetupMode(boolean setupMode) {
+        this.setupMode = setupMode;
+
+        if(this.setupMode){
+            if(getCurrentCharacter() != null) getCurrentCharacter().saveData(p,false,false);
+
+            setCurrentCharacter(null);
+            bukkitReset();
+            p.setGameMode(GameMode.CREATIVE);
+            p.sendMessage(ChatColor.GREEN + "You are now in setup mode!");
+        } else {
+            bukkitReset();
+            setCurrentCharacter(null);
+            p.teleport(DungeonRPG.getCharSelLocation());
+            CharacterSelectionMenu.openSelection(p);
+            p.sendMessage(ChatColor.RED + "You are no longer in!");
+        }
+    }
+
     public void updateLevelBar(){
         if(getCurrentCharacter() != null){
             p.setLevel(getCurrentCharacter().getLevel());
@@ -435,6 +456,6 @@ public class GameUser extends User {
     public void saveData(boolean continueCharsel){
         super.saveData();
 
-        if(getCurrentCharacter() != null) getCurrentCharacter().saveData(p,continueCharsel);
+        if(getCurrentCharacter() != null && !setupMode) getCurrentCharacter().saveData(p,continueCharsel);
     }
 }
