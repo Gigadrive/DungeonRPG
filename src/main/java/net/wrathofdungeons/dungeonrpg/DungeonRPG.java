@@ -31,7 +31,7 @@ public class DungeonRPG extends JavaPlugin {
     private static DungeonRPG instance;
     public static final boolean ENABLE_BOWDRAWBACK = false;
     public static final int PLAYER_MOB_LEVEL_DIFFERENCE = 7;
-    public static HashMap<UUID, DungeonProjectile> SHOT_PROJECTILE_DATA = new HashMap<UUID, DungeonProjectile>();
+    public static HashMap<Entity, DungeonProjectile> SHOT_PROJECTILE_DATA = new HashMap<Entity, DungeonProjectile>();
     public static ArrayList<Material> DISALLOWED_BLOCKS = new ArrayList<Material>();
 
     public void onEnable(){

@@ -156,8 +156,8 @@ public class DamageListener implements Listener {
                     }
 
                     if(!e.isCancelled()) {
-                        if (DungeonRPG.SHOT_PROJECTILE_DATA.containsKey(e.getDamager().getUniqueId())) {
-                            DungeonProjectile data = DungeonRPG.SHOT_PROJECTILE_DATA.get(e.getDamager().getUniqueId());
+                        if (DungeonRPG.SHOT_PROJECTILE_DATA.containsKey(e.getDamager())) {
+                            DungeonProjectile data = DungeonRPG.SHOT_PROJECTILE_DATA.get(e.getDamager());
 
                             if(data.getType() == DungeonProjectileType.EXPLOSION_ARROW){
                                 e.setCancelled(true);
@@ -165,7 +165,6 @@ public class DamageListener implements Listener {
                             }
 
                             if(e.getEntity() instanceof Player){
-                                // TODO: Handle duel
                                 e.setCancelled(true);
                             } else {
                                 if(data.getType() == DungeonProjectileType.ARROW_RAIN){
