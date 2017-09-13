@@ -224,7 +224,6 @@ public class GameUser extends User {
 
             PlayerInventory inventory = c.getStoredInventory();
             if(inventory != null){
-                inventory.update();
                 inventory.loadToPlayer(p);
 
                 if(DungeonRPG.ENABLE_BOWDRAWBACK){

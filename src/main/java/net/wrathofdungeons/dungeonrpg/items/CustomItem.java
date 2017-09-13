@@ -17,40 +17,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CustomItem {
-    public static HashMap<Integer,CustomItem> STORAGE = new HashMap<Integer,CustomItem>();
-
-    private int id;
     private int dataID;
     private int amount = 1;
 
     public CustomItem(int data){
-        while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
         this.dataID = data;
-        STORAGE.put(id,this);
     }
 
     public CustomItem(int data, int amount){
-        while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
         this.dataID = data;
         this.amount = amount;
-        STORAGE.put(id,this);
     }
 
     public CustomItem(ItemData data){
-        while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
         this.dataID = data.getId();
-        STORAGE.put(id,this);
     }
 
     public CustomItem(ItemData data, int amount){
-        while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
         this.dataID = data.getId();
         this.amount = amount;
-        STORAGE.put(id,this);
-    }
-
-    public int getId() {
-        return id;
     }
 
     public ItemData getData() {
@@ -65,21 +50,14 @@ public class CustomItem {
             if(nmsItem != null && nmsItem.hasTag()){
                 NBTTagCompound tag = nmsItem.getTag();
 
-                if(tag.hasKey("assignedID")){
-                    int id = tag.getInt("assignedID");
+                if(tag.hasKey("dataID")){
+                    int id = tag.getInt("dataID");
 
-                    if(STORAGE.containsKey(id)) return STORAGE.get(id);
+                    return new CustomItem(id,i.getAmount());
                 }
             }
 
             return null;
-        }
-    }
-
-    public void assignID(){
-        if(!STORAGE.containsValue(this)){
-            while(id == 0 || STORAGE.containsKey(id)) id = Util.randomInteger(1,Integer.MAX_VALUE);
-            STORAGE.put(id,this);
         }
     }
 
@@ -123,11 +101,9 @@ public class CustomItem {
 
             net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(i);
             NBTTagCompound tag = nmsItem.hasTag() ? nmsItem.getTag() : new NBTTagCompound();
-            if(!tag.hasKey("assignedID")) tag.set("assignedID",new NBTTagInt(getId()));
+            if(!tag.hasKey("dataID")) tag.set("dataID",new NBTTagInt(getData().getId()));
 
-            if(getData().getCategory() == ItemCategory.WEAPON_STICK){
-                tag.set("stackProtection", new NBTTagInt(Util.randomInteger(-5000, 5000)));
-            }
+            if(getData().getCategory() == ItemCategory.WEAPON_STICK) tag.set("stackProtection", new NBTTagInt(Util.randomInteger(-5000, 5000)));
 
             nmsItem.setTag(tag);
             i = CraftItemStack.asCraftMirror(nmsItem);

@@ -18,7 +18,6 @@ public class ItemInfoCommand extends Command {
 
             if(item != null){
                 p.sendMessage(ChatColor.GREEN + "Data ID: " + item.getData().getId());
-                p.sendMessage(ChatColor.GREEN + "Storage ID: " + item.getId());
             } else {
                 p.sendMessage(ChatColor.RED + "Unknown item.");
             }
