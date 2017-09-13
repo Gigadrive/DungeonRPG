@@ -5,6 +5,7 @@ import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class PlayerPickupListener implements Listener {
@@ -16,12 +17,21 @@ public class PlayerPickupListener implements Listener {
             GameUser u = GameUser.getUser(p);
 
             if(e.getItem().getItemStack() != null){
-                CustomItem item = CustomItem.fromItemStack(e.getItem().getItemStack());
+                if(!e.isCancelled()){
+                    e.setCancelled(true);
+                    CustomItem item = CustomItem.fromItemStack(e.getItem().getItemStack());
 
-                if(item != null){
-                    e.getItem().setItemStack(item.build(p));
+                    if(item != null){
+                        e.getItem().remove();
+                        p.getInventory().addItem(item.build(p));
+                    }
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onMerge(ItemMergeEvent e){
+        e.setCancelled(true);
     }
 }
