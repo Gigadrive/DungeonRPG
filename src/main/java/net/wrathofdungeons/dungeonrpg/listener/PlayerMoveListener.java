@@ -19,7 +19,7 @@ public class PlayerMoveListener implements Listener {
             if(u.getCurrentCharacter() != null){
 
             } else {
-                freeze = true;
+                if(!u.isInSetupMode()) freeze = true;
             }
         } else {
             freeze = true;

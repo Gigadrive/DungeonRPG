@@ -320,7 +320,7 @@ public class GameUser extends User {
             setCurrentCharacter(null);
             p.teleport(DungeonRPG.getCharSelLocation());
             CharacterSelectionMenu.openSelection(p);
-            p.sendMessage(ChatColor.RED + "You are no longer in!");
+            p.sendMessage(ChatColor.RED + "You are no longer in setup mode!");
         }
     }
 
