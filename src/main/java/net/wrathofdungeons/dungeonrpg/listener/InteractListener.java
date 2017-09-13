@@ -62,15 +62,7 @@ public class InteractListener implements Listener {
 
                                     region.getLocations().add(rl);
                                     loc.getBlock().setType(Material.WOOL);
-
-                                    switch(rl.type){
-                                        case MOB_LOCATION:
-                                            loc.getBlock().setData((byte)5);
-                                            break;
-                                        case TOWN_LOCATION:
-                                            loc.getBlock().setData((byte)3);
-                                            break;
-                                    }
+                                    loc.getBlock().setData((byte)5);
 
                                     p.sendMessage(ChatColor.GREEN + "Location added!");
                                 } else {
@@ -79,7 +71,25 @@ public class InteractListener implements Listener {
                             }
 
                             if(dis.equals("Town Spawn Setter")){
+                                Region region = Region.getRegion(DungeonRPG.SETUP_REGION);
 
+                                if(region != null){
+                                    Location loc = e.getClickedBlock().getLocation().clone().add(0,1,0);
+                                    RegionLocation rl = new RegionLocation();
+                                    rl.type = MOB_LOCATION;
+                                    rl.world = loc.getWorld().getName();
+                                    rl.x = loc.getBlockX();
+                                    rl.y = loc.getBlockY();
+                                    rl.z = loc.getBlockZ();
+
+                                    region.getLocations().add(rl);
+                                    loc.getBlock().setType(Material.WOOL);
+                                    loc.getBlock().setData((byte)3);
+
+                                    p.sendMessage(ChatColor.GREEN + "Location added!");
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Unknown region.");
+                                }
                             }
                         } else {
                             p.sendMessage(ChatColor.RED + "No region loaded.");
