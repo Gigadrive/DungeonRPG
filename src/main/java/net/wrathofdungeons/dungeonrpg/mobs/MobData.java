@@ -109,6 +109,8 @@ public class MobData {
                     this.adult = rs.getBoolean("adult");
                     this.mobClass = MobClass.valueOf(rs.getString("class"));
                     this.aiSettings = new AISettings(rs.getBoolean("ai.randomStroll"));
+
+                    STORAGE.add(this);
                 }
 
                 MySQLManager.getInstance().closeResources(rs,ps);
