@@ -14,10 +14,14 @@ public class CharSelCommand extends Command {
     public void execute(Player p, String label, String[] args) {
         GameUser u = GameUser.getUser(p);
 
-        if(u.getCurrentCharacter() != null){
-            u.saveData(true);
+        if(!u.isInSetupMode()){
+            if(u.getCurrentCharacter() != null){
+                u.saveData(true);
+            } else {
+                p.sendMessage(ChatColor.RED + "You are already in the character selection screen.");
+            }
         } else {
-            p.sendMessage(ChatColor.RED + "You are already in the character selection screen.");
+            p.sendMessage(ChatColor.RED + "Please leave setup mode first.");
         }
     }
 }
