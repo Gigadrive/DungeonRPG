@@ -80,7 +80,7 @@ public class InteractListener implements Listener {
 
                                 if(region != null){
                                     RegionLocation rl = new RegionLocation();
-                                    rl.type = MOB_LOCATION;
+                                    rl.type = TOWN_LOCATION;
                                     rl.world = loc.getWorld().getName();
                                     rl.x = loc.getBlockX();
                                     rl.y = loc.getBlockY();

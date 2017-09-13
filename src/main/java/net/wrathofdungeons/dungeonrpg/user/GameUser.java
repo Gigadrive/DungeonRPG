@@ -275,7 +275,7 @@ public class GameUser extends User {
             if(GameUser.isLoaded(all)){
                 GameUser a = GameUser.getUser(all);
 
-                if(getCurrentCharacter() == null){
+                if(getCurrentCharacter() == null && !isInSetupMode()){
                     p.hidePlayer(all);
                 } else {
                     if(a.getCurrentCharacter() == null){
