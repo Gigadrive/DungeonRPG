@@ -1,16 +1,57 @@
 package net.wrathofdungeons.dungeonrpg.damage;
 
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import net.wrathofdungeons.dungeonapi.util.ChatIcons;
 import net.wrathofdungeons.dungeonapi.util.Util;
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class DamageManager {
+    public static Hologram spawnDamageIndicator(Location loc, double damage){
+        return spawnDamageIndicator(loc, damage, true, false, false);
+    }
+
+    public static Hologram spawnDamageIndicator(Location loc, double damage, boolean isPositive){
+        return spawnDamageIndicator(loc, damage, isPositive, false, false);
+    }
+
+    public static Hologram spawnDamageIndicator(Location loc, double damage, boolean isPositive, boolean missed, boolean critical){
+        final Hologram hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(), loc.clone().add(Util.randomInteger(-2, 2), 2, Util.randomInteger(-2, 2)));
+
+        if(missed){
+            hologram.appendTextLine(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD.toString() + "MISS!");
+        } else {
+            if(critical){
+                hologram.appendTextLine(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "CRITICAL!");
+            }
+
+            if(isPositive){
+                hologram.appendTextLine(ChatColor.AQUA + "-" + ((Double)damage).intValue() + " " + ChatIcons.HEART);
+            } else {
+                hologram.appendTextLine(ChatColor.RED + "-" + ((Double)damage).intValue() + " " + ChatIcons.HEART);
+            }
+        }
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(DungeonRPG.getInstance(), new Runnable(){
+            public void run(){
+                hologram.delete();
+            }
+        }, 10);
+
+        return hologram;
+    }
+
     public static double calculateDamage(Player p, LivingEntity enemy, DamageSource source, boolean gotAttacked, boolean isSkill){
         return calculateDamage(p, enemy, source, gotAttacked, isSkill, 0, true, 1.0);
     }

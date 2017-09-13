@@ -125,7 +125,7 @@ public class DamageListener implements Listener {
                                         return;
                                     } else {
                                         u.setAttackCooldown(true);
-                                        e.setDamage(DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false));
+                                        e.setDamage(DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false, 0, true));
                                         DungeonRPG.showBloodEffect(e.getEntity().getLocation());
 
                                         new BukkitRunnable(){
@@ -140,6 +140,10 @@ public class DamageListener implements Listener {
                                     DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                     adjustKnockback = true;
                                 }
+                            } else {
+                                e.setDamage(0);
+                                DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                adjustKnockback = true;
                             }
                         }
                     }
