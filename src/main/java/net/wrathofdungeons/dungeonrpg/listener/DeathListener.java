@@ -110,7 +110,7 @@ public class DeathListener implements Listener {
                                     public void run() {
                                         holo.delete();
                                     }
-                                }.runTaskLater(DungeonRPG.getInstance(),2*20);
+                                }.runTaskLater(DungeonRPG.getInstance(),10);
                             }
                         }
                     }
