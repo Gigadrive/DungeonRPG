@@ -55,10 +55,7 @@ public class DungeonRPG extends JavaPlugin {
             public void run() {
                 for(CustomEntity e : CustomEntity.STORAGE.values()){
                     if(e.getHologram() != null && e.getBukkitEntity() != null){
-                        Location loc = e.getBukkitEntity().getLocation();
-                        if(e.getBukkitEntity() instanceof LivingEntity) loc = ((LivingEntity)e.getBukkitEntity()).getEyeLocation();
-
-                        e.getHologram().teleport(loc.clone().add(0,1,0));
+                        e.getHologram().teleport(e.getSupposedHologramLocation());
                     }
                 }
             }

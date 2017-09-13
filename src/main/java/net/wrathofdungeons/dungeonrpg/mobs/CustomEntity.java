@@ -1,7 +1,10 @@
 package net.wrathofdungeons.dungeonrpg.mobs;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -52,6 +55,17 @@ public class CustomEntity {
         this.hologram = hologram;
     }
 
+    public Location getSupposedHologramLocation(){
+        if(bukkitEntity != null){
+            Location loc = bukkitEntity.getLocation();
+            if(bukkitEntity instanceof LivingEntity) loc = ((LivingEntity)bukkitEntity).getEyeLocation();
+
+            return loc.clone().add(0,1,0);
+        }
+
+        return null;
+    }
+
     public void spawn(Location loc){
         if(bukkitEntity == null && !STORAGE.containsValue(this)){
             bukkitEntity = loc.getWorld().spawnEntity(loc,getData().getEntityType());
@@ -63,6 +77,9 @@ public class CustomEntity {
                 l.setRemoveWhenFarAway(false);
             }
 
+            hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(),getSupposedHologramLocation());
+            hologram.appendTextLine(getData().getMobType().getColor() + getData().getName() + " " + ChatColor.GOLD + "- Lv. " + getData().getLevel());
+
             STORAGE.put(bukkitEntity,this);
         }
     }
@@ -72,6 +89,11 @@ public class CustomEntity {
             STORAGE.remove(bukkitEntity);
             bukkitEntity.remove();
             bukkitEntity = null;
+        }
+
+        if(hologram != null){
+            hologram.delete();
+            hologram = null;
         }
     }
 
