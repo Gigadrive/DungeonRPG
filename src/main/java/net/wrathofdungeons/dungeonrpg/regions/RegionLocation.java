@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public class RegionLocation {
-    public int id;
     public RegionLocationType type;
     public String world;
     public double x;
