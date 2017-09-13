@@ -93,6 +93,10 @@ public class CustomEntity {
         }
     }
 
+    public void updateHealthBar(){
+        // TODO: Show health in name tag
+    }
+
     public static CustomEntity fromEntity(LivingEntity e){
         if(STORAGE.containsKey(e)){
             return STORAGE.get(e);
