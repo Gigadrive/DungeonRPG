@@ -13,9 +13,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -93,7 +91,8 @@ public class DungeonRPG extends JavaPlugin {
     }
 
     public static void showBloodEffect(Location loc){
-
+        loc.getWorld().playSound(loc, Sound.HURT_FLESH, 1F, 1F);
+        loc.getWorld().playEffect(loc.add(0.0D, 0.8D, 0.0D), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
     }
 
     public static ArrayList<LivingEntity> getTargets(LivingEntity ent){
