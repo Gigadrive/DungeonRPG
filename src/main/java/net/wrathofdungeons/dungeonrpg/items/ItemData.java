@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.items;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
@@ -46,6 +47,9 @@ public class ItemData {
     private int defMin;
     private int defMax;
 
+    private int neededLevel;
+    private RPGClass neededClass;
+
     public static ItemData getData(int id){
         for(ItemData d : STORAGE){
             if(d.getId() == id) return d;
@@ -74,6 +78,9 @@ public class ItemData {
 
                 this.defMin = rs.getInt("def.min");
                 this.defMax = rs.getInt("def.max");
+
+                this.neededLevel = rs.getInt("neededLevel");
+                this.neededClass = RPGClass.valueOf(rs.getString("neededClass"));
             }
 
             MySQLManager.getInstance().closeResources(rs,ps);
@@ -124,5 +131,13 @@ public class ItemData {
 
     public int getDefMax() {
         return defMax;
+    }
+
+    public int getNeededLevel() {
+        return neededLevel;
+    }
+
+    public RPGClass getNeededClass() {
+        return neededClass;
     }
 }

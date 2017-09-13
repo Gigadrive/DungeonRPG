@@ -69,8 +69,16 @@ public class Character {
         return level;
     }
 
+    public void setLevel(int level){
+        this.level = level;
+    }
+
     public double getExp() {
         return exp;
+    }
+
+    public void setExp(double exp){
+        this.exp = exp;
     }
 
     public Location getStoredLocation() {
@@ -93,6 +101,14 @@ public class Character {
         return lastLogin;
     }
 
+    public boolean mayGetEXP(){
+        if(this.level >= DungeonRPG.getMaxLevel()){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public void setLastLogin(Timestamp t){
         this.lastLogin = t;
     }
@@ -100,6 +116,8 @@ public class Character {
     public void saveData(Player p){
         DungeonAPI.async(() -> {
             try {
+                this.storedLocation = p.getLocation();
+
                 PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `inventory` = ?, `lastLogin` = ? WHERE `id` = ?");
                 ps.setInt(1,getLevel());
                 ps.setDouble(2,getExp());

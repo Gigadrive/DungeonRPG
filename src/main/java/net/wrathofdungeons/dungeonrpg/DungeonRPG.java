@@ -23,6 +23,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class DungeonRPG extends JavaPlugin {
     private static DungeonRPG instance;
     public static final boolean ENABLE_BOWDRAWBACK = false;
+    public static final int PLAYER_MOB_LEVEL_DIFFERENCE = 7;
 
     public void onEnable(){
         instance = this;
@@ -89,6 +90,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CharacterCreationListener(),this);
         Bukkit.getPluginManager().registerEvents(new CraftListener(),this);
         Bukkit.getPluginManager().registerEvents(new DamageListener(),this);
+        Bukkit.getPluginManager().registerEvents(new DeathListener(),this);
         Bukkit.getPluginManager().registerEvents(new FoodListener(),this);
         Bukkit.getPluginManager().registerEvents(new InteractListener(),this);
         Bukkit.getPluginManager().registerEvents(new InventoryClickListener(),this);

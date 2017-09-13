@@ -6,17 +6,16 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
 
 public class CustomEntity {
-    public static HashMap<Entity,CustomEntity> STORAGE = new HashMap<Entity,CustomEntity>();
+    public static HashMap<LivingEntity,CustomEntity> STORAGE = new HashMap<LivingEntity,CustomEntity>();
 
     private int mobDataID;
     private int origin;
-    private Entity bukkitEntity;
+    private LivingEntity bukkitEntity;
     private Hologram hologram;
 
     public CustomEntity(MobData data){
@@ -43,7 +42,7 @@ public class CustomEntity {
         return MobData.getData(this.mobDataID);
     }
 
-    public Entity getBukkitEntity() {
+    public LivingEntity getBukkitEntity() {
         return bukkitEntity;
     }
 
@@ -57,8 +56,7 @@ public class CustomEntity {
 
     public Location getSupposedHologramLocation(){
         if(bukkitEntity != null){
-            Location loc = bukkitEntity.getLocation();
-            if(bukkitEntity instanceof LivingEntity) loc = ((LivingEntity)bukkitEntity).getEyeLocation();
+            Location loc = bukkitEntity.getEyeLocation();
 
             return loc.clone().add(0,1,0);
         }
@@ -68,14 +66,10 @@ public class CustomEntity {
 
     public void spawn(Location loc){
         if(bukkitEntity == null && !STORAGE.containsValue(this)){
-            bukkitEntity = loc.getWorld().spawnEntity(loc,getData().getEntityType());
+            bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
 
-            if(bukkitEntity instanceof LivingEntity){
-                LivingEntity l = (LivingEntity)bukkitEntity;
-
-                l.setNoDamageTicks(0);
-                l.setRemoveWhenFarAway(false);
-            }
+            bukkitEntity.setNoDamageTicks(0);
+            bukkitEntity.setRemoveWhenFarAway(false);
 
             hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(),getSupposedHologramLocation());
             hologram.appendTextLine(getData().getMobType().getColor() + getData().getName() + " " + ChatColor.GOLD + "- Lv. " + getData().getLevel());
@@ -97,7 +91,7 @@ public class CustomEntity {
         }
     }
 
-    public static CustomEntity fromEntity(Entity e){
+    public static CustomEntity fromEntity(LivingEntity e){
         if(STORAGE.containsKey(e)){
             return STORAGE.get(e);
         } else {

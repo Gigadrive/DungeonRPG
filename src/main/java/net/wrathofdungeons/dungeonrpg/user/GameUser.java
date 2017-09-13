@@ -13,12 +13,11 @@ import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -298,6 +297,78 @@ public class GameUser extends User {
         } else {
             p.setLevel(0);
             p.setExp(0);
+        }
+    }
+
+    public double giveEXP(double xp){
+        return giveEXP(xp,false);
+    }
+
+    public double giveEXP(double xp, boolean affectedByParty){
+        if(getCurrentCharacter() != null){
+            if(!getCurrentCharacter().mayGetEXP()) return 0;
+
+            // TODO: Handle xp bonus
+
+            if(!affectedByParty){
+                // TODO: give exp to party members
+            }
+
+            getCurrentCharacter().setExp(getCurrentCharacter().getExp()+xp);
+
+            checkLevelUp();
+            updateLevelBar();
+
+            return xp;
+        } else {
+            return 0;
+        }
+    }
+
+    public void checkLevelUp(){
+        if(getCurrentCharacter() != null){
+            int levels = 0;
+            double required = 0;
+
+            while((getCurrentCharacter().getExp() >= (required = FormularUtils.getExpNeededForLevel(getCurrentCharacter().getLevel() + levels))) && (getCurrentCharacter().getLevel() + levels < DungeonRPG.getMaxLevel())){
+                getCurrentCharacter().setExp(getCurrentCharacter().getExp()-required);
+                levels++;
+            }
+
+            if(levels > 0){
+                levelUp(levels);
+            }
+
+            updateLevelBar();
+        }
+    }
+
+    public void levelUp(){
+        levelUp(1);
+    }
+
+    public void levelUp(int times){
+        if(getCurrentCharacter() != null){
+            for (int i = 0; i < times; i++) {
+                if(getCurrentCharacter().mayGetEXP()){
+                    getCurrentCharacter().setLevel(getCurrentCharacter().getLevel()+1);
+                    // TODO: Give stat points
+                    /*setLeftStatpoints(getLeftStatpoints()+2);
+                    statpointsGained += 2;*/
+                }
+            }
+
+            setHP(getMaxHP());
+            setMP(getMaxMP());
+
+            Firework f = (Firework)getPlayer().getLocation().getWorld().spawn(getPlayer().getLocation(), Firework.class);
+            FireworkMeta fm = f.getFireworkMeta();
+            fm.addEffect(FireworkEffect.builder().flicker(false).trail(true).with(FireworkEffect.Type.CREEPER).withColor(org.bukkit.Color.GREEN).withFade(org.bukkit.Color.BLUE).build());
+            fm.setPower(3);
+            f.setFireworkMeta(fm);
+
+            if(getCurrentCharacter().getLevel() >= DungeonRPG.getMaxLevel()) getCurrentCharacter().setExp(0);
+            updateLevelBar();
         }
     }
 

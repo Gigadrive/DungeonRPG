@@ -60,29 +60,6 @@ public class MobData {
     private MobClass mobClass;
     private AISettings aiSettings;
 
-    private ItemStack parseItemStack(String s){
-        if(s == null){
-            return null;
-        } else {
-            String[] sp = s.split(":");
-            if(sp.length == 1){
-                if(Util.isValidInteger(sp[0])){
-                    return ItemUtil.setUnbreakable(new ItemStack(Integer.parseInt(sp[0])),true);
-                } else {
-                    return null;
-                }
-            } else if(sp.length == 2){
-                if(Util.isValidInteger(sp[0]) && Util.isValidInteger(sp[1])){
-                    return ItemUtil.setUnbreakable(new ItemStack(Integer.parseInt(sp[0]),0,(short)Integer.parseInt(sp[1])),true);
-                } else {
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        }
-    }
-
     public MobData(int id){
         this.id = id;
 
@@ -101,11 +78,11 @@ public class MobData {
                     this.xp = rs.getInt("xp");
                     this.entityType = EntityType.valueOf(rs.getString("entityType"));
                     this.skin = rs.getString("skin");
-                    this.helmet = parseItemStack(rs.getString("helmet"));
-                    this.chestplate = parseItemStack(rs.getString("chestplate"));
-                    this.leggings = parseItemStack(rs.getString("leggings"));
-                    this.boots = parseItemStack(rs.getString("boots"));
-                    this.weapon = parseItemStack(rs.getString("weapon"));
+                    this.helmet = Util.parseItemStack(rs.getString("helmet"));
+                    this.chestplate = Util.parseItemStack(rs.getString("chestplate"));
+                    this.leggings = Util.parseItemStack(rs.getString("leggings"));
+                    this.boots = Util.parseItemStack(rs.getString("boots"));
+                    this.weapon = Util.parseItemStack(rs.getString("weapon"));
                     this.adult = rs.getBoolean("adult");
                     this.mobClass = MobClass.valueOf(rs.getString("class"));
                     this.aiSettings = new AISettings(rs.getBoolean("ai.randomStroll"));
