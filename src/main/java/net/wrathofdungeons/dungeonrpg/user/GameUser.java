@@ -301,6 +301,10 @@ public class GameUser extends User {
         }
     }
 
+    public void updateInventory(){
+        if(getCurrentCharacter() != null) getCurrentCharacter().getConvertedInventory(p).loadToPlayer(p);
+    }
+
     public void init(Player p){
         if(init) return;
 
