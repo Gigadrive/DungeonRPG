@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.mobs;
 
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -13,6 +14,7 @@ public class CustomEntity {
     private int mobDataID;
     private int origin;
     private Entity bukkitEntity;
+    private Hologram hologram;
 
     public CustomEntity(MobData data){
         this.mobDataID = data.getId();
@@ -40,6 +42,14 @@ public class CustomEntity {
 
     public Entity getBukkitEntity() {
         return bukkitEntity;
+    }
+
+    public Hologram getHologram() {
+        return hologram;
+    }
+
+    public void setHologram(Hologram hologram) {
+        this.hologram = hologram;
     }
 
     public void spawn(Location loc){

@@ -8,11 +8,13 @@ import net.wrathofdungeons.dungeonrpg.cmd.SummonCommand;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
+import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,6 +49,20 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this,20,20);
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(CustomEntity e : CustomEntity.STORAGE.values()){
+                    if(e.getHologram() != null && e.getBukkitEntity() != null){
+                        Location loc = e.getBukkitEntity().getLocation();
+                        if(e.getBukkitEntity() instanceof LivingEntity) loc = ((LivingEntity)e.getBukkitEntity()).getEyeLocation();
+
+                        e.getHologram().teleport(loc.clone().add(0,1,0));
+                    }
+                }
+            }
+        }.runTaskTimer(this,1,1);
     }
 
     public static int getMaxLevel(){
