@@ -72,8 +72,12 @@ public class CustomEntity {
             bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
             DungeonAPI.nmsMakeSilent(bukkitEntity);
 
+            bukkitEntity.setMaximumNoDamageTicks(0);
             bukkitEntity.setNoDamageTicks(0);
-            bukkitEntity.setRemoveWhenFarAway(false);
+            bukkitEntity.setFireTicks(0);
+            bukkitEntity.setRemoveWhenFarAway(true);
+            bukkitEntity.setMaxHealth(getData().getHealth());
+            bukkitEntity.setHealth(bukkitEntity.getMaxHealth());
 
             if(bukkitEntity instanceof Zombie){
                 Zombie z = (Zombie)bukkitEntity;
