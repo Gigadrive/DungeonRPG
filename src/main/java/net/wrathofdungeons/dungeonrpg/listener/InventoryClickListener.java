@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.entity.Player;
@@ -36,7 +37,7 @@ public class InventoryClickListener implements Listener {
                         CustomItem item = CustomItem.fromItemStack(e.getCurrentItem());
 
                         if(item != null){
-                            if(item.getData().getId() == 5 || item.getData().getId() == 6){
+                            if(item.getData().getId() == 5 || ((DungeonRPG.ENABLE_BOWDRAWBACK) && item.getData().getId() == 6)){
                                 e.setCancelled(true);
                             }
                         }

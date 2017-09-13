@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,7 @@ public class CharacterCreationListener implements Listener {
         if(CharacterSelectionMenu.CREATING.contains(p)){
             CharacterSelectionMenu.CREATING.remove(p);
             CharacterSelectionMenu.openSelection(p);
+            p.sendMessage(ChatColor.GREEN + "Done!");
         }
     }
 }

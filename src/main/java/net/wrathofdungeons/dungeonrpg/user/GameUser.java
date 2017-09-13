@@ -10,9 +10,15 @@ import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
+import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,6 +52,7 @@ public class GameUser extends User {
     private int hp = 20;
 
     private boolean init = false;
+    public boolean __associateDamageWithSystem = true;
 
     public GameUser(Player p){
         super(p);
@@ -64,7 +71,18 @@ public class GameUser extends User {
     }
 
     public int getMaxHP(){
-        return 50; // TODO: Calculate max hp
+        int maxHP = 0;
+
+        if(getCurrentCharacter() != null){
+            Character c = getCurrentCharacter();
+
+            maxHP += FormularUtils.getBaseHP(c);
+            // TODO: Add health values from gear
+        } else {
+            maxHP = 20;
+        }
+
+        return maxHP;
     }
 
     public int getHPPercentage(){
@@ -92,11 +110,41 @@ public class GameUser extends User {
     public void updateHPBar(){
         BountifulAPI.sendActionBar(p, ChatColor.DARK_RED + "HP: " + ChatColor.RED + getHP() + "/" + getMaxHP() + "       " + ChatColor.BLUE + "MP: " + ChatColor.AQUA + getMP() + "/" + getMaxMP());
         p.setMaxHealth(20);
-        p.setHealth(20*(getHPPercentage()/100));
+
+        if(hp > getMaxHP()) hp = getMaxHP();
+        double healthDis = (((double)hp)/((double)getMaxHP()))*20;
+        if(healthDis > p.getMaxHealth()) healthDis = p.getMaxHealth();
+
+        p.setHealth(healthDis);
     }
 
     @Deprecated
     public void updateMPBar(){
+        updateHPBar();
+    }
+
+    public void damage(double damage){
+        damage(damage,null);
+    }
+
+    public void damage(double damage, LivingEntity source){
+        this.hp -= damage;
+
+        if(this.hp <= 0){
+            if(source != null){
+                __associateDamageWithSystem = false;
+                p.damage(((Damageable)p).getMaxHealth(), source);
+
+                Bukkit.getScheduler().scheduleSyncDelayedTask(DungeonAPI.getInstance(), new Runnable(){
+                    public void run(){
+                        __associateDamageWithSystem = true;
+                    }
+                });
+            } else {
+                p.damage(((Damageable)p).getMaxHealth());
+            }
+        }
+
         updateHPBar();
     }
 
@@ -179,6 +227,12 @@ public class GameUser extends User {
             if(inventory != null){
                 inventory.update();
                 inventory.loadToPlayer(p);
+
+                if(DungeonRPG.ENABLE_BOWDRAWBACK){
+                    p.getInventory().setItem(17,new CustomItem(6,64).build(p));
+                } else {
+                    if(CustomItem.fromItemStack(p.getInventory().getItem(17)) != null && CustomItem.fromItemStack(p.getInventory().getItem(17)).getData().getId() == 6) p.getInventory().setItem(17,new ItemStack(Material.AIR));
+                }
             } else {
                 if(c.getRpgClass() == RPGClass.ARCHER || c.getRpgClass() == RPGClass.HUNTER || c.getRpgClass() == RPGClass.RANGER){
                     p.getInventory().addItem(new CustomItem(1).build(p));
@@ -191,7 +245,10 @@ public class GameUser extends User {
                 }
 
                 p.getInventory().setItem(8,new CustomItem(5).build(p));
-                p.getInventory().setItem(17,new CustomItem(6,64).build(p));
+
+                if(DungeonRPG.ENABLE_BOWDRAWBACK){
+                    p.getInventory().setItem(17,new CustomItem(6,64).build(p));
+                }
             }
 
             setHP(getMaxHP());

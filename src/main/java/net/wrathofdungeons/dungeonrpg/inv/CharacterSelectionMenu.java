@@ -127,24 +127,28 @@ public class CharacterSelectionMenu {
             CREATING.add(p);
             p.closeInventory();
             u.addCharacter(RPGClass.MERCENARY);
+            p.sendMessage(ChatColor.GRAY + "Creating character..");
         }), ClickType.LEFT);
 
         inv.withItem(3,ItemUtil.hideFlags(ItemUtil.namedItem(Material.BOW,ChatColor.AQUA + "Archer",null)), ((player, action, item) -> {
             CREATING.add(p);
             p.closeInventory();
             u.addCharacter(RPGClass.ARCHER);
+            p.sendMessage(ChatColor.GRAY + "Creating character..");
         }), ClickType.LEFT);
 
         inv.withItem(5,ItemUtil.hideFlags(ItemUtil.namedItem(Material.STICK,ChatColor.AQUA + "Magician",null)), ((player, action, item) -> {
             CREATING.add(p);
             p.closeInventory();
             u.addCharacter(RPGClass.MAGICIAN);
+            p.sendMessage(ChatColor.GRAY + "Creating character..");
         }), ClickType.LEFT);
 
         inv.withItem(7,ItemUtil.hideFlags(ItemUtil.namedItem(Material.SHEARS,ChatColor.AQUA + "Assassin",null)), ((player, action, item) -> {
             CREATING.add(p);
             p.closeInventory();
             u.addCharacter(RPGClass.ASSASSIN);
+            p.sendMessage(ChatColor.GRAY + "Creating character..");
         }), ClickType.LEFT);
 
         inv.show(p);

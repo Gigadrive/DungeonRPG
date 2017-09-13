@@ -1,11 +1,14 @@
 package net.wrathofdungeons.dungeonrpg;
 
 import net.wrathofdungeons.dungeonapi.user.User;
+import net.wrathofdungeons.dungeonrpg.cmd.CharSelCommand;
 import net.wrathofdungeons.dungeonrpg.cmd.GiveItemCommand;
 import net.wrathofdungeons.dungeonrpg.cmd.ItemInfoCommand;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
+import net.wrathofdungeons.dungeonrpg.mobs.MobData;
+import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class DungeonRPG extends JavaPlugin {
     private static DungeonRPG instance;
+    public static final boolean ENABLE_BOWDRAWBACK = false;
 
     public void onEnable(){
         instance = this;
@@ -25,6 +29,8 @@ public class DungeonRPG extends JavaPlugin {
         registerCommands();
 
         ItemData.init();
+        MobData.init();
+        Region.init();
 
         new BukkitRunnable(){
             @Override
@@ -60,10 +66,15 @@ public class DungeonRPG extends JavaPlugin {
         }
     }
 
+    public static void showBloodEffect(Location loc){
+
+    }
+
     private void registerListeners(){
         Bukkit.getPluginManager().registerEvents(new BlockListener(),this);
         Bukkit.getPluginManager().registerEvents(new CharacterCreationListener(),this);
         Bukkit.getPluginManager().registerEvents(new CraftListener(),this);
+        Bukkit.getPluginManager().registerEvents(new DamageListener(),this);
         Bukkit.getPluginManager().registerEvents(new FoodListener(),this);
         Bukkit.getPluginManager().registerEvents(new InteractListener(),this);
         Bukkit.getPluginManager().registerEvents(new InventoryClickListener(),this);
@@ -78,6 +89,7 @@ public class DungeonRPG extends JavaPlugin {
     }
 
     private void registerCommands(){
+        new CharSelCommand();
         new GiveItemCommand();
         new ItemInfoCommand();
     }
