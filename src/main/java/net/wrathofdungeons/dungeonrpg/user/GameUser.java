@@ -111,7 +111,7 @@ public class GameUser extends User {
 
     public void updateHPBar(){
         if(!p.isDead()){
-            BountifulAPI.sendActionBar(p, ChatColor.DARK_RED + "HP: " + ChatColor.RED + getHP() + "/" + getMaxHP() + "       " + ChatColor.BLUE + "MP: " + ChatColor.AQUA + getMP() + "/" + getMaxMP());
+            if(DungeonRPG.SHOW_HP_IN_ACTION_BAR) BountifulAPI.sendActionBar(p, ChatColor.DARK_RED + "HP: " + ChatColor.RED + getHP() + "/" + getMaxHP() + "       " + ChatColor.BLUE + "MP: " + ChatColor.AQUA + getMP() + "/" + getMaxMP());
             p.setMaxHealth(20);
 
             if(hp > getMaxHP()) hp = getMaxHP();

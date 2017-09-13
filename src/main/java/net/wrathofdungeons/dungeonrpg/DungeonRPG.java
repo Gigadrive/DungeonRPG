@@ -30,6 +30,7 @@ import java.util.UUID;
 public class DungeonRPG extends JavaPlugin {
     private static DungeonRPG instance;
     public static final boolean ENABLE_BOWDRAWBACK = false;
+    public static final boolean SHOW_HP_IN_ACTION_BAR = false;
     public static final int PLAYER_MOB_LEVEL_DIFFERENCE = 7;
     public static HashMap<Entity, DungeonProjectile> SHOT_PROJECTILE_DATA = new HashMap<Entity, DungeonProjectile>();
     public static ArrayList<Material> DISALLOWED_BLOCKS = new ArrayList<Material>();
@@ -45,20 +46,22 @@ public class DungeonRPG extends JavaPlugin {
         MobData.init();
         Region.init();
 
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                for(Player p : Bukkit.getOnlinePlayers()){
-                    if(GameUser.isLoaded(p)){
-                        GameUser u = GameUser.getUser(p);
+        if(SHOW_HP_IN_ACTION_BAR){
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(GameUser.isLoaded(p)){
+                            GameUser u = GameUser.getUser(p);
 
-                        if(u.getCurrentCharacter() != null){
-                            u.updateHPBar();
+                            if(u.getCurrentCharacter() != null){
+                                u.updateHPBar();
+                            }
                         }
                     }
                 }
-            }
-        }.runTaskTimer(this,20,20);
+            }.runTaskTimer(this,20,20);
+        }
 
         new BukkitRunnable(){
             @Override
