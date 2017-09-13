@@ -52,6 +52,7 @@ public class GameUser extends User {
 
     private boolean init = false;
     public boolean __associateDamageWithSystem = true;
+    private boolean attackCooldown = false;
 
     public GameUser(Player p){
         super(p);
@@ -120,6 +121,14 @@ public class GameUser extends User {
     @Deprecated
     public void updateMPBar(){
         updateHPBar();
+    }
+
+    public boolean isInAttackCooldown(){
+        return attackCooldown;
+    }
+
+    public void setAttackCooldown(boolean b){
+        this.attackCooldown = b;
     }
 
     public void damage(double damage){

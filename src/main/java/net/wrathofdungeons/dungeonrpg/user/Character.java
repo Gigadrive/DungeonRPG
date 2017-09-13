@@ -10,9 +10,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import javax.naming.ldap.PagedResultsControl;
+import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Character {
@@ -107,6 +109,18 @@ public class Character {
         } else {
             return true;
         }
+    }
+
+    public CustomItem[] getEquipment(Player p){
+        ArrayList<CustomItem> a = new ArrayList<CustomItem>();
+
+        if(p.getInventory().getHelmet() != null && CustomItem.fromItemStack(p.getInventory().getHelmet()) != null) a.add(CustomItem.fromItemStack(p.getInventory().getHelmet()));
+        if(p.getInventory().getChestplate() != null && CustomItem.fromItemStack(p.getInventory().getChestplate()) != null) a.add(CustomItem.fromItemStack(p.getInventory().getChestplate()));
+        if(p.getInventory().getLeggings() != null && CustomItem.fromItemStack(p.getInventory().getLeggings()) != null) a.add(CustomItem.fromItemStack(p.getInventory().getLeggings()));
+        if(p.getInventory().getBoots() != null && CustomItem.fromItemStack(p.getInventory().getBoots()) != null) a.add(CustomItem.fromItemStack(p.getInventory().getBoots()));
+        if(p.getInventory().getItemInHand() != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()) != null) a.add(CustomItem.fromItemStack(p.getInventory().getItemInHand()));
+
+        return a.toArray(new CustomItem[]{});
     }
 
     public void setLastLogin(Timestamp t){

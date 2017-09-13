@@ -1,6 +1,8 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.DamageManager;
+import net.wrathofdungeons.dungeonrpg.damage.DamageSource;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -15,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class DamageListener implements Listener {
     @EventHandler
@@ -78,6 +81,7 @@ public class DamageListener implements Listener {
                     if(u.getCurrentCharacter() != null){
                         if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null){
                             CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
+                            long itemCooldown = 10; // TODO: Add attack speed
 
                             boolean wrongClass = false;
 
@@ -118,7 +122,20 @@ public class DamageListener implements Listener {
                             }
 
                             if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS || item.getData().getCategory() == ItemCategory.WEAPON_AXE){
+                                if(u.isInAttackCooldown()){
+                                    e.setCancelled(true);
+                                    return;
+                                } else {
+                                    u.setAttackCooldown(true);
+                                    e.setDamage(DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false));
 
+                                    new BukkitRunnable(){
+                                        @Override
+                                        public void run() {
+                                            u.setAttackCooldown(false);
+                                        }
+                                    }.runTaskLater(DungeonRPG.getInstance(),itemCooldown);
+                                }
                             } else {
                                 e.setDamage(0);
                                 adjustKnockback = true;

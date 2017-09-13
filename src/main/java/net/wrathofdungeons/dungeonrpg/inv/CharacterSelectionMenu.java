@@ -123,7 +123,7 @@ public class CharacterSelectionMenu {
         InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.INVENTORY_1ROW);
         inv.withTitle("Select your class");
 
-        inv.withItem(1,ItemUtil.hideFlags(ItemUtil.namedItem(Material.IRON_SWORD,ChatColor.AQUA + "Mercenary",null)), ((player, action, item) -> {
+        inv.withItem(1,ItemUtil.hideFlags(ItemUtil.namedItem(Material.IRON_AXE,ChatColor.AQUA + "Mercenary",null)), ((player, action, item) -> {
             CREATING.add(p);
             p.closeInventory();
             u.addCharacter(RPGClass.MERCENARY);
