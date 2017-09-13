@@ -88,6 +88,14 @@ public class CustomEntity {
                 }
             }
 
+            if(bukkitEntity.getEquipment() != null){
+                bukkitEntity.getEquipment().setItemInHand(getData().getWeapon());
+                bukkitEntity.getEquipment().setHelmet(getData().getHelmet());
+                bukkitEntity.getEquipment().setChestplate(getData().getChestplate());
+                bukkitEntity.getEquipment().setLeggings(getData().getLeggings());
+                bukkitEntity.getEquipment().setBoots(getData().getBoots());
+            }
+
             hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(),getSupposedHologramLocation());
             hologram.appendTextLine(getData().getMobType().getColor() + getData().getName() + " " + ChatColor.GOLD + "- Lv. " + getData().getLevel());
 

@@ -78,7 +78,11 @@ public class MobData {
                     this.xp = rs.getInt("xp");
                     this.entityType = EntityType.valueOf(rs.getString("entityType"));
                     this.skin = rs.getString("skin");
-                    this.helmet = Util.parseItemStack(rs.getString("helmet"));
+                    if(skin != null && entityType != EntityType.PLAYER){
+                        this.helmet = ItemUtil.profiledSkull(this.skin);
+                    } else {
+                        this.helmet = Util.parseItemStack(rs.getString("helmet"));
+                    }
                     this.chestplate = Util.parseItemStack(rs.getString("chestplate"));
                     this.leggings = Util.parseItemStack(rs.getString("leggings"));
                     this.boots = Util.parseItemStack(rs.getString("boots"));
