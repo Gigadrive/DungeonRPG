@@ -70,6 +70,8 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimerAsynchronously(this,1,1);
+
+        Bukkit.getServer().clearRecipes();
     }
 
     public static int getMaxLevel(){
