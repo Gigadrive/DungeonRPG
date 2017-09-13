@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Particle;
+import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageManager;
@@ -149,7 +150,7 @@ public class InteractListener implements Listener {
                                             Location l = loc.clone();
                                             for (int i = 0; i < c; i++) {
                                                 l.add(v);
-                                                //l.getWorld().playEffect(l, Effect.SMOKE, 0, 0, 0.0000000001F, 0.0000000001F, 0.0000000001F, 0.025F, 5, 60);
+                                                ParticleEffect.CLOUD.display(0f,0f,0f,0.0005f,1,l,600);
                                             }
                                         }
 
