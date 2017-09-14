@@ -461,8 +461,12 @@ public class GameUser extends User {
     }
 
     public void saveData(boolean continueCharsel){
-        super.saveData();
+        if(!Bukkit.getPluginManager().isPluginEnabled(DungeonRPG.getInstance())){
+            if(getCurrentCharacter() != null && !setupMode) getCurrentCharacter().saveData(p,continueCharsel,false);
+        } else {
+            if(getCurrentCharacter() != null && !setupMode) getCurrentCharacter().saveData(p,continueCharsel);
+        }
 
-        if(getCurrentCharacter() != null && !setupMode) getCurrentCharacter().saveData(p,continueCharsel);
+        super.saveData();
     }
 }
