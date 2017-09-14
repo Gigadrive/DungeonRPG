@@ -74,6 +74,12 @@ public class CustomEntity {
         return null;
     }
 
+    public void giveNormalKnockback(Location from){
+        if(bukkitEntity != null){
+            bukkitEntity.setVelocity(bukkitEntity.getLocation().toVector().subtract(from.toVector()).setY(-1).multiply(0.5));
+        }
+    }
+
     public void spawn(Location loc){
         if(bukkitEntity == null && !STORAGE.containsValue(this)){
             bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());

@@ -8,6 +8,7 @@ import net.wrathofdungeons.dungeonrpg.damage.DamageManager;
 import net.wrathofdungeons.dungeonrpg.damage.DamageSource;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
+import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
@@ -238,7 +239,10 @@ public class InteractListener implements Listener {
                                             }
 
                                             for (LivingEntity target : DungeonRPG.getTargets(p, range, 2.0)) {
-                                                if (target.getType() != EntityType.PLAYER) {
+                                                CustomEntity entity = CustomEntity.fromEntity(target);
+
+                                                if(entity != null){
+                                                    entity.giveNormalKnockback(p.getLocation());
                                                     target.damage(DamageManager.calculateDamage(p, target, DamageSource.PVE, false, false), p);
                                                     DungeonRPG.showBloodEffect(target.getLocation());
                                                 }
