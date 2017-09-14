@@ -9,6 +9,7 @@ import net.wrathofdungeons.dungeonrpg.regions.Region;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 
@@ -265,15 +266,30 @@ public class CustomEntity {
     }
 
     public void updateHealthBar(){
-        if(getHologram() != null){
-            if(getHologram().size() == 1){
-                healthLine = getHologram().appendTextLine(healthBarText());
-            } else {
-                if(healthLine != null){
-                    healthLine.setText(healthBarText());
+        updateHealthBar(true);
+    }
+
+    public void updateHealthBar(boolean delay){
+        if(delay){
+            updateHealthBar(false);
+
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    updateHealthBar(false);
+                }
+            }.runTaskLater(DungeonRPG.getInstance(),10);
+        } else {
+            if(getHologram() != null){
+                if(getHologram().size() == 1){
+                    healthLine = getHologram().appendTextLine(healthBarText());
                 } else {
-                    hologram.getLine(1).removeLine();
-                    healthLine = hologram.appendTextLine(healthBarText());
+                    if(healthLine != null){
+                        healthLine.setText(healthBarText());
+                    } else {
+                        hologram.getLine(1).removeLine();
+                        healthLine = hologram.appendTextLine(healthBarText());
+                    }
                 }
             }
         }
