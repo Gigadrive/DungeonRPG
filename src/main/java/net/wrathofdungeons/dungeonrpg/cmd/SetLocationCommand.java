@@ -36,6 +36,7 @@ public class SetLocationCommand extends Command {
                                 loc.z = p.getLocation().getZ();
                                 loc.yaw = p.getLocation().getYaw();
                                 loc.pitch = p.getLocation().getPitch();
+                                loc.type = type;
 
                                 region.getLocations().add(loc);
                                 DungeonRPG.setLocationIndicator(p.getLocation(),type);

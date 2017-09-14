@@ -22,10 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DungeonRPG extends JavaPlugin {
     private static DungeonRPG instance;
@@ -198,13 +195,15 @@ public class DungeonRPG extends JavaPlugin {
         new BukkitRunnable(){
             @Override
             public void run() {
-                for(CustomEntity e : CustomEntity.STORAGE.values()){
-                    if(e.getBukkitEntity() != null && e.getBukkitEntity().isValid() && !e.getBukkitEntity().isDead()){
-                        if(e.getHologram() != null && e.getBukkitEntity() != null){
-                            e.getHologram().teleport(e.getSupposedHologramLocation());
+                try {
+                    for(CustomEntity e : CustomEntity.STORAGE.values()){
+                        if(e.getBukkitEntity() != null && e.getBukkitEntity().isValid() && !e.getBukkitEntity().isDead()){
+                            if(e.getHologram() != null && e.getBukkitEntity() != null){
+                                e.getHologram().teleport(e.getSupposedHologramLocation());
+                            }
                         }
                     }
-                }
+                } catch(ConcurrentModificationException e){}
             }
         }.runTaskTimerAsynchronously(this,1,1);
 
