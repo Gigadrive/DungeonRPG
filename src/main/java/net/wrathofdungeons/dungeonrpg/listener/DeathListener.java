@@ -122,5 +122,18 @@ public class DeathListener implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent e){
         Player p = e.getEntity();
+
+        if(GameUser.isLoaded(p)){
+            GameUser u = GameUser.getUser(p);
+
+            if(u.getCurrentCharacter() != null){
+                p.setHealth(p.getMaxHealth());
+                u.setHP(u.getMaxHP());
+                u.setMP(u.getMaxMP());
+
+                p.teleport(DungeonRPG.getNearestTown(p));
+                p.sendMessage(ChatColor.RED + "You died!");
+            }
+        }
     }
 }

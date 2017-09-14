@@ -36,6 +36,7 @@ public class DungeonRPG extends JavaPlugin {
     public static ArrayList<Material> DISALLOWED_BLOCKS = new ArrayList<Material>();
     public static ArrayList<Material> DISALLOWED_ITEMS = new ArrayList<Material>();
     public static ArrayList<Material> SETUP_ADD_NO_Y = new ArrayList<Material>();
+    public static World MAIN_WORLD = null;
 
     public static int SETUP_REGION = 0;
 
@@ -49,6 +50,8 @@ public class DungeonRPG extends JavaPlugin {
         ItemData.init();
         MobData.init();
         Region.init();
+
+        MAIN_WORLD = Bukkit.getWorlds().get(0);
 
         DISALLOWED_BLOCKS.add(Material.CHEST);
         DISALLOWED_BLOCKS.add(Material.TRAPPED_CHEST);
@@ -329,6 +332,49 @@ public class DungeonRPG extends JavaPlugin {
                 loc.getBlock().setType(Material.WOOL);
                 loc.getBlock().setData((byte)13);
                 break;
+        }
+    }
+
+    public static Location getNearestTown(Player p){
+        if(GameUser.isLoaded(p)){
+            GameUser u = GameUser.getUser(p);
+
+            if(u.getCurrentCharacter() != null){
+                ArrayList<Location> potential = new ArrayList<Location>();
+                Location loc = null;
+
+                for(Region region : Region.STORAGE){
+                    for(RegionLocation l : region.getLocations(RegionLocationType.TOWN_LOCATION)){
+                        potential.add(l.toBukkitLocation());
+                    }
+                }
+
+                for(Location l : potential){
+                    if(loc == null){
+                        loc = l;
+                    } else {
+                        if(l.getWorld().getName().equals(p.getLocation().getWorld().getName())){
+                            if(!loc.getWorld().getName().equals(p.getLocation().getWorld().getName())){
+                                loc = l;
+                            } else {
+                                if(l.distance(p.getLocation()) < loc.distance(p.getLocation())){
+                                    loc = l;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if(loc == null){
+                    return MAIN_WORLD.getSpawnLocation();
+                } else {
+                    return loc;
+                }
+            } else {
+                return getCharSelLocation();
+            }
+        } else {
+            return getCharSelLocation();
         }
     }
 
