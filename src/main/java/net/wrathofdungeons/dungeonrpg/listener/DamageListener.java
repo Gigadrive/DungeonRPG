@@ -23,6 +23,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class DamageListener implements Listener {
     @EventHandler
     public void onDamage(EntityDamageEvent e){
+        if(e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) return;
+
         if(e.getEntity().getType() == EntityType.ZOMBIE || e.getEntity().getType() == EntityType.SKELETON){
             e.getEntity().setFireTicks(0);
 
