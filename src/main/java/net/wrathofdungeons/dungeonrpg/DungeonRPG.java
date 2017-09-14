@@ -49,6 +49,7 @@ public class DungeonRPG extends JavaPlugin {
         Region.init();
 
         MAIN_WORLD = Bukkit.getWorlds().get(0);
+        prepareWorld(MAIN_WORLD);
 
         DISALLOWED_BLOCKS.add(Material.CHEST);
         DISALLOWED_BLOCKS.add(Material.TRAPPED_CHEST);
@@ -333,6 +334,23 @@ public class DungeonRPG extends JavaPlugin {
                 loc.getBlock().setType(Material.WOOL);
                 loc.getBlock().setData((byte)13);
                 break;
+        }
+    }
+
+    public static void prepareWorld(World w){
+        if(MAIN_WORLD != null){
+            w.setTime(0);
+            w.setStorm(false);
+            w.setThundering(false);
+
+            w.setDifficulty(Difficulty.EASY);
+            w.setAutoSave(false);
+            w.setPVP(true);
+
+            w.setGameRuleValue("doMobSpawning","false");
+            w.setGameRuleValue("doFireTick","false");
+            w.setGameRuleValue("naturalRegeneration","false");
+            w.setGameRuleValue("doDaylightCycle","true");
         }
     }
 
