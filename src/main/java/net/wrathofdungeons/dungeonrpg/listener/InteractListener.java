@@ -75,28 +75,18 @@ public class InteractListener implements Listener {
                                     if(dis.equals("Mob Spawn Setter")){
                                         rl.type = MOB_LOCATION;
                                         region.getLocations().add(rl);
-                                        loc.getBlock().setType(Material.WOOL);
-                                        loc.getBlock().setData((byte)5);
-                                        p.sendMessage(ChatColor.GREEN + "Location added!");
-                                    } else if(dis.equals("Town Spawn Setter")){
-                                        rl.type = TOWN_LOCATION;
-                                        region.getLocations().add(rl);
-                                        loc.getBlock().setType(Material.WOOL);
-                                        loc.getBlock().setData((byte)3);
                                         p.sendMessage(ChatColor.GREEN + "Location added!");
                                     } else if(dis.equals("Mob Activation Setter (1)")){
                                         rl.type = MOB_ACTIVATION_1;
                                         region.getLocations().add(rl);
-                                        loc.getBlock().setType(Material.WOOL);
-                                        loc.getBlock().setData((byte)14);
                                         p.sendMessage(ChatColor.GREEN + "Location added!");
                                     } else if(dis.equals("Mob Activation Setter (2)")){
                                         rl.type = MOB_ACTIVATION_2;
                                         region.getLocations().add(rl);
-                                        loc.getBlock().setType(Material.WOOL);
-                                        loc.getBlock().setData((byte)13);
                                         p.sendMessage(ChatColor.GREEN + "Location added!");
                                     }
+
+                                    DungeonRPG.setLocationIndicator(loc,rl.type);
                                 } else {
                                     p.sendMessage(ChatColor.RED + "That block already holds a location.");
                                 }

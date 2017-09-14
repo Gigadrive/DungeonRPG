@@ -304,8 +304,32 @@ public class DungeonRPG extends JavaPlugin {
         new ItemInfoCommand();
         new LoadRegionCommand();
         new SaveRegionCommand();
+        new SetLocationCommand();
         new SetupCommand();
         new SummonCommand();
+    }
+
+    public static void setLocationIndicator(Location loc, RegionLocationType type){
+        if(loc == null || type == null) return;
+
+        switch(type){
+            case MOB_LOCATION:
+                loc.getBlock().setType(Material.WOOL);
+                loc.getBlock().setData((byte)5);
+                break;
+            case TOWN_LOCATION:
+                loc.getBlock().setType(Material.WOOL);
+                loc.getBlock().setData((byte)3);
+                break;
+            case MOB_ACTIVATION_1:
+                loc.getBlock().setType(Material.WOOL);
+                loc.getBlock().setData((byte)14);
+                break;
+            case MOB_ACTIVATION_2:
+                loc.getBlock().setType(Material.WOOL);
+                loc.getBlock().setData((byte)13);
+                break;
+        }
     }
 
     public static DungeonRPG getInstance() {

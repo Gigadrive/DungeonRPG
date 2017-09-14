@@ -320,7 +320,6 @@ public class GameUser extends User {
             p.sendMessage(ChatColor.GREEN + "You are now in setup mode!");
 
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Spawn Setter",null));
-            p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Town Spawn Setter",null));
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Activation Setter (1)",null));
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Activation Setter (2)",null));
         } else {
