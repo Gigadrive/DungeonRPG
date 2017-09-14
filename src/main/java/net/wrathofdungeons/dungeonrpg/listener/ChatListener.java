@@ -22,6 +22,8 @@ public class ChatListener implements Listener {
             if(u.getCurrentCharacter() != null){
                 e.setCancelled(true);
 
+                p.sendMessage(ChatColor.GRAY + "[" + u.getCurrentCharacter().getRpgClass().getName().substring(0,2) + u.getCurrentCharacter().getLevel() + "] " + u.getRank().getColor() + p.getName() + ": " + ChatColor.WHITE + msg);
+
                 for(Entity entity : p.getNearbyEntities(60,60,60)){
                     if(entity instanceof Player){
                         if(CustomEntity.fromEntity((LivingEntity)entity) == null){
