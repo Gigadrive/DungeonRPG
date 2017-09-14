@@ -199,8 +199,10 @@ public class DungeonRPG extends JavaPlugin {
             @Override
             public void run() {
                 for(CustomEntity e : CustomEntity.STORAGE.values()){
-                    if(e.getHologram() != null && e.getBukkitEntity() != null){
-                        e.getHologram().teleport(e.getSupposedHologramLocation());
+                    if(e.getBukkitEntity() != null && e.getBukkitEntity().isValid() && !e.getBukkitEntity().isDead()){
+                        if(e.getHologram() != null && e.getBukkitEntity() != null){
+                            e.getHologram().teleport(e.getSupposedHologramLocation());
+                        }
                     }
                 }
             }
