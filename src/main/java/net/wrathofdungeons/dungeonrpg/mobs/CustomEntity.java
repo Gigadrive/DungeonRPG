@@ -8,9 +8,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Ageable;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 
 import java.util.HashMap;
 
@@ -95,13 +93,125 @@ public class CustomEntity {
             if(bukkitEntity instanceof Zombie){
                 Zombie z = (Zombie)bukkitEntity;
                 z.setVillager(false);
-            }
 
-            if(bukkitEntity instanceof Ageable){
                 if(getData().isAdult()){
-                    ((Ageable)bukkitEntity).setAdult();
+                    z.setBaby(false);
                 } else {
-                    ((Ageable)bukkitEntity).setBaby();
+                    z.setBaby(true);
+                }
+            } else if(bukkitEntity instanceof Villager){
+                Villager v = (Villager)bukkitEntity;
+
+                if(getData().isAdult()){
+                    v.setAdult();
+                } else {
+                    v.setBaby();
+                }
+            } else if(bukkitEntity instanceof PigZombie){
+                PigZombie p = (PigZombie)bukkitEntity;
+
+                if(getData().isAdult()){
+                    p.setBaby(false);
+                } else {
+                    p.setBaby(true);
+                }
+            } else if(bukkitEntity instanceof Pig){
+                Pig p = (Pig)bukkitEntity;
+
+                if(getData().isAdult()){
+                    p.setAdult();
+                } else {
+                    p.setBaby();
+                }
+            } else if(bukkitEntity instanceof Sheep){
+                Sheep s = (Sheep)bukkitEntity;
+
+                if(getData().isAdult()){
+                    s.setAdult();
+                } else {
+                    s.setBaby();
+                }
+            } else if(bukkitEntity instanceof Chicken){
+                Chicken c = (Chicken)bukkitEntity;
+
+                if(getData().isAdult()){
+                    c.setAdult();
+                } else {
+                    c.setBaby();
+                }
+            } else if(bukkitEntity instanceof Ocelot){
+                Ocelot o = (Ocelot)bukkitEntity;
+
+                if(getData().isAdult()){
+                    o.setAdult();
+                } else {
+                    o.setBaby();
+                }
+            } else if(bukkitEntity instanceof Creeper){
+                Creeper c = (Creeper)bukkitEntity;
+            } else if(bukkitEntity instanceof Skeleton){
+                Skeleton s = (Skeleton)bukkitEntity;
+            } else if(bukkitEntity instanceof Spider){
+                Spider s = (Spider)bukkitEntity;
+            } else if(bukkitEntity instanceof Slime){
+                Slime s = (Slime)bukkitEntity;
+            } else if(bukkitEntity instanceof Ghast){
+                Ghast g = (Ghast)bukkitEntity;
+            } else if(bukkitEntity instanceof Enderman){
+                Enderman e = (Enderman)bukkitEntity;
+            } else if(bukkitEntity instanceof CaveSpider){
+                CaveSpider c = (CaveSpider)bukkitEntity;
+            } else if(bukkitEntity instanceof Blaze){
+                Blaze b = (Blaze)bukkitEntity;
+            } else if(bukkitEntity instanceof MagmaCube){
+                MagmaCube m = (MagmaCube)bukkitEntity;
+            } else if(bukkitEntity instanceof Bat){
+                Bat b = (Bat)bukkitEntity;
+            } else if(bukkitEntity instanceof Witch){
+                Witch w = (Witch)bukkitEntity;
+            } else if(bukkitEntity instanceof Guardian){
+                Guardian g = (Guardian)bukkitEntity;
+            } else if(bukkitEntity instanceof Cow){
+                Cow c = (Cow)bukkitEntity;
+
+                if(getData().isAdult()){
+                    c.setAdult();
+                } else {
+                    c.setBaby();
+                }
+            } else if(bukkitEntity instanceof Squid){
+                Squid s = (Squid)bukkitEntity;
+            } else if(bukkitEntity instanceof Wolf){
+                Wolf w = (Wolf)bukkitEntity;
+
+                if(getData().isAdult()){
+                    w.setAdult();
+                } else {
+                    w.setBaby();
+                }
+            } else if(bukkitEntity instanceof MushroomCow){
+                MushroomCow m = (MushroomCow)bukkitEntity;
+
+                if(getData().isAdult()){
+                    m.setAdult();
+                } else {
+                    m.setBaby();
+                }
+            } else if(bukkitEntity instanceof Horse){
+                Horse h = (Horse)bukkitEntity;
+
+                if(getData().isAdult()){
+                    h.setAdult();
+                } else {
+                    h.setBaby();
+                }
+            } else if(bukkitEntity instanceof Rabbit){
+                Rabbit r = (Rabbit)bukkitEntity;
+
+                if(getData().isAdult()){
+                    r.setAdult();
+                } else {
+                    r.setBaby();
                 }
             }
 
