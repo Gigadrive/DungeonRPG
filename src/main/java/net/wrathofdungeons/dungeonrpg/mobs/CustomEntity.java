@@ -128,7 +128,7 @@ public class CustomEntity {
         }
 
         if(hologram != null){
-            hologram.delete();
+            if(!hologram.isDeleted()) hologram.delete();
             hologram = null;
         }
     }
