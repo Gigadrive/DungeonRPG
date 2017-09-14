@@ -227,6 +227,9 @@ public class DamageListener implements Listener {
                         e.setCancelled(true);
                         return;
                     }
+                } else if(e.getEntity() instanceof Player && e.getDamager() instanceof Player){
+                    // TODO: Handle duels
+                    e.setCancelled(true);
                 }
             }
         }
