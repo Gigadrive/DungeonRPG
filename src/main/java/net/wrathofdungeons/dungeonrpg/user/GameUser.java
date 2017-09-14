@@ -54,6 +54,7 @@ public class GameUser extends User {
     private boolean attackCooldown = false;
     private boolean setupMode = false;
     public String currentCombo = "";
+    public boolean mayActivateMobs = true;
 
     public GameUser(Player p){
         super(p);
@@ -319,6 +320,8 @@ public class GameUser extends User {
 
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Spawn Setter",null));
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Town Spawn Setter",null));
+            p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Activation Setter (1)",null));
+            p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Activation Setter (2)",null));
         } else {
             bukkitReset();
             setCurrentCharacter(null);

@@ -31,8 +31,7 @@ import org.bukkit.material.Wool;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import static net.wrathofdungeons.dungeonrpg.regions.RegionLocationType.MOB_LOCATION;
-import static net.wrathofdungeons.dungeonrpg.regions.RegionLocationType.TOWN_LOCATION;
+import static net.wrathofdungeons.dungeonrpg.regions.RegionLocationType.*;
 
 public class InteractListener implements Listener {
     @EventHandler
@@ -81,6 +80,18 @@ public class InteractListener implements Listener {
                                         region.getLocations().add(rl);
                                         loc.getBlock().setType(Material.WOOL);
                                         loc.getBlock().setData((byte)3);
+                                        p.sendMessage(ChatColor.GREEN + "Location added!");
+                                    } else if(dis.equals("Mob Activation Setter (1)")){
+                                        rl.type = MOB_ACTIVATION_1;
+                                        region.getLocations().add(rl);
+                                        loc.getBlock().setType(Material.WOOL);
+                                        loc.getBlock().setData((byte)14);
+                                        p.sendMessage(ChatColor.GREEN + "Location added!");
+                                    } else if(dis.equals("Mob Activation Setter (2)")){
+                                        rl.type = MOB_ACTIVATION_2;
+                                        region.getLocations().add(rl);
+                                        loc.getBlock().setType(Material.WOOL);
+                                        loc.getBlock().setData((byte)13);
                                         p.sendMessage(ChatColor.GREEN + "Location added!");
                                     }
                                 } else {

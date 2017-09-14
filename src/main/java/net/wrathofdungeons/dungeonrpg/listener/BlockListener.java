@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
 
 public class BlockListener implements Listener {
     @EventHandler
@@ -56,5 +57,10 @@ public class BlockListener implements Listener {
         } else {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onSpread(BlockSpreadEvent e){
+        e.setCancelled(true);
     }
 }

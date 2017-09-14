@@ -49,6 +49,12 @@ public class LoadRegionCommand extends Command {
                                     case TOWN_LOCATION:
                                         b.setData((byte)3);
                                         break;
+                                    case MOB_ACTIVATION_1:
+                                        b.setData((byte)14);
+                                        break;
+                                    case MOB_ACTIVATION_2:
+                                        b.setData((byte)13);
+                                        break;
                                 }
 
                                 i++;

@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg;
 
+import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
@@ -9,6 +10,8 @@ import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
+import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
+import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -199,6 +202,21 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimerAsynchronously(this,1,1);
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                ArrayList<CustomEntity> toRemove = new ArrayList<CustomEntity>();
+
+                for(CustomEntity entity : CustomEntity.STORAGE.values()){
+                    if(entity.getBukkitEntity() == null || !entity.getBukkitEntity().isValid() || entity.getBukkitEntity().isDead()){
+                        toRemove.add(entity);
+                    }
+                }
+
+                for(CustomEntity entity : toRemove) entity.remove();
+            }
+        }.runTaskTimerAsynchronously(this,0,10*20);
 
         Bukkit.getServer().clearRecipes();
     }
