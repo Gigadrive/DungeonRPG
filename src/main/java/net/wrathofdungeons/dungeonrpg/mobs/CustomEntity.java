@@ -106,6 +106,8 @@ public class CustomEntity {
             }
 
             if(bukkitEntity.getEquipment() != null){
+                bukkitEntity.getEquipment().clear();
+
                 bukkitEntity.getEquipment().setItemInHand(getData().getWeapon());
                 bukkitEntity.getEquipment().setHelmet(getData().getHelmet());
                 bukkitEntity.getEquipment().setChestplate(getData().getChestplate());
