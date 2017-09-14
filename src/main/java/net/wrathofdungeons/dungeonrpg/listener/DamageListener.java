@@ -231,7 +231,6 @@ public class DamageListener implements Listener {
                     }
                 } else if(e.getEntity() instanceof Player && e.getDamager() instanceof Player){
                     // TODO: Handle duels
-                    Bukkit.broadcastMessage("a");
                     e.setCancelled(true);
                 }
             }
