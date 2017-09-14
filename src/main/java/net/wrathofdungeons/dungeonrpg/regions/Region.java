@@ -146,9 +146,17 @@ public class Region {
 
     public List<Block> getMobActivationRegion(){
         if(getLocations(RegionLocationType.MOB_ACTIVATION_1).size() > 0 && getLocations(RegionLocationType.MOB_ACTIVATION_2).size() > 0){
-            return DungeonAPI.blocksFromTwoPointsMaximized(getLocations(RegionLocationType.MOB_ACTIVATION_1).get(0).toBukkitLocation(),getLocations(RegionLocationType.MOB_ACTIVATION_2).get(0).toBukkitLocation());
+            return DungeonAPI.blocksFromTwoPointsMaximized(getLocations(RegionLocationType.MOB_ACTIVATION_1,1).get(0).toBukkitLocation(),getLocations(RegionLocationType.MOB_ACTIVATION_2,1).get(0).toBukkitLocation());
         } else {
             return null;
+        }
+    }
+
+    public boolean isInRegion(Location loc){
+        if(getLocations(RegionLocationType.MOB_ACTIVATION_1).size() > 0 && getLocations(RegionLocationType.MOB_ACTIVATION_2).size() > 0){
+            return DungeonAPI.isInRectangleMaximized(loc,getLocations(RegionLocationType.MOB_ACTIVATION_1,1).get(0).toBukkitLocation(),getLocations(RegionLocationType.MOB_ACTIVATION_2,1).get(0).toBukkitLocation());
+        } else {
+            return false;
         }
     }
 
