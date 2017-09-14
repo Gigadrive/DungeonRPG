@@ -62,6 +62,7 @@ public class DamageListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e){
+
         if(e.getEntity() instanceof LivingEntity){
             LivingEntity ent = (LivingEntity)e.getEntity();
             ent.setNoDamageTicks(0);
@@ -139,14 +140,19 @@ public class DamageListener implements Listener {
                                         }.runTaskLater(DungeonRPG.getInstance(),itemCooldown);
                                     }
                                 } else {
-                                    e.setDamage(0);
-                                    DungeonRPG.showBloodEffect(e.getEntity().getLocation());
-                                    adjustKnockback = true;
+                                    if(u.ignoreFistCheck){
+                                        e.setDamage(DamageManager.calculateDamage(p, ent, DamageSource.PVE, false, false));
+                                        DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                        adjustKnockback = true;
+                                    } else {
+                                        e.setCancelled(true);
+                                        return;
+                                    }
                                 }
                             } else {
-                                e.setDamage(0);
-                                DungeonRPG.showBloodEffect(e.getEntity().getLocation());
-                                adjustKnockback = true;
+                                e.setCancelled(true);
+                                p.sendMessage(ChatColor.RED + "Please use a weapon.");
+                                return;
                             }
                         }
                     }

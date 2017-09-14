@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Particle;
+import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
@@ -29,6 +30,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.material.Wool;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
@@ -238,15 +240,20 @@ public class InteractListener implements Listener {
                                                 }
                                             }
 
+                                            u.ignoreFistCheck = true;
+
                                             for (LivingEntity target : DungeonRPG.getTargets(p, range, 2.0)) {
                                                 CustomEntity entity = CustomEntity.fromEntity(target);
 
-                                                if(entity != null){
-                                                    entity.giveNormalKnockback(p.getLocation());
-                                                    target.damage(DamageManager.calculateDamage(p, target, DamageSource.PVE, false, false), p);
-                                                    DungeonRPG.showBloodEffect(target.getLocation());
-                                                }
+                                                if(entity != null) target.damage(5,p);
                                             }
+
+                                            new BukkitRunnable(){
+                                                @Override
+                                                public void run() {
+                                                    u.ignoreFistCheck = false;
+                                                }
+                                            }.runTask(DungeonRPG.getInstance());
 
                                             u.setAttackCooldown(true);
 

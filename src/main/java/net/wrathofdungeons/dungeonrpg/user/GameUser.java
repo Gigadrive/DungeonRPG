@@ -55,6 +55,7 @@ public class GameUser extends User {
     private boolean setupMode = false;
     public String currentCombo = "";
     public boolean mayActivateMobs = true;
+    public boolean ignoreFistCheck = false;
 
     public GameUser(Player p){
         super(p);
