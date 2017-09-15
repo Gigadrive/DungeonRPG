@@ -105,9 +105,9 @@ public class PlayerInventory {
         GameUser u = GameUser.getUser(p);
 
         if(helmet != null) p.getInventory().setHelmet(helmet.build(p));
-        if(chestplate != null) p.getInventory().setHelmet(chestplate.build(p));
-        if(leggings != null) p.getInventory().setHelmet(leggings.build(p));
-        if(boots != null) p.getInventory().setHelmet(boots.build(p));
+        if(chestplate != null) p.getInventory().setChestplate(chestplate.build(p));
+        if(leggings != null) p.getInventory().setLeggings(leggings.build(p));
+        if(boots != null) p.getInventory().setBoots(boots.build(p));
 
         if(slot0 != null) p.getInventory().setItem(0,slot0.build(p));
         if(slot1 != null) p.getInventory().setItem(1,slot1.build(p));
