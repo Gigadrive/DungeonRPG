@@ -27,7 +27,7 @@ public class TargetListener implements Listener {
             CustomEntity c = CustomEntity.fromEntity(entity);
 
             if(c != null){
-                c.c();
+                if(!c.getData().getAiSettings().mayDoRandomStroll()) c.setCancelMovement(true);
             }
         }
     }
@@ -55,7 +55,7 @@ public class TargetListener implements Listener {
 
                 }
 
-                if(!e.isCancelled() && !c.getData().getAiSettings().mayDoRandomStroll()) c.removeSpeedAttribute();
+                if(!e.isCancelled() && !c.getData().getAiSettings().mayDoRandomStroll()) c.setCancelMovement(false);
             }
         }
     }
