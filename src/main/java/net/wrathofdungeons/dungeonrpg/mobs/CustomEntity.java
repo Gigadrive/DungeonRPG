@@ -3,15 +3,21 @@ package net.wrathofdungeons.dungeonrpg.mobs;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
+import net.minecraft.server.v1_8_R3.*;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
+import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class CustomEntity {
     public static HashMap<LivingEntity,CustomEntity> STORAGE = new HashMap<LivingEntity,CustomEntity>();
@@ -22,6 +28,14 @@ public class CustomEntity {
 
     private Hologram hologram;
     private TextLine healthLine;
+
+    private static final UUID maxHealthUID = UUID.fromString("f8b0a945-2d6a-4bdb-9a6f-59c285bf1e5d");
+    private static final UUID followRangeUID = UUID.fromString("1737400d-3c18-41ba-8314-49a158481e1e");
+    private static final UUID knockbackResistanceUID = UUID.fromString("8742c557-fcd5-4079-a462-b58db99b0f2c");
+    private static final UUID movementSpeedUID = UUID.fromString("206a89dc-ae78-4c4d-b42c-3b31db3f5a7c");
+    private static final UUID attackDamageUID = UUID.fromString("7bbe3bb1-079d-4150-ac6f-669e71550776");
+
+    private AttributeModifier speedModifier;
 
     public CustomEntity(MobData data){
         this.mobDataID = data.getId();
@@ -76,6 +90,34 @@ public class CustomEntity {
     public void giveNormalKnockback(Location from){
         if(bukkitEntity != null){
             bukkitEntity.setVelocity(bukkitEntity.getLocation().toVector().subtract(from.toVector()).setY(-1).multiply(0.5));
+        }
+    }
+
+    public void removeSpeedAttribute(){
+        if(bukkitEntity != null && speedModifier != null){
+            EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)bukkitEntity).getHandle();
+
+            AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
+
+            attributes.c(speedModifier);
+
+            Bukkit.broadcastMessage("REMOVE SPEED");
+
+            speedModifier = null;
+        }
+    }
+
+    public void c(){
+        EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)bukkitEntity).getHandle();
+
+        if(!getData().getAiSettings().mayDoRandomStroll()){
+            AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
+            speedModifier = new AttributeModifier(movementSpeedUID,"wod movement speed",-1, AttributeOperation.MULTIPLY_TOTAL);
+
+            attributes.c(speedModifier);
+            attributes.b(speedModifier);
+
+            Bukkit.broadcastMessage("ADD SPEED");
         }
     }
 
@@ -215,6 +257,8 @@ public class CustomEntity {
                     r.setBaby();
                 }
             }
+
+            c();
 
             if(bukkitEntity.getEquipment() != null){
                 bukkitEntity.getEquipment().clear();
