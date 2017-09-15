@@ -9,6 +9,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -48,6 +49,14 @@ public class ReloadCommand extends Command {
                     p.sendMessage("Loading item data from database..");
 
                     ItemData.init();
+
+                    p.sendMessage("Reloading items for players..");
+
+                    for(Player all : Bukkit.getOnlinePlayers()){
+                        if(GameUser.isLoaded(all)){
+                            GameUser.getUser(all).updateInventory();
+                        }
+                    }
 
                     p.sendMessage("Done!");
                 });
