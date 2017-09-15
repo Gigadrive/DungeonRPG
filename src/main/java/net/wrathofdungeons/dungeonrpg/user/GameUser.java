@@ -301,7 +301,7 @@ public class GameUser extends User {
                 GameUser a = GameUser.getUser(all);
                 Scoreboard b = a.getScoreboard();
                 Team t = b.getTeam(p.getName());
-                if(t == null) b.registerNewTeam(p.getName());
+                if(t == null) t = b.registerNewTeam(p.getName());
                 t.addEntry(p.getName());
 
                 if(getCurrentCharacter() != null){
