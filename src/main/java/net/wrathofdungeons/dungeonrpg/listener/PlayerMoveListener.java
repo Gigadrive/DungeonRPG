@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PlayerMoveListener implements Listener {
     @EventHandler
@@ -38,10 +39,13 @@ public class PlayerMoveListener implements Listener {
                                 if(region.isInRegion(p.getLocation())){
                                     region.startMobActivationTimer();
 
-                                    for(int i = region.getEntitiesSpawned().size(); i < region.getMobLimit(); i++){
-                                        ArrayList<RegionLocation> a = region.getLocations(RegionLocationType.MOB_LOCATION,region.getMobLimit());
+                                    ArrayList<RegionLocation> a = region.getLocations(RegionLocationType.MOB_LOCATION,region.getMobLimit());
 
-                                        for(RegionLocation l : a){
+                                    if(a.size() > 0){
+                                        for(int i = region.getEntitiesSpawned().size(); i < region.getMobLimit(); i++){
+                                            Collections.shuffle(a);
+                                            RegionLocation l = a.get(0);
+
                                             CustomEntity entity = new CustomEntity(region.getMobData());
                                             entity.setOriginRegion(region);
                                             entity.spawn(l.toBukkitLocation());
