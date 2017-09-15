@@ -287,6 +287,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ChunkListener(),this);
         Bukkit.getPluginManager().registerEvents(new CombustListener(),this);
         Bukkit.getPluginManager().registerEvents(new CraftListener(),this);
+        Bukkit.getPluginManager().registerEvents(new CreatureListener(),this);
         Bukkit.getPluginManager().registerEvents(new DamageListener(),this);
         Bukkit.getPluginManager().registerEvents(new DeathListener(),this);
         Bukkit.getPluginManager().registerEvents(new FoodListener(),this);
