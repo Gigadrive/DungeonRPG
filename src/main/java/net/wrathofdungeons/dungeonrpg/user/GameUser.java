@@ -17,6 +17,8 @@ import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -231,6 +233,7 @@ public class GameUser extends User {
             p.closeInventory();
             setCurrentCharacter(c);
             DungeonRPG.updateVanishing();
+            DungeonRPG.updateNames();
             c.setLastLogin(new Timestamp(System.currentTimeMillis()));
 
             bukkitReset();
@@ -293,7 +296,28 @@ public class GameUser extends User {
     }
 
     public void updateName(){
+        for(Player all : Bukkit.getOnlinePlayers()){
+            if(GameUser.isLoaded(all)){
+                GameUser a = GameUser.getUser(all);
+                Scoreboard b = a.getScoreboard();
+                Team t = b.getTeam(p.getName());
+                if(t == null) b.registerNewTeam(p.getName());
+                t.addEntry(p.getName());
 
+                if(getCurrentCharacter() != null){
+                    if(all != p){
+                        // TODO: Add colors for friends and party
+                        t.setPrefix(ChatColor.WHITE.toString());
+                    } else {
+                        t.setPrefix(ChatColor.YELLOW.toString());
+                    }
+                } else {
+                    t.setPrefix(ChatColor.DARK_GRAY.toString() + ChatColor.STRIKETHROUGH.toString());
+                }
+            } else {
+
+            }
+        }
     }
 
     public void updateArrows(){

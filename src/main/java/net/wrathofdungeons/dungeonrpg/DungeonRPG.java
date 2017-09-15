@@ -244,6 +244,12 @@ public class DungeonRPG extends JavaPlugin {
         }
     }
 
+    public static void updateNames(){
+        for(Player all : Bukkit.getOnlinePlayers()){
+            if(GameUser.isLoaded(all)) GameUser.getUser(all).updateName();
+        }
+    }
+
     public static void showBloodEffect(Location loc){
         loc.getWorld().playSound(loc, Sound.HURT_FLESH, 1F, 1F);
         loc.getWorld().playEffect(loc.add(0.0D, 0.8D, 0.0D), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);

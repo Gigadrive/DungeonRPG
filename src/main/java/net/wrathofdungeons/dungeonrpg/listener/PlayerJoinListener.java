@@ -18,6 +18,7 @@ public class PlayerJoinListener implements Listener {
         GameUser.load(p);
         e.setJoinMessage(null);
         DungeonRPG.updateVanishing();
+        DungeonRPG.updateNames();
     }
 
     @EventHandler
