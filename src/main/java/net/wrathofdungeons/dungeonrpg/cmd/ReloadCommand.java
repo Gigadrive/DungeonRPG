@@ -36,21 +36,21 @@ public class ReloadCommand extends Command {
                     for(CustomEntity e : CustomEntity.STORAGE.values()) e.remove();
                 } catch(ConcurrentModificationException e){}*/
 
-                    p.sendMessage("Loading mob data from database..");
+                    p.sendMessage(ChatColor.GREEN + "Loading mob data from database..");
 
                     MobData.init();
 
-                    p.sendMessage("Done!");
+                    p.sendMessage(ChatColor.GREEN + "Done!");
                 });
             } else if(mode.equalsIgnoreCase("items")){
                 DungeonAPI.async(() -> {
                     p.sendMessage(ChatColor.GREEN + "Reloading items..");
 
-                    p.sendMessage("Loading item data from database..");
+                    p.sendMessage(ChatColor.GREEN + "Loading item data from database..");
 
                     ItemData.init();
 
-                    p.sendMessage("Reloading items for players..");
+                    p.sendMessage(ChatColor.GREEN + "Reloading items for players..");
 
                     for(Player all : Bukkit.getOnlinePlayers()){
                         if(GameUser.isLoaded(all)){
@@ -58,18 +58,18 @@ public class ReloadCommand extends Command {
                         }
                     }
 
-                    p.sendMessage("Done!");
+                    p.sendMessage(ChatColor.GREEN + "Done!");
                 });
             } else if(mode.equalsIgnoreCase("regions")){
                 if(DungeonRPG.SETUP_REGION == 0){
                     DungeonAPI.async(() -> {
                         p.sendMessage(ChatColor.GREEN + "Reloading regions..");
 
-                        p.sendMessage("Loading region data from database..");
+                        p.sendMessage(ChatColor.GREEN + "Loading region data from database..");
 
                         Region.init();
 
-                        p.sendMessage("Done!");
+                        p.sendMessage(ChatColor.GREEN + "Done!");
                     });
                 } else {
                     p.sendMessage(ChatColor.RED + "There is currently a region loaded in setup mode. Please use /saveregion before reloading or all progress will be lost.");
