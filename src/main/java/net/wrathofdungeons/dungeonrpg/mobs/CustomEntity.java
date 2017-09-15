@@ -5,6 +5,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import net.minecraft.server.v1_8_R3.*;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
+import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
@@ -15,6 +16,8 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -88,8 +91,39 @@ public class CustomEntity {
     }
 
     public void giveNormalKnockback(Location from){
+        giveNormalKnockback(from,true);
+    }
+
+    public void giveNormalKnockback(Location from, boolean closerLocation){
         if(bukkitEntity != null){
-            bukkitEntity.setVelocity(bukkitEntity.getLocation().toVector().subtract(from.toVector()).setY(-1).multiply(0.5));
+            if(closerLocation){
+                double distance = from.distance(bukkitEntity.getLocation());
+                BlockIterator blocksToAdd = new BlockIterator(from, 0D, ((Double)distance).intValue());
+                Location lastLoc = null;
+                while (blocksToAdd.hasNext()) {
+                    lastLoc = blocksToAdd.next().getLocation();
+                }
+
+                Location fl = from;
+                Location finalLoc = from;
+
+                int c = (int) Math.ceil(finalLoc.distance(lastLoc) / 2F) - 1;
+                if (c > 0) {
+                    Vector v = lastLoc.toVector().subtract(finalLoc.toVector()).normalize().multiply(2F);
+                    Location l = finalLoc.clone();
+                    for (int i = 0; i < c; i++) {
+                        l.add(v);
+                        fl = finalLoc;
+                        finalLoc = l;
+                    }
+                }
+
+                finalLoc = fl;
+
+                giveNormalKnockback(finalLoc,false);
+            } else {
+                bukkitEntity.setVelocity(bukkitEntity.getLocation().toVector().subtract(from.toVector()).setY(-1).multiply(0.5));
+            }
         }
     }
 

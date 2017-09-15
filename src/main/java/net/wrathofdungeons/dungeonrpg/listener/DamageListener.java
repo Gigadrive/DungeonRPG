@@ -74,6 +74,7 @@ public class DamageListener implements Listener {
                 c.updateHealthBar();
 
                 boolean adjustKnockback = false;
+                boolean closerKnockbackLocation = true;
 
                 if(e.getDamager() instanceof Player){
                     Player p = (Player)e.getDamager();
@@ -146,6 +147,7 @@ public class DamageListener implements Listener {
                                         e.setDamage(DamageManager.calculateDamage(p, ent, DamageSource.PVE, false, false));
                                         DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                         adjustKnockback = true;
+                                        closerKnockbackLocation = true;
                                     } else {
                                         e.setCancelled(true);
                                         return;
@@ -192,7 +194,7 @@ public class DamageListener implements Listener {
                     }
                 }
 
-                if(adjustKnockback) c.giveNormalKnockback(e.getDamager().getLocation());
+                if(adjustKnockback) c.giveNormalKnockback(e.getDamager().getLocation(),closerKnockbackLocation);
             } else {
                 if(e.getDamager() instanceof Arrow) {
                     if (((Arrow) e.getDamager()).getShooter() == e.getEntity()) {
