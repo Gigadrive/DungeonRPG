@@ -69,7 +69,7 @@ public class PlayerMoveListener implements Listener {
                             public void run() {
                                 u.mayActivateMobs = true;
                             }
-                        }.runTaskLater(DungeonRPG.getInstance(),5*20);
+                        }.runTaskLater(DungeonRPG.getInstance(),2*20);
                     }
                 }
             } else {
