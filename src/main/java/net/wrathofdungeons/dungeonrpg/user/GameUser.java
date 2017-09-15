@@ -13,10 +13,12 @@ import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
+import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -355,7 +357,115 @@ public class GameUser extends User {
     }
 
     public void checkRequirements(){
-        // TODO: Check items for level and class requirements
+        if(getCurrentCharacter() != null){
+            DungeonAPI.sync(() -> {
+                CustomItem helmet = null;
+                CustomItem chestplate = null;
+                CustomItem leggings = null;
+                CustomItem boots = null;
+
+                if(p.getInventory().getHelmet() != null && CustomItem.fromItemStack(p.getInventory().getHelmet()) != null) helmet = CustomItem.fromItemStack(p.getInventory().getHelmet());
+                if(p.getInventory().getChestplate() != null && CustomItem.fromItemStack(p.getInventory().getChestplate()) != null) chestplate = CustomItem.fromItemStack(p.getInventory().getChestplate());
+                if(p.getInventory().getLeggings() != null && CustomItem.fromItemStack(p.getInventory().getLeggings()) != null) leggings = CustomItem.fromItemStack(p.getInventory().getLeggings());
+                if(p.getInventory().getBoots() != null && CustomItem.fromItemStack(p.getInventory().getBoots()) != null) boots = CustomItem.fromItemStack(p.getInventory().getBoots());
+
+                if(helmet != null){
+                    if(getCurrentCharacter().getLevel() < helmet.getData().getNeededLevel()){
+                        if(p.getInventory().firstEmpty() != -1){
+                            p.getInventory().setHelmet(null);
+                            p.getInventory().addItem(helmet.build(p));
+                        } else {
+                            WorldUtilities.dropItem(p.getLocation(),helmet,p);
+                        }
+
+                        p.sendMessage(ChatColor.DARK_RED + "This helmet is for level " + helmet.getData().getNeededLevel() + "+ only.");
+                    }
+
+                    if(helmet.getData().getNeededClass() != RPGClass.NONE && !helmet.getData().getNeededClass().matches(getCurrentCharacter().getRpgClass())){
+                        if(p.getInventory().firstEmpty() != -1){
+                            p.getInventory().setHelmet(null);
+                            p.getInventory().addItem(helmet.build(p));
+                        } else {
+                            WorldUtilities.dropItem(p.getLocation(),helmet,p);
+                        }
+
+                        p.sendMessage(ChatColor.DARK_RED + "This helmet is for a different class.");
+                    }
+                }
+
+                if(chestplate != null){
+                    if(getCurrentCharacter().getLevel() < chestplate.getData().getNeededLevel()){
+                        if(p.getInventory().firstEmpty() != -1){
+                            p.getInventory().setChestplate(null);
+                            p.getInventory().addItem(chestplate.build(p));
+                        } else {
+                            WorldUtilities.dropItem(p.getLocation(),chestplate,p);
+                        }
+
+                        p.sendMessage(ChatColor.DARK_RED + "This chestplate is for level " + chestplate.getData().getNeededLevel() + "+ only.");
+                    }
+
+                    if(chestplate.getData().getNeededClass() != RPGClass.NONE && !chestplate.getData().getNeededClass().matches(getCurrentCharacter().getRpgClass())){
+                        if(p.getInventory().firstEmpty() != -1){
+                            p.getInventory().setChestplate(null);
+                            p.getInventory().addItem(chestplate.build(p));
+                        } else {
+                            WorldUtilities.dropItem(p.getLocation(),chestplate,p);
+                        }
+
+                        p.sendMessage(ChatColor.DARK_RED + "This chestplate is for a different class.");
+                    }
+                }
+
+                if(leggings != null){
+                    if(getCurrentCharacter().getLevel() < leggings.getData().getNeededLevel()){
+                        if(p.getInventory().firstEmpty() != -1){
+                            p.getInventory().setLeggings(null);
+                            p.getInventory().addItem(leggings.build(p));
+                        } else {
+                            WorldUtilities.dropItem(p.getLocation(),leggings,p);
+                        }
+
+                        p.sendMessage(ChatColor.DARK_RED + "These leggings are for level " + leggings.getData().getNeededLevel() + "+ only.");
+                    }
+
+                    if(leggings.getData().getNeededClass() != RPGClass.NONE && !leggings.getData().getNeededClass().matches(getCurrentCharacter().getRpgClass())){
+                        if(p.getInventory().firstEmpty() != -1){
+                            p.getInventory().setLeggings(null);
+                            p.getInventory().addItem(leggings.build(p));
+                        } else {
+                            WorldUtilities.dropItem(p.getLocation(),leggings,p);
+                        }
+
+                        p.sendMessage(ChatColor.DARK_RED + "These leggings are for a different class.");
+                    }
+                }
+
+                if(boots != null){
+                    if(getCurrentCharacter().getLevel() < boots.getData().getNeededLevel()){
+                        if(p.getInventory().firstEmpty() != -1){
+                            p.getInventory().setBoots(null);
+                            p.getInventory().addItem(boots.build(p));
+                        } else {
+                            WorldUtilities.dropItem(p.getLocation(),boots,p);
+                        }
+
+                        p.sendMessage(ChatColor.DARK_RED + "These boots are for level " + boots.getData().getNeededLevel() + "+ only.");
+                    }
+
+                    if(boots.getData().getNeededClass() != RPGClass.NONE && !boots.getData().getNeededClass().matches(getCurrentCharacter().getRpgClass())){
+                        if(p.getInventory().firstEmpty() != -1){
+                            p.getInventory().setBoots(null);
+                            p.getInventory().addItem(boots.build(p));
+                        } else {
+                            WorldUtilities.dropItem(p.getLocation(),boots,p);
+                        }
+
+                        p.sendMessage(ChatColor.DARK_RED + "These boots are for a different class.");
+                    }
+                }
+            });
+        }
     }
 
     public boolean isInSetupMode() {

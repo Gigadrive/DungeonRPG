@@ -9,6 +9,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -46,7 +47,7 @@ public class DeathListener implements Listener {
                             if(u.getCurrentCharacter() != null){
                                 // DROP GOLD
                                 if(Util.getIntegerDifference(u.getCurrentCharacter().getLevel(),mob.getLevel()) <= DungeonRPG.PLAYER_MOB_LEVEL_DIFFERENCE){
-                                    if(Util.getChanceBoolean(50,190)) livingEntity.getLocation().getWorld().dropItem(livingEntity.getLocation(),new CustomItem(7).build(p));
+                                    if(Util.getChanceBoolean(50,190)) WorldUtilities.dropItem(livingEntity.getLocation(),new CustomItem(7),p);
                                 }
 
                                 //TODO: Add pre-defined dropable items
@@ -71,7 +72,7 @@ public class DeathListener implements Listener {
                                                                                 if(mob.getMobClass().getChance(data.getRarity()) != null){
                                                                                     if(Util.getChanceBoolean(mob.getMobClass().getChance(data.getRarity()).min, mob.getMobClass().getChance(data.getRarity()).max)){
                                                                                         if(limit != 0){
-                                                                                            ent.getLocation().getWorld().dropItem(ent.getLocation(),new CustomItem(data).build(p));
+                                                                                            WorldUtilities.dropItem(ent.getLocation(),new CustomItem(data),p);
                                                                                             limit--;
                                                                                         }
                                                                                     }

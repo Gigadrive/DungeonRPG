@@ -44,4 +44,21 @@ public enum RPGClass {
     public ItemCategory getWeapon() {
         return weapon;
     }
+
+    public boolean matches(RPGClass rpgClass){
+        switch(this){
+            case NONE:
+                return true;
+            case ARCHER:
+                return rpgClass == ARCHER || rpgClass == HUNTER || rpgClass == RANGER;
+            case ASSASSIN:
+                return rpgClass == ASSASSIN || rpgClass == NINJA || rpgClass == BLADEMASTER;
+            case MERCENARY:
+                return rpgClass == MERCENARY || rpgClass == KNIGHT || rpgClass == SOLDIER;
+            case MAGICIAN:
+                return rpgClass == MAGICIAN || rpgClass == WIZARD || rpgClass == ALCHEMIST;
+        }
+
+        return rpgClass == this;
+    }
 }

@@ -33,6 +33,8 @@ public class InventoryClickListener implements Listener {
                 GameUser u = GameUser.getUser(p);
 
                 if(u.getCurrentCharacter() != null){
+                    u.checkRequirements();
+
                     if(e.getCurrentItem() != null){
                         CustomItem item = CustomItem.fromItemStack(e.getCurrentItem());
 
