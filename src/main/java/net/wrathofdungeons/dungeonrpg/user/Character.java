@@ -142,6 +142,7 @@ public class Character {
         } else {
             try {
                 this.storedLocation = p.getLocation();
+                this.storedInventory = getConvertedInventory(p);
 
                 PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `inventory` = ?, `lastLogin` = ? WHERE `id` = ?");
                 ps.setInt(1,getLevel());
