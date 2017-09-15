@@ -43,12 +43,17 @@ public class PlayerMoveListener implements Listener {
                                     Collections.shuffle(a);
 
                                     if(a.size() > 0){
+                                        int j = 0;
+
                                         for(int i = region.getEntitiesSpawned().size(); i < region.getMobLimit(); i++){
-                                            RegionLocation l = a.get(0);
+                                            if(j >= a.size()) j = 0;
+                                            RegionLocation l = a.get(j);
 
                                             CustomEntity entity = new CustomEntity(region.getMobData());
                                             entity.setOriginRegion(region);
                                             entity.spawn(l.toBukkitLocation());
+
+                                            j++;
                                         }
                                     }
 
