@@ -52,15 +52,19 @@ public class ReloadCommand extends Command {
                     p.sendMessage("Done!");
                 });
             } else if(mode.equalsIgnoreCase("regions")){
-                DungeonAPI.async(() -> {
-                    p.sendMessage(ChatColor.GREEN + "Reloading regions..");
+                if(DungeonRPG.SETUP_REGION == 0){
+                    DungeonAPI.async(() -> {
+                        p.sendMessage(ChatColor.GREEN + "Reloading regions..");
 
-                    p.sendMessage("Loading region data from database..");
+                        p.sendMessage("Loading region data from database..");
 
-                    Region.init();
+                        Region.init();
 
-                    p.sendMessage("Done!");
-                });
+                        p.sendMessage("Done!");
+                    });
+                } else {
+                    p.sendMessage(ChatColor.RED + "There is currently a region loaded in setup mode. Please use /saveregion before reloading or all progress will be lost.");
+                }
             } else {
                 p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions>");
             }
