@@ -101,8 +101,6 @@ public class CustomEntity {
 
             attributes.c(speedModifier);
 
-            Bukkit.broadcastMessage("REMOVE SPEED");
-
             speedModifier = null;
         }
     }
@@ -116,8 +114,6 @@ public class CustomEntity {
 
             attributes.c(speedModifier);
             attributes.b(speedModifier);
-
-            Bukkit.broadcastMessage("ADD SPEED");
         }
     }
 

@@ -37,9 +37,8 @@ public class PlayerMoveListener implements Listener {
                             if(region.getMobData() != null && region.getMobLimit() > 0 && region.mayActivateMobs()){
                                 if(region.isInRegion(p.getLocation())){
                                     region.startMobActivationTimer();
-                                    int toSpawn = region.getMobLimit()-region.getEntitiesSpawned().size();
 
-                                    if(toSpawn > 0){
+                                    for(int i = region.getEntitiesSpawned().size(); i < region.getMobLimit(); i++){
                                         ArrayList<RegionLocation> a = region.getLocations(RegionLocationType.MOB_LOCATION,region.getMobLimit());
 
                                         for(RegionLocation l : a){
