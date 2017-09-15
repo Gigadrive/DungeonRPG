@@ -22,8 +22,21 @@ public class PlayerPickupListener implements Listener {
                     CustomItem item = CustomItem.fromItemStack(e.getItem().getItemStack());
 
                     if(item != null){
-                        e.getItem().remove();
-                        p.getInventory().addItem(item.build(p));
+                        if(e.getItem().hasMetadata("assignedPlayer") && e.getItem().hasMetadata("dropTime")){
+                            long dropTime = e.getItem().getMetadata("dropTime").get(0).asLong();
+                            long now = System.currentTimeMillis();
+                            String assignedPlayer = e.getItem().getMetadata("assignedPlayer").get(0).asString();
+
+                            if(assignedPlayer.equalsIgnoreCase(p.getName())){
+                                e.getItem().remove();
+                                p.getInventory().addItem(item.build(p));
+                            } else {
+                                if(now-dropTime >= 30*1000){
+                                    e.getItem().remove();
+                                    p.getInventory().addItem(item.build(p));
+                                }
+                            }
+                        }
                     }
                 }
             }
