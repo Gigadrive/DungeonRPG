@@ -90,20 +90,26 @@ public class CustomEntity {
         return null;
     }
 
-    public void giveNormalKnockback(Location from){
-        giveNormalKnockback(from,true);
+    public void giveNormalKnockback(Location from) {
+        giveNormalKnockback(from, false);
     }
 
     public void giveNormalKnockback(Location from, boolean closerLocation){
         if(bukkitEntity != null){
             if(closerLocation){
                 double distance = from.distance(bukkitEntity.getLocation());
+                if(distance <= 0.75){
+                    giveNormalKnockback(from,false);
+                    return;
+                }
+
                 BlockIterator blocksToAdd = new BlockIterator(from, 0D, ((Double)distance).intValue());
                 Location lastLoc = null;
                 while (blocksToAdd.hasNext()) {
                     lastLoc = blocksToAdd.next().getLocation();
                 }
 
+                Location f = from;
                 Location fl = from;
                 Location finalLoc = from;
 
@@ -113,12 +119,13 @@ public class CustomEntity {
                     Location l = finalLoc.clone();
                     for (int i = 0; i < c; i++) {
                         l.add(v);
+                        f = fl;
                         fl = finalLoc;
                         finalLoc = l;
                     }
                 }
 
-                finalLoc = fl;
+                finalLoc = f;
 
                 giveNormalKnockback(finalLoc,false);
             } else {

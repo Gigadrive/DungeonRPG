@@ -74,7 +74,7 @@ public class DamageListener implements Listener {
                 c.updateHealthBar();
 
                 boolean adjustKnockback = false;
-                boolean closerKnockbackLocation = true;
+                boolean closerKnockbackLocation = false;
 
                 if(e.getDamager() instanceof Player){
                     Player p = (Player)e.getDamager();
