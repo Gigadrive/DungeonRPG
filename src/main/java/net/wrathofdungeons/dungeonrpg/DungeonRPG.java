@@ -310,6 +310,7 @@ public class DungeonRPG extends JavaPlugin {
         new GiveItemCommand();
         new ItemInfoCommand();
         new LoadRegionCommand();
+        new ReloadCommand();
         new SaveRegionCommand();
         new SetLocationCommand();
         new SetupCommand();

@@ -17,20 +17,18 @@ public class ItemData {
     public static void init(){
         STORAGE.clear();
 
-        DungeonAPI.async(() -> {
-            try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `items`");
-                ResultSet rs = ps.executeQuery();
+        try {
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `items`");
+            ResultSet rs = ps.executeQuery();
 
-                while(rs.next()){
-                    STORAGE.add(new ItemData(rs.getInt("id")));
-                }
-
-                MySQLManager.getInstance().closeResources(rs,ps);
-            } catch(Exception e){
-                e.printStackTrace();
+            while(rs.next()){
+                STORAGE.add(new ItemData(rs.getInt("id")));
             }
-        });
+
+            MySQLManager.getInstance().closeResources(rs,ps);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     private int id;

@@ -28,20 +28,18 @@ public class Region {
     public static void init(){
         STORAGE.clear();
 
-        DungeonAPI.async(() -> {
-            try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `regions`");
-                ResultSet rs = ps.executeQuery();
+        try {
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `regions`");
+            ResultSet rs = ps.executeQuery();
 
-                while(rs.next()){
-                    new Region(rs.getInt("id"));
-                }
-
-                MySQLManager.getInstance().closeResources(rs,ps);
-            } catch(Exception e){
-                e.printStackTrace();
+            while(rs.next()){
+                new Region(rs.getInt("id"));
             }
-        });
+
+            MySQLManager.getInstance().closeResources(rs,ps);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static Region getRegion(int id){
@@ -61,32 +59,30 @@ public class Region {
     private BukkitTask activationTimer = null;
 
     public Region(int id){
-        DungeonAPI.async(() -> {
-            try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `regions` WHERE `id` = ?");
-                ps.setInt(1,id);
-                ResultSet rs = ps.executeQuery();
+        try {
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `regions` WHERE `id` = ?");
+            ps.setInt(1,id);
+            ResultSet rs = ps.executeQuery();
 
-                if(rs.first()){
-                    this.id = rs.getInt("id");
-                    this.mobDataID = rs.getInt("mobDataID");
-                    this.mobLimit = rs.getInt("mobLimit");
-                    String locationString = rs.getString("locations");
-                    Gson gson = new Gson();
-                    if(locationString != null){
-                        this.locations = gson.fromJson(locationString, new TypeToken<ArrayList<RegionLocation>>(){}.getType());
-                    } else {
-                        this.locations = new ArrayList<RegionLocation>();
-                    }
-
-                    STORAGE.add(this);
+            if(rs.first()){
+                this.id = rs.getInt("id");
+                this.mobDataID = rs.getInt("mobDataID");
+                this.mobLimit = rs.getInt("mobLimit");
+                String locationString = rs.getString("locations");
+                Gson gson = new Gson();
+                if(locationString != null){
+                    this.locations = gson.fromJson(locationString, new TypeToken<ArrayList<RegionLocation>>(){}.getType());
+                } else {
+                    this.locations = new ArrayList<RegionLocation>();
                 }
 
-                MySQLManager.getInstance().closeResources(rs,ps);
-            } catch(Exception e){
-                e.printStackTrace();
+                STORAGE.add(this);
             }
-        });
+
+            MySQLManager.getInstance().closeResources(rs,ps);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public int getID() {

@@ -18,20 +18,18 @@ public class MobData {
     public static void init(){
         STORAGE.clear();
 
-        DungeonAPI.async(() -> {
-            try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `mobs`");
-                ResultSet rs = ps.executeQuery();
+        try {
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `mobs`");
+            ResultSet rs = ps.executeQuery();
 
-                while(rs.next()){
-                    new MobData(rs.getInt("id"));
-                }
-
-                MySQLManager.getInstance().closeResources(rs,ps);
-            } catch(Exception e){
-                e.printStackTrace();
+            while(rs.next()){
+                new MobData(rs.getInt("id"));
             }
-        });
+
+            MySQLManager.getInstance().closeResources(rs,ps);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static MobData getData(int id){
@@ -63,42 +61,40 @@ public class MobData {
     public MobData(int id){
         this.id = id;
 
-        DungeonAPI.async(() -> {
-            try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `mobs` WHERE `id` = ?");
-                ps.setInt(1,id);
-                ResultSet rs = ps.executeQuery();
+        try {
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `mobs` WHERE `id` = ?");
+            ps.setInt(1,id);
+            ResultSet rs = ps.executeQuery();
 
-                if(rs.first()){
-                    this.name = rs.getString("name");
-                    this.level = rs.getInt("level");
-                    this.mobType = MobType.valueOf(rs.getString("type"));
-                    this.health = rs.getInt("health");
-                    this.atk = rs.getInt("atk");
-                    this.xp = rs.getInt("xp");
-                    this.entityType = EntityType.valueOf(rs.getString("entityType"));
-                    this.skin = rs.getString("skin");
-                    if(skin != null && entityType != EntityType.PLAYER){
-                        this.helmet = ItemUtil.profiledSkull(this.skin);
-                    } else {
-                        this.helmet = Util.parseItemStack(rs.getString("helmet"));
-                    }
-                    this.chestplate = Util.parseItemStack(rs.getString("chestplate"));
-                    this.leggings = Util.parseItemStack(rs.getString("leggings"));
-                    this.boots = Util.parseItemStack(rs.getString("boots"));
-                    this.weapon = Util.parseItemStack(rs.getString("weapon"));
-                    this.adult = rs.getBoolean("adult");
-                    this.mobClass = MobClass.valueOf(rs.getString("class"));
-                    this.aiSettings = new AISettings(rs.getBoolean("ai.randomStroll"));
-
-                    STORAGE.add(this);
+            if(rs.first()){
+                this.name = rs.getString("name");
+                this.level = rs.getInt("level");
+                this.mobType = MobType.valueOf(rs.getString("type"));
+                this.health = rs.getInt("health");
+                this.atk = rs.getInt("atk");
+                this.xp = rs.getInt("xp");
+                this.entityType = EntityType.valueOf(rs.getString("entityType"));
+                this.skin = rs.getString("skin");
+                if(skin != null && entityType != EntityType.PLAYER){
+                    this.helmet = ItemUtil.profiledSkull(this.skin);
+                } else {
+                    this.helmet = Util.parseItemStack(rs.getString("helmet"));
                 }
+                this.chestplate = Util.parseItemStack(rs.getString("chestplate"));
+                this.leggings = Util.parseItemStack(rs.getString("leggings"));
+                this.boots = Util.parseItemStack(rs.getString("boots"));
+                this.weapon = Util.parseItemStack(rs.getString("weapon"));
+                this.adult = rs.getBoolean("adult");
+                this.mobClass = MobClass.valueOf(rs.getString("class"));
+                this.aiSettings = new AISettings(rs.getBoolean("ai.randomStroll"));
 
-                MySQLManager.getInstance().closeResources(rs,ps);
-            } catch(Exception e){
-                e.printStackTrace();
+                STORAGE.add(this);
             }
-        });
+
+            MySQLManager.getInstance().closeResources(rs,ps);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public int getId() {
