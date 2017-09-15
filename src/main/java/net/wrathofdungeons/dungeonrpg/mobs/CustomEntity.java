@@ -134,6 +134,7 @@ public class CustomEntity {
         }
     }
 
+    @Deprecated
     public void removeSpeedAttribute(){
         if(bukkitEntity != null && speedModifier != null){
             EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)bukkitEntity).getHandle();
@@ -146,15 +147,22 @@ public class CustomEntity {
         }
     }
 
+    @Deprecated
     public void c(){
         EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)bukkitEntity).getHandle();
 
-        if(!getData().getAiSettings().mayDoRandomStroll()){
-            AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
-            speedModifier = new AttributeModifier(movementSpeedUID,"wod movement speed",-1, AttributeOperation.MULTIPLY_TOTAL);
+        AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
+        speedModifier = new AttributeModifier(movementSpeedUID,"wod movement speed",-1, AttributeOperation.MULTIPLY_TOTAL);
 
-            attributes.c(speedModifier);
-            attributes.b(speedModifier);
+        attributes.c(speedModifier);
+        attributes.b(speedModifier);
+    }
+
+    public void setCancelMovement(boolean b){
+        if(b){
+            c();
+        } else {
+            removeSpeedAttribute();
         }
     }
 
@@ -295,7 +303,7 @@ public class CustomEntity {
                 }
             }
 
-            c();
+            if(!getData().getAiSettings().mayDoRandomStroll()) setCancelMovement(true);
 
             if(bukkitEntity.getEquipment() != null){
                 bukkitEntity.getEquipment().clear();
