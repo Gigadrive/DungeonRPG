@@ -107,13 +107,33 @@ public class CharacterSelectionMenu {
             itemLore.add(ChatColor.GOLD + "Level: " + ChatColor.YELLOW + String.valueOf(c.getLevel()));
             itemLore.add(ChatColor.GOLD + "Class: " + ChatColor.YELLOW + String.valueOf(c.getRpgClass().getName()));
             itemLore.add(" ");
-            itemLore.add(ChatColor.LIGHT_PURPLE + "Click to play!");
+            itemLore.add(ChatColor.GREEN + "Left-click to play!");
+            itemLore.add(ChatColor.RED + "Right-click to delete!");
             itemMeta.setLore(itemLore);
 
             item.setItemMeta(itemMeta);
 
-            inv.withItem(slot,ItemUtil.hideFlags(item),((player, action, item1) -> u.playCharacter(c)), ClickType.LEFT);
+            inv.withItem(slot,ItemUtil.hideFlags(item),((player, action, item1) -> {
+                if(action == ClickType.LEFT){
+                    u.playCharacter(c);
+                } else if(action == ClickType.RIGHT){
+                    openDeletion(p,c);
+                }
+            }), ClickType.LEFT, ClickType.RIGHT);
         }
+    }
+
+    public static void openDeletion(Player p, Character c){
+        if(CREATING.contains(p)) return;
+
+        GameUser u = GameUser.getUser(p);
+        InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.INVENTORY_1ROW);
+        inv.withTitle("Are you sure?");
+
+        inv.withItem(2,ItemUtil.namedItem(Material.STAINED_CLAY,ChatColor.GREEN + "No, " + ChatColor.BOLD + "KEEP" + " " + ChatColor.GREEN + "this character!",null,13),((player, action, item) -> openSelection(p)),ClickType.LEFT);
+        inv.withItem(6,ItemUtil.namedItem(Material.STAINED_CLAY,ChatColor.RED + "Yes, " + ChatColor.BOLD + "DELETE" + " " + ChatColor.RED + "this character!",null,14),((player, action, item) -> u.deleteCharacter(c)),ClickType.LEFT);
+
+        inv.show(p);
     }
 
     public static void openCreation(Player p){

@@ -222,7 +222,37 @@ public class GameUser extends User {
                         Bukkit.getPluginManager().callEvent(event);
                     }
                 } catch(Exception e){
+                    p.sendMessage(ChatColor.RED + "An error occurred!");
                     e.printStackTrace();
+                    CharacterSelectionMenu.CREATING.remove(p);
+                }
+            });
+        }
+    }
+
+    public void deleteCharacter(Character c){
+        if(c != null && c.getOwner().toString().equals(p.getUniqueId().toString())){
+            CharacterSelectionMenu.CREATING.add(p);
+            p.closeInventory();
+
+            DungeonAPI.async(() -> {
+                p.sendMessage(ChatColor.GRAY + "Deleting character..");
+
+                try {
+                    PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("DELETE FROM `characters` WHERE `id` = ?");
+                    ps.setInt(1,c.getId());
+                    ps.executeUpdate();
+                    ps.close();
+
+                    getCharacters().remove(c);
+
+                    CharacterSelectionMenu.CREATING.remove(p);
+                    CharacterSelectionMenu.openSelection(p);
+                    p.sendMessage(ChatColor.GREEN + "Done!");
+                } catch(Exception e){
+                    p.sendMessage(ChatColor.RED + "An error occurred!");
+                    e.printStackTrace();
+                    CharacterSelectionMenu.CREATING.remove(p);
                 }
             });
         }
