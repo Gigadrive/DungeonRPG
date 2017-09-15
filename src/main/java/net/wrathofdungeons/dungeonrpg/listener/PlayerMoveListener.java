@@ -40,10 +40,10 @@ public class PlayerMoveListener implements Listener {
                                     region.startMobActivationTimer();
 
                                     ArrayList<RegionLocation> a = region.getLocations(RegionLocationType.MOB_LOCATION,region.getMobLimit());
+                                    Collections.shuffle(a);
 
                                     if(a.size() > 0){
                                         for(int i = region.getEntitiesSpawned().size(); i < region.getMobLimit(); i++){
-                                            Collections.shuffle(a);
                                             RegionLocation l = a.get(0);
 
                                             CustomEntity entity = new CustomEntity(region.getMobData());
