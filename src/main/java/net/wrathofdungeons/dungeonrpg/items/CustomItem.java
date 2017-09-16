@@ -102,7 +102,7 @@ public class CustomItem {
                 i.setItemMeta(iM);
                 i = ItemUtil.hideFlags(ItemUtil.setUnbreakable(i,true));
 
-                i = assignNMSData(i);
+                i = assignNBTData(i);
 
                 return i;
             }
@@ -113,13 +113,13 @@ public class CustomItem {
                 ItemStack i = new ItemStack(getData().getIcon());
                 i.setAmount(amount);
                 i.setDurability((short)getData().getDurability());
-                i = assignNMSData(i);
+                i = assignNBTData(i);
                 return i;
             }
         }
     }
 
-    public ItemStack assignNMSData(ItemStack i){
+    public ItemStack assignNBTData(ItemStack i){
         net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(i);
         NBTTagCompound tag = nmsItem.hasTag() ? nmsItem.getTag() : new NBTTagCompound();
         if(!tag.hasKey("dataID")) tag.set("dataID",new NBTTagInt(getData().getId()));
