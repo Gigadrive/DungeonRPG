@@ -47,6 +47,7 @@ public class MobData {
     private int health;
     private int atk;
     private int xp;
+    private int regen;
     private EntityType entityType;
     private String skin;
     private ItemStack helmet;
@@ -73,6 +74,7 @@ public class MobData {
                 this.health = rs.getInt("health");
                 this.atk = rs.getInt("atk");
                 this.xp = rs.getInt("xp");
+                this.regen = rs.getInt("regen");
                 this.entityType = EntityType.valueOf(rs.getString("entityType"));
                 this.skin = rs.getString("skin");
                 if(skin != null && entityType != EntityType.PLAYER){
@@ -123,6 +125,10 @@ public class MobData {
 
     public int getXp() {
         return xp;
+    }
+
+    public int getRegen() {
+        return regen;
     }
 
     public EntityType getEntityType() {

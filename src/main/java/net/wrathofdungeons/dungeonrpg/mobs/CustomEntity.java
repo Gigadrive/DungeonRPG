@@ -16,6 +16,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
@@ -28,6 +29,8 @@ public class CustomEntity {
     private int mobDataID;
     private int origin;
     private LivingEntity bukkitEntity;
+
+    private BukkitTask regenTask;
 
     private Hologram hologram;
     private TextLine healthLine;
@@ -74,6 +77,35 @@ public class CustomEntity {
 
     public void setHologram(Hologram hologram) {
         this.hologram = hologram;
+    }
+
+    public BukkitTask getRegenTask() {
+        return regenTask;
+    }
+
+    public void startRegenTask(){
+        if(getData().getRegen() > 0 && regenTask == null){
+            regenTask = new BukkitRunnable(){
+                @Override
+                public void run() {
+                    if(bukkitEntity != null && bukkitEntity.isValid() && !bukkitEntity.isDead()){
+                        double h = bukkitEntity.getHealth();
+
+                        h += getData().getRegen();
+                        if(h > bukkitEntity.getMaxHealth()) h = bukkitEntity.getMaxHealth();
+
+                        bukkitEntity.setHealth(h);
+                    }
+                }
+            }.runTaskTimer(DungeonRPG.getInstance(),10*20,10*20);
+        }
+    }
+
+    public void stopRegenTask(){
+        if(regenTask != null){
+            regenTask.cancel();
+            regenTask = null;
+        }
     }
 
     public Location getSupposedHologramLocation(){
@@ -318,6 +350,8 @@ public class CustomEntity {
             hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(),getSupposedHologramLocation());
             hologram.appendTextLine(getData().getMobType().getColor() + getData().getName() + " " + ChatColor.GOLD + "- Lv. " + getData().getLevel());
 
+            startRegenTask();
+
             STORAGE.put(bukkitEntity,this);
         }
     }
@@ -333,6 +367,8 @@ public class CustomEntity {
             if(!hologram.isDeleted()) hologram.delete();
             hologram = null;
         }
+
+        stopRegenTask();
     }
 
     private String healthBarText(){
