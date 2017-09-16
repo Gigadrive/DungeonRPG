@@ -223,6 +223,21 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimerAsynchronously(this,0,10*20);
 
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Player all : Bukkit.getOnlinePlayers()){
+                    if(GameUser.isLoaded(all)){
+                        GameUser a = GameUser.getUser(all);
+
+                        if(a.getCurrentCharacter() != null){
+                            a.getCurrentCharacter().saveData(all,false,false);
+                        }
+                    }
+                }
+            }
+        }.runTaskTimerAsynchronously(this,2*60*20,2*60*20);
+
         Bukkit.getServer().clearRecipes();
     }
 

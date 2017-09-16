@@ -98,7 +98,7 @@ public class CustomEntity {
         if(bukkitEntity != null){
             if(closerLocation){
                 double distance = from.distance(bukkitEntity.getLocation());
-                if(distance <= 0.75){
+                if(distance <= 1){
                     giveNormalKnockback(from,false);
                     return;
                 }
