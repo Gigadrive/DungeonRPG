@@ -164,12 +164,14 @@ public class CharacterSelectionMenu {
             p.sendMessage(ChatColor.GRAY + "Creating character..");
         }), ClickType.LEFT);
 
-        inv.withItem(7,ItemUtil.hideFlags(ItemUtil.namedItem(Material.SHEARS,ChatColor.AQUA + "Assassin",null)), ((player, action, item) -> {
-            CREATING.add(p);
-            p.closeInventory();
-            u.addCharacter(RPGClass.ASSASSIN);
-            p.sendMessage(ChatColor.GRAY + "Creating character..");
-        }), ClickType.LEFT);
+        if(u.hasPermission(Rank.GM)){
+            inv.withItem(7,ItemUtil.hideFlags(ItemUtil.namedItem(Material.SHEARS,ChatColor.AQUA + "Assassin",null)), ((player, action, item) -> {
+                CREATING.add(p);
+                p.closeInventory();
+                u.addCharacter(RPGClass.ASSASSIN);
+                p.sendMessage(ChatColor.GRAY + "Creating character..");
+            }), ClickType.LEFT);
+        }
 
         inv.show(p);
     }

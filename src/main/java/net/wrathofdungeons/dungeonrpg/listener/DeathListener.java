@@ -65,7 +65,8 @@ public class DeathListener implements Listener {
                                                     for(ItemSource s : data.getRarity().getSources()){
                                                         if(s.mobClass != null){
                                                             if(s.mobClass == mob.getMobClass()){
-                                                                if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK || data.getCategory() == ItemCategory.WEAPON_SHEARS){
+                                                                //if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK || data.getCategory() == ItemCategory.WEAPON_SHEARS){
+                                                                if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK){
                                                                     if(data.getRarity() != ItemRarity.NONE && data.getRarity() != ItemRarity.SPECIAL){
                                                                         for(int i : usableLvls){
                                                                             if(i == data.getNeededLevel()){
