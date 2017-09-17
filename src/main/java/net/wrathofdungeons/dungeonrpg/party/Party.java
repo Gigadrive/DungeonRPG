@@ -107,11 +107,11 @@ public class Party {
             if(getRank(p) == PartyRank.LEADER){
                 disband();
             } else {
-                getMembers().remove(toPartyMember(p));
-
                 for(Player all : getOnlinePlayers()){
                     all.sendMessage(ChatColor.RED + p.getName() + " has left the party.");
                 }
+
+                getMembers().remove(toPartyMember(p));
             }
         }
 
