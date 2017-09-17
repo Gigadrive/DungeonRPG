@@ -131,7 +131,7 @@ public class PartyCommand extends Command {
                                         p.sendMessage(ChatColor.YELLOW + "You have declined the invitation.");
 
                                         for(Player pp : party.getOnlinePlayers()){
-                                            p.sendMessage(ChatColor.RED + p.getName() + " has denied the party invitation.");
+                                            pp.sendMessage(ChatColor.RED + p.getName() + " has denied the party invitation.");
                                         }
                                     } else {
                                         p.sendMessage(ChatColor.RED + "You were not invited to that party.");
