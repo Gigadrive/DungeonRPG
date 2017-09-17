@@ -177,7 +177,7 @@ public class DamageListener implements Listener {
                                 return;
                             }
 
-                            if(data.getType() == DungeonProjectileType.ARROW_RAIN){
+                            if(data.getType() == DungeonProjectileType.DART_RAIN){
                                 e.setDamage(data.getDamage());
                                 DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                 // TODO: Spawn damage indicator
