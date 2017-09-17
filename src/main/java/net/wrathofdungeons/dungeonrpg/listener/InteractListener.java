@@ -327,12 +327,12 @@ public class InteractListener implements Listener {
                     }
 
                     if(u.canCastCombo && customItem.isMatchingWeapon(u.getCurrentCharacter().getRpgClass())){
-                        u.canCastCombo = false;
+                        /*u.canCastCombo = false;
                         Bukkit.getScheduler().scheduleSyncDelayedTask(DungeonRPG.getInstance(), new Runnable(){
                             public void run(){
                                 u.canCastCombo = true;
                             }
-                        }, 5L);
+                        }, 5L);*/
 
                         if(u.currentCombo.equals("") || u.currentCombo.isEmpty()){
                             if((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && (u.getCurrentCharacter().getRpgClass().matches(RPGClass.MERCENARY) || u.getCurrentCharacter().getRpgClass().matches(RPGClass.MAGICIAN) || u.getCurrentCharacter().getRpgClass().matches(RPGClass.ASSASSIN))){
