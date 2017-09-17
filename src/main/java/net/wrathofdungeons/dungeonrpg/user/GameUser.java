@@ -71,6 +71,7 @@ public class GameUser extends User {
     public int comboDelay = 0;
 
     private BukkitTask mpRegenTask;
+    private BukkitTask hpRegenTask;
 
     public GameUser(Player p){
         super(p);
@@ -124,6 +125,30 @@ public class GameUser extends User {
         if(mpRegenTask != null){
             mpRegenTask.cancel();
             mpRegenTask = null;
+        }
+    }
+
+    public void startHPRegenTask(){
+        if(getCurrentCharacter() != null && hpRegenTask == null){
+            hpRegenTask = new BukkitRunnable(){
+                @Override
+                public void run() {
+                    int hp = getHP();
+                    hp += 5*getCurrentCharacter().getLevel();
+                    if(hp > getMaxHP()) hp = getMaxHP();
+
+                    // TODO: Consider awakenings that increase or decresae HP regeneration
+
+                    setHP(hp);
+                }
+            }.runTaskTimer(DungeonRPG.getInstance(),30,30);
+        }
+    }
+
+    public void stopHPRegenTask(){
+        if(hpRegenTask != null){
+            hpRegenTask.cancel();
+            hpRegenTask = null;
         }
     }
 
@@ -399,6 +424,7 @@ public class GameUser extends User {
             checkRequirements();
 
             startMPRegenTask();
+            startHPRegenTask();
         }
     }
 
