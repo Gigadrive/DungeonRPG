@@ -12,6 +12,8 @@ import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
+import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.party.Party;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
@@ -341,8 +343,14 @@ public class GameUser extends User {
 
                 if(getCurrentCharacter() != null){
                     if(all != p){
-                        // TODO: Add colors for friends and party
-                        t.setPrefix(ChatColor.WHITE.toString());
+                        if(a.getParty() != null && a.getParty().hasMember(p)){
+                            t.setPrefix(ChatColor.GREEN.toString());
+                        } else if(false){
+                            // TODO: Add prefix for friends
+                            t.setPrefix(ChatColor.AQUA.toString());
+                        } else {
+                            t.setPrefix(ChatColor.WHITE.toString());
+                        }
                     } else {
                         t.setPrefix(ChatColor.YELLOW.toString());
                     }
@@ -508,6 +516,10 @@ public class GameUser extends User {
         }
     }
 
+    public Party getParty(){
+        return Party.getParty(p);
+    }
+
     public double giveEXP(double xp){
         return giveEXP(xp,false);
     }
@@ -519,7 +531,31 @@ public class GameUser extends User {
             // TODO: Handle xp bonus
 
             if(!affectedByParty){
-                // TODO: give exp to party members
+                if(getParty() != null){
+                    ArrayList<GameUser> membersInRange = new ArrayList<GameUser>();
+
+                    for(Entity e : p.getNearbyEntities(DungeonRPG.PARTY_EXP_RANGE,DungeonRPG.PARTY_EXP_RANGE,DungeonRPG.PARTY_EXP_RANGE)){
+                        if(e instanceof Player){
+                            Player p2 = (Player)e;
+
+                            if(CustomEntity.fromEntity(p2) == null && GameUser.isLoaded(p2)){
+                                GameUser u2 = GameUser.getUser(p2);
+
+                                if(u2.getCurrentCharacter() != null && u2.getParty() != null){
+                                    if(getParty().hasMember(p2)){
+                                        membersInRange.add(u2);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    double xpPerMember = xp/membersInRange.size();
+
+                    for(GameUser a : membersInRange){
+                        a.giveEXP(xp,true);
+                    }
+                }
             }
 
             getCurrentCharacter().setExp(getCurrentCharacter().getExp()+xp);

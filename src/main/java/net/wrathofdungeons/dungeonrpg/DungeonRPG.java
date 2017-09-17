@@ -29,6 +29,7 @@ public class DungeonRPG extends JavaPlugin {
     public static final boolean ENABLE_BOWDRAWBACK = false;
     public static final boolean SHOW_HP_IN_ACTION_BAR = false;
     public static final int PLAYER_MOB_LEVEL_DIFFERENCE = 7;
+    public static final double PARTY_EXP_RANGE = 50;
     public static HashMap<String, DungeonProjectile> SHOT_PROJECTILE_DATA = new HashMap<String, DungeonProjectile>();
     public static ArrayList<Material> DISALLOWED_BLOCKS = new ArrayList<Material>();
     public static ArrayList<Material> DISALLOWED_ITEMS = new ArrayList<Material>();
@@ -334,6 +335,7 @@ public class DungeonRPG extends JavaPlugin {
         new GiveItemCommand();
         new ItemInfoCommand();
         new LoadRegionCommand();
+        new PartyCommand();
         new ReloadCommand();
         new SaveRegionCommand();
         new SetLocationCommand();
