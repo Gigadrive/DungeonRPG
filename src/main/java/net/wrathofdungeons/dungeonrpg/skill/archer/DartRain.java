@@ -64,6 +64,8 @@ public class DartRain implements Skill {
 
                             if(damage < 1) damage = 1;
 
+                            damage /= 4;
+
                             Arrow a = p.launchProjectile(Arrow.class);
                             p.getWorld().playSound(p.getEyeLocation(), Sound.SHOOT_ARROW,1f,1f);
                             a.setVelocity(p.getLocation().getDirection().multiply(2));
