@@ -7,6 +7,7 @@ import net.minecraft.server.v1_8_R3.NBTTagInt;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -136,6 +137,10 @@ public class CustomItem {
         Gson gson = new Gson();
         CustomItem i = gson.fromJson(s,CustomItem.class);
         return i;
+    }
+
+    public boolean isMatchingWeapon(RPGClass rpgClass){
+        return getData().isMatchingWeapon(rpgClass);
     }
 
     public String toString(){

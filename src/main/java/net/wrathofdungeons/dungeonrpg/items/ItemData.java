@@ -138,4 +138,8 @@ public class ItemData {
     public RPGClass getNeededClass() {
         return neededClass;
     }
+
+    public boolean isMatchingWeapon(RPGClass rpgClass){
+        return (getCategory() == ItemCategory.WEAPON_BOW && rpgClass.matches(RPGClass.ARCHER)) || (getCategory() == ItemCategory.WEAPON_SHEARS && rpgClass.matches(RPGClass.ASSASSIN)) || (getCategory() == ItemCategory.WEAPON_AXE && rpgClass.matches(RPGClass.MERCENARY)) || (getCategory() == ItemCategory.WEAPON_STICK && rpgClass.matches(RPGClass.MAGICIAN));
+    }
 }

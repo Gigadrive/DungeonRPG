@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Particle;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
+import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
@@ -15,6 +16,8 @@ import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
+import net.wrathofdungeons.dungeonrpg.skill.Skill;
+import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.apache.logging.log4j.core.Filter;
@@ -319,6 +322,92 @@ public class InteractListener implements Listener {
                                 }
                             } else {
                                 p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
+                            }
+                        }
+                    }
+
+                    if(u.canCastCombo && customItem.isMatchingWeapon(u.getCurrentCharacter().getRpgClass())){
+                        u.canCastCombo = false;
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(DungeonRPG.getInstance(), new Runnable(){
+                            public void run(){
+                                u.canCastCombo = true;
+                            }
+                        }, 5L);
+
+                        if(u.currentCombo.equals("") || u.currentCombo.isEmpty()){
+                            if((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && (u.getCurrentCharacter().getRpgClass().matches(RPGClass.MERCENARY) || u.getCurrentCharacter().getRpgClass().matches(RPGClass.MAGICIAN) || u.getCurrentCharacter().getRpgClass().matches(RPGClass.ASSASSIN))){
+                                u.currentCombo += "R";
+                                u.comboDelay = 1;
+                                u.updateClickComboBar();
+                                p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
+                                return;
+                            } else if((e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR) && (u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER))){
+                                u.currentCombo += "L";
+                                u.comboDelay = 1;
+                                u.updateClickComboBar();
+                                p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
+                                return;
+                            }
+                        }
+
+                        if(u.currentCombo.length() < 3 && u.currentCombo.length() >= 1){
+                            if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
+                                u.currentCombo = u.currentCombo + "R";
+                                u.comboDelay = 1;
+                                u.updateClickComboBar();
+                                p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
+                                if(u.currentCombo.length() != 3) return;
+                            } else if(e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR){
+                                u.currentCombo = u.currentCombo + "L";
+                                u.comboDelay = 1;
+                                u.updateClickComboBar();
+                                p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
+                                if(u.currentCombo.length() != 3) return;
+                            }
+
+                            if(u.currentCombo.length() == 3){
+                                Skill toCast = null;
+
+                                for(Skill s : SkillStorage.getInstance().getSkills()){
+                                    if(s.getRPGClass().matches(u.getCurrentCharacter().getRpgClass())){
+                                        if(s.getCombo().equals(u.currentCombo)){
+                                            toCast = s;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if(toCast != null){
+                                    if(toCast.getType().getMinLevel() <= u.getCurrentCharacter().getLevel()){
+                                        if(toCast.getType().getManaCost() <= u.getMP()){
+                                            u.ignoreDamageCheck = true;
+
+                                            p.playSound(p.getEyeLocation(),Sound.SUCCESSFUL_HIT,1f,1f);
+                                            u.setMP(u.getMP()-toCast.getType().getManaCost());
+                                            toCast.execute(p);
+
+                                            if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) BountifulAPI.sendActionBar(p,ChatColor.GREEN + toCast.getName() + " " + ChatColor.GRAY + "[- " + toCast.getType().getManaCost() + " MP]");
+
+                                            new BukkitRunnable(){
+                                                @Override
+                                                public void run() {
+                                                    u.ignoreDamageCheck = false;
+                                                }
+                                            }.runTask(DungeonRPG.getInstance());
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "You don't have enough MP.");
+                                        }
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "You haven't unlocked that skill yet.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "That skill could not be found."); // shouldn't happen but print message if something goes wrong
+                                }
+
+                                u.currentCombo = "";
+                                u.comboDelay = 0;
+                                u.updateClickComboBar();
+                                return;
                             }
                         }
                     }

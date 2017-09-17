@@ -12,6 +12,21 @@ import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
+import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
+import net.wrathofdungeons.dungeonrpg.skill.archer.DartRain;
+import net.wrathofdungeons.dungeonrpg.skill.archer.ExplosionArrow;
+import net.wrathofdungeons.dungeonrpg.skill.archer.Leap;
+import net.wrathofdungeons.dungeonrpg.skill.archer.VortexBarrier;
+import net.wrathofdungeons.dungeonrpg.skill.assassin.DashAttack;
+import net.wrathofdungeons.dungeonrpg.skill.assassin.StabbingStorm;
+import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
+import net.wrathofdungeons.dungeonrpg.skill.magician.FlameBurst;
+import net.wrathofdungeons.dungeonrpg.skill.magician.LightningStrike;
+import net.wrathofdungeons.dungeonrpg.skill.magician.MagicCure;
+import net.wrathofdungeons.dungeonrpg.skill.mercenary.AxeDance;
+import net.wrathofdungeons.dungeonrpg.skill.mercenary.BlazingAxe;
+import net.wrathofdungeons.dungeonrpg.skill.mercenary.Shockwave;
+import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -48,6 +63,30 @@ public class DungeonRPG extends JavaPlugin {
         ItemData.init();
         MobData.init();
         Region.init();
+
+        SkillStorage s = new SkillStorage();
+
+        // ARCHER
+        s.addSkill(new DartRain());
+        s.addSkill(new Leap());
+        s.addSkill(new ExplosionArrow());
+        s.addSkill(new VortexBarrier());
+
+        // ASSASSIN
+        s.addSkill(new StabbingStorm());
+        s.addSkill(new DashAttack());
+
+        // MAGICIAN
+        s.addSkill(new FlameBurst());
+        s.addSkill(new Blinkpool());
+        s.addSkill(new LightningStrike());
+        s.addSkill(new MagicCure());
+
+        // MERCENARY
+        s.addSkill(new AxeDance());
+        s.addSkill(new Stomper());
+        s.addSkill(new Shockwave());
+        s.addSkill(new BlazingAxe());
 
         MAIN_WORLD = Bukkit.getWorlds().get(0);
         prepareWorld(MAIN_WORLD);

@@ -162,6 +162,7 @@ public class Character {
                 if(continueCharsel){
                     GameUser.getUser(p).setCurrentCharacter(null);
                     GameUser.getUser(p).bukkitReset();
+                    GameUser.getUser(p).stopMPRegenTask();
                     p.teleport(DungeonRPG.getCharSelLocation());
                     DungeonRPG.updateVanishing();
 

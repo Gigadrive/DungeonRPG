@@ -14,6 +14,7 @@ import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.party.Party;
+import net.wrathofdungeons.dungeonrpg.skill.SkillValues;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
@@ -21,6 +22,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -52,6 +54,7 @@ public class GameUser extends User {
     private Player p;
     private ArrayList<Character> characters;
     private Character currentCharacter;
+    private SkillValues skillValues;
 
     private int hp = 20;
 
@@ -59,9 +62,15 @@ public class GameUser extends User {
     public boolean __associateDamageWithSystem = true;
     private boolean attackCooldown = false;
     private boolean setupMode = false;
-    public String currentCombo = "";
     public boolean mayActivateMobs = true;
     public boolean ignoreFistCheck = false;
+    public boolean ignoreDamageCheck = false;
+
+    public String currentCombo = "";
+    public boolean canCastCombo = true;
+    public int comboDelay = 0;
+
+    private BukkitTask mpRegenTask;
 
     public GameUser(Player p){
         super(p);
@@ -92,6 +101,30 @@ public class GameUser extends User {
         }
 
         return maxHP;
+    }
+
+    public void startMPRegenTask(){
+        if(getCurrentCharacter() != null && mpRegenTask == null){
+            mpRegenTask = new BukkitRunnable(){
+                @Override
+                public void run() {
+                    int mp = getMP();
+                    mp += 1;
+                    if(mp > getMaxMP()) mp = getMaxMP();
+
+                    // TODO: Consider awakenings that increase or decresae MP regeneration
+
+                    setMP(mp);
+                }
+            }.runTaskTimer(DungeonRPG.getInstance(),30,30);
+        }
+    }
+
+    public void stopMPRegenTask(){
+        if(mpRegenTask != null){
+            mpRegenTask.cancel();
+            mpRegenTask = null;
+        }
     }
 
     public int getHPPercentage(){
@@ -191,6 +224,63 @@ public class GameUser extends User {
             }
         } else {
             this.currentCharacter = null;
+        }
+    }
+
+    public void updateClickComboBar(){
+        if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR){
+            if(!currentCombo.equals("") && currentCombo.length() > 0){
+                String left = ChatColor.GREEN + "Left";
+                String middle = ChatColor.GREEN + "Middle";
+                String right = ChatColor.GREEN + "Right";
+                String unknown = ChatColor.GRAY + "???";
+                String unknownPrime = ChatColor.GRAY.toString() + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "???" + ChatColor.RESET;
+                String seperator = " " + ChatColor.DARK_GRAY + "-" + ChatColor.RESET + " ";
+
+                String toSend = "";
+
+                if(currentCombo.equals("L")) toSend = left + seperator + unknownPrime + seperator + unknown;
+                if(currentCombo.equals("LR")) toSend = left + seperator + right + seperator + unknownPrime;
+                if(currentCombo.equals("LRL")) toSend = left + seperator + right + seperator + left;
+                if(currentCombo.equals("LRM")) toSend = left + seperator + right + seperator + middle;
+                if(currentCombo.equals("LRR")) toSend = left + seperator + right + seperator + right;
+                if(currentCombo.equals("LM")) toSend = left + seperator + middle + seperator + unknownPrime;
+                if(currentCombo.equals("LML")) toSend = left + seperator + middle + seperator + left;
+                if(currentCombo.equals("LMM")) toSend = left + seperator + middle + seperator + middle;
+                if(currentCombo.equals("LMR")) toSend = left + seperator + middle + seperator + right;
+                if(currentCombo.equals("LL")) toSend = left + seperator + left + seperator + unknownPrime;
+                if(currentCombo.equals("LLL")) toSend = left + seperator + left + seperator + left;
+                if(currentCombo.equals("LLM")) toSend = left + seperator + left + seperator + middle;
+                if(currentCombo.equals("LLR")) toSend = left + seperator + left + seperator + right;
+                if(currentCombo.equals("R")) toSend = right + seperator + unknownPrime + seperator + unknown;
+                if(currentCombo.equals("RR")) toSend = right + seperator + right + seperator + unknownPrime;
+                if(currentCombo.equals("RRL")) toSend = right + seperator + right + seperator + left;
+                if(currentCombo.equals("RRM")) toSend = right + seperator + right + seperator + middle;
+                if(currentCombo.equals("RRR")) toSend = right + seperator + right + seperator + right;
+                if(currentCombo.equals("RM")) toSend = right + seperator + middle + seperator + unknownPrime;
+                if(currentCombo.equals("RML")) toSend = right + seperator + middle + seperator + left;
+                if(currentCombo.equals("RMM")) toSend = right + seperator + middle + seperator + middle;
+                if(currentCombo.equals("RMR")) toSend = right + seperator + middle + seperator + right;
+                if(currentCombo.equals("RL")) toSend = right + seperator + left + seperator + unknownPrime;
+                if(currentCombo.equals("RLL")) toSend = right + seperator + left + seperator + left;
+                if(currentCombo.equals("RLM")) toSend = right + seperator + left + seperator + middle;
+                if(currentCombo.equals("RLR")) toSend = right + seperator + left + seperator + right;
+                if(currentCombo.equals("M")) toSend = middle + seperator + unknownPrime + seperator + unknown;
+                if(currentCombo.equals("MR")) toSend = middle + seperator + right + seperator + unknown;
+                if(currentCombo.equals("MRL")) toSend = middle + seperator + right + seperator + left;
+                if(currentCombo.equals("MRM")) toSend = middle + seperator + right + seperator + middle;
+                if(currentCombo.equals("MRR")) toSend = middle + seperator + right + seperator + right;
+                if(currentCombo.equals("MM")) toSend = middle + seperator + middle + seperator + unknownPrime;
+                if(currentCombo.equals("MML")) toSend = middle + seperator + middle + seperator + left;
+                if(currentCombo.equals("MMM")) toSend = middle + seperator + middle + seperator + middle;
+                if(currentCombo.equals("MMR")) toSend = middle + seperator + middle + seperator + right;
+                if(currentCombo.equals("ML")) toSend = middle + seperator + left + seperator + unknownPrime;
+                if(currentCombo.equals("MLL")) toSend = middle + seperator + left + seperator + left;
+                if(currentCombo.equals("MLM")) toSend = middle + seperator + left + seperator + middle;
+                if(currentCombo.equals("MLR")) toSend = middle + seperator + left + seperator + right;
+
+                BountifulAPI.sendActionBar(p, toSend);
+            }
         }
     }
 
@@ -307,6 +397,8 @@ public class GameUser extends User {
             setHP(getMaxHP());
             setMP(getMaxMP());
             checkRequirements();
+
+            startMPRegenTask();
         }
     }
 
@@ -620,6 +712,10 @@ public class GameUser extends User {
         if(getCurrentCharacter() != null) getCurrentCharacter().getConvertedInventory(p).loadToPlayer(p);
     }
 
+    public SkillValues getSkillValues() {
+        return skillValues;
+    }
+
     public void init(Player p){
         if(init) return;
 
@@ -630,6 +726,7 @@ public class GameUser extends User {
                 this.p = p;
 
                 this.characters = new ArrayList<Character>();
+                this.skillValues = new SkillValues();
                 loadCharacters();
 
                 User.STORAGE.remove(p);

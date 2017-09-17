@@ -17,6 +17,7 @@ public class PlayerQuitListener implements Listener {
             GameUser u = GameUser.getUser(p);
 
             if(u.getParty() != null) u.getParty().leaveParty(p);
+            u.stopMPRegenTask();
         }
     }
 }
