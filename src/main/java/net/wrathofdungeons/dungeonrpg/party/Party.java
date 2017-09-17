@@ -80,7 +80,7 @@ public class Party {
         GameUser u = GameUser.getUser(p);
 
         if(u.getParty() == null){
-            getMembers().add(new PartyMember(p,PartyRank.LEADER));
+            getMembers().add(new PartyMember(p,PartyRank.MEMBER));
 
             for(Player all : getOnlinePlayers()){
                 all.sendMessage(ChatColor.GREEN + p.getName() + " has joined the party.");
