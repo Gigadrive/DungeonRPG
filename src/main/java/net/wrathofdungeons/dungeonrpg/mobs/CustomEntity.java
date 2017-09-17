@@ -95,6 +95,7 @@ public class CustomEntity {
                         if(h > bukkitEntity.getMaxHealth()) h = bukkitEntity.getMaxHealth();
 
                         bukkitEntity.setHealth(h);
+                        updateHealthBar();
                     }
                 }
             }.runTaskTimer(DungeonRPG.getInstance(),10*20,10*20);
