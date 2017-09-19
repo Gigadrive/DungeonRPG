@@ -27,7 +27,7 @@ public class TargetListener implements Listener {
             CustomEntity c = CustomEntity.fromEntity(entity);
 
             if(c != null){
-                if(!c.getData().getAiSettings().mayDoRandomStroll()) c.setCancelMovement(true);
+                //if(!c.getData().getAiSettings().mayDoRandomStroll()) c.setCancelMovement(true);
             }
         }
     }
@@ -44,6 +44,13 @@ public class TargetListener implements Listener {
             CustomEntity c = CustomEntity.fromEntity(entity);
 
             if(c != null){
+                MobType m = c.getData().getMobType();
+
+                if(m == MobType.PASSIVE){
+                    e.setCancelled(true);
+                    return;
+                }
+
                 LivingEntity target = e.getTarget();
                 CustomEntity ct = CustomEntity.fromEntity(target);
 
@@ -52,7 +59,11 @@ public class TargetListener implements Listener {
                         e.setCancelled(true);
                     }
                 } else {
+                    MobType mt = ct.getData().getMobType();
 
+                    if(m == MobType.AGGRO && mt == MobType.AGGRO){
+                        e.setCancelled(true);
+                    }
                 }
 
                 if(!e.isCancelled() && !c.getData().getAiSettings().mayDoRandomStroll()) c.setCancelMovement(false);

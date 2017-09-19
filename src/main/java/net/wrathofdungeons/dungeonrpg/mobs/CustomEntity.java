@@ -7,6 +7,7 @@ import net.minecraft.server.v1_8_R3.*;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
 import org.bukkit.Bukkit;
@@ -337,7 +338,7 @@ public class CustomEntity {
                 }
             }
 
-            if(!getData().getAiSettings().mayDoRandomStroll()) setCancelMovement(true);
+            TargetHandler.giveTargets(bukkitEntity,this);
 
             if(bukkitEntity.getEquipment() != null){
                 bukkitEntity.getEquipment().clear();

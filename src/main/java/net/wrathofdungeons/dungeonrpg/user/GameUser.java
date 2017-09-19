@@ -613,6 +613,10 @@ public class GameUser extends User {
 
             setCurrentCharacter(null);
             bukkitReset();
+            getSkillValues().reset();
+            stopMPRegenTask();
+            stopHPRegenTask();
+            currentCombo = "";
             p.setGameMode(GameMode.CREATIVE);
             p.sendMessage(ChatColor.GREEN + "You are now in setup mode!");
 

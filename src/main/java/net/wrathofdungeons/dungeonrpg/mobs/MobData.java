@@ -88,7 +88,11 @@ public class MobData {
                 this.weapon = Util.parseItemStack(rs.getString("weapon"));
                 this.adult = rs.getBoolean("adult");
                 this.mobClass = MobClass.valueOf(rs.getString("class"));
-                this.aiSettings = new AISettings(rs.getBoolean("ai.randomStroll"));
+
+                this.aiSettings = new AISettings();
+                this.aiSettings.setRandomStroll(rs.getBoolean("ai.randomStroll"));
+                this.aiSettings.setLookAtPlayer(rs.getBoolean("ai.lookAtPlayer"));
+                this.aiSettings.setLookAround(rs.getBoolean("ai.lookAround"));
 
                 STORAGE.add(this);
             }
