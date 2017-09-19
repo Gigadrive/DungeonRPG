@@ -387,6 +387,7 @@ public class GameUser extends User {
             c.setLastLogin(new Timestamp(System.currentTimeMillis()));
 
             bukkitReset();
+            p.setGameMode(GameMode.ADVENTURE);
             p.teleport(c.getStoredLocation());
             updateLevelBar();
 
@@ -467,6 +468,9 @@ public class GameUser extends User {
                         } else if(false){
                             // TODO: Add prefix for friends
                             t.setPrefix(ChatColor.AQUA.toString());
+                        } else if(false){
+                            // TODO: Add prefix for guild
+                            t.setPrefix(ChatColor.LIGHT_PURPLE.toString());
                         } else {
                             t.setPrefix(ChatColor.WHITE.toString());
                         }
