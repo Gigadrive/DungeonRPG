@@ -27,7 +27,7 @@ public class TargetListener implements Listener {
             CustomEntity c = CustomEntity.fromEntity(entity);
 
             if(c != null){
-                //if(!c.getData().getAiSettings().mayDoRandomStroll()) c.setCancelMovement(true);
+
             }
         }
     }
@@ -63,10 +63,10 @@ public class TargetListener implements Listener {
 
                     if(m == MobType.AGGRO && mt == MobType.AGGRO){
                         e.setCancelled(true);
+                    } else if(m == MobType.SUPPORTING && mt == MobType.SUPPORTING){
+                        e.setCancelled(true);
                     }
                 }
-
-                if(!e.isCancelled() && !c.getData().getAiSettings().mayDoRandomStroll()) c.setCancelMovement(false);
             }
         }
     }
