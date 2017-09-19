@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
+import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
@@ -278,6 +279,25 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimerAsynchronously(this,2*60*20,2*60*20);
 
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Player p : Bukkit.getOnlinePlayers()){
+                    if(GameUser.isLoaded(p)){
+                        GameUser u = GameUser.getUser(p);
+                        boolean o = p.isOnGround();
+
+                        if(!u.onGround && o){
+                            PlayerLandOnGroundEvent event = new PlayerLandOnGroundEvent(p);
+                            Bukkit.getPluginManager().callEvent(event);
+                        }
+
+                        u.onGround = o;
+                    }
+                }
+            }
+        }.runTaskTimer(this,1,1);
+
         Bukkit.getServer().clearRecipes();
     }
 
@@ -356,6 +376,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InteractListener(),this);
         Bukkit.getPluginManager().registerEvents(new InventoryClickListener(),this);
         Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(),this);
+        Bukkit.getPluginManager().registerEvents(new LandOnGroundListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerDropListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(),this);

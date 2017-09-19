@@ -65,6 +65,7 @@ public class GameUser extends User {
     public boolean mayActivateMobs = true;
     public boolean ignoreFistCheck = false;
     public boolean ignoreDamageCheck = false;
+    public boolean onGround = true;
 
     public String currentCombo = "";
     public boolean canCastCombo = true;
