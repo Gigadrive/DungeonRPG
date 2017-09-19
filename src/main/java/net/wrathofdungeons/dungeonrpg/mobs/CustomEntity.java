@@ -42,6 +42,7 @@ public class CustomEntity {
     private static final UUID attackDamageUID = UUID.fromString("7bbe3bb1-079d-4150-ac6f-669e71550776");
 
     private AttributeModifier speedModifier;
+    public boolean damaged = false;
 
     public CustomEntity(MobData data){
         this.mobDataID = data.getId();
@@ -95,7 +96,7 @@ public class CustomEntity {
                         if(h > bukkitEntity.getMaxHealth()) h = bukkitEntity.getMaxHealth();
 
                         bukkitEntity.setHealth(h);
-                        updateHealthBar();
+                        if(damaged) updateHealthBar();
                     }
                 }
             }.runTaskTimer(DungeonRPG.getInstance(),10*20,10*20);

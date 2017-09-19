@@ -33,6 +33,15 @@ public class DamageListener implements Listener {
             }
         }
 
+        if(e.getEntity() instanceof LivingEntity){
+            LivingEntity ent = (LivingEntity)e.getEntity();
+            CustomEntity c = CustomEntity.fromEntity(ent);
+
+            if(c != null){
+                c.damaged = true;
+            }
+        }
+
         if(e.getEntity() instanceof Player){
             Player p = (Player)e.getEntity();
 
