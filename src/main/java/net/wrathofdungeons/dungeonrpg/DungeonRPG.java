@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg;
 
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.user.User;
+import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
 import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
@@ -10,6 +11,7 @@ import net.wrathofdungeons.dungeonrpg.listener.*;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
+import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
@@ -293,6 +295,17 @@ public class DungeonRPG extends JavaPlugin {
                         }
 
                         u.onGround = o;
+                    }
+                }
+            }
+        }.runTaskTimer(this,1,1);
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(DungeonProjectile proj : SHOT_PROJECTILE_DATA.values()){
+                    if(proj.getType() == DungeonProjectileType.EXPLOSION_ARROW && proj.getEntity() != null){
+                        ParticleEffect.VILLAGER_HAPPY.display(0f,0f,0f,0.005f,1,proj.getEntity().getLocation(),600);
                     }
                 }
             }

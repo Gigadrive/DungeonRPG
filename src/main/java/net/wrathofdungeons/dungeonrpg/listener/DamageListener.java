@@ -91,81 +91,83 @@ public class DamageListener implements Listener {
                     if(GameUser.isLoaded(p)){
                         GameUser u = GameUser.getUser(p);
 
-                        if(u.getCurrentCharacter() != null){
-                            if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null){
-                                CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
-                                long itemCooldown = 10; // TODO: Add attack speed
+                        if(!u.ignoreDamageCheck){
+                            if(u.getCurrentCharacter() != null){
+                                if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null){
+                                    CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
+                                    long itemCooldown = 10; // TODO: Add attack speed
 
-                                boolean wrongClass = false;
+                                    boolean wrongClass = false;
 
-                                if(item.getData().getCategory() == ItemCategory.WEAPON_BOW && !(u.getCurrentCharacter().getRpgClass() == RPGClass.ARCHER || u.getCurrentCharacter().getRpgClass() == RPGClass.RANGER || u.getCurrentCharacter().getRpgClass() == RPGClass.HUNTER)){
-                                    wrongClass = true;
-                                }
-
-                                if(item.getData().getCategory() == ItemCategory.WEAPON_STICK && !(u.getCurrentCharacter().getRpgClass() == RPGClass.MAGICIAN || u.getCurrentCharacter().getRpgClass() == RPGClass.WIZARD || u.getCurrentCharacter().getRpgClass() == RPGClass.ALCHEMIST)){
-                                    wrongClass = true;
-                                }
-
-                                if(item.getData().getCategory() == ItemCategory.WEAPON_AXE && !(u.getCurrentCharacter().getRpgClass() == RPGClass.MERCENARY || u.getCurrentCharacter().getRpgClass() == RPGClass.KNIGHT || u.getCurrentCharacter().getRpgClass() == RPGClass.SOLDIER)){
-                                    wrongClass = true;
-                                }
-
-                                if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS && !(u.getCurrentCharacter().getRpgClass() == RPGClass.ASSASSIN || u.getCurrentCharacter().getRpgClass() == RPGClass.BLADEMASTER || u.getCurrentCharacter().getRpgClass() == RPGClass.NINJA)){
-                                    wrongClass = true;
-                                }
-
-                                if(item.getData().getNeededClass() != RPGClass.NONE){
-                                    if(item.getData().getNeededClass() == RPGClass.MERCENARY){
-                                        if(u.getCurrentCharacter().getRpgClass() != RPGClass.MERCENARY && u.getCurrentCharacter().getRpgClass() != RPGClass.KNIGHT && u.getCurrentCharacter().getRpgClass() != RPGClass.SOLDIER) wrongClass = true;
-                                    } else if(item.getData().getNeededClass() == RPGClass.MAGICIAN){
-                                        if(u.getCurrentCharacter().getRpgClass() != RPGClass.MAGICIAN && u.getCurrentCharacter().getRpgClass() != RPGClass.WIZARD && u.getCurrentCharacter().getRpgClass() != RPGClass.ALCHEMIST) wrongClass = true;
-                                    } else if(item.getData().getNeededClass() == RPGClass.ASSASSIN){
-                                        if(u.getCurrentCharacter().getRpgClass() != RPGClass.ASSASSIN && u.getCurrentCharacter().getRpgClass() != RPGClass.BLADEMASTER && u.getCurrentCharacter().getRpgClass() != RPGClass.NINJA) wrongClass = true;
-                                    } else if(item.getData().getNeededClass() == RPGClass.ARCHER){
-                                        if(u.getCurrentCharacter().getRpgClass() != RPGClass.ARCHER && u.getCurrentCharacter().getRpgClass() != RPGClass.RANGER && u.getCurrentCharacter().getRpgClass() != RPGClass.HUNTER) wrongClass = true;
-                                    } else {
-                                        if(u.getCurrentCharacter().getRpgClass() != item.getData().getNeededClass()) wrongClass = true;
+                                    if(item.getData().getCategory() == ItemCategory.WEAPON_BOW && !(u.getCurrentCharacter().getRpgClass() == RPGClass.ARCHER || u.getCurrentCharacter().getRpgClass() == RPGClass.RANGER || u.getCurrentCharacter().getRpgClass() == RPGClass.HUNTER)){
+                                        wrongClass = true;
                                     }
-                                }
 
-                                if(wrongClass){
-                                    p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
-                                    e.setCancelled(true);
-                                    return;
-                                }
+                                    if(item.getData().getCategory() == ItemCategory.WEAPON_STICK && !(u.getCurrentCharacter().getRpgClass() == RPGClass.MAGICIAN || u.getCurrentCharacter().getRpgClass() == RPGClass.WIZARD || u.getCurrentCharacter().getRpgClass() == RPGClass.ALCHEMIST)){
+                                        wrongClass = true;
+                                    }
 
-                                if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS || item.getData().getCategory() == ItemCategory.WEAPON_AXE){
-                                    if(u.isInAttackCooldown()){
+                                    if(item.getData().getCategory() == ItemCategory.WEAPON_AXE && !(u.getCurrentCharacter().getRpgClass() == RPGClass.MERCENARY || u.getCurrentCharacter().getRpgClass() == RPGClass.KNIGHT || u.getCurrentCharacter().getRpgClass() == RPGClass.SOLDIER)){
+                                        wrongClass = true;
+                                    }
+
+                                    if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS && !(u.getCurrentCharacter().getRpgClass() == RPGClass.ASSASSIN || u.getCurrentCharacter().getRpgClass() == RPGClass.BLADEMASTER || u.getCurrentCharacter().getRpgClass() == RPGClass.NINJA)){
+                                        wrongClass = true;
+                                    }
+
+                                    if(item.getData().getNeededClass() != RPGClass.NONE){
+                                        if(item.getData().getNeededClass() == RPGClass.MERCENARY){
+                                            if(u.getCurrentCharacter().getRpgClass() != RPGClass.MERCENARY && u.getCurrentCharacter().getRpgClass() != RPGClass.KNIGHT && u.getCurrentCharacter().getRpgClass() != RPGClass.SOLDIER) wrongClass = true;
+                                        } else if(item.getData().getNeededClass() == RPGClass.MAGICIAN){
+                                            if(u.getCurrentCharacter().getRpgClass() != RPGClass.MAGICIAN && u.getCurrentCharacter().getRpgClass() != RPGClass.WIZARD && u.getCurrentCharacter().getRpgClass() != RPGClass.ALCHEMIST) wrongClass = true;
+                                        } else if(item.getData().getNeededClass() == RPGClass.ASSASSIN){
+                                            if(u.getCurrentCharacter().getRpgClass() != RPGClass.ASSASSIN && u.getCurrentCharacter().getRpgClass() != RPGClass.BLADEMASTER && u.getCurrentCharacter().getRpgClass() != RPGClass.NINJA) wrongClass = true;
+                                        } else if(item.getData().getNeededClass() == RPGClass.ARCHER){
+                                            if(u.getCurrentCharacter().getRpgClass() != RPGClass.ARCHER && u.getCurrentCharacter().getRpgClass() != RPGClass.RANGER && u.getCurrentCharacter().getRpgClass() != RPGClass.HUNTER) wrongClass = true;
+                                        } else {
+                                            if(u.getCurrentCharacter().getRpgClass() != item.getData().getNeededClass()) wrongClass = true;
+                                        }
+                                    }
+
+                                    if(wrongClass){
+                                        p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
                                         e.setCancelled(true);
                                         return;
-                                    } else {
-                                        u.setAttackCooldown(true);
-                                        e.setDamage(DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false, 0, true));
-                                        DungeonRPG.showBloodEffect(e.getEntity().getLocation());
-                                        adjustKnockback = true;
+                                    }
 
-                                        new BukkitRunnable(){
-                                            @Override
-                                            public void run() {
-                                                u.setAttackCooldown(false);
-                                            }
-                                        }.runTaskLater(DungeonRPG.getInstance(),itemCooldown);
+                                    if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS || item.getData().getCategory() == ItemCategory.WEAPON_AXE){
+                                        if(u.isInAttackCooldown()){
+                                            e.setCancelled(true);
+                                            return;
+                                        } else {
+                                            u.setAttackCooldown(true);
+                                            e.setDamage(DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false, 0, true));
+                                            DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                            adjustKnockback = true;
+
+                                            new BukkitRunnable(){
+                                                @Override
+                                                public void run() {
+                                                    u.setAttackCooldown(false);
+                                                }
+                                            }.runTaskLater(DungeonRPG.getInstance(),itemCooldown);
+                                        }
+                                    } else {
+                                        if(u.ignoreFistCheck){
+                                            e.setDamage(DamageManager.calculateDamage(p, ent, DamageSource.PVE, false, false));
+                                            DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                            adjustKnockback = true;
+                                            closerKnockbackLocation = true;
+                                        } else {
+                                            e.setCancelled(true);
+                                            return;
+                                        }
                                     }
                                 } else {
-                                    if(u.ignoreFistCheck){
-                                        e.setDamage(DamageManager.calculateDamage(p, ent, DamageSource.PVE, false, false));
-                                        DungeonRPG.showBloodEffect(e.getEntity().getLocation());
-                                        adjustKnockback = true;
-                                        closerKnockbackLocation = true;
-                                    } else {
-                                        e.setCancelled(true);
-                                        return;
-                                    }
+                                    e.setCancelled(true);
+                                    p.sendMessage(ChatColor.RED + "Please use a weapon.");
+                                    return;
                                 }
-                            } else {
-                                e.setCancelled(true);
-                                p.sendMessage(ChatColor.RED + "Please use a weapon.");
-                                return;
                             }
                         }
                     }

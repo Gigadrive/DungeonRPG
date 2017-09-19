@@ -11,6 +11,7 @@ import net.wrathofdungeons.dungeonrpg.skill.SkillType;
 import net.wrathofdungeons.dungeonrpg.skill.SkillValues;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
+import org.bukkit.Effect;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -71,6 +72,8 @@ public class DartRain implements Skill {
                             a.setVelocity(p.getLocation().getDirection().multiply(2));
                             DungeonProjectile data = new DungeonProjectile(p, DungeonProjectileType.DART_RAIN, p.getLocation(), 0, damage, true);
                             DungeonRPG.SHOT_PROJECTILE_DATA.put(a.getUniqueId().toString(),data);
+
+                            p.getWorld().playEffect(p.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
 
                             values.dartRainArrows--;
                         }
