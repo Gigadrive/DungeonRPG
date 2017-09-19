@@ -7,6 +7,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
+import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
@@ -74,11 +75,25 @@ public class ReloadCommand extends Command {
                 } else {
                     p.sendMessage(ChatColor.RED + "There is currently a region loaded in setup mode. Please use /saveregion before reloading or all progress will be lost.");
                 }
+            } else if(mode.equalsIgnoreCase("npcs")){
+                if(CustomNPC.getUnsavedData().size() == 0){
+                    DungeonAPI.async(() -> {
+                        p.sendMessage(ChatColor.GREEN + "Reloading NPCs..");
+
+                        p.sendMessage(ChatColor.GREEN + "Loading region data from database..");
+
+                        CustomNPC.init();
+
+                        p.sendMessage(ChatColor.GREEN + "Done!");
+                    });
+                } else {
+                    p.sendMessage(ChatColor.RED + "There is unsaved data left over. Use /savenpcs to save your unsaved data before reloading.");
+                }
             } else {
-                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions>");
+                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs>");
             }
         } else {
-            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions>");
+            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs>");
         }
     }
 }

@@ -1,6 +1,8 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Particle;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
+import net.citizensnpcs.api.npc.NPC;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
@@ -8,9 +10,11 @@ import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageManager;
 import net.wrathofdungeons.dungeonrpg.damage.DamageSource;
+import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
@@ -22,15 +26,13 @@ import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.apache.logging.log4j.core.Filter;
 import org.bukkit.*;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.material.Wool;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -423,6 +425,20 @@ public class InteractListener implements Listener {
 
         if(e.getBlock() != null && e.getBlock().getType() == Material.SOIL){
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onRight(NPCRightClickEvent e){
+        Player p = e.getClicker();
+        NPC npc = e.getNPC();
+        CustomNPC c = CustomNPC.fromCitizensNPC(npc);
+
+        if(GameUser.isLoaded(p)){
+            if(c != null){
+                CustomNPCInteractEvent event = new CustomNPCInteractEvent(p,c);
+                Bukkit.getPluginManager().callEvent(event);
+            }
         }
     }
 }

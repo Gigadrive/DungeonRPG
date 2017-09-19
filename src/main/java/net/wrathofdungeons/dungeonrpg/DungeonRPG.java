@@ -10,6 +10,7 @@ import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
+import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
@@ -66,6 +67,7 @@ public class DungeonRPG extends JavaPlugin {
         ItemData.init();
         MobData.init();
         Region.init();
+        CustomNPC.init();
 
         SkillStorage s = new SkillStorage();
 
@@ -314,6 +316,12 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getServer().clearRecipes();
     }
 
+    public void onDisable(){
+        for(CustomNPC npc : CustomNPC.getUnsavedData()){
+            npc.saveData(false);
+        }
+    }
+
     public static int getMaxLevel(){
         return getInstance().getConfig().getInt("max-lvl");
     }
@@ -390,6 +398,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InventoryClickListener(),this);
         Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(),this);
         Bukkit.getPluginManager().registerEvents(new LandOnGroundListener(),this);
+        Bukkit.getPluginManager().registerEvents(new NPCInteractListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerDropListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(),this);
@@ -403,14 +412,17 @@ public class DungeonRPG extends JavaPlugin {
     }
 
     private void registerCommands(){
+        new CreateNPCCommand();
         new CreateRegionCommand();
         new CharSelCommand();
         new ExpCommand();
         new GiveItemCommand();
         new ItemInfoCommand();
         new LoadRegionCommand();
+        new ModifyNPCCommand();
         new PartyCommand();
         new ReloadCommand();
+        new SaveNPCsCommand();
         new SaveRegionCommand();
         new SetLocationCommand();
         new SetupCommand();
