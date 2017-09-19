@@ -57,6 +57,7 @@ public class MobData {
     private ItemStack weapon;
     private boolean adult;
     private MobClass mobClass;
+    private double speed;
     private AISettings aiSettings;
 
     public MobData(int id){
@@ -88,6 +89,7 @@ public class MobData {
                 this.weapon = Util.parseItemStack(rs.getString("weapon"));
                 this.adult = rs.getBoolean("adult");
                 this.mobClass = MobClass.valueOf(rs.getString("class"));
+                this.speed = rs.getDouble("speed");
 
                 this.aiSettings = new AISettings();
                 this.aiSettings.setRandomStroll(rs.getBoolean("ai.randomStroll"));
@@ -165,6 +167,10 @@ public class MobData {
 
     public MobClass getMobClass() {
         return mobClass;
+    }
+
+    public double getSpeed() {
+        return speed;
     }
 
     public boolean isAdult() {

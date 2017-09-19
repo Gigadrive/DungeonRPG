@@ -13,9 +13,11 @@ import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BlockIterator;
@@ -166,6 +168,46 @@ public class CustomEntity {
             } else {
                 bukkitEntity.setVelocity(bukkitEntity.getLocation().toVector().subtract(from.toVector()).setY(-1).multiply(0.5));
             }
+        }
+    }
+
+    public void adjustSpeed(){
+        adjustSpeed(true);
+    }
+
+    public void adjustSpeed(boolean removeSpeed){
+        if(bukkitEntity != null){
+            if(removeSpeed) removeSpeedAttribute();
+
+            EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)bukkitEntity).getHandle();
+
+            AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
+
+            double toAdd = getData().getSpeed()-getCurrentSpeedValue();
+
+            speedModifier = new AttributeModifier(movementSpeedUID,"wod movement speed",toAdd, AttributeOperation.ADD);
+
+            attributes.b(speedModifier);
+        }
+    }
+
+    public double getCurrentSpeedValue(){
+        if(bukkitEntity != null){
+            EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)bukkitEntity).getHandle();
+
+            if(nmsEntity != null){
+                AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
+
+                if(attributes != null){
+                    return attributes.getValue();
+                } else {
+                    return 0;
+                }
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
         }
     }
 
@@ -339,16 +381,28 @@ public class CustomEntity {
             }
 
             TargetHandler.giveTargets(bukkitEntity,this);
+            adjustSpeed(false);
 
-            if(bukkitEntity.getEquipment() != null){
-                bukkitEntity.getEquipment().clear();
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    if(bukkitEntity.getEquipment() != null){
+                        bukkitEntity.getEquipment().clear();
 
-                bukkitEntity.getEquipment().setItemInHand(getData().getWeapon());
-                bukkitEntity.getEquipment().setHelmet(getData().getHelmet());
-                bukkitEntity.getEquipment().setChestplate(getData().getChestplate());
-                bukkitEntity.getEquipment().setLeggings(getData().getLeggings());
-                bukkitEntity.getEquipment().setBoots(getData().getBoots());
-            }
+                        bukkitEntity.getEquipment().setItemInHand(new ItemStack(Material.AIR));
+                        bukkitEntity.getEquipment().setHelmet(new ItemStack(Material.AIR));
+                        bukkitEntity.getEquipment().setChestplate(new ItemStack(Material.AIR));
+                        bukkitEntity.getEquipment().setLeggings(new ItemStack(Material.AIR));
+                        bukkitEntity.getEquipment().setBoots(new ItemStack(Material.AIR));
+
+                        bukkitEntity.getEquipment().setItemInHand(getData().getWeapon());
+                        bukkitEntity.getEquipment().setHelmet(getData().getHelmet());
+                        bukkitEntity.getEquipment().setChestplate(getData().getChestplate());
+                        bukkitEntity.getEquipment().setLeggings(getData().getLeggings());
+                        bukkitEntity.getEquipment().setBoots(getData().getBoots());
+                    }
+                }
+            }.runTaskLater(DungeonRPG.getInstance(),2);
 
             hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(),getSupposedHologramLocation());
             hologram.appendTextLine(getData().getMobType().getColor() + getData().getName() + " " + ChatColor.GOLD + "- Lv. " + getData().getLevel());

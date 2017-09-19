@@ -38,7 +38,6 @@ public class Leap implements Skill {
         if(!u.getSkillValues().leapIsInAir){
             u.getSkillValues().leapIsInAir = true;
             p.getWorld().playSound(p.getEyeLocation(), Sound.FIREWORK_LAUNCH, 1f, 1f);
-            //ParticleEffect.CLOUD.display(0.05F, 0.05F, 0.05F, 0.05F, 120, p.getLocation().add(0.0, -1.0, 0.0), 900);
 
             for(int i = 0; i < 100; i++){
                 ParticleEffect.SPELL_MOB.display(new ParticleEffect.OrdinaryColor(92,214,255),p.getLocation().clone().add(Util.randomInteger(-1,1),0,Util.randomInteger(-1,1)),600);
