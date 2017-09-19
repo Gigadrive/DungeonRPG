@@ -387,7 +387,6 @@ public class GameUser extends User {
             c.setLastLogin(new Timestamp(System.currentTimeMillis()));
 
             bukkitReset();
-            p.setGameMode(GameMode.ADVENTURE);
             p.teleport(c.getStoredLocation());
             updateLevelBar();
 
