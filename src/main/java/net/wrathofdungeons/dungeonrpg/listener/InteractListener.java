@@ -306,6 +306,7 @@ public class InteractListener implements Listener {
                                             p.getWorld().playSound(p.getEyeLocation(), Sound.SHOOT_ARROW, 1F, 1F);
                                             projectile.setVelocity(p.getLocation().getDirection().multiply(2.0D));
                                             DungeonProjectile data = new DungeonProjectile(p, DungeonProjectileType.ARCHER_ARROW, projectile.getLocation(), 0, damage, false);
+                                            data.setEntity(projectile);
                                             DungeonRPG.SHOT_PROJECTILE_DATA.put(projectile.getUniqueId().toString(), data);
 
                                             u.setAttackCooldown(true);

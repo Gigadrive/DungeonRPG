@@ -54,6 +54,7 @@ public class ExplosionArrow implements Skill {
             if(damage < 1) damage = 1;
 
             DungeonProjectile data = new DungeonProjectile(p, DungeonProjectileType.EXPLOSION_ARROW, p.getLocation(), 0, damage, true);
+            data.setEntity(a);
             DungeonRPG.SHOT_PROJECTILE_DATA.put(a.getUniqueId().toString(),data);
         }
     }
