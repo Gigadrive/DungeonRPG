@@ -304,7 +304,7 @@ public class DungeonRPG extends JavaPlugin {
             @Override
             public void run() {
                 for(DungeonProjectile proj : SHOT_PROJECTILE_DATA.values()){
-                    if(proj.getType() == DungeonProjectileType.EXPLOSION_ARROW && proj.getEntity() != null){
+                    if(proj.getType() == DungeonProjectileType.EXPLOSION_ARROW && proj.getEntity() != null && proj.getEntity().isValid()){
                         ParticleEffect.VILLAGER_HAPPY.display(0f,0f,0f,0.005f,1,proj.getEntity().getLocation(),600);
                     }
                 }
