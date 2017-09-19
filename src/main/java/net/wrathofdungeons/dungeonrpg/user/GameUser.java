@@ -141,7 +141,7 @@ public class GameUser extends User {
 
                     setHP(hp);
                 }
-            }.runTaskTimer(DungeonRPG.getInstance(),30,30);
+            }.runTaskTimer(DungeonRPG.getInstance(),50,50);
         }
     }
 

@@ -386,7 +386,7 @@ public class InteractListener implements Listener {
                                             u.setMP(u.getMP()-toCast.getType().getManaCost());
                                             toCast.execute(p);
 
-                                            if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) BountifulAPI.sendActionBar(p,ChatColor.GREEN + toCast.getName() + " " + ChatColor.GRAY + "[- " + toCast.getType().getManaCost() + " MP]");
+                                            if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) BountifulAPI.sendActionBar(p,ChatColor.GREEN + toCast.getName() + " " + ChatColor.GRAY + "[-" + toCast.getType().getManaCost() + " MP]");
 
                                             new BukkitRunnable(){
                                                 @Override
