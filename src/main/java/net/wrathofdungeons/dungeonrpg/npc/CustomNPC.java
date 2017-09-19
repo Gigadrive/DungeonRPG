@@ -10,6 +10,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -31,6 +32,16 @@ public class CustomNPC {
     public static CustomNPC fromCitizensNPC(NPC npc){
         for(CustomNPC c : STORAGE){
             if(c.npc != null && (c.npc == npc || c.npc.getId() == npc.getId())){
+                return c;
+            }
+        }
+
+        return null;
+    }
+
+    public static CustomNPC fromEntity(Entity e){
+        for(CustomNPC c : STORAGE){
+            if(c.npc != null && c.npc.getEntity().getUniqueId().toString().equals(e.getUniqueId().toString())){
                 return c;
             }
         }

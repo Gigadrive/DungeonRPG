@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 import net.wrathofdungeons.dungeonrpg.event.EntityStopTargetEvent;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
+import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -55,8 +56,12 @@ public class TargetListener implements Listener {
                 CustomEntity ct = CustomEntity.fromEntity(target);
 
                 if(ct == null){
-                    if((c.getData().getMobType() == MobType.SUPPORTING || c.getData().getMobType() == MobType.PASSIVE) && target instanceof Player){
+                    if(CustomNPC.fromEntity(target) != null){
                         e.setCancelled(true);
+                    } else {
+                        if((c.getData().getMobType() == MobType.SUPPORTING || c.getData().getMobType() == MobType.PASSIVE) && target instanceof Player){
+                            e.setCancelled(true);
+                        }
                     }
                 } else {
                     MobType mt = ct.getData().getMobType();
