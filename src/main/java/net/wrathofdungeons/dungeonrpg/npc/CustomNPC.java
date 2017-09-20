@@ -41,7 +41,7 @@ public class CustomNPC {
 
     public static CustomNPC fromEntity(Entity e){
         for(CustomNPC c : STORAGE){
-            if(c.npc != null && c.npc.getEntity().getUniqueId().toString().equals(e.getUniqueId().toString())){
+            if(c.npc != null && c.npc.getEntity() != null && c.npc.getEntity().getUniqueId().toString().equals(e.getUniqueId().toString())){
                 return c;
             }
         }
