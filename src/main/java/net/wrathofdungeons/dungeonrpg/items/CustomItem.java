@@ -74,8 +74,11 @@ public class CustomItem {
 
                 if(tag.hasKey("dataID")){
                     int id = tag.getInt("dataID");
+                    boolean untradeable = ItemData.getData(id).isUntradeable();
 
-                    return new CustomItem(id,i.getAmount());
+                    if(tag.hasKey("untradeable")) untradeable = Util.convertIntegerToBoolean(tag.getInt("untradeable"));
+
+                    return new CustomItem(id,i.getAmount(),untradeable);
                 }
             }
 
@@ -183,6 +186,8 @@ public class CustomItem {
         net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(i);
         NBTTagCompound tag = nmsItem.hasTag() ? nmsItem.getTag() : new NBTTagCompound();
         if(!tag.hasKey("dataID")) tag.set("dataID",new NBTTagInt(getData().getId()));
+
+        if(!tag.hasKey("untradeable")) tag.set("untradeable",new NBTTagInt(Util.convertBooleanToInteger(isUntradeable())));
 
         if(getData().getCategory() == ItemCategory.WEAPON_STICK) tag.set("stackProtection", new NBTTagInt(Util.randomInteger(-5000, 5000)));
 
