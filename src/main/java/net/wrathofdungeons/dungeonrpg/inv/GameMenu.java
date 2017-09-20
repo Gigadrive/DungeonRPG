@@ -20,7 +20,11 @@ public class GameMenu {
     public static void openFor(Player p){
         GameUser u = GameUser.getUser(p);
         InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.INVENTORY_1ROW);
-        inv.withTitle("Game Menu");
+        if(u.getCurrentCharacter().getStatpointsLeft() > 0){
+            inv.withTitle("Game Menu");
+        } else {
+            inv.withTitle("[" + u.getCurrentCharacter().getStatpointsLeft() + "] Game Menu");
+        }
 
         inv.withItem(2, b(u,StatPointType.STRENGTH,"Increases all damage dealt."),((player, action, item) -> c(p,StatPointType.STRENGTH)), ClickType.LEFT);
         inv.withItem(3,b(u,StatPointType.STAMINA,"Increases total health."),((player, action, item) -> c(p,StatPointType.STAMINA)), ClickType.LEFT);
