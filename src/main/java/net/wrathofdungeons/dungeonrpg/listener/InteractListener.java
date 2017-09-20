@@ -11,6 +11,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageManager;
 import net.wrathofdungeons.dungeonrpg.damage.DamageSource;
 import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
+import net.wrathofdungeons.dungeonrpg.inv.GameMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -274,7 +275,7 @@ public class InteractListener implements Listener {
                             e.setUseInteractedBlock(Event.Result.DENY);
                             e.setUseItemInHand(Event.Result.DENY);
 
-                            // TODO: Open character menu
+                            GameMenu.openFor(p);
                         }
 
                         if(customItem.getData().getCategory() == ItemCategory.WEAPON_BOW){

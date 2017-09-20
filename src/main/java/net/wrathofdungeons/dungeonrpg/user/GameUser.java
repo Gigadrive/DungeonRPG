@@ -730,12 +730,13 @@ public class GameUser extends User {
 
     public void levelUp(int times){
         if(getCurrentCharacter() != null){
+            int statpointsGained = 0;
+
             for (int i = 0; i < times; i++) {
                 if(getCurrentCharacter().mayGetEXP()){
                     getCurrentCharacter().setLevel(getCurrentCharacter().getLevel()+1);
-                    // TODO: Give stat points
-                    /*setLeftStatpoints(getLeftStatpoints()+2);
-                    statpointsGained += 2;*/
+                    getCurrentCharacter().addStatpointsLeft(2);
+                    statpointsGained += 2;
                 }
             }
 

@@ -1,8 +1,10 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
+import eu.the5zig.mod.server.api.Stat;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
@@ -24,6 +26,12 @@ public class Character {
     private RPGClass rpgClass;
     private int level;
     private double exp;
+    private int strength;
+    private int stamina;
+    private int intelligence;
+    private int dexterity;
+    private int agility;
+    private int statpointsLeft;
     private Location storedLocation;
     private PlayerInventory storedInventory;
     private Timestamp creationTime;
@@ -42,6 +50,12 @@ public class Character {
                 this.rpgClass = RPGClass.valueOf(rs.getString("class"));
                 this.level = rs.getInt("level");
                 this.exp = rs.getDouble("exp");
+                this.strength = rs.getInt("statpoints.str");
+                this.stamina = rs.getInt("statpoints.str");
+                this.intelligence = rs.getInt("statpoints.str");
+                this.dexterity = rs.getInt("statpoints.str");
+                this.agility = rs.getInt("statpoints.str");
+                this.statpointsLeft = rs.getInt("statpoints.left");
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
                 if(rs.getString("inventory") != null) this.storedInventory = PlayerInventory.fromString(rs.getString("inventory"));
                 this.creationTime = rs.getTimestamp("time");
@@ -112,6 +126,68 @@ public class Character {
         }
     }
 
+    public int getStatpointsPure(StatPointType type){
+        switch(type){
+            case STRENGTH: return strength;
+            case STAMINA: return stamina;
+            case INTELLIGENCE: return intelligence;
+            case DEXTERITY: return dexterity;
+            case AGILITY: return agility;
+            default: return 0;
+        }
+    }
+
+    public int getStatpointsArtificial(StatPointType type){
+        // TODO: Calculate artificial stat points from equipment
+
+        return 0;
+    }
+
+    public int getStatpointsTotal(StatPointType type){
+        int total = getStatpointsPure(type)+getStatpointsArtificial(type);
+
+        return total < 0 ? 0 : total;
+    }
+
+    public int getStatpointsLeft(){
+        return statpointsLeft;
+    }
+
+    public void addStatpointsLeft(int i){
+        this.statpointsLeft += i;
+        if(this.statpointsLeft < 0) this.statpointsLeft = 0;
+    }
+
+    public void reduceStatpointsLeft(int i){
+        if(this.statpointsLeft-i > 0){
+            this.statpointsLeft -= i;
+        }
+    }
+
+    public void addStatpoint(StatPointType type){
+        addStatpoints(type,1);
+    }
+
+    public void addStatpoints(StatPointType type, int statpoints){
+        switch(type){
+            case STRENGTH:
+                strength += statpoints;
+                break;
+            case STAMINA:
+                stamina += statpoints;
+                break;
+            case INTELLIGENCE:
+                intelligence += statpoints;
+                break;
+            case DEXTERITY:
+                dexterity += statpoints;
+                break;
+            case AGILITY:
+                agility += statpoints;
+                break;
+        }
+    }
+
     public CustomItem[] getEquipment(Player p){
         ArrayList<CustomItem> a = new ArrayList<CustomItem>();
 
@@ -144,18 +220,24 @@ public class Character {
                 this.storedLocation = p.getLocation();
                 this.storedInventory = getConvertedInventory(p);
 
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `inventory` = ?, `lastLogin` = ? WHERE `id` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `statpoints.str` = ?, `statpoints.sta` = ?, `statpoints.int` = ?, `statpoints.dex` = ?, `statpoints.agi` = ?, `statpoints.left` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `inventory` = ?, `lastLogin` = ? WHERE `id` = ?");
                 ps.setInt(1,getLevel());
                 ps.setDouble(2,getExp());
-                ps.setString(3,p.getLocation().getWorld().getName());
-                ps.setDouble(4,p.getLocation().getX());
-                ps.setDouble(5,p.getLocation().getY());
-                ps.setDouble(6,p.getLocation().getZ());
-                ps.setFloat(7,p.getLocation().getYaw());
-                ps.setFloat(8,p.getLocation().getPitch());
-                ps.setString(9,getConvertedInventory(p).toString());
-                ps.setTimestamp(10,lastLogin);
-                ps.setInt(11,getId());
+                ps.setInt(3,strength);
+                ps.setInt(4,stamina);
+                ps.setInt(5,intelligence);
+                ps.setInt(6,dexterity);
+                ps.setInt(7,agility);
+                ps.setInt(8,statpointsLeft);
+                ps.setString(9,p.getLocation().getWorld().getName());
+                ps.setDouble(10,p.getLocation().getX());
+                ps.setDouble(11,p.getLocation().getY());
+                ps.setDouble(12,p.getLocation().getZ());
+                ps.setFloat(13,p.getLocation().getYaw());
+                ps.setFloat(14,p.getLocation().getPitch());
+                ps.setString(15,getConvertedInventory(p).toString());
+                ps.setTimestamp(16,lastLogin);
+                ps.setInt(17,getId());
                 ps.executeUpdate();
                 ps.close();
 
