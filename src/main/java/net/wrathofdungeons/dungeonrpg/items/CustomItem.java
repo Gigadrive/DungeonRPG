@@ -71,7 +71,7 @@ public class CustomItem {
     public int getSellprice(){
         int sellprice = 0;
 
-        if(getData().getCategory() == ItemCategory.WEAPON_BOW || getData().getCategory() == ItemCategory.WEAPON_SHEARS || getData().getCategory() == ItemCategory.WEAPON_STICK || getData().getCategory() == ItemCategory.WEAPON_AXE){
+        if(getData().getCategory() == ItemCategory.WEAPON_BOW || getData().getCategory() == ItemCategory.WEAPON_SHEARS || getData().getCategory() == ItemCategory.WEAPON_STICK || getData().getCategory() == ItemCategory.WEAPON_AXE || getData().getCategory() == ItemCategory.ARMOR){
             sellprice += getData().getNeededLevel()*1.5;
 
             if(getData().getRarity() == ItemRarity.COMMON){
