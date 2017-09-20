@@ -37,9 +37,10 @@ public class TargetHandler {
             if(customEntity.getData().getMobType() != MobType.PASSIVE){
                 ArrayList<Class<? extends Entity>> a = new ArrayList<Class<? extends Entity>>();
                 a.add(EntityAnimal.class);
-                a.add(EntityMonster.class);
-                a.add(EntityHuman.class);
                 a.add(EntityGolem.class);
+                a.add(EntityHuman.class);
+                a.add(EntityMonster.class);
+                a.add(EntityVillager.class);
 
                 for(Class<? extends Entity> cl : a){
                     c.goalSelector.a(2, new PathfinderGoalMeleeAttack(c, cl, 1.0D, false));
