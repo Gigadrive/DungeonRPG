@@ -48,6 +48,8 @@ public class ItemData {
     private int neededLevel;
     private RPGClass neededClass;
 
+    private boolean untradeable;
+
     public static ItemData getData(int id){
         for(ItemData d : STORAGE){
             if(d.getId() == id) return d;
@@ -79,6 +81,8 @@ public class ItemData {
 
                 this.neededLevel = rs.getInt("neededLevel");
                 this.neededClass = RPGClass.valueOf(rs.getString("neededClass"));
+
+                this.untradeable = rs.getBoolean("untradeable");
             }
 
             MySQLManager.getInstance().closeResources(rs,ps);
@@ -137,6 +141,10 @@ public class ItemData {
 
     public RPGClass getNeededClass() {
         return neededClass;
+    }
+
+    public boolean isUntradeable() {
+        return untradeable;
     }
 
     public boolean isMatchingWeapon(RPGClass rpgClass){

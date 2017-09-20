@@ -22,23 +22,42 @@ import java.util.HashMap;
 public class CustomItem {
     private int dataID;
     private int amount = 1;
+    private boolean untradeable = false;
 
     public CustomItem(int data){
         this.dataID = data;
+        this.amount = 1;
+        this.untradeable = getData().isUntradeable();
     }
 
     public CustomItem(int data, int amount){
         this.dataID = data;
         this.amount = amount;
+        this.untradeable = getData().isUntradeable();
+    }
+
+    public CustomItem(int data, int amount, boolean untradeable){
+        this.dataID = data;
+        this.amount = amount;
+        this.untradeable = untradeable;
     }
 
     public CustomItem(ItemData data){
         this.dataID = data.getId();
+        this.amount = 1;
+        this.untradeable = getData().isUntradeable();
     }
 
     public CustomItem(ItemData data, int amount){
         this.dataID = data.getId();
         this.amount = amount;
+        this.untradeable = getData().isUntradeable();
+    }
+
+    public CustomItem(ItemData data, int amount, boolean untradeable){
+        this.dataID = data.getId();
+        this.amount = amount;
+        this.untradeable = untradeable;
     }
 
     public ItemData getData() {
@@ -66,6 +85,10 @@ public class CustomItem {
 
     public void updateAmount(ItemStack i){
         if(fromItemStack(i) == this && this.amount != i.getAmount()) this.amount = i.getAmount();
+    }
+
+    public boolean isUntradeable() {
+        return untradeable;
     }
 
     public int getSellprice(){
@@ -112,12 +135,14 @@ public class CustomItem {
                 iM.setDisplayName(getData().getRarity().getColor() + getData().getName());
                 ArrayList<String> iL = new ArrayList<String>();
                 if(getData().getCategory().toString().startsWith("WEAPON_")){
+                    iL.add("Minimum Level: " + getData().getNeededLevel());
                     iL.add(ChatColor.GOLD + "ATK: " + getData().getAtkMin() + "-" + getData().getAtkMax());
 
                     if(getData().getDescription() != null) iL.add(" ");
                 }
 
                 if(getData().getCategory() == ItemCategory.ARMOR){
+                    iL.add("Minimum Level: " + getData().getNeededLevel());
                     iL.add(ChatColor.GOLD + "DEF: " + getData().getDefMin() + "-" + getData().getDefMax());
 
                     if(getData().getDescription() != null) iL.add(" ");
@@ -127,6 +152,10 @@ public class CustomItem {
                     for(String s : Util.getWordWrapLore(getData().getDescription())){
                         iL.add(ChatColor.GRAY + s);
                     }
+                }
+
+                if(isUntradeable()){
+                    iL.add(ChatColor.RED + "Untradeable");
                 }
 
                 iM.setLore(iL);

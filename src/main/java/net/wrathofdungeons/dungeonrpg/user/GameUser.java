@@ -401,19 +401,19 @@ public class GameUser extends User {
                 }
             } else {
                 if(c.getRpgClass() == RPGClass.ARCHER || c.getRpgClass() == RPGClass.HUNTER || c.getRpgClass() == RPGClass.RANGER){
-                    p.getInventory().addItem(new CustomItem(1).build(p));
+                    p.getInventory().addItem(new CustomItem(1,1,true).build(p));
                 } else if(c.getRpgClass() == RPGClass.MERCENARY || c.getRpgClass() == RPGClass.KNIGHT || c.getRpgClass() == RPGClass.SOLDIER){
-                    p.getInventory().addItem(new CustomItem(2).build(p));
+                    p.getInventory().addItem(new CustomItem(2,1,true).build(p));
                 } else if(c.getRpgClass() == RPGClass.MAGICIAN || c.getRpgClass() == RPGClass.WIZARD || c.getRpgClass() == RPGClass.ALCHEMIST){
-                    p.getInventory().addItem(new CustomItem(3).build(p));
+                    p.getInventory().addItem(new CustomItem(3,1,true).build(p));
                 } else if(c.getRpgClass() == RPGClass.ASSASSIN || c.getRpgClass() == RPGClass.NINJA || c.getRpgClass() == RPGClass.BLADEMASTER){
-                    p.getInventory().addItem(new CustomItem(4).build(p));
+                    p.getInventory().addItem(new CustomItem(4,1,true).build(p));
                 }
 
                 p.getInventory().setItem(8,new CustomItem(5).build(p));
 
-                p.getInventory().setHelmet(new CustomItem(14).build(p));
-                p.getInventory().setChestplate(new CustomItem(10).build(p));
+                p.getInventory().setHelmet(new CustomItem(14,1,true).build(p));
+                p.getInventory().setChestplate(new CustomItem(10,1,true).build(p));
 
                 if(DungeonRPG.ENABLE_BOWDRAWBACK){
                     p.getInventory().setItem(17,new CustomItem(6,64).build(p));

@@ -92,7 +92,7 @@ public class BuyingMerchantMenu implements Listener {
                                         p.getInventory().addItem(item.build(p));
                                         inv.setItem(e.getSlot(), new ItemStack(Material.AIR));
                                     } else {
-                                        if(item.getSellprice() != 0){
+                                        if(item.getSellprice() != 0 && !item.isUntradeable()){
                                             if(inv.getItem(0) == null || inv.getItem(1) == null || inv.getItem(2) == null || inv.getItem(3) == null || inv.getItem(4) == null || inv.getItem(5) == null || inv.getItem(6) == null || inv.getItem(7) == null){
                                                 ItemStack i = item.build(p);
                                                 ItemMeta iM = i.getItemMeta();
