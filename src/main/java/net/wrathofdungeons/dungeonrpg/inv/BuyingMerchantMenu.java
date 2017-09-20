@@ -96,8 +96,11 @@ public class BuyingMerchantMenu implements Listener {
                                             if(inv.getItem(0) == null || inv.getItem(1) == null || inv.getItem(2) == null || inv.getItem(3) == null || inv.getItem(4) == null || inv.getItem(5) == null || inv.getItem(6) == null || inv.getItem(7) == null){
                                                 ItemStack i = item.build(p);
                                                 ItemMeta iM = i.getItemMeta();
-                                                iM.getLore().add(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString() + Util.SCOREBOARD_LINE_SEPERATOR);
-                                                iM.getLore().add(ChatColor.WHITE + "Sell Price" + ": " + ChatColor.GRAY + item.getSellprice());
+                                                ArrayList<String> iL = new ArrayList<String>();
+                                                if(iM.getLore() != null) iL.addAll(iM.getLore());
+                                                iL.add(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString() + Util.SCOREBOARD_LINE_SEPERATOR);
+                                                iL.add(ChatColor.WHITE + "Sell Price" + ": " + ChatColor.GRAY + item.getSellprice());
+                                                iM.setLore(iL);
                                                 i.setItemMeta(iM);
 
                                                 inv.addItem(i);
