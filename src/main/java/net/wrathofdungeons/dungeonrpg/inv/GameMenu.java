@@ -25,8 +25,8 @@ public class GameMenu {
         inv.withItem(2, b(u,StatPointType.STRENGTH,"Increases all damage dealt."),((player, action, item) -> c(p,StatPointType.STRENGTH)), ClickType.LEFT);
         inv.withItem(3,b(u,StatPointType.STAMINA,"Increases total health."),((player, action, item) -> c(p,StatPointType.STAMINA)), ClickType.LEFT);
         inv.withItem(4,b(u,StatPointType.INTELLIGENCE,"Increases mana regeneration."),((player, action, item) -> c(p,StatPointType.INTELLIGENCE)), ClickType.LEFT);
-        inv.withItem(6,b(u,StatPointType.DEXTERITY,"Increases the chance to do critical hits."),((player, action, item) -> c(p,StatPointType.DEXTERITY)), ClickType.LEFT);
-        inv.withItem(7,b(u,StatPointType.AGILITY,"Increases the chance to dodge enemy attacks."),((player, action, item) -> c(p,StatPointType.AGILITY)), ClickType.LEFT);
+        inv.withItem(5,b(u,StatPointType.DEXTERITY,"Increases the chance to do critical hits."),((player, action, item) -> c(p,StatPointType.DEXTERITY)), ClickType.LEFT);
+        inv.withItem(6,b(u,StatPointType.AGILITY,"Increases the chance to dodge enemy attacks."),((player, action, item) -> c(p,StatPointType.AGILITY)), ClickType.LEFT);
 
         inv.show(p);
     }
