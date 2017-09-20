@@ -37,6 +37,8 @@ public class DeathListener implements Listener {
                 e.getDrops().clear();
                 c.remove();
 
+                mob.playDeathSound(e.getEntity().getLocation());
+
                 if(livingEntity.getKiller() != null){
                     Player p = livingEntity.getKiller();
 

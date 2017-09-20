@@ -43,6 +43,7 @@ public class ProjectileHitListener implements Listener {
                                         u.ignoreFistCheck = true;
                                         livingEntity.damage(data.getDamage(),p);
                                         DungeonRPG.showBloodEffect(livingEntity.getLocation());
+                                        c.getData().playSound(livingEntity.getLocation());
 
                                         new BukkitRunnable(){
                                             @Override

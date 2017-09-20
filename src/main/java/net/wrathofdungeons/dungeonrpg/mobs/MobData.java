@@ -4,6 +4,8 @@ import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
@@ -58,6 +60,7 @@ public class MobData {
     private boolean adult;
     private MobClass mobClass;
     private double speed;
+    private MobSoundData soundData;
     private AISettings aiSettings;
 
     public MobData(int id){
@@ -89,6 +92,19 @@ public class MobData {
                 this.weapon = Util.parseItemStack(rs.getString("weapon"));
                 this.adult = rs.getBoolean("adult");
                 this.mobClass = MobClass.valueOf(rs.getString("class"));
+                this.soundData = new MobSoundData();
+
+                if(rs.getString("sound.name") != null){
+                    for(Sound s : Sound.values()){
+                        if(s.toString().equalsIgnoreCase("sound.name")){
+                            this.soundData.sound = s;
+                            break;
+                        }
+                    }
+                }
+
+                this.soundData.volume = rs.getFloat("sound.volume");
+                this.soundData.pitch = rs.getFloat("sound.pitch");
                 this.speed = rs.getDouble("speed");
 
                 this.aiSettings = new AISettings();
@@ -167,6 +183,18 @@ public class MobData {
 
     public MobClass getMobClass() {
         return mobClass;
+    }
+
+    public MobSoundData getSoundData() {
+        return soundData;
+    }
+
+    public void playSound(Location loc){
+        if(getSoundData() != null) getSoundData().play(loc);
+    }
+
+    public void playDeathSound(Location loc){
+        if(getSoundData() != null) getSoundData().playDeath(loc);
     }
 
     public double getSpeed() {

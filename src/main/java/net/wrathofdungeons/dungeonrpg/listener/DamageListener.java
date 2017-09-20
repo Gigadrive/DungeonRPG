@@ -143,6 +143,7 @@ public class DamageListener implements Listener {
                                             u.setAttackCooldown(true);
                                             e.setDamage(DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false, 0, true));
                                             DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                            c.getData().playSound(e.getEntity().getLocation());
                                             adjustKnockback = true;
 
                                             new BukkitRunnable(){
@@ -156,6 +157,7 @@ public class DamageListener implements Listener {
                                         if(u.ignoreFistCheck){
                                             e.setDamage(DamageManager.calculateDamage(p, ent, DamageSource.PVE, false, false));
                                             DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                            c.getData().playSound(e.getEntity().getLocation());
                                             adjustKnockback = true;
                                             closerKnockbackLocation = true;
                                         } else {
@@ -191,10 +193,12 @@ public class DamageListener implements Listener {
                             if(data.getType() == DungeonProjectileType.DART_RAIN){
                                 e.setDamage(data.getDamage());
                                 DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                c.getData().playSound(e.getEntity().getLocation());
                                 // TODO: Spawn damage indicator
                             } else {
                                 e.setDamage(DamageManager.calculateDamage(data.getPlayer(), (LivingEntity)e.getEntity(), DamageSource.PVE, false, false, 0, true, data.getForce()));
                                 DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                c.getData().playSound(e.getEntity().getLocation());
                                 adjustKnockback = true;
                             }
 
