@@ -50,4 +50,27 @@ public class WorldUtilities {
 
         return locations;
     }
+
+    public static CustomItem[] convertNuggetAmount(int nuggets){
+        ArrayList<CustomItem> a = new ArrayList<CustomItem>();
+
+        int blocks = 0;
+        int ingots = 0;
+
+        while(nuggets > 64){
+            ingots++;
+            nuggets -= 64;
+        }
+
+        while(ingots > 64){
+            blocks++;
+            ingots -= 64;
+        }
+
+        if(nuggets > 0) a.add(new CustomItem(7,nuggets));
+        if(ingots > 0) a.add(new CustomItem(8,ingots));
+        if(blocks > 0) a.add(new CustomItem(9,blocks));
+
+        return a.toArray(new CustomItem[]{});
+    }
 }

@@ -5,6 +5,7 @@ import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
 import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
+import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
@@ -384,6 +385,7 @@ public class DungeonRPG extends JavaPlugin {
 
     private void registerListeners(){
         Bukkit.getPluginManager().registerEvents(new BlockListener(),this);
+        Bukkit.getPluginManager().registerEvents(new BuyingMerchantMenu(),this);
         Bukkit.getPluginManager().registerEvents(new CharacterCreationListener(),this);
         Bukkit.getPluginManager().registerEvents(new ChatListener(),this);
         Bukkit.getPluginManager().registerEvents(new ChunkListener(),this);

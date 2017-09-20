@@ -68,6 +68,11 @@ public class CustomItem {
         if(fromItemStack(i) == this && this.amount != i.getAmount()) this.amount = i.getAmount();
     }
 
+    public int getSellprice(){
+        // TODO: Calculate price with awakenings, tier, crystals etc.
+        return 1;
+    }
+
     public ItemStack build(Player p){
         if(p != null){
             GameUser u = GameUser.getUser(p);

@@ -601,6 +601,17 @@ public class GameUser extends User {
         }
     }
 
+    public int getEmptySlotsInInventory(){
+        int count = 0;
+        for (ItemStack i : p.getInventory()) {
+            if (i == null) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     public boolean isInSetupMode() {
         return setupMode;
     }
