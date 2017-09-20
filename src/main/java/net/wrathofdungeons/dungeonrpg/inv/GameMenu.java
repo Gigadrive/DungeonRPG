@@ -20,7 +20,7 @@ public class GameMenu {
     public static void openFor(Player p){
         GameUser u = GameUser.getUser(p);
         InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.INVENTORY_1ROW);
-        if(u.getCurrentCharacter().getStatpointsLeft() < 0){
+        if(u.getCurrentCharacter().getStatpointsLeft() <= 0){
             inv.withTitle("Game Menu");
         } else {
             inv.withTitle("[" + u.getCurrentCharacter().getStatpointsLeft() + "] Game Menu");
