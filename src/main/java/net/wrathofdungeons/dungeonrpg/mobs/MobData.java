@@ -96,7 +96,7 @@ public class MobData {
 
                 if(rs.getString("sound.name") != null){
                     for(Sound s : Sound.values()){
-                        if(s.toString().equalsIgnoreCase("sound.name")){
+                        if(s.toString().equalsIgnoreCase(rs.getString("sound.name"))){
                             this.soundData.sound = s;
                             break;
                         }

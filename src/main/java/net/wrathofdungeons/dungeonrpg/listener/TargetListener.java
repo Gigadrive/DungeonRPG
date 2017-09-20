@@ -35,6 +35,8 @@ public class TargetListener implements Listener {
 
     @EventHandler
     public void onTarget(EntityTargetLivingEntityEvent e){
+        if(e.getEntity() == null || e.getTarget() == null) return;
+
         if(e.getReason() == EntityTargetEvent.TargetReason.OWNER_ATTACKED_TARGET || e.getReason() == EntityTargetEvent.TargetReason.TARGET_ATTACKED_OWNER){
             e.setCancelled(true);
             return;
