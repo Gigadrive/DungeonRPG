@@ -159,7 +159,7 @@ public class Character {
     }
 
     public void reduceStatpointsLeft(int i){
-        if(this.statpointsLeft-i > 0){
+        if(this.statpointsLeft-i >= 0){
             this.statpointsLeft -= i;
         }
     }
