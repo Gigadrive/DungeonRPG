@@ -69,8 +69,31 @@ public class CustomItem {
     }
 
     public int getSellprice(){
-        // TODO: Calculate price with awakenings, tier, crystals etc.
-        return 1;
+        int sellprice = 0;
+
+        if(getData().getCategory() == ItemCategory.WEAPON_BOW || getData().getCategory() == ItemCategory.WEAPON_SHEARS || getData().getCategory() == ItemCategory.WEAPON_STICK || getData().getCategory() == ItemCategory.WEAPON_AXE){
+            sellprice += getData().getNeededLevel()*1.5;
+
+            if(getData().getRarity() == ItemRarity.COMMON){
+                sellprice *= 1;
+            } else if(getData().getRarity() == ItemRarity.SPECIAL){
+                sellprice *= 1;
+            } else if(getData().getRarity() == ItemRarity.RARE){
+                sellprice *= 1.2;
+            } else if(getData().getRarity() == ItemRarity.EPIC){
+                sellprice *= 1.6;
+            } else if(getData().getRarity() == ItemRarity.LEGENDARY){
+                sellprice *= 2.2;
+            } else if(getData().getRarity() == ItemRarity.NONE){
+                sellprice *= 0;
+            }
+
+            // TODO: Add awakenings etc. to calculation
+        }
+
+        if(sellprice < 0) sellprice = 1;
+
+        return sellprice;
     }
 
     public ItemStack build(Player p){
