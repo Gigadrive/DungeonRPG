@@ -91,6 +91,8 @@ public class CustomItem {
             // TODO: Add awakenings etc. to calculation
         }
 
+        sellprice *= amount;
+
         if(sellprice < 0) sellprice = 1;
 
         return sellprice;
