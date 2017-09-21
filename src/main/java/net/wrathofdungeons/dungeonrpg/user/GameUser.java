@@ -7,6 +7,7 @@ import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
@@ -98,6 +99,8 @@ public class GameUser extends User {
             Character c = getCurrentCharacter();
 
             maxHP += FormularUtils.getBaseHP(c);
+
+            maxHP += Math.pow(getCurrentCharacter().getStatpointsTotal(StatPointType.STAMINA),2);
         } else {
             maxHP = 20;
         }
