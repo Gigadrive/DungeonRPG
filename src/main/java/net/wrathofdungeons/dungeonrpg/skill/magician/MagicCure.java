@@ -79,7 +79,6 @@ public class MagicCure implements Skill {
             // START ACTUAL HEALING
 
             int toHeal = (int)(Util.randomInteger(weapon.getData().getAtkMin(),weapon.getData().getAtkMax())*1.5);
-            p.sendMessage("Healing: " + toHeal);
 
             ArrayList<Player> players = new ArrayList<Player>();
             players.add(p);
