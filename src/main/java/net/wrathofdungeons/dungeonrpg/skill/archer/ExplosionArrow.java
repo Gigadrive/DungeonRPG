@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.skill.archer;
 
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
@@ -48,7 +49,17 @@ public class ExplosionArrow implements Skill {
             double damage = 0;
             damage += Util.randomDouble(weapon.getData().getAtkMin(),weapon.getData().getAtkMax());
 
-            // TODO: Calculate damage with equipment, stat values etc.
+            int str = u.getCurrentCharacter().getStatpointsTotal(StatPointType.STRENGTH);
+
+            if(str < 0){
+                for (int i = 0; i > str; i--) {
+                    damage -= damage*0.01;
+                }
+            } else {
+                for (int i = 0; i < str; i++) {
+                    damage += damage*0.01;
+                }
+            }
 
             damage *= 2.5;
             if(damage < 1) damage = 1;

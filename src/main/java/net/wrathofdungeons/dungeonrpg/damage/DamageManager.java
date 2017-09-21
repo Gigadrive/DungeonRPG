@@ -5,6 +5,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.wrathofdungeons.dungeonapi.util.ChatIcons;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -78,23 +79,11 @@ public class DamageManager {
             damage = baseDamage;
         }
 
-        int str = 0;
-        int sta = 0;
-        int intel = 0;
-        int dex = 0;
-        int agi = 0;
-
-        /*str += u.currentCharacter.getAttributeValue(AttributeType.STRENGTH);
-        sta += u.currentCharacter.getAttributeValue(AttributeType.STAMINA);
-        intel += u.currentCharacter.getAttributeValue(AttributeType.INTELLIGENCE);
-        dex += u.currentCharacter.getAttributeValue(AttributeType.DEXTERITY);
-        agi += u.currentCharacter.getAttributeValue(AttributeType.AGILITY);
-
-        str += u.currentCharacter.getArtificialAttributeValue(AttributeType.STRENGTH);
-        sta += u.currentCharacter.getArtificialAttributeValue(AttributeType.STAMINA);
-        intel += u.currentCharacter.getArtificialAttributeValue(AttributeType.INTELLIGENCE);
-        dex += u.currentCharacter.getArtificialAttributeValue(AttributeType.DEXTERITY);
-        agi += u.currentCharacter.getArtificialAttributeValue(AttributeType.AGILITY);*/
+        int str = u.getCurrentCharacter().getStatpointsTotal(StatPointType.STRENGTH);
+        int sta = u.getCurrentCharacter().getStatpointsTotal(StatPointType.STAMINA);
+        int intel = u.getCurrentCharacter().getStatpointsTotal(StatPointType.INTELLIGENCE);
+        int dex = u.getCurrentCharacter().getStatpointsTotal(StatPointType.DEXTERITY);
+        int agi = u.getCurrentCharacter().getStatpointsTotal(StatPointType.AGILITY);
 
         if(gotAttacked){
             if(source == DamageSource.PVP){
@@ -106,16 +95,6 @@ public class DamageManager {
                 double dmg1 = calculateDamage(p2, p, DamageSource.PVP, false, isSkill);
 
                 damage += dmg1;
-
-                if((sta + "").startsWith("-")){
-                    for (int i = 0; i > sta; i--) {
-                        damage += 0.125;
-                    }
-                } else {
-                    for (int i = 0; i < sta; i++) {
-                        damage -= 0.125;
-                    }
-                }
 
                 for(CustomItem i : u.getCurrentCharacter().getEquipment(p)){
                     if(i.getData().getCategory().equals(ItemCategory.ARMOR)){
@@ -130,16 +109,6 @@ public class DamageManager {
                     MobData mob = ce.getData();
 
                     damage += mob.getAtk();
-
-                    if((sta + "").startsWith("-")){
-                        for (int i = 0; i > sta; i--) {
-                            damage += 0.125;
-                        }
-                    } else {
-                        for (int i = 0; i < sta; i++) {
-                            damage -= 0.125;
-                        }
-                    }
 
                     for(CustomItem i : u.getCurrentCharacter().getEquipment(p)){
                         if(i.getData().getCategory().equals(ItemCategory.ARMOR)){
@@ -179,15 +148,13 @@ public class DamageManager {
                     damage += Util.randomDouble(item.getData().getAtkMin(), item.getData().getAtkMax());
                 }
 
-                if(!isSkill){
-                    if((str + "").startsWith("-")){
-                        for (int i = 0; i > str; i--) {
-                            damage -= damage*0.01;
-                        }
-                    } else {
-                        for (int i = 0; i < str; i++) {
-                            damage += damage*0.01;
-                        }
+                if(str < 0){
+                    for (int i = 0; i > str; i--) {
+                        damage -= damage*0.01;
+                    }
+                } else {
+                    for (int i = 0; i < str; i++) {
+                        damage += damage*0.01;
                     }
                 }
 
