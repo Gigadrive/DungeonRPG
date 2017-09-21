@@ -11,6 +11,8 @@ public class SkillValues {
     public BukkitTask vortexBarrierTask;
     public int vortexBarrierCount;
     public Location vortexBarrierLoc;
+    public int magicCureCount;
+    public BukkitTask magicCureTask;
 
     public SkillValues(){
         reset();
@@ -20,6 +22,17 @@ public class SkillValues {
         dartRainArrows = 0;
         leapIsInAir = false;
         vortexBarrierCount = 0;
+        magicCureCount = 0;
+
+        if(dartRainTask != null){
+            dartRainTask.cancel();
+            dartRainTask = null;
+        }
+
+        if(magicCureTask != null){
+            magicCureTask.cancel();
+            magicCureTask = null;
+        }
 
         if(dartRainTask != null){
             dartRainTask.cancel();

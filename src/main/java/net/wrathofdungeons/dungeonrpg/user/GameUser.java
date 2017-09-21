@@ -15,6 +15,7 @@ import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.party.Party;
 import net.wrathofdungeons.dungeonrpg.skill.SkillValues;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
@@ -47,6 +48,8 @@ public class GameUser extends User {
     }
 
     public static void load(Player p){
+        if(CustomEntity.fromEntity(p) != null || CustomNPC.fromEntity(p) != null) return;
+
         if(!User.isLoaded(p)){
             new GameUser(p);
         }
