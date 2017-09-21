@@ -44,7 +44,7 @@ public class Blinkpool implements Skill {
             while(bi.hasNext()){
                 Block b = bi.next();
 
-                if(b.getType() == Material.AIR){
+                if(b.getType() == Material.AIR || !b.getType().isSolid()){
                     lastLoc = b.getLocation();
                 } else {
                     break;
