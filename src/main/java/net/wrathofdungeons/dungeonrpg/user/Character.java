@@ -51,10 +51,10 @@ public class Character {
                 this.level = rs.getInt("level");
                 this.exp = rs.getDouble("exp");
                 this.strength = rs.getInt("statpoints.str");
-                this.stamina = rs.getInt("statpoints.str");
-                this.intelligence = rs.getInt("statpoints.str");
-                this.dexterity = rs.getInt("statpoints.str");
-                this.agility = rs.getInt("statpoints.str");
+                this.stamina = rs.getInt("statpoints.sta");
+                this.intelligence = rs.getInt("statpoints.int");
+                this.dexterity = rs.getInt("statpoints.dex");
+                this.agility = rs.getInt("statpoints.agi");
                 this.statpointsLeft = rs.getInt("statpoints.left");
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
                 if(rs.getString("inventory") != null) this.storedInventory = PlayerInventory.fromString(rs.getString("inventory"));
