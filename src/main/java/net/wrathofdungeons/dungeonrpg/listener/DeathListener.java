@@ -19,6 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class DeathListener implements Listener {
@@ -134,6 +135,7 @@ public class DeathListener implements Listener {
                 p.setHealth(p.getMaxHealth());
                 u.setHP(u.getMaxHP());
                 u.setMP(u.getMaxMP());
+                for(PotionEffect pe : p.getActivePotionEffects()) p.removePotionEffect(pe.getType());
 
                 p.teleport(DungeonRPG.getNearestTown(p));
                 p.sendMessage(ChatColor.RED + "You died!");
