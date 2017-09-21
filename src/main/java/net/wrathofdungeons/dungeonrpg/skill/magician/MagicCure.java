@@ -51,7 +51,7 @@ public class MagicCure implements Skill {
 
             // START PARTICLES
 
-            ArrayList<Location> circle = WorldUtilities.getParticleCircle(p.getLocation().clone().add(0,1,0),range,20);
+            ArrayList<Location> circle = WorldUtilities.getParticleCircle(p.getLocation().clone().add(0,1,0),range,15);
 
             if(values.magicCureTask != null){
                 values.magicCureTask.cancel();
