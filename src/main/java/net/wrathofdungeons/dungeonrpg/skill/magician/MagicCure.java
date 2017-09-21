@@ -44,14 +44,14 @@ public class MagicCure implements Skill {
     public void execute(Player p) {
         GameUser u = GameUser.getUser(p);
         CustomItem weapon = CustomItem.fromItemStack(p.getItemInHand());
-        final int range = 10;
+        final int range = 8;
 
         if(weapon != null){
             SkillValues values = u.getSkillValues();
 
             // START PARTICLES
 
-            ArrayList<Location> circle = WorldUtilities.getParticleCircle(p.getLocation(),range,20);
+            ArrayList<Location> circle = WorldUtilities.getParticleCircle(p.getLocation().clone().add(0,1,0),range,20);
 
             if(values.magicCureTask != null){
                 values.magicCureTask.cancel();
@@ -74,7 +74,7 @@ public class MagicCure implements Skill {
                         values.magicCureCount++;
                     }
                 }
-            }.runTaskTimer(DungeonRPG.getInstance(),0,2);
+            }.runTaskTimer(DungeonRPG.getInstance(),0,1);
 
             // START ACTUAL HEALING
 
