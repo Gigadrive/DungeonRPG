@@ -64,15 +64,7 @@ public class DartRain implements Skill {
 
                             int str = u.getCurrentCharacter().getStatpointsTotal(StatPointType.STRENGTH);
 
-                            if(str < 0){
-                                for (int i = 0; i > str; i--) {
-                                    damage -= damage*0.01;
-                                }
-                            } else {
-                                for (int i = 0; i < str; i++) {
-                                    damage += damage*0.01;
-                                }
-                            }
+                            damage *= (str*0.1);
 
                             if(damage < 1) damage = 1;
 

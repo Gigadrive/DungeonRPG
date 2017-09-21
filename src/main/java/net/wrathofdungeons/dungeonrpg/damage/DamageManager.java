@@ -148,15 +148,7 @@ public class DamageManager {
                     damage += Util.randomDouble(item.getData().getAtkMin(), item.getData().getAtkMax());
                 }
 
-                if(str < 0){
-                    for (int i = 0; i > str; i--) {
-                        damage -= damage*0.01;
-                    }
-                } else {
-                    for (int i = 0; i < str; i++) {
-                        damage += damage*0.01;
-                    }
-                }
+                damage *= (str*0.1);
 
                 if(damage <= 0) damage = 1;
             } else {
