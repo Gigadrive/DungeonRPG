@@ -344,12 +344,14 @@ public class InteractListener implements Listener {
                                 u.comboDelay = 1;
                                 u.updateClickComboBar();
                                 p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
+                                u.startComboResetTask();
                                 return;
                             } else if((e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR) && (u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER))){
                                 u.currentCombo += "L";
                                 u.comboDelay = 1;
                                 u.updateClickComboBar();
                                 p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
+                                u.startComboResetTask();
                                 return;
                             }
                         }
@@ -360,13 +362,23 @@ public class InteractListener implements Listener {
                                 u.comboDelay = 1;
                                 u.updateClickComboBar();
                                 p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
-                                if(u.currentCombo.length() != 3) return;
+                                if(u.currentCombo.length() != 3){
+                                    u.startComboResetTask();
+                                    return;
+                                }
+
+                                u.stopComboResetTask();
                             } else if(e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR){
                                 u.currentCombo = u.currentCombo + "L";
                                 u.comboDelay = 1;
                                 u.updateClickComboBar();
                                 p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
-                                if(u.currentCombo.length() != 3) return;
+                                if(u.currentCombo.length() != 3){
+                                    u.startComboResetTask();
+                                    return;
+                                }
+
+                                u.stopComboResetTask();
                             }
 
                             if(u.currentCombo.length() == 3){

@@ -8,6 +8,7 @@ import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +28,8 @@ public class PlayerMoveListener implements Listener {
             GameUser u = GameUser.getUser(p);
 
             if(u.getCurrentCharacter() != null){
+                if(((Entity)p).isOnGround()) u.getSkillValues().leapIsInAir = false;
+
                 if(u.mayActivateMobs){
                     Location from = e.getFrom();
                     Location to = e.getTo();

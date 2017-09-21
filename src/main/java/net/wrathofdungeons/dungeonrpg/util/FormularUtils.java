@@ -8,7 +8,8 @@ public class FormularUtils {
     }
 
     public static double getBaseHPOnLevel(int level){
-        return 5*(level+1)+32*(level+1);
+        //return 5*(level+1)+32*(level+1);
+        return 16*level+2*24;
     }
 
     public static double getBaseHP(net.wrathofdungeons.dungeonrpg.user.Character c){

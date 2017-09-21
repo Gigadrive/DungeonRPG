@@ -73,6 +73,7 @@ public class GameUser extends User {
 
     private BukkitTask mpRegenTask;
     private BukkitTask hpRegenTask;
+    private BukkitTask comboResetTask;
 
     public GameUser(Player p){
         super(p);
@@ -97,10 +98,11 @@ public class GameUser extends User {
             Character c = getCurrentCharacter();
 
             maxHP += FormularUtils.getBaseHP(c);
-            // TODO: Add health values from gear
         } else {
             maxHP = 20;
         }
+
+        if(maxHP <= 0) maxHP = 1;
 
         return maxHP;
     }
@@ -150,6 +152,25 @@ public class GameUser extends User {
         if(hpRegenTask != null){
             hpRegenTask.cancel();
             hpRegenTask = null;
+        }
+    }
+
+    public void startComboResetTask(){
+        stopComboResetTask();
+
+        comboResetTask = new BukkitRunnable(){
+            @Override
+            public void run() {
+                currentCombo = "";
+                comboResetTask = null;
+            }
+        }.runTaskLater(DungeonRPG.getInstance(),2*20);
+    }
+
+    public void stopComboResetTask(){
+        if(comboResetTask != null){
+            comboResetTask.cancel();
+            comboResetTask = null;
         }
     }
 
