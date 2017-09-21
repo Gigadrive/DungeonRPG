@@ -6,6 +6,7 @@ import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillType;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -73,6 +74,7 @@ public class Blinkpool implements Skill {
             lastLoc.setY(y);
             lastLoc.setYaw(loc.getYaw());
             lastLoc.setPitch(loc.getPitch());
+            p.getWorld().playEffect(p.getLocation(), Effect.ENDER_SIGNAL, 1);
 
             p.teleport(lastLoc);
         } catch(IllegalStateException ex){
