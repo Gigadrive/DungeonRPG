@@ -115,13 +115,19 @@ public class GameUser extends User {
             mpRegenTask = new BukkitRunnable(){
                 @Override
                 public void run() {
-                    int mp = getMP();
-                    mp += 1;
-                    if(mp > getMaxMP()) mp = getMaxMP();
+                    if(getMP() < getMaxMP()){
+                        int mp = getMP();
+                        int mpToAdd = 1;
 
-                    // TODO: Consider awakenings that increase or decresae MP regeneration
+                        mpToAdd += getCurrentCharacter().getStatpointsTotal(StatPointType.INTELLIGENCE)*0.3125;
 
-                    setMP(mp);
+                        if(mpToAdd < 1) mpToAdd = 1;
+                        mp += mpToAdd;
+
+                        if(mp > getMaxMP()) mp = getMaxMP();
+
+                        setMP(mp);
+                    }
                 }
             }.runTaskTimer(DungeonRPG.getInstance(),30,30);
         }
