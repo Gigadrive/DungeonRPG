@@ -51,7 +51,7 @@ public class ExplosionArrow implements Skill {
 
             int str = u.getCurrentCharacter().getStatpointsTotal(StatPointType.STRENGTH);
 
-            damage *= (str*0.1);
+            damage = damage+damage*(str*0.1);
 
             damage *= 2.5;
             if(damage < 1) damage = 1;

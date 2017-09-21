@@ -6,6 +6,7 @@ import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
+import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
@@ -489,6 +490,8 @@ public class GameUser extends User {
                 Team t = b.getTeam(p.getName());
                 if(t == null) t = b.registerNewTeam(p.getName());
                 t.addEntry(p.getName());
+
+                p.setPlayerListName(Util.limitString(getRank().getColor() + p.getName(),16));
 
                 if(getCurrentCharacter() != null){
                     if(all != p){
