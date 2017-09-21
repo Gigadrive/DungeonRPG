@@ -46,6 +46,8 @@ public class Blinkpool implements Skill {
 
                 if(b.getType() == Material.AIR){
                     lastLoc = b.getLocation();
+                } else {
+                    break;
                 }
             }
 
@@ -57,7 +59,7 @@ public class Blinkpool implements Skill {
                 Location l = loc.clone();
                 for (int i = 0; i < c; i++) {
                     l.add(v);
-                    ParticleEffect.FLAME.display(0f,0f,0f,0.005f,3,l,600);
+                    ParticleEffect.FLAME.display(0f,0f,0f,0f,1,l,600);
                 }
             }
 
