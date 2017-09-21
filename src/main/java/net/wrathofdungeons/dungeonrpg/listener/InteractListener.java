@@ -23,6 +23,7 @@ import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
+import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.apache.logging.log4j.core.Filter;
@@ -397,12 +398,15 @@ public class InteractListener implements Listener {
                                     if(toCast.getType().getMinLevel() <= u.getCurrentCharacter().getLevel()){
                                         if(toCast.getType().getManaCost() <= u.getMP()){
                                             u.ignoreDamageCheck = true;
+                                            boolean playAfter = toCast instanceof Blinkpool;
 
-                                            p.playSound(p.getEyeLocation(),Sound.SUCCESSFUL_HIT,1f,1f);
+                                            if(!playAfter) p.playSound(p.getEyeLocation(),Sound.SUCCESSFUL_HIT,1f,0.5f);
                                             u.setMP(u.getMP()-toCast.getType().getManaCost());
                                             toCast.execute(p);
 
                                             if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) BountifulAPI.sendActionBar(p,ChatColor.GREEN + toCast.getName() + " " + ChatColor.GRAY + "[-" + toCast.getType().getManaCost() + " MP]");
+
+                                            if(playAfter) p.playSound(p.getEyeLocation(),Sound.SUCCESSFUL_HIT,1f,1f);
 
                                             new BukkitRunnable(){
                                                 @Override
