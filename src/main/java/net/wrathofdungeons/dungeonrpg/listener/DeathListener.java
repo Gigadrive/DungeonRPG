@@ -5,6 +5,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.*;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
@@ -60,7 +61,7 @@ public class DeathListener implements Listener {
                                     if(mob.getMobType() == MobType.AGGRO){
                                         int limit = 2;
 
-                                        if(Util.getChanceBoolean(15, 125)){
+                                        if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 125)){
                                             int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
 
                                             for(ItemData data : ItemData.STORAGE){
@@ -104,6 +105,8 @@ public class DeathListener implements Listener {
                                 } else {
                                     xp /= Util.getIntegerDifference(u.getCurrentCharacter().getLevel(), mob.getLevel());
                                 }
+
+                                xp = xp+xp*(u.getCurrentCharacter().getTotalValue(AwakeningType.XP_BONUS)*0.01);
 
                                 p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
 
