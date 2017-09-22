@@ -268,7 +268,7 @@ public class DamageListener implements Listener {
                                 if(u.__associateDamageWithSystem){
                                     e.setDamage(0);
                                     //u.damage(DamageManager.calculateDamage(p, (LivingEntity)e.getDamager(), DamageSource.PVE, true, false), (LivingEntity)e.getDamager());
-                                    u.damage(DamageHandler.calculateMobToPlayerDamage(u,c),(LivingEntity)e.getDamager());
+                                    u.damage(DamageHandler.calculateMobToPlayerDamage(u,CustomEntity.fromEntity((LivingEntity)e.getDamager())),(LivingEntity)e.getDamager());
                                     DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                 }
                             }
