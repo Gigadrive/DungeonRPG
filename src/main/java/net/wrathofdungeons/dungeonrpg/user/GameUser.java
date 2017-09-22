@@ -97,6 +97,18 @@ public class GameUser extends User {
         updateHPBar();
     }
 
+    public void addHP(double hp){
+        addHP(((int)hp));
+    }
+
+    public void addHP(int hp){
+        hp += this.hp;
+
+        if(hp > getMaxHP()) hp = getMaxHP();
+
+        setHP(hp);
+    }
+
     public int getMaxHP(){
         int maxHP = 0;
 
@@ -204,6 +216,18 @@ public class GameUser extends User {
 
     public int getMaxMP(){
         return 20;
+    }
+
+    public void addMP(double mp){
+        addMP(((int)hp));
+    }
+
+    public void addMP(int mp){
+        mp += getMP();
+
+        if(mp > getMaxMP()) mp = getMaxMP();
+
+        setMP(mp);
     }
 
     public int getMPPercentage(){

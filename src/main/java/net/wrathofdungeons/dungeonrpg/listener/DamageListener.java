@@ -5,6 +5,7 @@ import net.wrathofdungeons.dungeonrpg.damage.DamageManager;
 import net.wrathofdungeons.dungeonrpg.damage.DamageSource;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
@@ -141,10 +142,21 @@ public class DamageListener implements Listener {
                                             return;
                                         } else {
                                             u.setAttackCooldown(true);
-                                            e.setDamage(DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false, 0, true));
+                                            double damage = DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false, 0, true);
+                                            e.setDamage(damage);
                                             DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                             c.getData().playSound(e.getEntity().getLocation());
                                             adjustKnockback = true;
+
+                                            int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
+                                            if(hpLeech > 0){
+                                                u.addHP(damage*(hpLeech*0.01));
+                                            }
+
+                                            int mpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.MP_LEECH);
+                                            if(mpLeech > 0){
+                                                u.addMP(damage*(mpLeech*0.01));
+                                            }
 
                                             new BukkitRunnable(){
                                                 @Override
@@ -155,11 +167,22 @@ public class DamageListener implements Listener {
                                         }
                                     } else {
                                         if(u.ignoreFistCheck){
-                                            e.setDamage(DamageManager.calculateDamage(p, ent, DamageSource.PVE, false, false));
+                                            double damage = DamageManager.calculateDamage(p, ent, DamageSource.PVE, false, false);
+                                            e.setDamage(damage);
                                             DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                             c.getData().playSound(e.getEntity().getLocation());
                                             adjustKnockback = true;
                                             closerKnockbackLocation = true;
+
+                                            int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
+                                            if(hpLeech > 0){
+                                                u.addHP(damage*(hpLeech*0.01));
+                                            }
+
+                                            int mpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.MP_LEECH);
+                                            if(mpLeech > 0){
+                                                u.addMP(damage*(mpLeech*0.01));
+                                            }
                                         } else {
                                             e.setCancelled(true);
                                             return;
@@ -184,6 +207,8 @@ public class DamageListener implements Listener {
                     if(!e.isCancelled()) {
                         if (DungeonRPG.SHOT_PROJECTILE_DATA.containsKey(e.getDamager().getUniqueId().toString())) {
                             DungeonProjectile data = DungeonRPG.SHOT_PROJECTILE_DATA.get(e.getDamager().getUniqueId().toString());
+                            Player p = data.getPlayer();
+                            GameUser u = GameUser.getUser(p);
 
                             if(data.getType() == DungeonProjectileType.EXPLOSION_ARROW){
                                 e.setCancelled(true);
@@ -191,10 +216,10 @@ public class DamageListener implements Listener {
                             }
 
                             if(data.getType() == DungeonProjectileType.DART_RAIN){
-                                e.setDamage(data.getDamage());
+                                double damage = data.getDamage();
+                                e.setDamage(damage);
                                 DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                 c.getData().playSound(e.getEntity().getLocation());
-                                // TODO: Spawn damage indicator
                             } else {
                                 e.setDamage(DamageManager.calculateDamage(data.getPlayer(), (LivingEntity)e.getEntity(), DamageSource.PVE, false, false, 0, true, data.getForce()));
                                 DungeonRPG.showBloodEffect(e.getEntity().getLocation());
