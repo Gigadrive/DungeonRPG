@@ -4,6 +4,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,13 +36,17 @@ public class InventoryCloseListener implements Listener {
                     }
                 }.runTaskLater(DungeonRPG.getInstance(),20);
 
-                if(inv.getName().equals("Buying Merchant")){
+                if(inv.getName().equals("Buying Merchant") || inv.getName().equals("Awakening Specialist")){
                     int[] i = new int[]{0,1,2,3,4,5,6,7};
 
                     for(int ii : i){
                         if(inv.getItem(ii) != null){
                             if(CustomItem.fromItemStack(inv.getItem(ii)) != null){
-                                p.getInventory().addItem(CustomItem.fromItemStack(inv.getItem(ii)).build(p));
+                                if(u.getEmptySlotsInInventory() > 0){
+                                    p.getInventory().addItem(CustomItem.fromItemStack(inv.getItem(ii)).build(p));
+                                } else {
+                                    WorldUtilities.dropItem(p.getLocation(),CustomItem.fromItemStack(inv.getItem(ii)),p);
+                                }
                             }
                         }
                     }

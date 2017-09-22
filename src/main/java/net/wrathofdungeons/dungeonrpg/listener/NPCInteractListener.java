@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
+import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
 import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPCType;
@@ -20,6 +21,8 @@ public class NPCInteractListener implements Listener {
         if(!u.isInSetupMode()){
             if(npc.getNpcType() == CustomNPCType.BUYING_MERCHANT){
                 BuyingMerchantMenu.openFor(p);
+            } else if(npc.getNpcType() == CustomNPCType.AWAKENING_SPECIALIST){
+                AwakeningMenu.openFor(p);
             }
         } else {
             p.sendMessage(ChatColor.YELLOW + "NPC ID: " + npc.getId());

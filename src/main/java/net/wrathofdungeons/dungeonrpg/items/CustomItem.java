@@ -214,6 +214,45 @@ public class CustomItem {
         return sellprice;
     }
 
+    public int getAwakeningPrice(){
+        if(canHoldAwakenings()){
+            if(getMaxAwakenings() > getAwakenings().size()){
+                int price = 0;
+
+                price += getData().getNeededLevel()*1.6;
+
+                if(getData().getRarity() == ItemRarity.COMMON){
+                    price *= 1;
+                } else if(getData().getRarity() == ItemRarity.SPECIAL){
+                    price *= 1;
+                } else if(getData().getRarity() == ItemRarity.RARE){
+                    price *= 1.6;
+                } else if(getData().getRarity() == ItemRarity.EPIC){
+                    price *= 2.1;
+                } else if(getData().getRarity() == ItemRarity.LEGENDARY){
+                    price *= 2.8;
+                } else if(getData().getRarity() == ItemRarity.NONE){
+                    price *= 0;
+                }
+
+                if(getAwakenings().size() > 0){
+                    double j = 1+((getAwakenings().size()*2)*0.1);
+                    price *= j;
+                }
+
+                return price;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    public int getMaxAwakenings(){
+        return getData().getRarity().getMaxAwakenings();
+    }
+
     public ItemStack build(Player p){
         if(p != null){
             GameUser u = GameUser.getUser(p);

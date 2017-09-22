@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
+import de.dytanic.cloudnet.lib.network.ChannelUser;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.user.Rank;
@@ -792,6 +793,60 @@ public class GameUser extends User {
 
     public void updateInventory(){
         if(getCurrentCharacter() != null) getCurrentCharacter().getConvertedInventory(p).loadToPlayer(p);
+    }
+
+    public int getTotalMoneyInInventory(){
+        int i = 0;
+
+        for(ItemStack iStack : p.getInventory().getContents()){
+            CustomItem c = CustomItem.fromItemStack(iStack);
+
+            if(c != null){
+                if(c.getData().getId() == 7){
+                    i += iStack.getAmount();
+                } else if(c.getData().getId() == 8){
+                    i += iStack.getAmount()*64;
+                } else if(c.getData().getId() == 9){
+                    i += iStack.getAmount()*4096;
+                }
+            }
+        }
+
+        return i;
+    }
+
+    public boolean removeMoneyFromInventory(int i){
+        return removeMoneyFromInventory(i,0);
+    }
+
+    public boolean removeMoneyFromInventory(int money, int neededSpaces){
+        if(getTotalMoneyInInventory() >= money){
+            ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+
+            for(ItemStack iStack : p.getInventory().getContents()){
+                CustomItem c = CustomItem.fromItemStack(iStack);
+
+                if(c != null){
+                    if(c.getData().getId() == 7 || c.getData().getId() == 8 || c.getData().getId() == 9){
+                        items.add(iStack);
+                    }
+                }
+            }
+
+            CustomItem[] newMoney = WorldUtilities.convertNuggetAmount(getTotalMoneyInInventory()-money);
+            int neededSlots = newMoney.length+neededSpaces;
+
+            if(neededSlots <= (getEmptySlotsInInventory()+items.size())){
+                p.getInventory().removeItem(items.toArray(new ItemStack[]{}));
+                for(CustomItem c : newMoney) p.getInventory().addItem(c.build(p));
+
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public SkillValues getSkillValues() {
