@@ -415,6 +415,7 @@ public class DungeonRPG extends JavaPlugin {
     }
 
     private void registerCommands(){
+        new AwakeningCommand();
         new CreateNPCCommand();
         new CreateRegionCommand();
         new CharSelCommand();

@@ -4,8 +4,11 @@ import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import net.minecraft.server.v1_8_R3.NBTTagInt;
+import net.minecraft.server.v1_8_R3.NBTTagString;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
+import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.Bukkit;
@@ -17,47 +20,78 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class CustomItem {
     private int dataID;
     private int amount = 1;
     private boolean untradeable = false;
+    private ArrayList<Awakening> awakenings;
 
     public CustomItem(int data){
         this.dataID = data;
         this.amount = 1;
         this.untradeable = getData().isUntradeable();
+        this.awakenings = new ArrayList<Awakening>();
     }
 
     public CustomItem(int data, int amount){
         this.dataID = data;
         this.amount = amount;
         this.untradeable = getData().isUntradeable();
+        this.awakenings = new ArrayList<Awakening>();
     }
 
     public CustomItem(int data, int amount, boolean untradeable){
         this.dataID = data;
         this.amount = amount;
         this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+    }
+
+    public CustomItem(int data, int amount, boolean untradeable, Awakening[] awakenings){
+        this.dataID = data;
+        this.amount = amount;
+        this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+
+        if(awakenings != null && awakenings.length > 0){
+            this.awakenings = new ArrayList<Awakening>();
+            this.awakenings.addAll(Arrays.asList(awakenings));
+        }
     }
 
     public CustomItem(ItemData data){
         this.dataID = data.getId();
         this.amount = 1;
         this.untradeable = getData().isUntradeable();
+        this.awakenings = new ArrayList<Awakening>();
     }
 
     public CustomItem(ItemData data, int amount){
         this.dataID = data.getId();
         this.amount = amount;
         this.untradeable = getData().isUntradeable();
+        this.awakenings = new ArrayList<Awakening>();
     }
 
     public CustomItem(ItemData data, int amount, boolean untradeable){
         this.dataID = data.getId();
         this.amount = amount;
         this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+    }
+
+    public CustomItem(ItemData data, int amount, boolean untradeable, Awakening[] awakenings){
+        this.dataID = data.getId();
+        this.amount = amount;
+        this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+
+        if(awakenings != null && awakenings.length > 0){
+            this.awakenings.addAll(Arrays.asList(awakenings));
+        }
     }
 
     public ItemData getData() {
@@ -92,6 +126,46 @@ public class CustomItem {
 
     public boolean isUntradeable() {
         return untradeable;
+    }
+
+    public boolean canHoldAwakenings(){
+        return getData().getCategory() == ItemCategory.WEAPON_BOW || getData().getCategory() == ItemCategory.WEAPON_STICK || getData().getCategory() == ItemCategory.WEAPON_SHEARS || getData().getCategory() == ItemCategory.WEAPON_AXE || getData().getCategory() == ItemCategory.ARMOR;
+    }
+
+    public ArrayList<Awakening> getAwakenings() {
+        return awakenings;
+    }
+
+    public boolean hasAwakenings(){
+        return awakenings != null && awakenings.size() > 0;
+    }
+
+    public boolean hasAwakening(AwakeningType type){
+        if(getAwakenings() != null){
+            for(Awakening a : getAwakenings()){
+                if(a.type == type) return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void addAwakening(Awakening a){
+        if(!hasAwakening(a.type)){
+            getAwakenings().add(a);
+        }
+    }
+
+    public void removeAwakening(AwakeningType type){
+        if(hasAwakening(type)){
+            Awakening toRemove = null;
+
+            for(Awakening a : getAwakenings()){
+                if(a.type == type) toRemove = a;
+            }
+
+            getAwakenings().remove(toRemove);
+        }
     }
 
     public int getSellprice(){
@@ -157,6 +231,37 @@ public class CustomItem {
                     }
                 }
 
+                if(canHoldAwakenings()){
+                    if(hasAwakenings()){
+                        for(Awakening a : getAwakenings()){
+                            if(a.value > 0){
+                                // IS POSITIVE
+                                if(a.isPercentage){
+                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                                } else {
+                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                                }
+                            } else if(a.value == 0){
+                                // IS NEUTRAL (shouldn't really happen)
+                                if(a.isPercentage){
+                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                                } else {
+                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                                }
+                            } else {
+                                // IS NEGATIVE
+                                if(a.isPercentage){
+                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                                } else {
+                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                                }
+                            }
+                        }
+                    } else {
+                        iL.add(ChatColor.BLUE + "Awakening available!");
+                    }
+                }
+
                 if(isUntradeable()){
                     iL.add(ChatColor.RED + "Untradeable");
                 }
@@ -188,6 +293,15 @@ public class CustomItem {
         if(!tag.hasKey("dataID")) tag.set("dataID",new NBTTagInt(getData().getId()));
 
         if(!tag.hasKey("untradeable")) tag.set("untradeable",new NBTTagInt(Util.convertBooleanToInteger(isUntradeable())));
+
+        if(hasAwakenings()){
+            for(Awakening a : getAwakenings()){
+                String s = null;
+                while(s == null || tag.hasKey(s)) s = "awakening" + Util.randomInteger(1,Integer.MAX_VALUE);
+
+                tag.set(s,new NBTTagString(a.toString()));
+            }
+        }
 
         if(getData().getCategory() == ItemCategory.WEAPON_STICK) tag.set("stackProtection", new NBTTagInt(Util.randomInteger(-5000, 5000)));
 
