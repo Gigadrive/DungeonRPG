@@ -8,9 +8,11 @@ import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import javax.naming.ldap.PagedResultsControl;
 import java.sql.Array;
@@ -22,7 +24,7 @@ import java.util.UUID;
 
 public class Character {
     private int id;
-    private UUID owner;
+    private Player p;
     private RPGClass rpgClass;
     private int level;
     private double exp;
@@ -37,7 +39,7 @@ public class Character {
     private Timestamp creationTime;
     private Timestamp lastLogin;
 
-    public Character(int id){
+    public Character(int id, Player p){
         this.id = id;
 
         try {
@@ -46,7 +48,7 @@ public class Character {
 
             ResultSet rs = ps.executeQuery();
             if(rs.first()){
-                this.owner = UUID.fromString(rs.getString("uuid"));
+                this.p = p;
                 this.rpgClass = RPGClass.valueOf(rs.getString("class"));
                 this.level = rs.getInt("level");
                 this.exp = rs.getDouble("exp");
@@ -74,8 +76,8 @@ public class Character {
         return id;
     }
 
-    public UUID getOwner() {
-        return owner;
+    public Player getPlayer() {
+        return p;
     }
 
     public RPGClass getRpgClass() {
@@ -138,9 +140,19 @@ public class Character {
     }
 
     public int getStatpointsArtificial(StatPointType type){
-        // TODO: Calculate artificial stat points from equipment
-
-        return 0;
+        if(type == StatPointType.STRENGTH){
+            return getTotalValue(AwakeningType.STR_BONUS);
+        } else if(type == StatPointType.STAMINA){
+            return getTotalValue(AwakeningType.STA_BONUS);
+        } else if(type == StatPointType.INTELLIGENCE){
+            return getTotalValue(AwakeningType.INT_BONUS);
+        } else if(type == StatPointType.DEXTERITY){
+            return getTotalValue(AwakeningType.DEX_BONUS);
+        } else if(type == StatPointType.AGILITY){
+            return getTotalValue(AwakeningType.AGI_BONUS);
+        } else {
+            return 0;
+        }
     }
 
     public int getStatpointsTotal(StatPointType type){
@@ -162,6 +174,18 @@ public class Character {
         if(this.statpointsLeft-i >= 0){
             this.statpointsLeft -= i;
         }
+    }
+
+    public int getTotalValue(AwakeningType type){
+        int i = 0;
+
+        for(CustomItem item : getEquipment()){
+            if(item.hasAwakening(type)){
+                i += item.getAwakeningValue(type);
+            }
+        }
+
+        return i;
     }
 
     public void addStatpoint(StatPointType type){
@@ -188,14 +212,27 @@ public class Character {
         }
     }
 
-    public CustomItem[] getEquipment(Player p){
+    public CustomItem[] getEquipment(){
         ArrayList<CustomItem> a = new ArrayList<CustomItem>();
 
-        if(p.getInventory().getHelmet() != null && CustomItem.fromItemStack(p.getInventory().getHelmet()) != null) a.add(CustomItem.fromItemStack(p.getInventory().getHelmet()));
-        if(p.getInventory().getChestplate() != null && CustomItem.fromItemStack(p.getInventory().getChestplate()) != null) a.add(CustomItem.fromItemStack(p.getInventory().getChestplate()));
-        if(p.getInventory().getLeggings() != null && CustomItem.fromItemStack(p.getInventory().getLeggings()) != null) a.add(CustomItem.fromItemStack(p.getInventory().getLeggings()));
-        if(p.getInventory().getBoots() != null && CustomItem.fromItemStack(p.getInventory().getBoots()) != null) a.add(CustomItem.fromItemStack(p.getInventory().getBoots()));
-        if(p.getInventory().getItemInHand() != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()) != null) a.add(CustomItem.fromItemStack(p.getInventory().getItemInHand()));
+        if(p.getInventory().getHelmet() != null && CustomItem.fromItemStack(p.getInventory().getHelmet()) != null && CustomItem.fromItemStack(p.getInventory().getHelmet()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getHelmet()));
+        if(p.getInventory().getChestplate() != null && CustomItem.fromItemStack(p.getInventory().getChestplate()) != null && CustomItem.fromItemStack(p.getInventory().getChestplate()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getChestplate()));
+        if(p.getInventory().getLeggings() != null && CustomItem.fromItemStack(p.getInventory().getLeggings()) != null && CustomItem.fromItemStack(p.getInventory().getLeggings()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getLeggings()));
+        if(p.getInventory().getBoots() != null && CustomItem.fromItemStack(p.getInventory().getBoots()) != null && CustomItem.fromItemStack(p.getInventory().getBoots()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getBoots()));
+        if(p.getInventory().getItemInHand() != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()) != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()).mayUse(p)){
+            a.add(CustomItem.fromItemStack(p.getInventory().getItemInHand()));
+        } else {
+            for(ItemStack i : p.getInventory().getContents()){
+                CustomItem c = CustomItem.fromItemStack(i);
+
+                if(c != null){
+                    if(c.getData().getCategory().toString().startsWith("WEAPON_") && c.mayUse(p)){
+                        a.add(c);
+                        break;
+                    }
+                }
+            }
+        }
 
         return a.toArray(new CustomItem[]{});
     }
@@ -204,17 +241,17 @@ public class Character {
         this.lastLogin = t;
     }
 
-    public void saveData(Player p){
-        saveData(p,false,true);
+    public void saveData(){
+        saveData(false,true);
     }
 
-    public void saveData(Player p,boolean continueCharsel){
-        saveData(p,continueCharsel,true);
+    public void saveData(boolean continueCharsel){
+        saveData(continueCharsel,true);
     }
 
-    public void saveData(Player p, boolean continueCharsel, boolean async){
+    public void saveData(boolean continueCharsel, boolean async){
         if(async){
-            DungeonAPI.async(() -> saveData(p,continueCharsel,false));
+            DungeonAPI.async(() -> saveData(continueCharsel,false));
         } else {
             try {
                 this.storedLocation = p.getLocation();

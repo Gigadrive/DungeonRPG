@@ -370,7 +370,7 @@ public class GameUser extends User {
                     MySQLManager.getInstance().closeResources(rs,ps);
 
                     if(charID > 0){
-                        Character character = new Character(charID);
+                        Character character = new Character(charID,p);
                         getCharacters().add(character);
 
                         CharacterCreationDoneEvent event = new CharacterCreationDoneEvent(p,character);
@@ -386,7 +386,7 @@ public class GameUser extends User {
     }
 
     public void deleteCharacter(Character c){
-        if(c != null && c.getOwner().toString().equals(p.getUniqueId().toString())){
+        if(c != null && c.getPlayer().getUniqueId().toString().equals(p.getUniqueId().toString())){
             CharacterSelectionMenu.CREATING.add(p);
             p.closeInventory();
 
@@ -414,7 +414,7 @@ public class GameUser extends User {
     }
 
     public void playCharacter(Character c){
-        if(getCurrentCharacter() == null && c != null && c.getOwner().toString().equals(p.getUniqueId().toString())){
+        if(getCurrentCharacter() == null && c != null && c.getPlayer().getUniqueId().toString().equals(p.getUniqueId().toString())){
             p.closeInventory();
             setCurrentCharacter(c);
             DungeonRPG.updateVanishing();
@@ -657,7 +657,7 @@ public class GameUser extends User {
         this.setupMode = setupMode;
 
         if(this.setupMode){
-            if(getCurrentCharacter() != null) getCurrentCharacter().saveData(p,false,false);
+            if(getCurrentCharacter() != null) getCurrentCharacter().saveData(false,false);
 
             setCurrentCharacter(null);
             bukkitReset();
@@ -884,7 +884,7 @@ public class GameUser extends User {
             ps.setString(1,p.getUniqueId().toString());
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
-                this.characters.add(new Character(rs.getInt("id")));
+                this.characters.add(new Character(rs.getInt("id"),p));
             }
 
             MySQLManager.getInstance().closeResources(rs,ps);
@@ -899,9 +899,9 @@ public class GameUser extends User {
 
     public void saveData(boolean continueCharsel){
         if(!Bukkit.getPluginManager().isPluginEnabled(DungeonRPG.getInstance())){
-            if(getCurrentCharacter() != null && !setupMode) getCurrentCharacter().saveData(p,continueCharsel,false);
+            if(getCurrentCharacter() != null && !setupMode) getCurrentCharacter().saveData(continueCharsel,false);
         } else {
-            if(getCurrentCharacter() != null && !setupMode) getCurrentCharacter().saveData(p,continueCharsel);
+            if(getCurrentCharacter() != null && !setupMode) getCurrentCharacter().saveData(continueCharsel);
         }
 
         super.saveData();

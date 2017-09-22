@@ -144,6 +144,28 @@ public class CustomItem {
         return untradeable;
     }
 
+    public boolean mayUse(Player p){
+        GameUser u = GameUser.getUser(p);
+
+        if(u.getCurrentCharacter() != null){
+            if(getData().getCategory() == ItemCategory.WEAPON_BOW && !u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER)){
+                return false;
+            } else if(getData().getCategory() == ItemCategory.WEAPON_AXE && !u.getCurrentCharacter().getRpgClass().matches(RPGClass.MERCENARY)){
+                return false;
+            } else if(getData().getCategory() == ItemCategory.WEAPON_SHEARS && !u.getCurrentCharacter().getRpgClass().matches(RPGClass.ASSASSIN)){
+                return false;
+            } else if(getData().getCategory() == ItemCategory.WEAPON_STICK && !u.getCurrentCharacter().getRpgClass().matches(RPGClass.MAGICIAN)){
+                return false;
+            } else if(getData().getNeededLevel() > u.getCurrentCharacter().getLevel()){
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+
     public boolean canHoldAwakenings(){
         return getData().getCategory() == ItemCategory.WEAPON_BOW || getData().getCategory() == ItemCategory.WEAPON_STICK || getData().getCategory() == ItemCategory.WEAPON_SHEARS || getData().getCategory() == ItemCategory.WEAPON_AXE || getData().getCategory() == ItemCategory.ARMOR;
     }
@@ -164,6 +186,16 @@ public class CustomItem {
         }
 
         return false;
+    }
+
+    public int getAwakeningValue(AwakeningType type){
+        if(getAwakenings() != null){
+            for(Awakening a : getAwakenings()){
+                if(a.type == type) return a.value;
+            }
+        }
+
+        return 0;
     }
 
     public void addAwakening(Awakening a){
