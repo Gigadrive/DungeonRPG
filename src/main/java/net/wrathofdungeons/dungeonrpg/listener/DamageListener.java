@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.damage.DamageManager;
 import net.wrathofdungeons.dungeonrpg.damage.DamageSource;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
@@ -142,7 +143,8 @@ public class DamageListener implements Listener {
                                             return;
                                         } else {
                                             u.setAttackCooldown(true);
-                                            double damage = DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false, 0, true);
+                                            //double damage = DamageManager.calculateDamage(p,ent, DamageSource.PVE, false, false, 0, true);
+                                            double damage = DamageHandler.calculatePlayerToMobDamage(u,c,null);
                                             e.setDamage(damage);
                                             DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                             c.getData().playSound(e.getEntity().getLocation());
@@ -167,7 +169,8 @@ public class DamageListener implements Listener {
                                         }
                                     } else {
                                         if(u.ignoreFistCheck){
-                                            double damage = DamageManager.calculateDamage(p, ent, DamageSource.PVE, false, false);
+                                            //double damage = DamageManager.calculateDamage(p, ent, DamageSource.PVE, false, false);
+                                            double damage = DamageHandler.calculatePlayerToMobDamage(u,c,null);
                                             e.setDamage(damage);
                                             DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                             c.getData().playSound(e.getEntity().getLocation());
@@ -216,12 +219,14 @@ public class DamageListener implements Listener {
                             }
 
                             if(data.getType() == DungeonProjectileType.DART_RAIN){
-                                double damage = data.getDamage();
+                                //double damage = data.getDamage();
+                                double damage = DamageHandler.calculatePlayerToMobDamage(u,c,data.getSkill());
                                 e.setDamage(damage);
                                 DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                 c.getData().playSound(e.getEntity().getLocation());
                             } else {
-                                e.setDamage(DamageManager.calculateDamage(data.getPlayer(), (LivingEntity)e.getEntity(), DamageSource.PVE, false, false, 0, true, data.getForce()));
+                                //e.setDamage(DamageManager.calculateDamage(data.getPlayer(), (LivingEntity)e.getEntity(), DamageSource.PVE, false, false, 0, true, data.getForce()));
+                                e.setDamage(DamageHandler.calculatePlayerToMobDamage(u,c,data.getSkill()));
                                 DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                 c.getData().playSound(e.getEntity().getLocation());
                                 adjustKnockback = true;
@@ -262,7 +267,8 @@ public class DamageListener implements Listener {
                             if(e.getDamager() instanceof LivingEntity){
                                 if(u.__associateDamageWithSystem){
                                     e.setDamage(0);
-                                    u.damage(DamageManager.calculateDamage(p, (LivingEntity)e.getDamager(), DamageSource.PVE, true, false), (LivingEntity)e.getDamager());
+                                    //u.damage(DamageManager.calculateDamage(p, (LivingEntity)e.getDamager(), DamageSource.PVE, true, false), (LivingEntity)e.getDamager());
+                                    u.damage(DamageHandler.calculateMobToPlayerDamage(u,c),(LivingEntity)e.getDamager());
                                     DungeonRPG.showBloodEffect(e.getEntity().getLocation());
                                 }
                             }

@@ -47,17 +47,10 @@ public class ExplosionArrow implements Skill {
             a.setVelocity(p.getLocation().getDirection().multiply(4.0D));
 
             double damage = 0;
-            damage += Util.randomDouble(weapon.getData().getAtkMin(),weapon.getData().getAtkMax());
-
-            int str = u.getCurrentCharacter().getStatpointsTotal(StatPointType.STRENGTH);
-
-            damage = damage+damage*(str*0.1);
-
-            damage *= 2.5;
-            if(damage < 1) damage = 1;
 
             DungeonProjectile data = new DungeonProjectile(p, DungeonProjectileType.EXPLOSION_ARROW, p.getLocation(), 0, damage, true);
             data.setEntity(a);
+            data.setSkill(this);
             DungeonRPG.SHOT_PROJECTILE_DATA.put(a.getUniqueId().toString(),data);
         }
     }

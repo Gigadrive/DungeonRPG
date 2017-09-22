@@ -237,6 +237,14 @@ public class Character {
         return a.toArray(new CustomItem[]{});
     }
 
+    public int getTotalDodgingChance(){
+        return getStatpointsTotal(StatPointType.AGILITY)+getTotalValue(AwakeningType.DODGING);
+    }
+
+    public int getTotalCriticalHitChance(){
+        return getStatpointsTotal(StatPointType.DEXTERITY);
+    }
+
     public void setLastLogin(Timestamp t){
         this.lastLogin = t;
     }

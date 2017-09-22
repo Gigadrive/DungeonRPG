@@ -18,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+@Deprecated
 public class DamageManager {
     public static Hologram spawnDamageIndicator(Location loc, double damage){
         return spawnDamageIndicator(loc, damage, true, false, false);
@@ -96,7 +97,7 @@ public class DamageManager {
 
                 damage += dmg1;
 
-                for(CustomItem i : u.getCurrentCharacter().getEquipment(p)){
+                for(CustomItem i : u.getCurrentCharacter().getEquipment()){
                     if(i.getData().getCategory().equals(ItemCategory.ARMOR)){
                         damage -= Util.randomDouble(i.getData().getDefMin(), i.getData().getDefMax());
                     }
@@ -110,7 +111,7 @@ public class DamageManager {
 
                     damage += mob.getAtk();
 
-                    for(CustomItem i : u.getCurrentCharacter().getEquipment(p)){
+                    for(CustomItem i : u.getCurrentCharacter().getEquipment()){
                         if(i.getData().getCategory().equals(ItemCategory.ARMOR)){
                             damage -= Util.randomDouble(i.getData().getDefMin(), i.getData().getDefMax());
                         }

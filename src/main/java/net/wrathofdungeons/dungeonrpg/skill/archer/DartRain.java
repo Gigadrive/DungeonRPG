@@ -50,6 +50,7 @@ public class DartRain implements Skill {
             final int arrowAmount = 6;
 
             values.dartRainArrows = arrowAmount;
+            Skill skill = this;
 
             if(values.dartRainTask == null){
                 values.dartRainTask = new BukkitRunnable(){
@@ -60,20 +61,12 @@ public class DartRain implements Skill {
                             values.dartRainTask = null;
                         } else {
                             double damage = 0;
-                            damage += Util.randomDouble(weapon.getData().getAtkMin(),weapon.getData().getAtkMax());
-
-                            int str = u.getCurrentCharacter().getStatpointsTotal(StatPointType.STRENGTH);
-
-                            damage = damage+damage*(str*0.1);
-
-                            if(damage < 1) damage = 1;
-
-                            damage /= 4;
 
                             Arrow a = p.launchProjectile(Arrow.class);
                             p.getWorld().playSound(p.getEyeLocation(), Sound.SHOOT_ARROW,1f,1f);
                             a.setVelocity(p.getLocation().getDirection().multiply(2));
                             DungeonProjectile data = new DungeonProjectile(p, DungeonProjectileType.DART_RAIN, p.getLocation(), 0, damage, true);
+                            data.setSkill(skill);
                             DungeonRPG.SHOT_PROJECTILE_DATA.put(a.getUniqueId().toString(),data);
 
                             p.getWorld().playEffect(p.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);

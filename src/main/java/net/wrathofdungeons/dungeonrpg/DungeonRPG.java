@@ -279,7 +279,7 @@ public class DungeonRPG extends JavaPlugin {
                         GameUser a = GameUser.getUser(all);
 
                         if(a.getCurrentCharacter() != null){
-                            a.getCurrentCharacter().saveData(all,false,false);
+                            a.getCurrentCharacter().saveData(false,false);
                         }
                     }
                 }

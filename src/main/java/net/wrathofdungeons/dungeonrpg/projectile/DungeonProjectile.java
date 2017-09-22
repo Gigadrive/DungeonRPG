@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.projectile;
 
+import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ public class DungeonProjectile {
     private boolean isSkill;
     private double force;
     private Entity entity;
+    private Skill skill;
 
     public DungeonProjectile(Player p, DungeonProjectileType type, Location firedFrom, int range, double damage, boolean isSkill) {
         this.p = p;
@@ -68,5 +70,13 @@ public class DungeonProjectile {
 
     public Entity getEntity(){
         return entity;
+    }
+
+    public Skill getSkill() {
+        return skill;
+    }
+
+    public void setSkill(Skill skill) {
+        this.skill = skill;
     }
 }
