@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import net.minecraft.server.v1_8_R3.NBTTagInt;
+import net.minecraft.server.v1_8_R3.NBTTagList;
 import net.minecraft.server.v1_8_R3.NBTTagString;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
@@ -11,6 +12,7 @@ import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
+import net.wrathofdungeons.dungeonrpg.util.NBTTypeID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -112,7 +114,21 @@ public class CustomItem {
 
                     if(tag.hasKey("untradeable")) untradeable = Util.convertIntegerToBoolean(tag.getInt("untradeable"));
 
-                    return new CustomItem(id,i.getAmount(),untradeable);
+                    if(tag.hasKey("awakenings")){
+                        NBTTagList list = tag.getList("awakenings", NBTTypeID.STRING);
+
+                        ArrayList<Awakening> awakenings = new ArrayList<Awakening>();
+
+                        for(int j = 0; j < list.size(); j++){
+                            String s = list.getString(j);
+
+                            awakenings.add(Awakening.fromString(s));
+                        }
+
+                        return new CustomItem(id,i.getAmount(),untradeable,awakenings.toArray(new Awakening[]{}));
+                    } else {
+                        return new CustomItem(id,i.getAmount(),untradeable);
+                    }
                 }
             }
 
@@ -295,11 +311,13 @@ public class CustomItem {
         if(!tag.hasKey("untradeable")) tag.set("untradeable",new NBTTagInt(Util.convertBooleanToInteger(isUntradeable())));
 
         if(hasAwakenings()){
-            for(Awakening a : getAwakenings()){
-                String s = null;
-                while(s == null || tag.hasKey(s)) s = "awakening" + Util.randomInteger(1,Integer.MAX_VALUE);
+            if(!tag.hasKey("awakenings")){
+                NBTTagList list = new NBTTagList();
+                for(Awakening a : getAwakenings()){
+                    list.add(new NBTTagString(a.toString()));
+                }
 
-                tag.set(s,new NBTTagString(a.toString()));
+                tag.set("awakenings",list);
             }
         }
 
