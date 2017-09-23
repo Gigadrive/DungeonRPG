@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Particle;
+import net.citizensnpcs.api.event.NPCPushEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
@@ -457,5 +458,10 @@ public class InteractListener implements Listener {
                 Bukkit.getPluginManager().callEvent(event);
             }
         }
+    }
+
+    @EventHandler
+    public void onPush(NPCPushEvent e){
+        e.setCancelled(true);
     }
 }

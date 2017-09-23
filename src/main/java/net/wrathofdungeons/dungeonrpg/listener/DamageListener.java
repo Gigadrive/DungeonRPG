@@ -41,6 +41,8 @@ public class DamageListener implements Listener {
 
             if(c != null){
                 c.damaged = true;
+
+                return;
             }
         }
 
@@ -290,8 +292,35 @@ public class DamageListener implements Listener {
                         e.setCancelled(true);
                     }
                 } else if(e.getEntity() instanceof Player && e.getDamager() instanceof Player){
-                    // TODO: Handle duels
-                    e.setCancelled(true);
+                    Player p = (Player)e.getEntity();
+
+                    if(GameUser.isLoaded(p) && CustomEntity.fromEntity((Player)e.getDamager()) != null){
+                        GameUser u = GameUser.getUser(p);
+                        c = CustomEntity.fromEntity((Player)e.getDamager());
+                        e.setDamage(0);
+                        double damage = DamageHandler.calculateMobToPlayerDamage(u,c);
+                        int thorns = u.getCurrentCharacter().getTotalValue(AwakeningType.THORNS);
+                        u.damage(damage,(LivingEntity)e.getDamager());
+
+                        if(thorns > 0){
+                            damage *= thorns*0.01;
+                            c.getBukkitEntity().damage(damage,p);
+                        }
+
+                        DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                    } else if(GameUser.isLoaded((Player)e.getDamager()) && CustomEntity.fromEntity(p) != null){
+                        p = (Player)e.getDamager();
+                        GameUser u = GameUser.getUser((Player)e.getEntity());
+
+                        p.sendMessage("shouldn't be here..");
+                    } else if(GameUser.isLoaded(p) && GameUser.isLoaded((Player)e.getDamager())) {
+                        Player p2 = (Player)e.getDamager();
+                        GameUser u = GameUser.getUser(p);
+                        GameUser u2 = GameUser.getUser(p2);
+
+                        // TODO: handle duels
+                        e.setCancelled(true);
+                    }
                 }
             }
         }

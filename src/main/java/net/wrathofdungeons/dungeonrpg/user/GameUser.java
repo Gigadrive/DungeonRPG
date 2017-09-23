@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
 import de.dytanic.cloudnet.lib.network.ChannelUser;
+import net.citizensnpcs.api.CitizensAPI;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.user.Rank;
@@ -50,7 +51,10 @@ public class GameUser extends User {
     }
 
     public static void load(Player p){
-        if(CustomEntity.fromEntity(p) != null || CustomNPC.fromEntity(p) != null) return;
+        if(CustomEntity.fromEntity(p) != null || CustomNPC.fromEntity(p) != null || CitizensAPI.getNPCRegistry().isNPC(p)){
+            User.STORAGE.remove(p);
+            return;
+        }
 
         if(!User.isLoaded(p)){
             new GameUser(p);

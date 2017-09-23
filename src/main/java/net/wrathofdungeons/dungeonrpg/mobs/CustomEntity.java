@@ -3,6 +3,9 @@ package net.wrathofdungeons.dungeonrpg.mobs;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.ai.goals.WanderGoal;
+import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R3.*;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
@@ -32,6 +35,7 @@ public class CustomEntity {
     private int mobDataID;
     private int origin;
     private LivingEntity bukkitEntity;
+    private NPC npc;
 
     private BukkitTask regenTask;
 
@@ -72,7 +76,15 @@ public class CustomEntity {
     }
 
     public LivingEntity getBukkitEntity() {
-        return bukkitEntity;
+        if(getData().getEntityType() == EntityType.PLAYER){
+            return npc != null && npc.getEntity() instanceof LivingEntity ? (LivingEntity)npc.getEntity() : null;
+        } else {
+            return bukkitEntity;
+        }
+    }
+
+    public NPC toCitizensNPC(){
+        return npc;
     }
 
     public Hologram getHologram() {
@@ -176,18 +188,22 @@ public class CustomEntity {
     }
 
     public void adjustSpeed(boolean removeSpeed){
-        if(bukkitEntity != null){
+        if(getBukkitEntity() != null){
             if(removeSpeed) removeSpeedAttribute();
 
-            EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)bukkitEntity).getHandle();
+            if(getData().getEntityType() == EntityType.PLAYER){
+                ((Player)getBukkitEntity()).setWalkSpeed((float)getData().getSpeed());
+            } else {
+                EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)bukkitEntity).getHandle();
 
-            AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
+                AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
 
-            double toAdd = getData().getSpeed()-getCurrentSpeedValue();
+                double toAdd = getData().getSpeed()-getCurrentSpeedValue();
 
-            speedModifier = new AttributeModifier(movementSpeedUID,"wod movement speed",toAdd, AttributeOperation.ADD);
+                speedModifier = new AttributeModifier(movementSpeedUID,"wod movement speed",toAdd, AttributeOperation.ADD);
 
-            attributes.b(speedModifier);
+                attributes.b(speedModifier);
+            }
         }
     }
 
@@ -213,7 +229,7 @@ public class CustomEntity {
 
     @Deprecated
     public void removeSpeedAttribute(){
-        if(bukkitEntity != null && speedModifier != null){
+        if(getBukkitEntity() != null && speedModifier != null && getData().getEntityType() != EntityType.PLAYER){
             EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)bukkitEntity).getHandle();
 
             AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
@@ -244,180 +260,217 @@ public class CustomEntity {
     }
 
     public void spawn(Location loc){
-        if(bukkitEntity == null && !STORAGE.containsValue(this)){
-            bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
-            DungeonAPI.nmsMakeSilent(bukkitEntity);
+        if(bukkitEntity == null && !STORAGE.containsValue(this) && npc == null){
+            if(getData().getEntityType() == EntityType.PLAYER){
+                npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER,ChatColor.GREEN.toString());
+                npc.spawn(loc);
+                npc.setProtected(false);
+                if(getData().getAiSettings().mayDoRandomStroll() && getData().getMobType() == MobType.PASSIVE) npc.getDefaultGoalController().addGoal(WanderGoal.createWithNPCAndRange(npc,10,10),9);
 
-            bukkitEntity.setMaximumNoDamageTicks(0);
-            bukkitEntity.setNoDamageTicks(0);
-            bukkitEntity.setFireTicks(0);
-            bukkitEntity.setRemoveWhenFarAway(true);
-            bukkitEntity.setMaxHealth(getData().getHealth());
-            bukkitEntity.setHealth(bukkitEntity.getMaxHealth());
+                handle();
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
 
-            if(bukkitEntity instanceof Zombie){
-                Zombie z = (Zombie)bukkitEntity;
-                z.setVillager(false);
-
-                if(getData().isAdult()){
-                    z.setBaby(false);
-                } else {
-                    z.setBaby(true);
-                }
-            } else if(bukkitEntity instanceof Villager){
-                Villager v = (Villager)bukkitEntity;
-
-                if(getData().isAdult()){
-                    v.setAdult();
-                } else {
-                    v.setBaby();
-                }
-            } else if(bukkitEntity instanceof PigZombie){
-                PigZombie p = (PigZombie)bukkitEntity;
-
-                if(getData().isAdult()){
-                    p.setBaby(false);
-                } else {
-                    p.setBaby(true);
-                }
-            } else if(bukkitEntity instanceof Pig){
-                Pig p = (Pig)bukkitEntity;
-
-                if(getData().isAdult()){
-                    p.setAdult();
-                } else {
-                    p.setBaby();
-                }
-            } else if(bukkitEntity instanceof Sheep){
-                Sheep s = (Sheep)bukkitEntity;
-
-                if(getData().isAdult()){
-                    s.setAdult();
-                } else {
-                    s.setBaby();
-                }
-            } else if(bukkitEntity instanceof Chicken){
-                Chicken c = (Chicken)bukkitEntity;
-
-                if(getData().isAdult()){
-                    c.setAdult();
-                } else {
-                    c.setBaby();
-                }
-            } else if(bukkitEntity instanceof Ocelot){
-                Ocelot o = (Ocelot)bukkitEntity;
-
-                if(getData().isAdult()){
-                    o.setAdult();
-                } else {
-                    o.setBaby();
-                }
-            } else if(bukkitEntity instanceof Creeper){
-                Creeper c = (Creeper)bukkitEntity;
-            } else if(bukkitEntity instanceof Skeleton){
-                Skeleton s = (Skeleton)bukkitEntity;
-            } else if(bukkitEntity instanceof Spider){
-                Spider s = (Spider)bukkitEntity;
-            } else if(bukkitEntity instanceof Slime){
-                Slime s = (Slime)bukkitEntity;
-            } else if(bukkitEntity instanceof Ghast){
-                Ghast g = (Ghast)bukkitEntity;
-            } else if(bukkitEntity instanceof Enderman){
-                Enderman e = (Enderman)bukkitEntity;
-            } else if(bukkitEntity instanceof CaveSpider){
-                CaveSpider c = (CaveSpider)bukkitEntity;
-            } else if(bukkitEntity instanceof Blaze){
-                Blaze b = (Blaze)bukkitEntity;
-            } else if(bukkitEntity instanceof MagmaCube){
-                MagmaCube m = (MagmaCube)bukkitEntity;
-            } else if(bukkitEntity instanceof Bat){
-                Bat b = (Bat)bukkitEntity;
-            } else if(bukkitEntity instanceof Witch){
-                Witch w = (Witch)bukkitEntity;
-            } else if(bukkitEntity instanceof Guardian){
-                Guardian g = (Guardian)bukkitEntity;
-            } else if(bukkitEntity instanceof Cow){
-                Cow c = (Cow)bukkitEntity;
-
-                if(getData().isAdult()){
-                    c.setAdult();
-                } else {
-                    c.setBaby();
-                }
-            } else if(bukkitEntity instanceof Squid){
-                Squid s = (Squid)bukkitEntity;
-            } else if(bukkitEntity instanceof Wolf){
-                Wolf w = (Wolf)bukkitEntity;
-
-                if(getData().isAdult()){
-                    w.setAdult();
-                } else {
-                    w.setBaby();
-                }
-            } else if(bukkitEntity instanceof MushroomCow){
-                MushroomCow m = (MushroomCow)bukkitEntity;
-
-                if(getData().isAdult()){
-                    m.setAdult();
-                } else {
-                    m.setBaby();
-                }
-            } else if(bukkitEntity instanceof Horse){
-                Horse h = (Horse)bukkitEntity;
-
-                if(getData().isAdult()){
-                    h.setAdult();
-                } else {
-                    h.setBaby();
-                }
-            } else if(bukkitEntity instanceof Rabbit){
-                Rabbit r = (Rabbit)bukkitEntity;
-
-                if(getData().isAdult()){
-                    r.setAdult();
-                } else {
-                    r.setBaby();
-                }
-            }
-
-            TargetHandler.giveTargets(bukkitEntity,this);
-            adjustSpeed(false);
-
-            new BukkitRunnable(){
-                @Override
-                public void run() {
-                    if(bukkitEntity.getEquipment() != null){
-                        bukkitEntity.getEquipment().clear();
-
-                        bukkitEntity.getEquipment().setItemInHand(new ItemStack(Material.AIR));
-                        bukkitEntity.getEquipment().setHelmet(new ItemStack(Material.AIR));
-                        bukkitEntity.getEquipment().setChestplate(new ItemStack(Material.AIR));
-                        bukkitEntity.getEquipment().setLeggings(new ItemStack(Material.AIR));
-                        bukkitEntity.getEquipment().setBoots(new ItemStack(Material.AIR));
-
-                        bukkitEntity.getEquipment().setItemInHand(getData().getWeapon());
-                        bukkitEntity.getEquipment().setHelmet(getData().getHelmet());
-                        bukkitEntity.getEquipment().setChestplate(getData().getChestplate());
-                        bukkitEntity.getEquipment().setLeggings(getData().getLeggings());
-                        bukkitEntity.getEquipment().setBoots(getData().getBoots());
                     }
-                }
-            }.runTaskLater(DungeonRPG.getInstance(),2);
-
-            hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(),getSupposedHologramLocation());
-            hologram.appendTextLine(getData().getMobType().getColor() + getData().getName() + " " + ChatColor.GOLD + "- Lv. " + getData().getLevel());
-
-            startRegenTask();
-
-            STORAGE.put(bukkitEntity,this);
+                }.runTaskLater(DungeonRPG.getInstance(),1);
+            } else {
+                bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
+                handle();
+            }
         }
     }
 
+    private void handle(){
+        if(npc != null){
+            bukkitEntity = (LivingEntity)npc.getEntity();
+            if(bukkitEntity == null){
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        handle();
+                    }
+                }.runTaskLater(DungeonRPG.getInstance(),1);
+                return;
+            }
+        } else {
+            DungeonAPI.nmsMakeSilent(bukkitEntity);
+        }
+
+        bukkitEntity.setMaximumNoDamageTicks(0);
+        bukkitEntity.setNoDamageTicks(0);
+        bukkitEntity.setFireTicks(0);
+        bukkitEntity.setRemoveWhenFarAway(true);
+        bukkitEntity.setMaxHealth(getData().getHealth());
+        bukkitEntity.setHealth(bukkitEntity.getMaxHealth());
+
+        if(bukkitEntity instanceof Zombie){
+            Zombie z = (Zombie)bukkitEntity;
+            z.setVillager(false);
+
+            if(getData().isAdult()){
+                z.setBaby(false);
+            } else {
+                z.setBaby(true);
+            }
+        } else if(bukkitEntity instanceof Villager){
+            Villager v = (Villager)bukkitEntity;
+
+            if(getData().isAdult()){
+                v.setAdult();
+            } else {
+                v.setBaby();
+            }
+        } else if(bukkitEntity instanceof PigZombie){
+            PigZombie p = (PigZombie)bukkitEntity;
+
+            if(getData().isAdult()){
+                p.setBaby(false);
+            } else {
+                p.setBaby(true);
+            }
+        } else if(bukkitEntity instanceof Pig){
+            Pig p = (Pig)bukkitEntity;
+
+            if(getData().isAdult()){
+                p.setAdult();
+            } else {
+                p.setBaby();
+            }
+        } else if(bukkitEntity instanceof Sheep){
+            Sheep s = (Sheep)bukkitEntity;
+
+            if(getData().isAdult()){
+                s.setAdult();
+            } else {
+                s.setBaby();
+            }
+        } else if(bukkitEntity instanceof Chicken){
+            Chicken c = (Chicken)bukkitEntity;
+
+            if(getData().isAdult()){
+                c.setAdult();
+            } else {
+                c.setBaby();
+            }
+        } else if(bukkitEntity instanceof Ocelot){
+            Ocelot o = (Ocelot)bukkitEntity;
+
+            if(getData().isAdult()){
+                o.setAdult();
+            } else {
+                o.setBaby();
+            }
+        } else if(bukkitEntity instanceof Creeper){
+            Creeper c = (Creeper)bukkitEntity;
+        } else if(bukkitEntity instanceof Skeleton){
+            Skeleton s = (Skeleton)bukkitEntity;
+        } else if(bukkitEntity instanceof Spider){
+            Spider s = (Spider)bukkitEntity;
+        } else if(bukkitEntity instanceof Slime){
+            Slime s = (Slime)bukkitEntity;
+        } else if(bukkitEntity instanceof Ghast){
+            Ghast g = (Ghast)bukkitEntity;
+        } else if(bukkitEntity instanceof Enderman){
+            Enderman e = (Enderman)bukkitEntity;
+        } else if(bukkitEntity instanceof CaveSpider){
+            CaveSpider c = (CaveSpider)bukkitEntity;
+        } else if(bukkitEntity instanceof Blaze){
+            Blaze b = (Blaze)bukkitEntity;
+        } else if(bukkitEntity instanceof MagmaCube){
+            MagmaCube m = (MagmaCube)bukkitEntity;
+        } else if(bukkitEntity instanceof Bat){
+            Bat b = (Bat)bukkitEntity;
+        } else if(bukkitEntity instanceof Witch){
+            Witch w = (Witch)bukkitEntity;
+        } else if(bukkitEntity instanceof Guardian){
+            Guardian g = (Guardian)bukkitEntity;
+        } else if(bukkitEntity instanceof Cow){
+            Cow c = (Cow)bukkitEntity;
+
+            if(getData().isAdult()){
+                c.setAdult();
+            } else {
+                c.setBaby();
+            }
+        } else if(bukkitEntity instanceof Squid){
+            Squid s = (Squid)bukkitEntity;
+        } else if(bukkitEntity instanceof Wolf){
+            Wolf w = (Wolf)bukkitEntity;
+
+            if(getData().isAdult()){
+                w.setAdult();
+            } else {
+                w.setBaby();
+            }
+        } else if(bukkitEntity instanceof MushroomCow){
+            MushroomCow m = (MushroomCow)bukkitEntity;
+
+            if(getData().isAdult()){
+                m.setAdult();
+            } else {
+                m.setBaby();
+            }
+        } else if(bukkitEntity instanceof Horse){
+            Horse h = (Horse)bukkitEntity;
+
+            if(getData().isAdult()){
+                h.setAdult();
+            } else {
+                h.setBaby();
+            }
+        } else if(bukkitEntity instanceof Rabbit){
+            Rabbit r = (Rabbit)bukkitEntity;
+
+            if(getData().isAdult()){
+                r.setAdult();
+            } else {
+                r.setBaby();
+            }
+        }
+
+        TargetHandler.giveTargets(bukkitEntity,this);
+        adjustSpeed(false);
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                if(bukkitEntity.getEquipment() != null){
+                    bukkitEntity.getEquipment().clear();
+
+                    bukkitEntity.getEquipment().setItemInHand(new ItemStack(Material.AIR));
+                    bukkitEntity.getEquipment().setHelmet(new ItemStack(Material.AIR));
+                    bukkitEntity.getEquipment().setChestplate(new ItemStack(Material.AIR));
+                    bukkitEntity.getEquipment().setLeggings(new ItemStack(Material.AIR));
+                    bukkitEntity.getEquipment().setBoots(new ItemStack(Material.AIR));
+
+                    bukkitEntity.getEquipment().setItemInHand(getData().getWeapon());
+                    bukkitEntity.getEquipment().setHelmet(getData().getHelmet());
+                    bukkitEntity.getEquipment().setChestplate(getData().getChestplate());
+                    bukkitEntity.getEquipment().setLeggings(getData().getLeggings());
+                    bukkitEntity.getEquipment().setBoots(getData().getBoots());
+                }
+            }
+        }.runTaskLater(DungeonRPG.getInstance(),2);
+
+        hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(),getSupposedHologramLocation());
+        hologram.appendTextLine(getData().getMobType().getColor() + getData().getName() + " " + ChatColor.GOLD + "- Lv. " + getData().getLevel());
+
+        startRegenTask();
+
+        STORAGE.put(bukkitEntity,this);
+    }
+
     public void remove(){
-        if(bukkitEntity != null){
-            STORAGE.remove(bukkitEntity);
-            bukkitEntity.remove();
-            bukkitEntity = null;
+        if(getBukkitEntity() != null){
+            STORAGE.remove(getBukkitEntity());
+
+            if(npc != null){
+                npc.destroy();
+            } else {
+                bukkitEntity.remove();
+                bukkitEntity = null;
+            }
         }
 
         if(hologram != null){
