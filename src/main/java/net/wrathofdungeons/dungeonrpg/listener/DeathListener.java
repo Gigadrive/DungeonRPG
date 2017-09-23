@@ -96,13 +96,17 @@ public class DeathListener implements Listener {
                                 // GIVE EXP
                                 double xp = Util.randomDouble(mob.getXp()/2, mob.getXp());
 
-                                if(Util.getIntegerDifference(u.getCurrentCharacter().getLevel(), mob.getLevel()) < DungeonRPG.PLAYER_MOB_LEVEL_DIFFERENCE){
-                                    xp = u.giveEXP(xp);
-                                } else {
+                                if(Util.getIntegerDifference(u.getCurrentCharacter().getLevel(), mob.getLevel()) >= DungeonRPG.PLAYER_MOB_LEVEL_DIFFERENCE){
                                     xp /= Util.getIntegerDifference(u.getCurrentCharacter().getLevel(), mob.getLevel());
+                                } else {
+
                                 }
 
                                 xp = xp+xp*(u.getCurrentCharacter().getTotalValue(AwakeningType.XP_BONUS)*0.01);
+
+                                if(xp > 0){
+                                    xp = u.giveEXP(xp);
+                                }
 
                                 p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
 
