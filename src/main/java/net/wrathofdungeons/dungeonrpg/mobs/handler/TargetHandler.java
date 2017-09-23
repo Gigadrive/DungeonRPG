@@ -66,7 +66,11 @@ public class TargetHandler {
                 TargetNearbyEntityGoal.Builder builder = TargetNearbyEntityGoal.builder(npc);
                 builder.aggressive(true);
                 builder.radius(20);
-                builder.targets(new HashSet<>(Arrays.asList(EntityType.values())));
+                Set<EntityType> entityTypes = new HashSet<>();
+                for(EntityType e : EntityType.values()){
+                    if(e.isAlive()) entityTypes.add(e);
+                }
+                builder.targets(entityTypes);
 
                 npc.getDefaultGoalController().addGoal(builder.build(),10);
             } else {
