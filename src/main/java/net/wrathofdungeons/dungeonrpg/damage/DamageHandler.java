@@ -81,8 +81,8 @@ public class DamageHandler {
 
         // CRITICAL
         if(Util.getChanceBoolean(u.getCurrentCharacter().getTotalCriticalHitChance(), 100)){
-            damage = damage*2;
-            // TODO: Calculate ADOCH instead of double damage
+            damage *= 2;
+            damage += damage*(u.getCurrentCharacter().getTotalValue(AwakeningType.ADOCH)*0.01);
         }
 
         return damage;
