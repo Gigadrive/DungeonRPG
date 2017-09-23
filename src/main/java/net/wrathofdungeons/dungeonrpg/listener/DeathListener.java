@@ -50,40 +50,36 @@ public class DeathListener implements Listener {
 
                             if(u.getCurrentCharacter() != null){
                                 // DROP GOLD
-                                if(Util.getIntegerDifference(u.getCurrentCharacter().getLevel(),mob.getLevel()) <= DungeonRPG.PLAYER_MOB_LEVEL_DIFFERENCE){
-                                    if(Util.getChanceBoolean(50,190)) WorldUtilities.dropItem(livingEntity.getLocation(),new CustomItem(7),p);
-                                }
+                                if(Util.getChanceBoolean(50,190)) WorldUtilities.dropItem(livingEntity.getLocation(),new CustomItem(7),p);
 
                                 //TODO: Add pre-defined dropable items
 
                                 // DROP WEAPONS [automated]
-                                if(Util.getIntegerDifference(u.getCurrentCharacter().getLevel(), mob.getLevel()) < DungeonRPG.PLAYER_MOB_LEVEL_DIFFERENCE){
-                                    if(mob.getMobType() == MobType.AGGRO){
-                                        int limit = 2;
+                                if(mob.getMobType() == MobType.AGGRO){
+                                    int limit = 2;
 
-                                        if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 125)){
-                                            int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
+                                    if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 125)){
+                                        int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
 
-                                            for(ItemData data : ItemData.STORAGE){
-                                                if(data.getRarity().getSources() != null){
-                                                    for(ItemSource s : data.getRarity().getSources()){
-                                                        if(s.mobClass != null){
-                                                            if(s.mobClass == mob.getMobClass()){
-                                                                //if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK || data.getCategory() == ItemCategory.WEAPON_SHEARS){
-                                                                if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK){
-                                                                    if(data.getRarity() != ItemRarity.NONE && data.getRarity() != ItemRarity.SPECIAL){
-                                                                        for(int i : usableLvls){
-                                                                            if(i == data.getNeededLevel()){
-                                                                                if(mob.getMobClass().getChance(data.getRarity()) != null){
-                                                                                    if(Util.getChanceBoolean(mob.getMobClass().getChance(data.getRarity()).min, mob.getMobClass().getChance(data.getRarity()).max)){
-                                                                                        if(limit != 0){
-                                                                                            WorldUtilities.dropItem(ent.getLocation(),new CustomItem(data),p);
-                                                                                            limit--;
-                                                                                        }
+                                        for(ItemData data : ItemData.STORAGE){
+                                            if(data.getRarity().getSources() != null){
+                                                for(ItemSource s : data.getRarity().getSources()){
+                                                    if(s.mobClass != null){
+                                                        if(s.mobClass == mob.getMobClass()){
+                                                            //if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK || data.getCategory() == ItemCategory.WEAPON_SHEARS){
+                                                            if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK){
+                                                                if(data.getRarity() != ItemRarity.NONE && data.getRarity() != ItemRarity.SPECIAL){
+                                                                    for(int i : usableLvls){
+                                                                        if(i == data.getNeededLevel()){
+                                                                            if(mob.getMobClass().getChance(data.getRarity()) != null){
+                                                                                if(Util.getChanceBoolean(mob.getMobClass().getChance(data.getRarity()).min, mob.getMobClass().getChance(data.getRarity()).max)){
+                                                                                    if(limit != 0){
+                                                                                        WorldUtilities.dropItem(ent.getLocation(),new CustomItem(data),p);
+                                                                                        limit--;
                                                                                     }
-
-                                                                                    break;
                                                                                 }
+
+                                                                                break;
                                                                             }
                                                                         }
                                                                     }
