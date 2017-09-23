@@ -81,7 +81,7 @@ public class VortexBarrier implements Skill {
                                     if(u2.getCurrentCharacter() != null){
                                         if(!p2.hasPotionEffect(PotionEffectType.SPEED)){
                                             p2.addPotionEffect(speed);
-                                            p.sendMessage(ChatColor.GREEN + p.getName() + " has given you speed.");
+                                            p2.sendMessage(ChatColor.GREEN + p.getName() + " has given you speed.");
                                         }
                                     }
                                 }
