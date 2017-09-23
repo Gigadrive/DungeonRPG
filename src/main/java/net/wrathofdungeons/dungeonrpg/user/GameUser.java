@@ -15,6 +15,7 @@ import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.party.Party;
@@ -132,21 +133,40 @@ public class GameUser extends User {
             mpRegenTask = new BukkitRunnable(){
                 @Override
                 public void run() {
-                    if(getMP() < getMaxMP()){
-                        int mp = getMP();
-                        int mpToAdd = 1;
-
-                        mpToAdd += getCurrentCharacter().getStatpointsTotal(StatPointType.INTELLIGENCE)*0.3125;
-
-                        if(mpToAdd < 1) mpToAdd = 1;
-                        mp += mpToAdd;
-
-                        if(mp > getMaxMP()) mp = getMaxMP();
-
-                        setMP(mp);
-                    }
+                    doMPRegen();
                 }
             }.runTaskTimer(DungeonRPG.getInstance(),30,30);
+        }
+    }
+
+    private void doMPRegen(){
+        if(getMP() < getMaxMP()){
+            int mp = getMP();
+            int mpToAdd = 1;
+
+            mpToAdd += getCurrentCharacter().getStatpointsTotal(StatPointType.INTELLIGENCE)*0.3125;
+
+            if(mpToAdd < 1) mpToAdd = 1;
+            mp += mpToAdd;
+
+            hp += hp*(getCurrentCharacter().getTotalValue(AwakeningType.MP_REGENERATION)*0.01);
+
+            if(mp > getMaxMP()) mp = getMaxMP();
+
+            setMP(mp);
+        }
+    }
+
+    private void doHPRegen(){
+        if(getHP() < getMaxHP()){
+            int hp = getHP();
+            hp += 5*getCurrentCharacter().getLevel();
+
+            hp += hp*(getCurrentCharacter().getTotalValue(AwakeningType.HP_REGENERATION)*0.01);
+
+            if(hp > getMaxHP()) hp = getMaxHP();
+
+            setHP(hp);
         }
     }
 
@@ -162,13 +182,7 @@ public class GameUser extends User {
             hpRegenTask = new BukkitRunnable(){
                 @Override
                 public void run() {
-                    int hp = getHP();
-                    hp += 5*getCurrentCharacter().getLevel();
-                    if(hp > getMaxHP()) hp = getMaxHP();
-
-                    // TODO: Consider awakenings that increase or decresae HP regeneration
-
-                    setHP(hp);
+                    doHPRegen();
                 }
             }.runTaskTimer(DungeonRPG.getInstance(),50,50);
         }
