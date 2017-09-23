@@ -61,8 +61,6 @@ public class TargetHandler {
             NPC npc = customEntity.toCitizensNPC();
 
             if(npc != null){
-                //npc.getNavigator().getDefaultParameters().baseSpeed((float)customEntity.getData().getSpeed());
-
                 TargetNearbyEntityGoal.Builder builder = TargetNearbyEntityGoal.builder(npc);
                 builder.aggressive(true);
                 builder.radius(20);
@@ -72,7 +70,7 @@ public class TargetHandler {
                 }
                 builder.targets(entityTypes);
 
-                npc.getDefaultGoalController().addGoal(builder.build(),10);
+                if(customEntity.getData().getMobType() != MobType.PASSIVE) npc.getDefaultGoalController().addGoal(builder.build(),10);
             } else {
                 new BukkitRunnable(){
                     @Override

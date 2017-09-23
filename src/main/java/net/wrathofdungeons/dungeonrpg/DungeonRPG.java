@@ -1,5 +1,9 @@
 package net.wrathofdungeons.dungeonrpg;
 
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.ai.EntityTarget;
+import net.citizensnpcs.api.ai.Navigator;
+import net.citizensnpcs.api.npc.NPC;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
@@ -12,6 +16,7 @@ import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
+import net.wrathofdungeons.dungeonrpg.mobs.MobType;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
@@ -311,6 +316,52 @@ public class DungeonRPG extends JavaPlugin {
                 for(DungeonProjectile proj : SHOT_PROJECTILE_DATA.values()){
                     if(proj.getType() == DungeonProjectileType.EXPLOSION_ARROW && proj.getEntity() != null && proj.getEntity().isValid()){
                         ParticleEffect.VILLAGER_HAPPY.display(0f,0f,0f,0.005f,1,proj.getEntity().getLocation(),600);
+                    }
+                }
+            }
+        }.runTaskTimer(this,1,1);
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(NPC npc : CitizensAPI.getNPCRegistry().sorted()){
+                    if(npc.getEntity() != null && npc.getEntity() instanceof LivingEntity){
+                        CustomEntity c = CustomEntity.fromEntity((LivingEntity)npc.getEntity());
+                        Navigator n = npc.getNavigator();
+
+                        if(c != null && n != null){
+                            MobType m = c.getData().getMobType();
+
+                            if(n.getEntityTarget() != null){
+                                EntityTarget entityTarget = n.getEntityTarget();
+
+                                if(entityTarget != null){
+                                    LivingEntity target = entityTarget.getTarget();
+
+                                    if(target != null){
+                                        CustomEntity ct = CustomEntity.fromEntity(target);
+
+                                        if(ct != null){
+                                            MobType mt = ct.getData().getMobType();
+
+                                            if(m == MobType.AGGRO && mt == MobType.AGGRO){
+                                                n.cancelNavigation();
+                                            } else if(m == MobType.SUPPORTING && mt == MobType.SUPPORTING){
+                                                n.cancelNavigation();
+                                            } else if(m == MobType.PASSIVE || mt == MobType.PASSIVE){
+                                                n.cancelNavigation();
+                                            }
+                                        } else {
+                                            if(m == MobType.PASSIVE){
+                                                n.cancelNavigation();
+                                            } else if(m == MobType.SUPPORTING && target instanceof Player && GameUser.isLoaded((Player)target)){
+                                                n.cancelNavigation();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
