@@ -266,16 +266,28 @@ public class DamageListener implements Listener {
                         if(!e.isCancelled()){
                             if(e.getDamager() instanceof LivingEntity){
                                 if(u.__associateDamageWithSystem){
-                                    e.setDamage(0);
-                                    //u.damage(DamageManager.calculateDamage(p, (LivingEntity)e.getDamager(), DamageSource.PVE, true, false), (LivingEntity)e.getDamager());
-                                    u.damage(DamageHandler.calculateMobToPlayerDamage(u,CustomEntity.fromEntity((LivingEntity)e.getDamager())),(LivingEntity)e.getDamager());
-                                    DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                    c = CustomEntity.fromEntity((LivingEntity)e.getDamager());
+
+                                    if(c != null){
+                                        e.setDamage(0);
+                                        double damage = DamageHandler.calculateMobToPlayerDamage(u,c);
+                                        int thorns = u.getCurrentCharacter().getTotalValue(AwakeningType.THORNS);
+                                        u.damage(damage,(LivingEntity)e.getDamager());
+
+                                        if(thorns > 0){
+                                            damage *= thorns*0.01;
+                                            c.getBukkitEntity().damage(damage,p);
+                                        }
+
+                                        DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                    } else {
+                                        e.setCancelled(true);
+                                    }
                                 }
                             }
                         }
                     } else {
                         e.setCancelled(true);
-                        return;
                     }
                 } else if(e.getEntity() instanceof Player && e.getDamager() instanceof Player){
                     // TODO: Handle duels

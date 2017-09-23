@@ -219,20 +219,7 @@ public class Character {
         if(p.getInventory().getChestplate() != null && CustomItem.fromItemStack(p.getInventory().getChestplate()) != null && CustomItem.fromItemStack(p.getInventory().getChestplate()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getChestplate()));
         if(p.getInventory().getLeggings() != null && CustomItem.fromItemStack(p.getInventory().getLeggings()) != null && CustomItem.fromItemStack(p.getInventory().getLeggings()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getLeggings()));
         if(p.getInventory().getBoots() != null && CustomItem.fromItemStack(p.getInventory().getBoots()) != null && CustomItem.fromItemStack(p.getInventory().getBoots()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getBoots()));
-        if(p.getInventory().getItemInHand() != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()) != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()).mayUse(p)){
-            a.add(CustomItem.fromItemStack(p.getInventory().getItemInHand()));
-        } else {
-            for(ItemStack i : p.getInventory().getContents()){
-                CustomItem c = CustomItem.fromItemStack(i);
-
-                if(c != null){
-                    if(c.getData().getCategory().toString().startsWith("WEAPON_") && c.mayUse(p)){
-                        a.add(c);
-                        break;
-                    }
-                }
-            }
-        }
+        if(p.getInventory().getItemInHand() != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()) != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getItemInHand()));
 
         return a.toArray(new CustomItem[]{});
     }
