@@ -50,7 +50,7 @@ public class DeathListener implements Listener {
 
                             if(u.getCurrentCharacter() != null){
                                 // DROP GOLD
-                                if(Util.getChanceBoolean(50,190)) WorldUtilities.dropItem(livingEntity.getLocation(),new CustomItem(7),p);
+                                if(Util.getChanceBoolean(50+u.getCurrentCharacter().getTotalValue(AwakeningType.FORTUNE),190)) WorldUtilities.dropItem(livingEntity.getLocation(),new CustomItem(7),p);
 
                                 //TODO: Add pre-defined dropable items
 
