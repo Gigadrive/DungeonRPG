@@ -50,6 +50,7 @@ public class CustomEntity {
 
     private AttributeModifier speedModifier;
     public boolean damaged = false;
+    public boolean playerMobSpeed = true;
 
     public CustomEntity(MobData data){
         this.mobDataID = data.getId();
@@ -265,6 +266,7 @@ public class CustomEntity {
                 npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER,ChatColor.GREEN.toString());
                 npc.spawn(loc);
                 npc.setProtected(false);
+                npc.getNavigator().getDefaultParameters().speed((float)getData().getSpeed());
                 if(getData().getAiSettings().mayDoRandomStroll() && getData().getMobType() == MobType.PASSIVE) npc.getDefaultGoalController().addGoal(WanderGoal.createWithNPCAndRange(npc,10,10),9);
 
                 handle();

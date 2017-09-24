@@ -7,6 +7,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
+import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
 import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
 import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
@@ -41,6 +42,7 @@ import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
@@ -366,6 +368,27 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this,1,1);
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(CustomEntity c : CustomEntity.STORAGE.values()){
+                    if(c.getData().getEntityType() == EntityType.PLAYER && c.getData().getAiSettings().mayDoRandomStroll()){
+                        if(c.getBukkitEntity() != null && c.toCitizensNPC() != null){
+                            if(Util.getChanceBoolean(500,150)){
+                                if(c.playerMobSpeed){
+                                    c.toCitizensNPC().getNavigator().getDefaultParameters().speed(0f);
+                                    c.playerMobSpeed = false;
+                                } else {
+                                    c.toCitizensNPC().getNavigator().getDefaultParameters().speed((float)c.getData().getSpeed());
+                                    c.playerMobSpeed = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(this,2*20,2*20);
 
         Bukkit.getServer().clearRecipes();
     }
