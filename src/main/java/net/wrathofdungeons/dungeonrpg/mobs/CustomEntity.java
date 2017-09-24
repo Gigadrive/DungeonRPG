@@ -266,7 +266,7 @@ public class CustomEntity {
                 npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER,ChatColor.GREEN.toString());
                 npc.spawn(loc);
                 npc.setProtected(false);
-                npc.getNavigator().getDefaultParameters().speed((float)getData().getSpeed());
+                npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed());
                 if(getData().getAiSettings().mayDoRandomStroll() && getData().getMobType() == MobType.PASSIVE) npc.getDefaultGoalController().addGoal(WanderGoal.createWithNPCAndRange(npc,10,10),9);
 
                 handle();
@@ -302,7 +302,7 @@ public class CustomEntity {
         bukkitEntity.setMaximumNoDamageTicks(0);
         bukkitEntity.setNoDamageTicks(0);
         bukkitEntity.setFireTicks(0);
-        bukkitEntity.setRemoveWhenFarAway(true);
+        bukkitEntity.setRemoveWhenFarAway(false);
         bukkitEntity.setMaxHealth(getData().getHealth());
         bukkitEntity.setHealth(bukkitEntity.getMaxHealth());
 

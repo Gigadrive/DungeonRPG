@@ -377,10 +377,10 @@ public class DungeonRPG extends JavaPlugin {
                         if(c.getBukkitEntity() != null && c.toCitizensNPC() != null){
                             if(Util.getChanceBoolean(500,150)){
                                 if(c.playerMobSpeed){
-                                    c.toCitizensNPC().getNavigator().getDefaultParameters().speed(0f);
+                                    c.toCitizensNPC().getNavigator().getDefaultParameters().baseSpeed(0f);
                                     c.playerMobSpeed = false;
                                 } else {
-                                    c.toCitizensNPC().getNavigator().getDefaultParameters().speed((float)c.getData().getSpeed());
+                                    c.toCitizensNPC().getNavigator().getDefaultParameters().baseSpeed((float)c.getData().getSpeed());
                                     c.playerMobSpeed = true;
                                 }
                             }
