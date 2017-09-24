@@ -41,6 +41,7 @@ import net.wrathofdungeons.dungeonrpg.skill.mercenary.Shockwave;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -364,6 +365,21 @@ public class DungeonRPG extends JavaPlugin {
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }.runTaskTimer(this,1,1);
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Player p : Bukkit.getOnlinePlayers()){
+                    ((CraftPlayer)p).getHandle().getDataWatcher().watch(9, (byte) 0);
+                }
+
+                for(NPC npc : CitizensAPI.getNPCRegistry().sorted()){
+                    if(npc.getEntity() != null && npc.getEntity() instanceof Player){
+                        ((CraftPlayer)npc.getEntity()).getHandle().getDataWatcher().watch(9, (byte) 0);
                     }
                 }
             }
