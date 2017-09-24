@@ -514,9 +514,10 @@ public class DungeonRPG extends JavaPlugin {
             w.setTime(0);
             w.setStorm(false);
             w.setThundering(false);
+            w.setKeepSpawnInMemory(false);
 
             w.setDifficulty(Difficulty.EASY);
-            w.setAutoSave(false);
+            w.setAutoSave(true);
             w.setPVP(true);
 
             w.setGameRuleValue("doMobSpawning","false");
