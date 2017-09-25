@@ -50,7 +50,7 @@ public class DeathListener implements Listener {
 
                             if(u.getCurrentCharacter() != null){
                                 // DROP GOLD
-                                if(Util.getChanceBoolean(50+u.getCurrentCharacter().getTotalValue(AwakeningType.FORTUNE),190)) WorldUtilities.dropItem(livingEntity.getLocation(),new CustomItem(7),p);
+                                if(mob.getMobType() == MobType.AGGRO) if(Util.getChanceBoolean(50+u.getCurrentCharacter().getTotalValue(AwakeningType.FORTUNE),190)) WorldUtilities.dropItem(livingEntity.getLocation(),new CustomItem(7),p);
 
                                 //TODO: Add pre-defined dropable items
 
@@ -108,7 +108,7 @@ public class DeathListener implements Listener {
                                     xp = u.giveEXP(xp);
                                 }
 
-                                p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
+                                if(mob.getMobType() == MobType.AGGRO) p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
 
                                 final Hologram holo = HologramsAPI.createHologram(DungeonRPG.getInstance(), ent.getLocation().clone().add(0,2,0));
                                 holo.appendTextLine(ChatColor.GOLD + "+" + ((Double)xp).intValue() + " EXP");
