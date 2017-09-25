@@ -5,8 +5,10 @@ import net.citizensnpcs.api.event.NPCPushEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
+import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
+import net.wrathofdungeons.dungeonapi.util.PlayerUtilities;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageManager;
@@ -15,6 +17,7 @@ import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
 import net.wrathofdungeons.dungeonrpg.inv.GameMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
+import net.wrathofdungeons.dungeonrpg.lootchests.LootChest;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
@@ -37,10 +40,16 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.material.Wool;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 import static net.wrathofdungeons.dungeonrpg.regions.RegionLocationType.*;
 
@@ -54,6 +63,12 @@ public class InteractListener implements Listener {
 
             if(u.isInSetupMode()){
                 if(e.getAction() == Action.RIGHT_CLICK_BLOCK){
+                    if (DungeonRPG.DISALLOWED_BLOCKS.contains(e.getClickedBlock().getType())) {
+                        e.setCancelled(true);
+                        e.setUseInteractedBlock(Event.Result.DENY);
+                        e.setUseItemInHand(Event.Result.DENY);
+                    }
+
                     if(p.getItemInHand() != null && p.getItemInHand().hasItemMeta() && p.getItemInHand().getItemMeta().hasDisplayName()){
                         String dis = p.getItemInHand().getItemMeta().getDisplayName();
 
@@ -103,6 +118,53 @@ public class InteractListener implements Listener {
                             }
                         } else {
                             p.sendMessage(ChatColor.RED + "No region loaded.");
+                        }
+
+                        return;
+                    }
+
+                    LootChest c = LootChest.getChest(e.getClickedBlock().getLocation());
+                    if(c != null){
+                        p.sendMessage(ChatColor.YELLOW + "ID: " + c.getId());
+                        p.sendMessage(ChatColor.YELLOW + "Level: " + c.getLevel());
+                        p.sendMessage(ChatColor.YELLOW + "Tier: " + c.getTier().getId());
+                        if(c.getAddedBy() != null) p.sendMessage(ChatColor.YELLOW + "Added By: " + PlayerUtilities.getNameFromUUID(c.getAddedBy()));
+                    } else {
+                        if(u.lootChestLevel > 0 && u.lootChestTier > 0){
+                            try {
+                                int chestID = 0;
+
+                                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `lootchests` (`location.world`,`location.x`,`location.y`,`location.z`,`level`,`tier`,`addedBy`) VALUES(?,?,?,?,?,?,?);", Statement.RETURN_GENERATED_KEYS);
+                                ps.setString(1,e.getClickedBlock().getLocation().getWorld().getName());
+                                ps.setDouble(2,e.getClickedBlock().getLocation().getX());
+                                ps.setDouble(3,e.getClickedBlock().getLocation().getY());
+                                ps.setDouble(4,e.getClickedBlock().getLocation().getZ());
+                                ps.setInt(5,u.lootChestLevel);
+                                ps.setInt(6,u.lootChestTier);
+                                ps.setString(7,p.getUniqueId().toString());
+                                ps.executeUpdate();
+
+                                ResultSet rs = ps.getGeneratedKeys();
+                                if(rs.first()){
+                                    chestID = rs.getInt(1);
+                                }
+
+                                MySQLManager.getInstance().closeResources(rs,ps);
+
+                                if(chestID > 0){
+                                    c = new LootChest(chestID);
+                                    p.sendMessage(ChatColor.GREEN + "Loot Chest created! ID: " + c.getId());
+                                    p.sendMessage(ChatColor.GREEN + "Level: " + c.getLevel());
+                                    p.sendMessage(ChatColor.GREEN + "Tier: " + c.getTier());
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "An error occurred.");
+                                }
+                            } catch(Exception e1){
+                                e1.printStackTrace();
+                            }
+
+                            u.lootChestLevel = 0;
+                            u.lootChestTier = 0;
                         }
                     }
                 }
@@ -180,15 +242,50 @@ public class InteractListener implements Listener {
 
                 if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (DungeonRPG.DISALLOWED_BLOCKS.contains(e.getClickedBlock().getType())) {
-                        if (p.getGameMode() != GameMode.CREATIVE) {
-                            e.setCancelled(true);
-                            e.setUseInteractedBlock(Event.Result.DENY);
-                            e.setUseItemInHand(Event.Result.DENY);
-                            return;
-                        }
+                        e.setCancelled(true);
+                        e.setUseInteractedBlock(Event.Result.DENY);
+                        e.setUseItemInHand(Event.Result.DENY);
+                        if(e.getClickedBlock().getType() != Material.CHEST) return;
                     }
 
-                    // TODO: Add loot chests
+                    if(e.getClickedBlock().getType() == Material.CHEST){
+                        LootChest c = LootChest.getChest(e.getClickedBlock().getLocation());
+                        if(c != null){
+                            if(c.isSpawned()){
+                                if(!c.isClaimed()){
+                                    c.claim(p);
+                                    c.getLocation().getWorld().playSound(c.getLocation(), Sound.CHEST_OPEN, 1f, 1f);
+                                    Inventory inv = Bukkit.createInventory(null,Util.INVENTORY_3ROWS,"[" + c.getTier().getDisplay() + "] Loot Chest");
+
+                                    ArrayList<CustomItem> toAdd = new ArrayList<CustomItem>();
+                                    int added = 0;
+                                    int nuggets = Util.randomInteger(c.getTier().getGoldNuggetAmount()/2,c.getTier().getGoldNuggetAmount());
+                                    if(nuggets == 0) nuggets = 1;
+
+                                    while(added < nuggets){
+                                        int missing = nuggets-added;
+                                        int a = missing == 1 ? 1 : Util.randomInteger(1,missing);
+
+                                        added += a;
+                                        toAdd.add(new CustomItem(7,added));
+                                    }
+
+                                    for(CustomItem i : toAdd){
+                                        int slot = -1;
+                                        while(slot == -1 || inv.getItem(slot) != null) slot = Util.randomInteger(0,inv.getSize()-1);
+
+                                        inv.setItem(slot,i.build(p));
+                                    }
+
+                                    p.openInventory(inv);
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "This loot chest has already been claimed by another player.");
+                                }
+                            }
+                        }
+
+                        return;
+                    }
                 }
 
                 if(p.getItemInHand() != null && p.getItemInHand().getType() != null && p.getItemInHand().getItemMeta() != null && CustomItem.fromItemStack(p.getItemInHand()) != null) {

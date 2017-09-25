@@ -15,6 +15,7 @@ import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
+import net.wrathofdungeons.dungeonrpg.lootchests.LootChest;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
@@ -82,6 +83,7 @@ public class DungeonRPG extends JavaPlugin {
         MobData.init();
         Region.init();
         CustomNPC.init();
+        LootChest.init();
 
         SkillStorage s = new SkillStorage();
 
@@ -409,6 +411,17 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(this,2*20,2*20);
 
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(LootChest chest : LootChest.STORAGE.values()){
+                    if(chest.isSpawned()){
+                        chest.getLocation().getWorld().playEffect(chest.getLocation(),Effect.MOBSPAWNER_FLAMES,1);
+                    }
+                }
+            }
+        }.runTaskTimer(this,10,10);
+
         Bukkit.getServer().clearRecipes();
     }
 
@@ -516,6 +529,7 @@ public class DungeonRPG extends JavaPlugin {
     private void registerCommands(){
         new AwakeningCommand();
         new CreateNPCCommand();
+        new CreateLootChestCommand();
         new CreateRegionCommand();
         new CharSelCommand();
         new ExpCommand();

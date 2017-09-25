@@ -78,6 +78,9 @@ public class GameUser extends User {
     public boolean ignoreDamageCheck = false;
     public boolean onGround = true;
 
+    public int lootChestTier = 0;
+    public int lootChestLevel = 0;
+
     public String currentCombo = "";
     public boolean canCastCombo = true;
     public int comboDelay = 0;
@@ -714,6 +717,8 @@ public class GameUser extends User {
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Activation Setter (1)",null));
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Activation Setter (2)",null));
         } else {
+            lootChestLevel = 0;
+            lootChestTier = 0;
             bukkitReset();
             setCurrentCharacter(null);
             p.teleport(DungeonRPG.getCharSelLocation());
