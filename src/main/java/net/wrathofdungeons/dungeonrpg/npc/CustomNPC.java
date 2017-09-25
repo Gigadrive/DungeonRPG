@@ -221,9 +221,9 @@ public class CustomNPC {
                     hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(),getPotentialHologramLocation());
 
                     if(getCustomName() == null){
-                        hologram.appendTextLine(getNpcType().getDefaultName());
+                        hologram.appendTextLine(getNpcType().getColor() + getNpcType().getDefaultName());
                     } else {
-                        hologram.appendTextLine(getCustomName());
+                        hologram.appendTextLine(getNpcType().getColor() + getCustomName());
                     }
                 } else {
                     hologram.teleport(getPotentialHologramLocation());
