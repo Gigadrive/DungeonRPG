@@ -205,7 +205,7 @@ public class CustomEntity {
     }
 
     public void setBukkitEntity(LivingEntity bukkitEntity) {
-        if(this.bukkitEntity != null) if(STORAGE.containsKey(this.bukkitEntity)) remove();
+        if(this.bukkitEntity != null) if(STORAGE.containsKey(this.bukkitEntity)) STORAGE.remove(this.bukkitEntity);
 
         this.bukkitEntity = bukkitEntity;
         STORAGE.put(bukkitEntity,this);
@@ -551,8 +551,10 @@ public class CustomEntity {
             }
         }.runTaskLater(DungeonRPG.getInstance(),2);
 
-        hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(),getSupposedHologramLocation());
-        hologram.appendTextLine(getData().getMobType().getColor() + getData().getName() + " " + ChatColor.GOLD + "- Lv. " + getData().getLevel());
+        if(hologram == null){
+            hologram = HologramsAPI.createHologram(DungeonRPG.getInstance(),getSupposedHologramLocation());
+            hologram.appendTextLine(getData().getMobType().getColor() + getData().getName() + " " + ChatColor.GOLD + "- Lv. " + getData().getLevel());
+        }
 
         startRegenTask();
 
