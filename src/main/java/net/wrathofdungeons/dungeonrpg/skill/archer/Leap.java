@@ -43,7 +43,7 @@ public class Leap implements Skill {
                 ParticleEffect.SPELL_MOB.display(new ParticleEffect.OrdinaryColor(92,214,255),p.getLocation().clone().add(Util.randomInteger(-1,1),0,Util.randomInteger(-1,1)),600);
             }
 
-            p.setVelocity(p.getLocation().getDirection().multiply(1.5).setY(1.75));
+            p.setVelocity(p.getLocation().getDirection().multiply(2.5).setY(1.25));
         }
     }
 }
