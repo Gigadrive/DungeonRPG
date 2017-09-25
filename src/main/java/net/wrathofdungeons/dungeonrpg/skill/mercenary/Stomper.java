@@ -2,8 +2,10 @@ package net.wrathofdungeons.dungeonrpg.skill.mercenary;
 
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillType;
+import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 public class Stomper implements Skill {
     @Override
@@ -28,6 +30,13 @@ public class Stomper implements Skill {
 
     @Override
     public void execute(Player p) {
+        GameUser u = GameUser.getUser(p);
 
+        if(!u.getSkillValues().stomperActive){
+            p.setVelocity(new Vector(0,3,0));
+
+            u.getSkillValues().stomperActive = true;
+            u.getSkillValues().stomperSkill = this;
+        }
     }
 }

@@ -305,7 +305,7 @@ public class DungeonRPG extends JavaPlugin {
                 for(Player p : Bukkit.getOnlinePlayers()){
                     if(GameUser.isLoaded(p)){
                         GameUser u = GameUser.getUser(p);
-                        boolean o = p.isOnGround();
+                        boolean o = ((Entity)p).isOnGround();
 
                         if(!u.onGround && o){
                             PlayerLandOnGroundEvent event = new PlayerLandOnGroundEvent(p);
@@ -313,6 +313,10 @@ public class DungeonRPG extends JavaPlugin {
                         }
 
                         u.onGround = o;
+
+                        if(u.getSkillValues().stomperActive){
+                            ParticleEffect.SMOKE_NORMAL.display(0f,0f,0f,0.005f,1,p.getLocation(),600);
+                        }
                     }
                 }
             }

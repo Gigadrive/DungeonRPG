@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.skill.magician;
 
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillType;
+import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.entity.Player;
 

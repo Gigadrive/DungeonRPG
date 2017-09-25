@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.skill;
 
+import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitTask;
@@ -13,6 +14,8 @@ public class SkillValues {
     public Location vortexBarrierLoc;
     public int magicCureCount;
     public BukkitTask magicCureTask;
+    public boolean stomperActive;
+    public Stomper stomperSkill;
 
     public SkillValues(){
         reset();
@@ -23,6 +26,7 @@ public class SkillValues {
         leapIsInAir = false;
         vortexBarrierCount = 0;
         magicCureCount = 0;
+        stomperActive = false;
 
         if(dartRainTask != null){
             dartRainTask.cancel();

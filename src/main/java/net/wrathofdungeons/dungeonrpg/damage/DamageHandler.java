@@ -10,6 +10,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.archer.DartRain;
 import net.wrathofdungeons.dungeonrpg.skill.archer.ExplosionArrow;
+import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -71,6 +72,8 @@ public class DamageHandler {
                     damage /= 4;
                 } else if(skill instanceof ExplosionArrow){
                     damage *= 2.5;
+                } else if(skill instanceof Stomper){
+                    damage *= 3;
                 }
             }
 
