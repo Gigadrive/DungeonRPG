@@ -10,6 +10,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.archer.DartRain;
 import net.wrathofdungeons.dungeonrpg.skill.archer.ExplosionArrow;
+import net.wrathofdungeons.dungeonrpg.skill.mercenary.Shockwave;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.entity.LightningStrike;
@@ -77,6 +78,8 @@ public class DamageHandler {
                     damage *= 3;
                 } else if(skill instanceof LightningStrike){
                     damage *= 2.5;
+                } else if(skill instanceof Shockwave){
+                    damage *= 3.5;
                 }
             }
 
