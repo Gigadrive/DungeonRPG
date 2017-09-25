@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.sql.PreparedStatement;
@@ -184,6 +185,7 @@ public class CustomNPC {
 
             if(getEntityType() != EntityType.PLAYER){
                 DungeonAPI.nmsMakeSilent(npc.getEntity());
+                ((LivingEntity)npc.getEntity()).setRemoveWhenFarAway(false);
             }
         }
 

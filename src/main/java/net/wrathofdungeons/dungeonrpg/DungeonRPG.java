@@ -50,6 +50,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
+import org.mineskin.MineskinClient;
 
 import java.util.*;
 
@@ -67,8 +68,10 @@ public class DungeonRPG extends JavaPlugin {
     public static World MAIN_WORLD = null;
 
     public static int SETUP_REGION = 0;
+    private static MineskinClient mineskinClient;
 
     public void onEnable(){
+        mineskinClient = new MineskinClient();
         instance = this;
         saveDefaultConfig();
 
@@ -415,6 +418,10 @@ public class DungeonRPG extends JavaPlugin {
         }
     }
 
+    public static MineskinClient getMineskinClient(){
+        return mineskinClient;
+    }
+
     public static int getMaxLevel(){
         return getInstance().getConfig().getInt("max-lvl");
     }
@@ -553,7 +560,6 @@ public class DungeonRPG extends JavaPlugin {
             w.setTime(0);
             w.setStorm(false);
             w.setThundering(false);
-            w.setKeepSpawnInMemory(false);
 
             w.setDifficulty(Difficulty.EASY);
             w.setAutoSave(true);

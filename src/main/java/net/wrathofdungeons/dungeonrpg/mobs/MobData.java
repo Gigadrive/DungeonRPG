@@ -1,18 +1,28 @@
 package net.wrathofdungeons.dungeonrpg.mobs;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
+import net.wrathofdungeons.dungeonapi.util.GameProfileBuilder;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
+import org.mineskin.MineskinClient;
+import org.mineskin.data.Skin;
+import org.mineskin.data.SkinCallback;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class MobData {
     public static ArrayList<MobData> STORAGE = new ArrayList<MobData>();
@@ -51,7 +61,7 @@ public class MobData {
     private int xp;
     private int regen;
     private EntityType entityType;
-    private String skin;
+    private int skin;
     private ItemStack helmet;
     private ItemStack chestplate;
     private ItemStack leggings;
@@ -62,6 +72,8 @@ public class MobData {
     private double speed;
     private MobSoundData soundData;
     private AISettings aiSettings;
+
+    private Skin mineSkin;
 
     public MobData(int id){
         this.id = id;
@@ -80,9 +92,10 @@ public class MobData {
                 this.xp = rs.getInt("xp");
                 this.regen = rs.getInt("regen");
                 this.entityType = EntityType.valueOf(rs.getString("entityType"));
-                this.skin = rs.getString("skin");
-                if(skin != null && entityType != EntityType.PLAYER){
-                    this.helmet = ItemUtil.profiledSkull(this.skin);
+                this.skin = rs.getInt("skin");
+                if(skin != 0 && entityType != EntityType.PLAYER){
+                    // TODO: Apply mineskin skin to head
+                    //this.helmet = ItemUtil.profiledSkull(this.skin);
                 } else {
                     this.helmet = Util.parseItemStack(rs.getString("helmet"));
                 }
@@ -112,6 +125,24 @@ public class MobData {
                 this.aiSettings.setLookAtPlayer(rs.getBoolean("ai.lookAtPlayer"));
                 this.aiSettings.setLookAround(rs.getBoolean("ai.lookAround"));
 
+                if(this.skin != 0){
+                    DungeonRPG.getMineskinClient().getSkin(this.skin, new SkinCallback() {
+                        @Override
+                        public void done(Skin skin) {
+                            mineSkin = skin;
+                            h();
+                        }
+                    });
+
+                    /*String skinURL = this.skin;
+                    if(!skinURL.startsWith("http://textures.minecraft.net/texture/")) skinURL = "http://textures.minecraft.net/texture/" + skinURL;
+
+                    //this.gameProfile = GameProfileBuilder.getProfile(UUID.randomUUID(), ChatColor.GREEN.toString(), skinURL);
+                    this.gameProfile = new GameProfile(UUID.randomUUID(),ChatColor.GREEN.toString());
+                    this.gameProfile.getProperties().put("textures",new Property("textures",new String(Base64Coder.encodeString("{\"SKIN\":{\"url\":\"" + skinURL + "\"}}").getBytes())));
+                    //if(getSkinSignature() != null) this.gameProfile.getProperties().put("textures",new Property("signature",getSkinSignature()));*/
+                }
+
                 STORAGE.add(this);
             }
 
@@ -119,6 +150,10 @@ public class MobData {
         } catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    private void h(){
+        if(mineSkin != null && entityType != EntityType.PLAYER) helmet = ItemUtil.profiledSkullCustom(mineSkin.data.texture.url);
     }
 
     public int getId() {
@@ -157,8 +192,12 @@ public class MobData {
         return entityType;
     }
 
-    public String getSkin() {
+    public int getSkinID(){
         return skin;
+    }
+
+    public Skin getSkin() {
+        return mineSkin;
     }
 
     public ItemStack getHelmet() {

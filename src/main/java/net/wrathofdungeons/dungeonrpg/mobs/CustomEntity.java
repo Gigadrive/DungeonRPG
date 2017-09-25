@@ -3,12 +3,24 @@ package net.wrathofdungeons.dungeonrpg.mobs;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
+import com.google.common.collect.Iterables;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.goals.WanderGoal;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.npc.CitizensNPC;
+import net.citizensnpcs.npc.entity.EntityHumanNPC;
+import net.citizensnpcs.npc.skin.Skin;
+import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.minecraft.server.v1_8_R3.*;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
+import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
@@ -25,9 +37,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
+import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
+
+import static net.citizensnpcs.api.npc.NPC.*;
+import static net.citizensnpcs.npc.skin.Skin.CACHED_SKIN_UUID_METADATA;
+import static net.citizensnpcs.npc.skin.Skin.CACHED_SKIN_UUID_NAME_METADATA;
+import static net.citizensnpcs.npc.skin.Skin.get;
 
 public class CustomEntity {
     public static HashMap<LivingEntity,CustomEntity> STORAGE = new HashMap<LivingEntity,CustomEntity>();
@@ -184,6 +204,13 @@ public class CustomEntity {
         }
     }
 
+    public void setBukkitEntity(LivingEntity bukkitEntity) {
+        if(this.bukkitEntity != null) if(STORAGE.containsKey(this.bukkitEntity)) remove();
+
+        this.bukkitEntity = bukkitEntity;
+        STORAGE.put(bukkitEntity,this);
+    }
+
     public void adjustSpeed(){
         adjustSpeed(true);
     }
@@ -265,15 +292,84 @@ public class CustomEntity {
             if(getData().getEntityType() == EntityType.PLAYER){
                 npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER,ChatColor.GREEN.toString());
                 npc.spawn(loc);
+                //npc.data().set(NPC.PLAYER_SKIN_UUID_METADATA,gameProfile.getName());
+                if(getData().getSkin() != null){
+                    /*String p = "https://textures.minecraft.net/texture/";
+                    String url = getData().getSkin().startsWith(p) ? getData().getSkin() : p + getData().getSkin();
+                    String s = new String(Base64Coder.encodeString("{\"SKIN\":{\"url\":\"" + url + "\"}}").getBytes());
+                    Property property = new Property("textures",s);*/
+                    //Property value = Iterables.getFirst(getData().getGameProfile().getProperties().get("textures"),null);
+
+                    //npc.data().setPersistent(CACHED_SKIN_UUID_NAME_METADATA, ChatColor.GREEN.toString());
+                    npc.data().setPersistent(PLAYER_SKIN_UUID_METADATA, ChatColor.GREEN.toString());
+                    npc.data().setPersistent(PLAYER_SKIN_USE_LATEST,false);
+
+
+                    if(getData().getSkin() != null){
+                        npc.data().setPersistent(PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA,getData().getSkin().data.texture.value);
+                        if(getData().getSkin().data.texture.signature != null){
+                            npc.data().setPersistent(PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA,getData().getSkin().data.texture.signature);
+                        } else {
+                            System.out.println("SIGNATURE IS NULL");
+                        }
+
+                        if(npc.getEntity() == null) System.out.println("entity is null");
+
+                        SkinnableEntity skinnable = npc.getEntity() instanceof SkinnableEntity ? (SkinnableEntity)npc.getEntity() : null;
+                        if(skinnable != null){
+                            try {
+                                org.mineskin.data.Skin skin = getData().getSkin();
+
+                                //GameProfile profile = new Gson().fromJson("{\"id\":\"" + skin.data.uuid.toString() + "\",\"name\":\"" + ChatColor.GREEN.toString() + "\",\"properties\":[{\"signature\":\"" + skin.data.texture.signature + "\",\"name\":\"textures\",\"value\":\"" + skin.data.texture.value + "\"}]}",GameProfile.class);
+                                GameProfile profile = new GameProfile(skin.data.uuid,ChatColor.GREEN.toString());
+                                profile.getProperties().put("textures",new Property("textures",skin.data.texture.value,skin.data.texture.signature));
+
+                                Class<Skin> clazz = Skin.class;
+                                Method met = clazz.getDeclaredMethod("setData", GameProfile.class);
+
+                                met.setAccessible(true);
+                                met.invoke(Skin.get(skinnable.getSkinName()),profile);
+                            } catch(Exception e){
+                                e.printStackTrace();
+                            }
+                            /*skinnable.getProfile().getProperties().removeAll("textures");
+                            skinnable.getProfile().getProperties().put("textures",new Property("textures",getData().getSkin().data.texture.value));
+                            skinnable.getProfile().getProperties().removeAll("signature");
+                            skinnable.getProfile().getProperties().put("signature",new Property("signature",getData().getSkin().data.texture.signature));*/
+                            skinnable.getSkinTracker().notifySkinChange();
+                        } else {
+                            System.out.println("SKINNABLE IS NULL");
+                        }
+                    } else {
+                        npc.data().remove(PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA);
+                        npc.data().remove(PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA);
+                    }
+                }
                 npc.setProtected(false);
                 npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed());
                 if(getData().getAiSettings().mayDoRandomStroll() && getData().getMobType() == MobType.PASSIVE) npc.getDefaultGoalController().addGoal(WanderGoal.createWithNPCAndRange(npc,10,10),9);
+
+                /*CitizensNPC cnpc = (CitizensNPC)npc;
+                EntityHumanNPC.PlayerNPC np = (EntityHumanNPC.PlayerNPC) cnpc.getEntity();
+                GameProfile originalGameProfile = np.getProfile();
+                PropertyMap pm = originalGameProfile.getProperties();
+
+                String p = "https://textures.minecraft.net/texture/";
+                String url = getData().getSkin().startsWith(p) ? getData().getSkin() : p + getData().getSkin();
+
+                if(pm == null){
+                    throw new IllegalArgumentException("Profile doesn't contain a property map");
+                }
+                byte[] encoded =  Base64Coder.encodeString("{textures:{SKIN:{url:\"" + url + "\"}}}").getBytes();
+                pm.put("textures", new Property("textures", new String(encoded)));
+
+                if(url != null) npc.data().set(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA,url);*/
 
                 handle();
                 new BukkitRunnable(){
                     @Override
                     public void run() {
-
+                        handle();
                     }
                 }.runTaskLater(DungeonRPG.getInstance(),1);
             } else {
