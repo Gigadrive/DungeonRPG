@@ -4,6 +4,7 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.trait.VillagerProfession;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
@@ -13,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.sql.PreparedStatement;
@@ -80,6 +82,7 @@ public class CustomNPC {
     private String customName;
     private CustomNPCType npcType;
     private EntityType entityType;
+    private Villager.Profession villagerProfession;
     private Location storedLocation;
 
     private NPC npc;
@@ -100,6 +103,7 @@ public class CustomNPC {
                 this.customName = rs.getString("customName");
                 this.npcType = CustomNPCType.fromName(rs.getString("npcType"));
                 this.entityType = EntityType.valueOf(rs.getString("entityType"));
+                this.villagerProfession = Villager.Profession.valueOf(rs.getString("villager.profession"));
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
 
                 spawnNPC();
@@ -153,6 +157,18 @@ public class CustomNPC {
         spawnNPC();
     }
 
+    public Villager.Profession getVillagerProfession() {
+        return villagerProfession;
+    }
+
+    public void setVillagerProfession(Villager.Profession villagerProfession) {
+        this.villagerProfession = villagerProfession;
+        setHasUnsavedData(true);
+
+        despawnNPC();
+        spawnNPC();
+    }
+
     public Location getLocation() {
         return storedLocation;
     }
@@ -182,6 +198,10 @@ public class CustomNPC {
             }
 
             npc.spawn(getLocation());
+
+            if(getEntityType() == EntityType.VILLAGER){
+                npc.getTrait(VillagerProfession.class).setProfession(getVillagerProfession());
+            }
 
             if(getEntityType() != EntityType.PLAYER){
                 DungeonAPI.nmsMakeSilent(npc.getEntity());
@@ -258,17 +278,18 @@ public class CustomNPC {
             setHasUnsavedData(false);
 
             try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ? WHERE `id` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `villager.profession` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ? WHERE `id` = ?");
                 ps.setString(1,getCustomName());
                 ps.setString(2,getNpcType().toString());
                 ps.setString(3,getEntityType().toString());
-                ps.setString(4,getLocation().getWorld().getName());
-                ps.setDouble(5,getLocation().getX());
-                ps.setDouble(6,getLocation().getY());
-                ps.setDouble(7,getLocation().getZ());
-                ps.setFloat(8,getLocation().getYaw());
-                ps.setFloat(9,getLocation().getPitch());
-                ps.setInt(10,getId());
+                ps.setString(4,getVillagerProfession().toString());
+                ps.setString(5,getLocation().getWorld().getName());
+                ps.setDouble(6,getLocation().getX());
+                ps.setDouble(7,getLocation().getY());
+                ps.setDouble(8,getLocation().getZ());
+                ps.setFloat(9,getLocation().getYaw());
+                ps.setFloat(10,getLocation().getPitch());
+                ps.setInt(11,getId());
                 ps.executeUpdate();
                 ps.close();
             } catch(Exception e){

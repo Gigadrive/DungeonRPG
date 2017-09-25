@@ -9,6 +9,7 @@ import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 
 import java.util.Arrays;
 
@@ -23,6 +24,7 @@ public class ModifyNPCCommand extends Command {
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> customname [Name]");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> type <NPC-Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> entity <Entity Type>");
+        p.sendMessage(ChatColor.RED + "/" + label + " <NPC> profession <Profession>");
     }
 
     @Override
@@ -57,6 +59,17 @@ public class ModifyNPCCommand extends Command {
 
                                 if(type != null){
                                     npc.setNpcType(type);
+                                    p.sendMessage(ChatColor.GREEN + "Success!");
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Invalid NPC type!");
+                                }
+                            } else if(args[1].equalsIgnoreCase("profession")){
+                                Villager.Profession profession = null;
+
+                                for(Villager.Profession pr : Villager.Profession.values()) if(pr.toString().equalsIgnoreCase(args[2])) profession = pr;
+
+                                if(profession != null){
+                                    npc.setVillagerProfession(profession);
                                     p.sendMessage(ChatColor.GREEN + "Success!");
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Invalid NPC type!");
