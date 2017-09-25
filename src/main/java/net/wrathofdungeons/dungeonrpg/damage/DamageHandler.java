@@ -12,6 +12,7 @@ import net.wrathofdungeons.dungeonrpg.skill.archer.DartRain;
 import net.wrathofdungeons.dungeonrpg.skill.archer.ExplosionArrow;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -71,9 +72,11 @@ public class DamageHandler {
                 if(skill instanceof DartRain){
                     damage /= 4;
                 } else if(skill instanceof ExplosionArrow){
-                    damage *= 2.5;
+                    damage *= 3.5;
                 } else if(skill instanceof Stomper){
                     damage *= 3;
+                } else if(skill instanceof LightningStrike){
+                    damage *= 2.5;
                 }
             }
 

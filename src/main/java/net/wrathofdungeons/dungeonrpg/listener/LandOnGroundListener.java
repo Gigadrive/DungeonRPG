@@ -66,16 +66,16 @@ public class LandOnGroundListener implements Listener {
                             if(c != null){
                                 u.ignoreDamageCheck = true;
 
-                                livingEntity.damage(DamageHandler.calculatePlayerToMobDamage(u,c,u.getSkillValues().stomperSkill),p);
                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                 c.getData().playSound(livingEntity.getLocation());
+                                livingEntity.damage(DamageHandler.calculatePlayerToMobDamage(u,c,u.getSkillValues().stomperSkill),p);
 
                                 new BukkitRunnable(){
                                     @Override
                                     public void run() {
                                         u.ignoreDamageCheck = false;
                                     }
-                                }.runTask(DungeonRPG.getInstance());
+                                }.runTaskLater(DungeonRPG.getInstance(),1);
                             } else {
                                 if(ent.getType() == EntityType.PLAYER){
                                     // TODO: handle duels

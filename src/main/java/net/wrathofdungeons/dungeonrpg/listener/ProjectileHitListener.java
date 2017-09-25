@@ -53,7 +53,7 @@ public class ProjectileHitListener implements Listener {
                                                 u.ignoreDamageCheck = false;
                                                 u.ignoreFistCheck = false;
                                             }
-                                        }.runTask(DungeonRPG.getInstance());
+                                        }.runTaskLater(DungeonRPG.getInstance(),1);
                                     } else {
                                         if(ent.getType() == EntityType.PLAYER){
                                             // TODO: handle duels

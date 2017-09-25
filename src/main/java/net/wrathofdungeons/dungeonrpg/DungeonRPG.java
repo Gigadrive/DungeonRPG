@@ -314,8 +314,10 @@ public class DungeonRPG extends JavaPlugin {
 
                         u.onGround = o;
 
-                        if(u.getSkillValues().stomperActive){
-                            ParticleEffect.SMOKE_NORMAL.display(0f,0f,0f,0.005f,1,p.getLocation(),600);
+                        if(u.getSkillValues() != null){
+                            if(u.getSkillValues().stomperActive){
+                                ParticleEffect.SMOKE_NORMAL.display(0f,0f,0f,0.005f,1,p.getLocation(),600);
+                            }
                         }
                     }
                 }

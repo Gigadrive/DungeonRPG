@@ -16,6 +16,8 @@ public class SkillValues {
     public BukkitTask magicCureTask;
     public boolean stomperActive;
     public Stomper stomperSkill;
+    public BukkitTask lightningStrikeTask;
+    public int lightningStrikeCount;
 
     public SkillValues(){
         reset();
@@ -27,6 +29,7 @@ public class SkillValues {
         vortexBarrierCount = 0;
         magicCureCount = 0;
         stomperActive = false;
+        lightningStrikeCount = 0;
 
         if(dartRainTask != null){
             dartRainTask.cancel();
@@ -41,6 +44,11 @@ public class SkillValues {
         if(dartRainTask != null){
             dartRainTask.cancel();
             dartRainTask = null;
+        }
+
+        if(lightningStrikeTask != null){
+            lightningStrikeTask.cancel();
+            lightningStrikeTask = null;
         }
     }
 }
