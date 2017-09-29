@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.cmd;
 import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.util.Util;
+import net.wrathofdungeons.dungeonrpg.inv.MerchantSetupMenu;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPCType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
@@ -21,6 +22,7 @@ public class ModifyNPCCommand extends Command {
     public void sendUsage(Player p, String label){
         p.sendMessage(ChatColor.RED + "/" + label + " create <NPC-Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> teleport");
+        p.sendMessage(ChatColor.RED + "/" + label + " <NPC> offers");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> customname [Name]");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> type <NPC-Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> entity <Entity Type>");
@@ -42,6 +44,12 @@ public class ModifyNPCCommand extends Command {
                             if(args[1].equalsIgnoreCase("teleport")){
                                 npc.setLocation(p.getLocation());
                                 p.sendMessage(ChatColor.GREEN + "Success!");
+                            } else if(args[1].equalsIgnoreCase("offers")){
+                                if(npc.getNpcType() == CustomNPCType.MERCHANT){
+                                    MerchantSetupMenu.open(p,npc);
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Only Merchant NPCs can hold item offers.");
+                                }
                             } else if(args[1].equalsIgnoreCase("customname")){
                                 npc.setCustomName(null);
                                 p.sendMessage(ChatColor.GREEN + "Success!");

@@ -285,6 +285,10 @@ public class CustomItem {
         return getData().getRarity().getMaxAwakenings();
     }
 
+    public int getAmount() {
+        return amount;
+    }
+
     public ItemStack build(Player p){
         if(p != null){
             GameUser u = GameUser.getUser(p);

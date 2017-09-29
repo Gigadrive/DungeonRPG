@@ -15,6 +15,7 @@ import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -84,6 +85,12 @@ public class GameUser extends User {
     public String currentCombo = "";
     public boolean canCastCombo = true;
     public int comboDelay = 0;
+
+    public int merchantAddItemSlot = -1;
+    public CustomNPC merchantAddItem = null;
+    public CustomItem merchantAddItemHandle = null;
+    public int merchantAddMoneyCost = -1;
+    public ArrayList<CustomItem> merchantAddItemCosts = null;
 
     private BukkitTask mpRegenTask;
     private BukkitTask hpRegenTask;
@@ -707,6 +714,11 @@ public class GameUser extends User {
             setCurrentCharacter(null);
             bukkitReset();
             getSkillValues().reset();
+            merchantAddItem = null;
+            merchantAddItemHandle = null;
+            merchantAddItemCosts = null;
+            merchantAddMoneyCost = -1;
+            merchantAddItemSlot = -1;
             stopMPRegenTask();
             stopHPRegenTask();
             currentCombo = "";
@@ -721,6 +733,11 @@ public class GameUser extends User {
             lootChestTier = 0;
             bukkitReset();
             setCurrentCharacter(null);
+            merchantAddItem = null;
+            merchantAddItemHandle = null;
+            merchantAddItemCosts = null;
+            merchantAddMoneyCost = -1;
+            merchantAddItemSlot = -1;
             p.teleport(DungeonRPG.getCharSelLocation());
             CharacterSelectionMenu.openSelection(p);
             p.sendMessage(ChatColor.RED + "You are no longer in setup mode!");
@@ -840,6 +857,67 @@ public class GameUser extends User {
 
     public void updateInventory(){
         if(getCurrentCharacter() != null) getCurrentCharacter().getConvertedInventory(p).loadToPlayer(p);
+    }
+
+    public int getAmountInInventory(ItemData data){
+        int i = 0;
+
+        for(ItemStack iStack : p.getInventory().getContents()){
+            CustomItem c = CustomItem.fromItemStack(iStack);
+
+            if(c != null){
+                if(c.getData().getId() == data.getId()){
+                    i += iStack.getAmount();
+                }
+            }
+        }
+
+        return i;
+    }
+
+    public boolean hasInInventory(ItemData data, int amount){
+        int left = amount;
+
+        for(ItemStack iStack : p.getInventory().getContents()){
+            CustomItem c = CustomItem.fromItemStack(iStack);
+
+            if(c != null){
+                if(c.getData().getId() == data.getId()){
+                    left -= iStack.getAmount();
+                }
+            }
+
+            if(left <= 0) return true;
+        }
+
+        return false;
+    }
+
+    public void removeFromInventory(ItemData data, int amount){
+        if(hasInInventory(data,amount)){
+            int left = amount;
+
+            for(ItemStack iStack : p.getInventory().getContents()){
+                CustomItem c = CustomItem.fromItemStack(iStack);
+
+                if(c != null){
+                    if(c.getData().getId() == data.getId()){
+                        if(left < iStack.getAmount()){
+                            iStack.setAmount(iStack.getAmount()-left);
+                            return;
+                        } else if(left == iStack.getAmount()){
+                            p.getInventory().setItem(p.getInventory().first(iStack),new ItemStack(Material.AIR));
+                            return;
+                        } else if(left > iStack.getAmount()){
+                            left -= iStack.getAmount();
+                            p.getInventory().setItem(p.getInventory().first(iStack),new ItemStack(Material.AIR));
+
+                            if(left <= 0) return;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public int getTotalMoneyInInventory(){

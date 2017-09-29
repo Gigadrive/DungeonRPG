@@ -13,6 +13,7 @@ import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
 import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
 import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
+import net.wrathofdungeons.dungeonrpg.inv.MerchantSetupMenu;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
 import net.wrathofdungeons.dungeonrpg.lootchests.LootChest;
@@ -519,6 +520,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InventoryClickListener(),this);
         Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(),this);
         Bukkit.getPluginManager().registerEvents(new LandOnGroundListener(),this);
+        Bukkit.getPluginManager().registerEvents(new MerchantSetupMenu(),this);
         Bukkit.getPluginManager().registerEvents(new NPCInteractListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerDropListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(),this);

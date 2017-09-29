@@ -2,24 +2,34 @@ package net.wrathofdungeons.dungeonrpg.npc;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.VillagerProfession;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
+import net.wrathofdungeons.dungeonapi.util.ItemUtil;
+import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Villager;
+import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.items.ItemData;
+import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
+import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
+import org.bukkit.*;
+import org.bukkit.entity.*;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.inventivetalent.menubuilder.inventory.InventoryMenuBuilder;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class CustomNPC {
     public static ArrayList<CustomNPC> STORAGE = new ArrayList<CustomNPC>();
@@ -83,6 +93,7 @@ public class CustomNPC {
     private CustomNPCType npcType;
     private EntityType entityType;
     private Villager.Profession villagerProfession;
+    private ArrayList<MerchantOffer> offers;
     private Location storedLocation;
 
     private NPC npc;
@@ -104,6 +115,13 @@ public class CustomNPC {
                 this.npcType = CustomNPCType.fromName(rs.getString("npcType"));
                 this.entityType = EntityType.valueOf(rs.getString("entityType"));
                 this.villagerProfession = Villager.Profession.valueOf(rs.getString("villager.profession"));
+                String offerString = rs.getString("merchant.offers");
+                Gson gson = new Gson();
+                if(offerString != null){
+                    this.offers = gson.fromJson(offerString, new TypeToken<ArrayList<MerchantOffer>>(){}.getType());
+                } else {
+                    this.offers = new ArrayList<MerchantOffer>();
+                }
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
 
                 spawnNPC();
@@ -167,6 +185,10 @@ public class CustomNPC {
 
         despawnNPC();
         spawnNPC();
+    }
+
+    public ArrayList<MerchantOffer> getOffers() {
+        return offers;
     }
 
     public Location getLocation() {
@@ -255,6 +277,82 @@ public class CustomNPC {
         });
     }
 
+    public void openShop(Player p){
+        if(getNpcType() != CustomNPCType.MERCHANT) throw new IllegalArgumentException("NPC must be a merchant!");
+
+        GameUser u = GameUser.getUser(p);
+        InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.MAX_INVENTORY_SIZE);
+        inv.withTitle(getCustomName() != null ? ChatColor.stripColor(getCustomName()) : getNpcType().getDefaultName());
+
+        for(MerchantOffer offer : getOffers()){
+            ItemStack i = new CustomItem(offer.itemToBuy,offer.amount).build(p);
+            ItemMeta iM = i.getItemMeta();
+            ArrayList<String> iL = new ArrayList<String>();
+            if(iM.hasLore()) iL.addAll(iM.getLore());
+
+            ArrayList<CustomItem> offerItems = new ArrayList<CustomItem>();
+            if(offer.moneyCost > 0) offerItems.addAll(Arrays.asList(WorldUtilities.convertNuggetAmount(offer.moneyCost)));
+            for(MerchantOfferCost cost : offer.itemCost) offerItems.add(new CustomItem(cost.item,cost.amount));
+
+            iL.add(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString() + Util.SCOREBOARD_LINE_SEPERATOR);
+            iL.add(ChatColor.YELLOW + "Cost:");
+
+            for(CustomItem c : offerItems) iL.add(ChatColor.GRAY + "[" + c.getAmount() + "x " + ChatColor.stripColor(c.getData().getName()) + "]");
+
+            iM.setLore(iL);
+            i.setItemMeta(iM);
+
+            inv.withItem(offer.slot,i,((player, action, item) -> {
+                if(u.getEmptySlotsInInventory() >= 1){
+                    boolean canAfford = true;
+
+                    if(offer.moneyCost > 0 && u.getTotalMoneyInInventory() < offer.moneyCost) canAfford = false;
+
+                    for(MerchantOfferCost cost : offer.itemCost){
+                        if(!u.hasInInventory(ItemData.getData(cost.item),cost.amount)) canAfford = false;
+                    }
+
+                    if(canAfford){
+                        HashMap<Integer,Integer> toRemove = new HashMap<Integer,Integer>();
+
+                        if(offer.moneyCost > 0) for(CustomItem c : WorldUtilities.convertNuggetAmount(offer.moneyCost)) toRemove.put(c.getData().getId(),c.getAmount());
+
+                        if(offer.itemCost.size() > 0){
+                            for(MerchantOfferCost cost : offer.itemCost){
+                                toRemove.put(cost.item,cost.amount);
+                            }
+                        }
+
+                        for(int itemID : toRemove.keySet()){
+                            int amount = toRemove.get(itemID);
+
+                            u.removeFromInventory(ItemData.getData(itemID),amount);
+                        }
+
+                        p.getInventory().addItem(new CustomItem(offer.itemToBuy,offer.amount).build(p));
+                        p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+                    } else {
+                        p.sendMessage(ChatColor.RED + "You can't afford that item.");
+                    }
+                } else {
+                    p.sendMessage(ChatColor.RED + "Please empty some space in your inventory first.");
+                }
+            }),ClickType.LEFT);
+        }
+
+        inv.withItem(45, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
+        inv.withItem(46, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
+        inv.withItem(47, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
+        inv.withItem(48, ItemUtil.namedItem(Material.STAINED_GLASS_PANE,"",null,15));
+        inv.withItem(49, ItemUtil.namedItem(Material.BARRIER, ChatColor.DARK_RED + "Close",null), ((player, action, item) -> player.closeInventory()), ClickType.LEFT);
+        inv.withItem(50, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
+        inv.withItem(51, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
+        inv.withItem(52, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
+        inv.withItem(53, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
+
+        inv.show(p);
+    }
+
     public boolean hasUnsavedData() {
         return hasUnsavedData;
     }
@@ -278,18 +376,19 @@ public class CustomNPC {
             setHasUnsavedData(false);
 
             try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `villager.profession` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ? WHERE `id` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `villager.profession` = ?, `merchant.offers` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ? WHERE `id` = ?");
                 ps.setString(1,getCustomName());
                 ps.setString(2,getNpcType().toString());
                 ps.setString(3,getEntityType().toString());
                 ps.setString(4,getVillagerProfession().toString());
-                ps.setString(5,getLocation().getWorld().getName());
-                ps.setDouble(6,getLocation().getX());
-                ps.setDouble(7,getLocation().getY());
-                ps.setDouble(8,getLocation().getZ());
-                ps.setFloat(9,getLocation().getYaw());
-                ps.setFloat(10,getLocation().getPitch());
-                ps.setInt(11,getId());
+                ps.setString(5,new Gson().toJson(getOffers()));
+                ps.setString(6,getLocation().getWorld().getName());
+                ps.setDouble(7,getLocation().getX());
+                ps.setDouble(8,getLocation().getY());
+                ps.setDouble(9,getLocation().getZ());
+                ps.setFloat(10,getLocation().getYaw());
+                ps.setFloat(11,getLocation().getPitch());
+                ps.setInt(12,getId());
                 ps.executeUpdate();
                 ps.close();
             } catch(Exception e){

@@ -26,6 +26,8 @@ public class NPCInteractListener implements Listener {
                 BuyingMerchantMenu.openFor(p);
             } else if(npc.getNpcType() == CustomNPCType.AWAKENING_SPECIALIST){
                 AwakeningMenu.openFor(p);
+            } else if(npc.getNpcType() == CustomNPCType.MERCHANT){
+                npc.openShop(p);
             }
         } else {
             p.sendMessage(ChatColor.YELLOW + "NPC ID: " + npc.getId());
