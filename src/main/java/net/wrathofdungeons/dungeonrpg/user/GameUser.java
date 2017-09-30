@@ -93,6 +93,8 @@ public class GameUser extends User {
     public int merchantAddMoneyCost = -1;
     public ArrayList<CustomItem> merchantAddItemCosts = null;
 
+    public CustomNPC npcAddTextLine = null;
+
     private BukkitTask mpRegenTask;
     private BukkitTask hpRegenTask;
     private BukkitTask comboResetTask;
@@ -726,6 +728,7 @@ public class GameUser extends User {
             merchantAddItemCosts = null;
             merchantAddMoneyCost = -1;
             merchantAddItemSlot = -1;
+            npcAddTextLine = null;
             stopMPRegenTask();
             stopHPRegenTask();
             currentCombo = "";
@@ -745,6 +748,7 @@ public class GameUser extends User {
             merchantAddItemCosts = null;
             merchantAddMoneyCost = -1;
             merchantAddItemSlot = -1;
+            npcAddTextLine = null;
             p.teleport(DungeonRPG.getCharSelLocation());
             CharacterSelectionMenu.openSelection(p);
             p.sendMessage(ChatColor.RED + "You are no longer in setup mode!");

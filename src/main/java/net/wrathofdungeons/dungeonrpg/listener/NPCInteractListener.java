@@ -32,6 +32,32 @@ public class NPCInteractListener implements Listener {
                 AwakeningMenu.openFor(p);
             } else if(npc.getNpcType() == CustomNPCType.MERCHANT){
                 npc.openShop(p);
+            } else if(npc.getNpcType() == CustomNPCType.QUEST_NPC){
+                if(false){
+                    // TODO: Check if npc is involved with quest
+                } else {
+                    if(npc.getTextLines().size() > 0 && !npc.READING.contains(p.getName())){
+                        npc.READING.add(p.getName());
+
+                        int i = 0;
+                        for(String line : npc.getTextLines()){
+                            final int j = i;
+
+                            new BukkitRunnable(){
+                                @Override
+                                public void run() {
+                                    p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + line);
+
+                                    if(j == npc.getTextLines().size()-1){
+                                        npc.READING.remove(p.getName());
+                                    }
+                                }
+                            }.runTaskLater(DungeonRPG.getInstance(),DungeonRPG.QUEST_NPC_TEXT_LINE_DELAY*i*20);
+
+                            i++;
+                        }
+                    }
+                }
             }
         } else {
             p.sendMessage(ChatColor.YELLOW + "NPC ID: " + npc.getId());

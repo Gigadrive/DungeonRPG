@@ -245,6 +245,17 @@ public class ChatListener implements Listener {
                                 }
                             }
                         }
+                    } else if(u.npcAddTextLine != null){
+                        msg = msg.trim();
+
+                        if(msg.equalsIgnoreCase("cancel")){
+                            p.sendMessage(ChatColor.RED + "Operation aborted.");
+                            u.npcAddTextLine = null;
+                        } else {
+                            u.npcAddTextLine.addTextLine(msg);
+                            u.npcAddTextLine = null;
+                            p.sendMessage(ChatColor.GREEN + "Line added!");
+                        }
                     }
                 }
             }

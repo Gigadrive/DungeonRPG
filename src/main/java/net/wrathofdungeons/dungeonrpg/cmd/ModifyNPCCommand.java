@@ -23,11 +23,14 @@ public class ModifyNPCCommand extends Command {
         p.sendMessage(ChatColor.RED + "/createnpc <NPC-Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> teleport");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> offers");
+        p.sendMessage(ChatColor.RED + "/" + label + " <NPC> addtextline");
+        p.sendMessage(ChatColor.RED + "/" + label + " <NPC> textlines");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> customname [Name]");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> type <NPC-Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> entity <Entity Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> profession <Profession>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> skin <Skin ID>");
+        p.sendMessage(ChatColor.RED + "/" + label + " <NPC> removetextline <Line Index>");
     }
 
     @Override
@@ -50,6 +53,28 @@ public class ModifyNPCCommand extends Command {
                                     MerchantSetupMenu.open(p,npc);
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Only Merchant NPCs can hold item offers.");
+                                }
+                            } else if(args[1].equalsIgnoreCase("addtextline")){
+                                if(npc.getNpcType() == CustomNPCType.QUEST_NPC){
+                                    u.npcAddTextLine = npc;
+                                    p.sendMessage(ChatColor.GOLD + "Enter the text line you want to append to the NPC's lines.");
+                                    p.sendMessage(ChatColor.GRAY + "(Type 'cancel' to cancel.)");
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Only Quest NPCs can hold text lines.");
+                                }
+                            } else if(args[1].equalsIgnoreCase("textlines")){
+                                if(npc.getNpcType() == CustomNPCType.QUEST_NPC){
+                                    if(npc.getTextLines().size() > 0){
+                                        int i = 0;
+
+                                        for(String s : npc.getTextLines()){
+                                            p.sendMessage(ChatColor.YELLOW + String.valueOf(i) + ChatColor.GREEN + ": " + s);
+                                        }
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "That NPC doesn't have any text lines.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Only Quest NPCs can hold text lines.");
                                 }
                             } else if(args[1].equalsIgnoreCase("customname")){
                                 npc.setCustomName(null);
@@ -95,6 +120,29 @@ public class ModifyNPCCommand extends Command {
                                     }
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Skin ID must be an integer.");
+                                }
+                            } else if(args[1].equalsIgnoreCase("removetextline")){
+                                if(npc.getNpcType() == CustomNPCType.QUEST_NPC){
+                                    if(Util.isValidInteger(args[2])){
+                                        int lineIndex = Integer.parseInt(args[2]);
+
+                                        if(lineIndex >= npc.getTextLines().size()+1){
+                                            String s = npc.getTextLines().get(lineIndex);
+
+                                            if(s != null){
+                                                npc.removeTextLine(s);
+                                                p.sendMessage(ChatColor.GREEN + "Success! The NPC now has " + npc.getTextLines().size() + " text line(s) left.");
+                                            } else {
+                                                p.sendMessage(ChatColor.RED + "Invalid value.");
+                                            }
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "Invalid value.");
+                                        }
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "Skin ID must be an integer.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Only Quest NPCs can hold text lines.");
                                 }
                             } else if(args[1].equalsIgnoreCase("entity")){
                                 String[] allowed = new String[]{"PLAYER","VILLAGER"};

@@ -97,6 +97,7 @@ public class CustomNPC {
     private EntityType entityType;
     private Villager.Profession villagerProfession;
     private int skinID;
+    private ArrayList<String> textLines;
     private ArrayList<MerchantOffer> offers;
     private Location storedLocation;
 
@@ -107,8 +108,12 @@ public class CustomNPC {
 
     private boolean hasUnsavedData;
 
+    public ArrayList<String> READING;
+
     public CustomNPC(int id){
         if(fromID(id) != null) return;
+
+        READING = new ArrayList<String>();
 
         try {
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `npcs` WHERE `id` = ?");
@@ -128,6 +133,13 @@ public class CustomNPC {
                     this.offers = gson.fromJson(offerString, new TypeToken<ArrayList<MerchantOffer>>(){}.getType());
                 } else {
                     this.offers = new ArrayList<MerchantOffer>();
+                }
+
+                String textLinesString = rs.getString("textLines");
+                if(textLinesString != null){
+                    this.textLines = gson.fromJson(textLinesString, new TypeToken<ArrayList<String>>(){}.getType());
+                } else {
+                    this.textLines = new ArrayList<String>();
                 }
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
 
@@ -166,6 +178,10 @@ public class CustomNPC {
 
         despawnNPC();
         spawnNPC();
+    }
+
+    public String getDisplayName(){
+        return getCustomName() == null ? getNpcType().getColor() + getNpcType().getDefaultName() : getNpcType().getColor() + getCustomName();
     }
 
     public void setSkin(int mineSkinID){
@@ -258,6 +274,29 @@ public class CustomNPC {
 
             if(npc != null) npc.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
             updateHologram();
+        }
+    }
+
+    public ArrayList<String> getTextLines() {
+        return textLines;
+    }
+
+    public void addTextLine(String s){
+        getTextLines().add(s);
+        setHasUnsavedData(true);
+    }
+
+    public void removeTextLine(String s){
+        if(getTextLines().contains(s)){
+            getTextLines().remove(s);
+            setHasUnsavedData(true);
+        }
+    }
+
+    public void clearTextLines(){
+        if(getTextLines().size() > 0){
+            getTextLines().clear();
+            setHasUnsavedData(true);
         }
     }
 
@@ -450,22 +489,24 @@ public class CustomNPC {
             DungeonAPI.async(() -> saveData(false));
         } else {
             setHasUnsavedData(false);
+            Gson gson = new Gson();
 
             try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `villager.profession` = ?, `player.skin` = ?, `merchant.offers` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ? WHERE `id` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `villager.profession` = ?, `player.skin` = ?, `textLines` = ?, `merchant.offers` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ? WHERE `id` = ?");
                 ps.setString(1,getCustomName());
                 ps.setString(2,getNpcType().toString());
                 ps.setString(3,getEntityType().toString());
                 ps.setString(4,getVillagerProfession().toString());
                 ps.setInt(5,skinID);
-                ps.setString(6,new Gson().toJson(getOffers()));
-                ps.setString(7,getLocation().getWorld().getName());
-                ps.setDouble(8,getLocation().getX());
-                ps.setDouble(9,getLocation().getY());
-                ps.setDouble(10,getLocation().getZ());
-                ps.setFloat(11,getLocation().getYaw());
-                ps.setFloat(12,getLocation().getPitch());
-                ps.setInt(13,getId());
+                ps.setString(6,gson.toJson(getTextLines()));
+                ps.setString(7,gson.toJson(getOffers()));
+                ps.setString(8,getLocation().getWorld().getName());
+                ps.setDouble(9,getLocation().getX());
+                ps.setDouble(10,getLocation().getY());
+                ps.setDouble(11,getLocation().getZ());
+                ps.setFloat(12,getLocation().getYaw());
+                ps.setFloat(13,getLocation().getPitch());
+                ps.setInt(14,getId());
                 ps.executeUpdate();
                 ps.close();
             } catch(Exception e){

@@ -69,6 +69,7 @@ public class DungeonRPG extends JavaPlugin {
     public static ArrayList<Material> SETUP_ADD_NO_Y = new ArrayList<Material>();
     public static ArrayList<NPC> IGNORE_SPAWN_NPC = new ArrayList<NPC>();
     public static World MAIN_WORLD = null;
+    public static final int QUEST_NPC_TEXT_LINE_DELAY = 4;
 
     public static int SETUP_REGION = 0;
     private static MineskinClient mineskinClient;

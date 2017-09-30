@@ -92,10 +92,10 @@ public class WorldUtilities {
     }
 
     public static void applySkinToNPC(NPC npc, Skin skin, String skinName){
-        applySkinToNPC(npc,skin,skinName,true);
+        applySkinToNPC(npc,skin,skinName,20);
     }
 
-    public static void applySkinToNPC(NPC npc, Skin skin, String skinName, boolean repeat){
+    public static void applySkinToNPC(NPC npc, Skin skin, String skinName, int repeat){
         if(skin == null || skinName == null) return;
 
         npc.data().setPersistent(PLAYER_SKIN_UUID_METADATA, skinName);
@@ -110,13 +110,13 @@ public class WorldUtilities {
             }
 
             if(npc.getEntity() == null){
-                System.out.println("entity is null");
+                //System.out.println("entity is null");
 
-                if(repeat){
+                if(repeat > 0){
                     new BukkitRunnable(){
                         @Override
                         public void run() {
-                            applySkinToNPC(npc,skin,skinName,true);
+                            applySkinToNPC(npc,skin,skinName,repeat-1);
                         }
                     }.runTaskLater(DungeonRPG.getInstance(),2);
 
@@ -142,7 +142,7 @@ public class WorldUtilities {
 
                 skinnable.getSkinTracker().notifySkinChange();
             } else {
-                System.out.println("SKINNABLE IS NULL");
+                //System.out.println("SKINNABLE IS NULL");
             }
         } else {
             npc.data().remove(PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA);
