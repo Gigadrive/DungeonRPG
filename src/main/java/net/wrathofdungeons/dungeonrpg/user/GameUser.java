@@ -30,6 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -567,6 +568,12 @@ public class GameUser extends User {
                     }
                 } else {
                     t.setPrefix(ChatColor.DARK_GRAY.toString() + ChatColor.STRIKETHROUGH.toString());
+                }
+
+                if(b.getTeam("npcNameReset") == null){
+                    Team n = b.registerNewTeam("npcNameReset");
+                    n.setNameTagVisibility(NameTagVisibility.NEVER);
+                    n.addEntry(ChatColor.GREEN.toString());
                 }
             } else {
 
