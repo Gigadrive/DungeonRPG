@@ -68,7 +68,7 @@ public class ModifyNPCCommand extends Command {
                                         int i = 0;
 
                                         for(String s : npc.getTextLines()){
-                                            p.sendMessage(ChatColor.YELLOW + String.valueOf(i) + ChatColor.GREEN + ": " + s);
+                                            p.sendMessage(ChatColor.YELLOW + String.valueOf(i) + ChatColor.GREEN + ": " + ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&',s));
                                         }
                                     } else {
                                         p.sendMessage(ChatColor.RED + "That NPC doesn't have any text lines.");
@@ -126,7 +126,7 @@ public class ModifyNPCCommand extends Command {
                                     if(Util.isValidInteger(args[2])){
                                         int lineIndex = Integer.parseInt(args[2]);
 
-                                        if(lineIndex >= npc.getTextLines().size()+1){
+                                        if(lineIndex <= npc.getTextLines().size()-1){
                                             String s = npc.getTextLines().get(lineIndex);
 
                                             if(s != null){
@@ -139,7 +139,7 @@ public class ModifyNPCCommand extends Command {
                                             p.sendMessage(ChatColor.RED + "Invalid value.");
                                         }
                                     } else {
-                                        p.sendMessage(ChatColor.RED + "Skin ID must be an integer.");
+                                        p.sendMessage(ChatColor.RED + "Line Index must be an integer.");
                                     }
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Only Quest NPCs can hold text lines.");

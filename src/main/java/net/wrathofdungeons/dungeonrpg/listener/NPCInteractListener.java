@@ -46,7 +46,7 @@ public class NPCInteractListener implements Listener {
                             new BukkitRunnable(){
                                 @Override
                                 public void run() {
-                                    p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + line);
+                                    p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&',line));
 
                                     if(j == npc.getTextLines().size()-1){
                                         npc.READING.remove(p.getName());
