@@ -315,7 +315,7 @@ public class CustomNPC {
                     if(canAfford){
                         HashMap<Integer,Integer> toRemove = new HashMap<Integer,Integer>();
 
-                        if(offer.moneyCost > 0) for(CustomItem c : WorldUtilities.convertNuggetAmount(offer.moneyCost)) toRemove.put(c.getData().getId(),c.getAmount());
+                        if(offer.moneyCost > 0) u.removeMoneyFromInventory(offer.moneyCost);
 
                         if(offer.itemCost.size() > 0){
                             for(MerchantOfferCost cost : offer.itemCost){

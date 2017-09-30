@@ -20,7 +20,7 @@ public class ModifyNPCCommand extends Command {
     }
 
     public void sendUsage(Player p, String label){
-        p.sendMessage(ChatColor.RED + "/" + label + " create <NPC-Type>");
+        p.sendMessage(ChatColor.RED + "/createnpc <NPC-Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> teleport");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> offers");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> customname [Name]");
