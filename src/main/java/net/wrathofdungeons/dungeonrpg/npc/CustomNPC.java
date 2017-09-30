@@ -419,7 +419,7 @@ public class CustomNPC {
         inv.withItem(45, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
         inv.withItem(46, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
         inv.withItem(47, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
-        inv.withItem(48, ItemUtil.namedItem(Material.STAINED_GLASS_PANE,"",null,15));
+        inv.withItem(48, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
         inv.withItem(49, ItemUtil.namedItem(Material.BARRIER, ChatColor.DARK_RED + "Close",null), ((player, action, item) -> player.closeInventory()), ClickType.LEFT);
         inv.withItem(50, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));
         inv.withItem(51, ItemUtil.namedItem(Material.STAINED_GLASS_PANE," ",null,15));

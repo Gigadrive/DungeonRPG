@@ -45,11 +45,11 @@ public class ChatListener implements Listener {
 
                                     ChatColor color = null;
 
-                                    if(distance < 20){
+                                    if(distance < 35){
                                         color = ChatColor.WHITE;
-                                    } else if(distance > 20 && distance < 40){
+                                    } else if(distance > 35 && distance < 65){
                                         color = ChatColor.GRAY;
-                                    } else if(distance > 40 && distance < 60){
+                                    } else if(distance > 65 && distance < 90){
                                         color = ChatColor.DARK_GRAY;
                                     }
 
