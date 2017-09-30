@@ -24,6 +24,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.inventivetalent.menubuilder.inventory.InventoryMenuBuilder;
+import org.mineskin.data.Skin;
+import org.mineskin.data.SkinCallback;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -93,9 +95,11 @@ public class CustomNPC {
     private CustomNPCType npcType;
     private EntityType entityType;
     private Villager.Profession villagerProfession;
+    private int skinID;
     private ArrayList<MerchantOffer> offers;
     private Location storedLocation;
 
+    private Skin mineSkin;
     private NPC npc;
     private Hologram hologram;
 
@@ -115,6 +119,7 @@ public class CustomNPC {
                 this.npcType = CustomNPCType.fromName(rs.getString("npcType"));
                 this.entityType = EntityType.valueOf(rs.getString("entityType"));
                 this.villagerProfession = Villager.Profession.valueOf(rs.getString("villager.profession"));
+                this.skinID = rs.getInt("player.skin");
                 String offerString = rs.getString("merchant.offers");
                 Gson gson = new Gson();
                 if(offerString != null){
@@ -124,6 +129,7 @@ public class CustomNPC {
                 }
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
 
+                reloadSkin();
                 spawnNPC();
 
                 STORAGE.add(this);
@@ -151,6 +157,46 @@ public class CustomNPC {
         spawnNPC();
     }
 
+    public void setSkin(int mineSkinID){
+        if(mineSkinID < 0) mineSkinID = 0;
+        this.skinID = mineSkinID;
+
+        setHasUnsavedData(true);
+
+        reloadSkin();
+    }
+
+    public void setSkin(Skin skin){
+        if(skin != null){
+            this.skinID = skin.id;
+        } else {
+            this.skinID = 0;
+        }
+
+        setHasUnsavedData(true);
+
+        reloadSkin();
+    }
+
+    public void reloadSkin(){
+        if(this.skinID > 0){
+            DungeonRPG.getMineskinClient().getSkin(this.skinID, new SkinCallback() {
+                @Override
+                public void done(Skin skin) {
+                    mineSkin = skin;
+
+                    if(isSpawned()) respawnNPC();
+                }
+            });
+        } else {
+            this.mineSkin = null;
+        }
+    }
+
+    public Skin getSkin() {
+        return mineSkin;
+    }
+
     public CustomNPCType getNpcType() {
         return npcType;
     }
@@ -159,8 +205,7 @@ public class CustomNPC {
         this.npcType = npcType;
         setHasUnsavedData(true);
 
-        despawnNPC();
-        spawnNPC();
+        respawnNPC();
     }
 
     public EntityType getEntityType() {
@@ -171,8 +216,7 @@ public class CustomNPC {
         this.entityType = entityType;
         setHasUnsavedData(true);
 
-        despawnNPC();
-        spawnNPC();
+        respawnNPC();
     }
 
     public Villager.Profession getVillagerProfession() {
@@ -183,8 +227,7 @@ public class CustomNPC {
         this.villagerProfession = villagerProfession;
         setHasUnsavedData(true);
 
-        despawnNPC();
-        spawnNPC();
+        respawnNPC();
     }
 
     public ArrayList<MerchantOffer> getOffers() {
@@ -209,6 +252,11 @@ public class CustomNPC {
         return hologram;
     }
 
+    public void respawnNPC(){
+        despawnNPC();
+        spawnNPC();
+    }
+
     public void spawnNPC(){
         if(!isSpawned()){
             npc = CitizensAPI.getNPCRegistry().createNPC(getEntityType(),"a");
@@ -223,6 +271,8 @@ public class CustomNPC {
 
             if(getEntityType() == EntityType.VILLAGER){
                 npc.getTrait(VillagerProfession.class).setProfession(getVillagerProfession());
+            } else if(getEntityType() == EntityType.PLAYER){
+                WorldUtilities.applySkinToNPC(npc,getSkin());
             }
 
             if(getEntityType() != EntityType.PLAYER){
@@ -376,19 +426,20 @@ public class CustomNPC {
             setHasUnsavedData(false);
 
             try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `villager.profession` = ?, `merchant.offers` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ? WHERE `id` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `villager.profession` = ?, `player.skin` = ?, `merchant.offers` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ? WHERE `id` = ?");
                 ps.setString(1,getCustomName());
                 ps.setString(2,getNpcType().toString());
                 ps.setString(3,getEntityType().toString());
                 ps.setString(4,getVillagerProfession().toString());
-                ps.setString(5,new Gson().toJson(getOffers()));
-                ps.setString(6,getLocation().getWorld().getName());
-                ps.setDouble(7,getLocation().getX());
-                ps.setDouble(8,getLocation().getY());
-                ps.setDouble(9,getLocation().getZ());
-                ps.setFloat(10,getLocation().getYaw());
-                ps.setFloat(11,getLocation().getPitch());
-                ps.setInt(12,getId());
+                ps.setInt(5,skinID);
+                ps.setString(6,new Gson().toJson(getOffers()));
+                ps.setString(7,getLocation().getWorld().getName());
+                ps.setDouble(8,getLocation().getX());
+                ps.setDouble(9,getLocation().getY());
+                ps.setDouble(10,getLocation().getZ());
+                ps.setFloat(11,getLocation().getYaw());
+                ps.setFloat(12,getLocation().getPitch());
+                ps.setInt(13,getId());
                 ps.executeUpdate();
                 ps.close();
             } catch(Exception e){

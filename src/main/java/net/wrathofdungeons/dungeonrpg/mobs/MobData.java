@@ -94,8 +94,7 @@ public class MobData {
                 this.entityType = EntityType.valueOf(rs.getString("entityType"));
                 this.skin = rs.getInt("skin");
                 if(skin != 0 && entityType != EntityType.PLAYER){
-                    // TODO: Apply mineskin skin to head
-                    //this.helmet = ItemUtil.profiledSkull(this.skin);
+                    //
                 } else {
                     this.helmet = Util.parseItemStack(rs.getString("helmet"));
                 }

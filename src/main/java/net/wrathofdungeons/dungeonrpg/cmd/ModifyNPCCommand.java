@@ -27,6 +27,7 @@ public class ModifyNPCCommand extends Command {
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> type <NPC-Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> entity <Entity Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> profession <Profession>");
+        p.sendMessage(ChatColor.RED + "/" + label + " <NPC> skin <Skin ID>");
     }
 
     @Override
@@ -81,6 +82,19 @@ public class ModifyNPCCommand extends Command {
                                     p.sendMessage(ChatColor.GREEN + "Success!");
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Invalid NPC type!");
+                                }
+                            } else if(args[1].equalsIgnoreCase("skin")){
+                                if(Util.isValidInteger(args[2])){
+                                    int skinID = Integer.parseInt(args[2]);
+
+                                    if(skinID >= 0){
+                                        npc.setSkin(skinID);
+                                        p.sendMessage(ChatColor.GREEN + "Success!");
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "Invalid value.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Skin ID must be an integer.");
                                 }
                             } else if(args[1].equalsIgnoreCase("entity")){
                                 String[] allowed = new String[]{"PLAYER","VILLAGER"};

@@ -25,6 +25,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
+import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -292,59 +293,9 @@ public class CustomEntity {
             if(getData().getEntityType() == EntityType.PLAYER){
                 npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER,ChatColor.GREEN.toString());
                 npc.spawn(loc);
-                //npc.data().set(NPC.PLAYER_SKIN_UUID_METADATA,gameProfile.getName());
-                if(getData().getSkin() != null){
-                    /*String p = "https://textures.minecraft.net/texture/";
-                    String url = getData().getSkin().startsWith(p) ? getData().getSkin() : p + getData().getSkin();
-                    String s = new String(Base64Coder.encodeString("{\"SKIN\":{\"url\":\"" + url + "\"}}").getBytes());
-                    Property property = new Property("textures",s);*/
-                    //Property value = Iterables.getFirst(getData().getGameProfile().getProperties().get("textures"),null);
 
-                    //npc.data().setPersistent(CACHED_SKIN_UUID_NAME_METADATA, ChatColor.GREEN.toString());
-                    npc.data().setPersistent(PLAYER_SKIN_UUID_METADATA, ChatColor.GREEN.toString());
-                    npc.data().setPersistent(PLAYER_SKIN_USE_LATEST,false);
+                WorldUtilities.applySkinToNPC(npc,getData().getSkin());
 
-
-                    if(getData().getSkin() != null){
-                        npc.data().setPersistent(PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA,getData().getSkin().data.texture.value);
-                        if(getData().getSkin().data.texture.signature != null){
-                            npc.data().setPersistent(PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA,getData().getSkin().data.texture.signature);
-                        } else {
-                            System.out.println("SIGNATURE IS NULL");
-                        }
-
-                        if(npc.getEntity() == null) System.out.println("entity is null");
-
-                        SkinnableEntity skinnable = npc.getEntity() instanceof SkinnableEntity ? (SkinnableEntity)npc.getEntity() : null;
-                        if(skinnable != null){
-                            try {
-                                org.mineskin.data.Skin skin = getData().getSkin();
-
-                                //GameProfile profile = new Gson().fromJson("{\"id\":\"" + skin.data.uuid.toString() + "\",\"name\":\"" + ChatColor.GREEN.toString() + "\",\"properties\":[{\"signature\":\"" + skin.data.texture.signature + "\",\"name\":\"textures\",\"value\":\"" + skin.data.texture.value + "\"}]}",GameProfile.class);
-                                GameProfile profile = new GameProfile(skin.data.uuid,ChatColor.GREEN.toString());
-                                profile.getProperties().put("textures",new Property("textures",skin.data.texture.value,skin.data.texture.signature));
-
-                                Class<Skin> clazz = Skin.class;
-                                Method met = clazz.getDeclaredMethod("setData", GameProfile.class);
-
-                                met.setAccessible(true);
-                                met.invoke(Skin.get(skinnable.getSkinName()),profile);
-                            } catch(Exception e){
-                                e.printStackTrace();
-                            }
-                            /*skinnable.getProfile().getProperties().removeAll("textures");
-                            skinnable.getProfile().getProperties().put("textures",new Property("textures",getData().getSkin().data.texture.value));
-                            skinnable.getProfile().getProperties().removeAll("signature");
-                            skinnable.getProfile().getProperties().put("signature",new Property("signature",getData().getSkin().data.texture.signature));*/
-                            skinnable.getSkinTracker().notifySkinChange();
-                        } else {
-                            System.out.println("SKINNABLE IS NULL");
-                        }
-                    } else {
-                        npc.data().remove(PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA);
-                        npc.data().remove(PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA);
-                    }
-                }
                 npc.setProtected(false);
                 npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed());
                 if(getData().getAiSettings().mayDoRandomStroll() && getData().getMobType() == MobType.PASSIVE) npc.getDefaultGoalController().addGoal(WanderGoal.createWithNPCAndRange(npc,10,10),9);
