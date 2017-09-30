@@ -67,6 +67,7 @@ public class DungeonRPG extends JavaPlugin {
     public static ArrayList<Material> DISALLOWED_BLOCKS = new ArrayList<Material>();
     public static ArrayList<Material> DISALLOWED_ITEMS = new ArrayList<Material>();
     public static ArrayList<Material> SETUP_ADD_NO_Y = new ArrayList<Material>();
+    public static ArrayList<NPC> IGNORE_SPAWN_NPC = new ArrayList<NPC>();
     public static World MAIN_WORLD = null;
 
     public static int SETUP_REGION = 0;

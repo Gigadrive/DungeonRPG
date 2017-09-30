@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
+import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import org.bukkit.ChatColor;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.mineskin.data.Skin;
 
 import java.lang.reflect.Method;
@@ -86,7 +88,17 @@ public class WorldUtilities {
     }
 
     public static void applySkinToNPC(NPC npc, Skin skin){
-        npc.data().setPersistent(PLAYER_SKIN_UUID_METADATA, ChatColor.GREEN.toString());
+        applySkinToNPC(npc,skin,ChatColor.GREEN.toString());
+    }
+
+    public static void applySkinToNPC(NPC npc, Skin skin, String skinName){
+        applySkinToNPC(npc,skin,skinName,true);
+    }
+
+    public static void applySkinToNPC(NPC npc, Skin skin, String skinName, boolean repeat){
+        if(skin == null || skinName == null) return;
+
+        npc.data().setPersistent(PLAYER_SKIN_UUID_METADATA, skinName);
         npc.data().setPersistent(PLAYER_SKIN_USE_LATEST,false);
 
         if(skin != null){
@@ -97,13 +109,26 @@ public class WorldUtilities {
                 System.out.println("SIGNATURE IS NULL");
             }
 
-            if(npc.getEntity() == null) System.out.println("entity is null");
+            if(npc.getEntity() == null){
+                System.out.println("entity is null");
+
+                if(repeat){
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            applySkinToNPC(npc,skin,skinName,true);
+                        }
+                    }.runTaskLater(DungeonRPG.getInstance(),2);
+
+                    return;
+                }
+            }
 
             SkinnableEntity skinnable = npc.getEntity() instanceof SkinnableEntity ? (SkinnableEntity)npc.getEntity() : null;
             if(skinnable != null){
                 try {
-                    //GameProfile profile = new Gson().fromJson("{\"id\":\"" + skin.data.uuid.toString() + "\",\"name\":\"" + ChatColor.GREEN.toString() + "\",\"properties\":[{\"signature\":\"" + skin.data.texture.signature + "\",\"name\":\"textures\",\"value\":\"" + skin.data.texture.value + "\"}]}",GameProfile.class);
-                    GameProfile profile = new GameProfile(skin.data.uuid,ChatColor.GREEN.toString());
+                    //GameProfile profile = new Gson().fromJson("{\"id\":\"" + skin.data.uuid.toString() + "\",\"name\":\"" + skinName + "\",\"properties\":[{\"signature\":\"" + skin.data.texture.signature + "\",\"name\":\"textures\",\"value\":\"" + skin.data.texture.value + "\"}]}",GameProfile.class);
+                    GameProfile profile = new GameProfile(skin.data.uuid,skinName);
                     profile.getProperties().put("textures",new Property("textures",skin.data.texture.value,skin.data.texture.signature));
 
                     Class<net.citizensnpcs.npc.skin.Skin> clazz = net.citizensnpcs.npc.skin.Skin.class;

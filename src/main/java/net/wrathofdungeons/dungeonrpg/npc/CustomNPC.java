@@ -23,6 +23,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.inventivetalent.menubuilder.inventory.InventoryMenuBuilder;
 import org.mineskin.data.Skin;
 import org.mineskin.data.SkinCallback;
@@ -102,6 +103,7 @@ public class CustomNPC {
     private Skin mineSkin;
     private NPC npc;
     private Hologram hologram;
+    private String skinName;
 
     private boolean hasUnsavedData;
 
@@ -129,6 +131,7 @@ public class CustomNPC {
                 }
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
 
+                updateSkinName();
                 reloadSkin();
                 spawnNPC();
 
@@ -143,6 +146,14 @@ public class CustomNPC {
 
     public int getId() {
         return id;
+    }
+
+    public String getSkinName() {
+        return skinName;
+    }
+
+    private void updateSkinName(){
+        skinName = Util.randomString(1,16);
     }
 
     public String getCustomName() {
@@ -163,6 +174,7 @@ public class CustomNPC {
 
         setHasUnsavedData(true);
 
+        updateSkinName();
         reloadSkin();
     }
 
@@ -175,6 +187,7 @@ public class CustomNPC {
 
         setHasUnsavedData(true);
 
+        updateSkinName();
         reloadSkin();
     }
 
@@ -259,6 +272,7 @@ public class CustomNPC {
 
     public void spawnNPC(){
         if(!isSpawned()){
+            DungeonRPG.IGNORE_SPAWN_NPC.add(npc);
             npc = CitizensAPI.getNPCRegistry().createNPC(getEntityType(),"a");
 
             npc.setName(ChatColor.GREEN.toString());
@@ -272,13 +286,25 @@ public class CustomNPC {
             if(getEntityType() == EntityType.VILLAGER){
                 npc.getTrait(VillagerProfession.class).setProfession(getVillagerProfession());
             } else if(getEntityType() == EntityType.PLAYER){
-                WorldUtilities.applySkinToNPC(npc,getSkin());
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        WorldUtilities.applySkinToNPC(npc,getSkin(),getSkinName());
+                    }
+                }.runTaskLater(DungeonRPG.getInstance(),2*20);
             }
 
             if(getEntityType() != EntityType.PLAYER){
                 DungeonAPI.nmsMakeSilent(npc.getEntity());
                 ((LivingEntity)npc.getEntity()).setRemoveWhenFarAway(false);
             }
+
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    DungeonRPG.IGNORE_SPAWN_NPC.remove(npc);
+                }
+            }.runTaskLater(DungeonRPG.getInstance(),10*20);
         }
 
         updateHologram();

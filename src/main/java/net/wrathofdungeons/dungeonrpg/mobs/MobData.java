@@ -73,6 +73,7 @@ public class MobData {
     private MobSoundData soundData;
     private AISettings aiSettings;
 
+    private String skinName;
     private Skin mineSkin;
 
     public MobData(int id){
@@ -123,6 +124,8 @@ public class MobData {
                 this.aiSettings.setRandomStroll(rs.getBoolean("ai.randomStroll"));
                 this.aiSettings.setLookAtPlayer(rs.getBoolean("ai.lookAtPlayer"));
                 this.aiSettings.setLookAround(rs.getBoolean("ai.lookAround"));
+
+                updateSkinName();
 
                 if(this.skin != 0){
                     DungeonRPG.getMineskinClient().getSkin(this.skin, new SkinCallback() {
@@ -197,6 +200,14 @@ public class MobData {
 
     public Skin getSkin() {
         return mineSkin;
+    }
+
+    public String getSkinName() {
+        return skinName;
+    }
+
+    private void updateSkinName(){
+        skinName = Util.randomString(1,16);
     }
 
     public ItemStack getHelmet() {

@@ -291,10 +291,11 @@ public class CustomEntity {
     public void spawn(Location loc){
         if(bukkitEntity == null && !STORAGE.containsValue(this) && npc == null){
             if(getData().getEntityType() == EntityType.PLAYER){
+                DungeonRPG.IGNORE_SPAWN_NPC.add(npc);
                 npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER,ChatColor.GREEN.toString());
                 npc.spawn(loc);
 
-                WorldUtilities.applySkinToNPC(npc,getData().getSkin());
+                WorldUtilities.applySkinToNPC(npc,getData().getSkin(),getData().getSkinName());
 
                 npc.setProtected(false);
                 npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed());
@@ -315,6 +316,13 @@ public class CustomEntity {
                 pm.put("textures", new Property("textures", new String(encoded)));
 
                 if(url != null) npc.data().set(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA,url);*/
+
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        DungeonRPG.IGNORE_SPAWN_NPC.remove(npc);
+                    }
+                }.runTaskLater(DungeonRPG.getInstance(),5);
 
                 handle();
                 new BukkitRunnable(){
