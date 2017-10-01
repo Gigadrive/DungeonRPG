@@ -69,6 +69,7 @@ public class ModifyNPCCommand extends Command {
 
                                         for(String s : npc.getTextLines()){
                                             p.sendMessage(ChatColor.YELLOW + String.valueOf(i) + ChatColor.GREEN + ": " + ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&',s));
+                                            i++;
                                         }
                                     } else {
                                         p.sendMessage(ChatColor.RED + "That NPC doesn't have any text lines.");

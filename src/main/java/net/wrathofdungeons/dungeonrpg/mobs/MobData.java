@@ -121,6 +121,7 @@ public class MobData {
                 this.speed = rs.getDouble("speed");
 
                 this.aiSettings = new AISettings();
+                this.aiSettings.setType(MobAIType.valueOf(rs.getString("ai.type")));
                 this.aiSettings.setRandomStroll(rs.getBoolean("ai.randomStroll"));
                 this.aiSettings.setLookAtPlayer(rs.getBoolean("ai.lookAtPlayer"));
                 this.aiSettings.setLookAround(rs.getBoolean("ai.lookAround"));

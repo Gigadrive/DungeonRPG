@@ -23,6 +23,7 @@ import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
+import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
@@ -30,9 +31,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -332,7 +335,19 @@ public class CustomEntity {
                     }
                 }.runTaskLater(DungeonRPG.getInstance(),1);
             } else {
-                bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
+                if(getData().getAiSettings().getType() == MobAIType.MELEE){
+                    bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
+                } else if(getData().getAiSettings().getType() == MobAIType.RANGED){
+                    if(getData().getEntityType() == EntityType.ZOMBIE){
+                        World mcWorld = ((CraftWorld)loc.getWorld()).getHandle();
+                        ZombieArcher zombieArcher = new ZombieArcher(mcWorld);
+                        zombieArcher.setPosition(loc.getX(),loc.getY(),loc.getZ());
+                        mcWorld.addEntity(zombieArcher, CreatureSpawnEvent.SpawnReason.CUSTOM);
+
+                        bukkitEntity = (Zombie)zombieArcher.getBukkitEntity();
+                    }
+                }
+
                 handle();
             }
         }

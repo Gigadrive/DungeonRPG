@@ -250,7 +250,34 @@ public class DamageListener implements Listener {
                     }
 
                     if(e.getEntity() instanceof Player){
-                        e.setCancelled(true);
+                        Player p = (Player)e.getEntity();
+
+                        if(GameUser.isLoaded(p)) {
+                            GameUser u = GameUser.getUser(p);
+
+                            if (u.getCurrentCharacter() == null) {
+                                e.setCancelled(true);
+                                return;
+                            }
+
+                            if (!e.isCancelled()) {
+                                c = CustomEntity.fromEntity(((LivingEntity)((Arrow) e.getDamager()).getShooter()));
+
+                                if(((Arrow) e.getDamager()).getShooter() instanceof LivingEntity && c != null){
+                                    e.setDamage(0);
+                                    double damage = DamageHandler.calculateMobToPlayerDamage(u,c);
+                                    int thorns = u.getCurrentCharacter().getTotalValue(AwakeningType.THORNS);
+                                    u.damage(damage,c.getBukkitEntity());
+
+                                    if(thorns > 0){
+                                        damage *= thorns*0.01;
+                                        c.getBukkitEntity().damage(damage,p);
+                                    }
+
+                                    DungeonRPG.showBloodEffect(e.getEntity().getLocation());
+                                }
+                            }
+                        }
                     }
                 }
 
