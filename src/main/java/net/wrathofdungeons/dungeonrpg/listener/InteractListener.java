@@ -428,18 +428,19 @@ public class InteractListener implements Listener {
                         }
 
                         if(customItem.getData().getCategory() == ItemCategory.WEAPON_BOW){
-                            if(!DungeonRPG.ENABLE_BOWDRAWBACK && u.getCurrentCharacter().getRpgClass() == RPGClass.ARCHER){
-                                if(customItem.getData().getNeededLevel() <= u.getCurrentCharacter().getLevel()){
-                                    if(!u.isInAttackCooldown()){
-                                        e.setCancelled(true);
-                                        e.setUseInteractedBlock(Event.Result.DENY);
-                                        e.setUseItemInHand(Event.Result.DENY);
+                            if(!DungeonRPG.ENABLE_BOWDRAWBACK){
+                                if(u.getCurrentCharacter().getRpgClass() == RPGClass.ARCHER){
+                                    if(customItem.getData().getNeededLevel() <= u.getCurrentCharacter().getLevel()){
+                                        if(!u.isInAttackCooldown()){
+                                            e.setCancelled(true);
+                                            e.setUseInteractedBlock(Event.Result.DENY);
+                                            e.setUseItemInHand(Event.Result.DENY);
 
-                                        if(u.currentCombo.equals("")){
-                                            Location loc = p.getEyeLocation();
+                                            if(u.currentCombo.equals("")){
+                                                Location loc = p.getEyeLocation();
 
-                                            double damage = 1;
-                                            damage += Util.randomDouble(customItem.getData().getAtkMin(), customItem.getData().getAtkMax());
+                                                double damage = 1;
+                                                damage += Util.randomDouble(customItem.getData().getAtkMin(), customItem.getData().getAtkMax());
 
                                         /*int dexToAdd = u.currentCharacter.getAttributeValue(AttributeType.STRENGTH) + u.currentCharacter.getArtificialAttributeValue(AttributeType.STRENGTH);
                                         if((dexToAdd + "").startsWith("-")){
@@ -454,27 +455,28 @@ public class InteractListener implements Listener {
 
                                         if(damage < 1) damage = 1;*/
 
-                                            Arrow projectile = p.launchProjectile(Arrow.class);
-                                            p.getWorld().playSound(p.getEyeLocation(), Sound.SHOOT_ARROW, 1F, 1F);
-                                            projectile.setVelocity(p.getLocation().getDirection().multiply(2.0D));
-                                            DungeonProjectile data = new DungeonProjectile(p, DungeonProjectileType.ARCHER_ARROW, projectile.getLocation(), 0, damage, false);
-                                            data.setEntity(projectile);
-                                            DungeonRPG.SHOT_PROJECTILE_DATA.put(projectile.getUniqueId().toString(), data);
+                                                Arrow projectile = p.launchProjectile(Arrow.class);
+                                                p.getWorld().playSound(p.getEyeLocation(), Sound.SHOOT_ARROW, 1F, 1F);
+                                                projectile.setVelocity(p.getLocation().getDirection().multiply(2.0D));
+                                                DungeonProjectile data = new DungeonProjectile(p, DungeonProjectileType.ARCHER_ARROW, projectile.getLocation(), 0, damage, false);
+                                                data.setEntity(projectile);
+                                                DungeonRPG.SHOT_PROJECTILE_DATA.put(projectile.getUniqueId().toString(), data);
 
-                                            u.setAttackCooldown(true);
+                                                u.setAttackCooldown(true);
 
-                                            Bukkit.getScheduler().scheduleSyncDelayedTask(DungeonRPG.getInstance(), new Runnable(){
-                                                public void run(){
-                                                    u.setAttackCooldown(false);
-                                                }
-                                            }, itemCooldown);
+                                                Bukkit.getScheduler().scheduleSyncDelayedTask(DungeonRPG.getInstance(), new Runnable(){
+                                                    public void run(){
+                                                        u.setAttackCooldown(false);
+                                                    }
+                                                }, itemCooldown);
+                                            }
                                         }
+                                    } else {
+                                        p.sendMessage(ChatColor.DARK_RED + "This weapon is for level " + customItem.getData().getNeededLevel() + "+ only.");
                                     }
                                 } else {
-                                    p.sendMessage(ChatColor.DARK_RED + "This weapon is for level " + customItem.getData().getNeededLevel() + "+ only.");
+                                    p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
                                 }
-                            } else {
-                                p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
                             }
                         }
                     }

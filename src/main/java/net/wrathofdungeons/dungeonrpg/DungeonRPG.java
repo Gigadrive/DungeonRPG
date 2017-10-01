@@ -59,7 +59,7 @@ import java.util.*;
 
 public class DungeonRPG extends JavaPlugin {
     private static DungeonRPG instance;
-    public static final boolean ENABLE_BOWDRAWBACK = false;
+    public static final boolean ENABLE_BOWDRAWBACK = true;
     public static final boolean SHOW_HP_IN_ACTION_BAR = false;
     public static final int PLAYER_MOB_LEVEL_DIFFERENCE = 7;
     public static final int STATPOINTS_LIMIT = 64;

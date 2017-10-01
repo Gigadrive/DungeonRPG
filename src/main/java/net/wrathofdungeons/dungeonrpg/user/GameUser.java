@@ -584,7 +584,15 @@ public class GameUser extends User {
     }
 
     public void updateArrows(){
-        if(getCurrentCharacter() != null) p.getInventory().setItem(17,new CustomItem(6,64).build(p));
+        //if(getCurrentCharacter() != null) p.getInventory().setItem(17,new CustomItem(6,64).build(p));
+
+        if(DungeonRPG.ENABLE_BOWDRAWBACK){
+            if(isInAttackCooldown()){
+                p.getInventory().setItem(17,new ItemStack(Material.AIR));
+            } else {
+                p.getInventory().setItem(17,new CustomItem(6,64).build(p));
+            }
+        }
     }
 
     public void checkRequirements(){
