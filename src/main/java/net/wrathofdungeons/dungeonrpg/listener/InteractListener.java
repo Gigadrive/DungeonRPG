@@ -41,6 +41,7 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Wool;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
@@ -54,6 +55,33 @@ import java.util.ArrayList;
 import static net.wrathofdungeons.dungeonrpg.regions.RegionLocationType.*;
 
 public class InteractListener implements Listener {
+    private ArrayList<String> TP_SCROLL_COOLDOWN = new ArrayList<String>();
+
+    private void tpScroll(Player p, Location loc){
+        if(TP_SCROLL_COOLDOWN.contains(p.getName())){
+            p.sendMessage(ChatColor.RED + "Please wait a little while before teleporting again.");
+        } else {
+            if(p.getItemInHand() != null){
+                if(p.getItemInHand().getAmount() == 1){
+                    p.setItemInHand(new ItemStack(Material.AIR));
+                } else {
+                    p.getItemInHand().setAmount(p.getItemInHand().getAmount()-1);
+                }
+            }
+
+            p.teleport(loc);
+
+            TP_SCROLL_COOLDOWN.add(p.getName());
+
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    TP_SCROLL_COOLDOWN.remove(p.getName());
+                }
+            }.runTaskLater(DungeonRPG.getInstance(),30*20);
+        }
+    }
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e){
         Player p = e.getPlayer();
@@ -188,6 +216,28 @@ public class InteractListener implements Listener {
 
                 if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null && e.getAction() != Action.PHYSICAL) {
                     CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
+
+                    if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
+                        // TELEPORT SCROLLS
+
+                        if(item.getData().getCategory() == ItemCategory.TELEPORT_SCROLL){
+                            if(item.getData().getTpScrollRegion() > 0){
+                                Region region = Region.getRegion(item.getData().getTpScrollRegion());
+
+                                if(region != null){
+                                    ArrayList<RegionLocation> locs = region.getLocations(TOWN_LOCATION,1);
+
+                                    if(locs.size() > 0){
+                                        tpScroll(p,locs.get(0).toBukkitLocation());
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "Teleport failed.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Teleport failed.");
+                                }
+                            }
+                        }
+                    }
 
                     if(item.getData().getCategory() == ItemCategory.WEAPON_BOW){
                         if(u.getCurrentCharacter().getRpgClass() != RPGClass.ARCHER && u.getCurrentCharacter().getRpgClass() != RPGClass.HUNTER && u.getCurrentCharacter().getRpgClass() != RPGClass.RANGER){

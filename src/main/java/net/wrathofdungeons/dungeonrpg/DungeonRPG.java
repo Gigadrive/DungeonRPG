@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg;
 
+import com.sun.org.apache.regexp.internal.RE;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.ai.Navigator;
@@ -595,6 +596,23 @@ public class DungeonRPG extends JavaPlugin {
             w.setGameRuleValue("naturalRegeneration","false");
             w.setGameRuleValue("doDaylightCycle","true");
         }
+    }
+
+    public static ArrayList<RegionLocation> sortedTownLocations(){
+        ArrayList<RegionLocation> potential = new ArrayList<RegionLocation>();
+        ArrayList<Region> regions = new ArrayList<Region>();
+        regions.addAll(Region.STORAGE);
+
+        Collections.sort(regions, new Comparator<Region>() {
+            @Override
+            public int compare(Region o1, Region o2) {
+                return Integer.compare(o1.getID(),o2.getID());
+            }
+        });
+
+        for(Region region : Region.STORAGE) potential.addAll(region.getLocations(RegionLocationType.TOWN_LOCATION));
+
+        return potential;
     }
 
     public static Location getNearestTown(Player p){

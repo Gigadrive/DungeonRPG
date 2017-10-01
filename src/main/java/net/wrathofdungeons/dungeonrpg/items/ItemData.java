@@ -37,6 +37,7 @@ public class ItemData {
     private int durability;
     private ItemCategory category;
     private ItemRarity rarity;
+    private int tpScrollRegion;
     private String description;
 
     private int atkMin;
@@ -71,6 +72,7 @@ public class ItemData {
                 this.durability = rs.getInt("durability");
                 this.category = ItemCategory.valueOf(rs.getString("category"));
                 this.rarity = ItemRarity.valueOf(rs.getString("rarity"));
+                this.tpScrollRegion = rs.getInt("tpScroll.regionID");
                 if(rs.getString("description") != null) this.description = ChatColor.translateAlternateColorCodes('&',rs.getString("description"));
 
                 this.atkMin = rs.getInt("atk.min");
@@ -113,6 +115,10 @@ public class ItemData {
 
     public ItemRarity getRarity() {
         return rarity;
+    }
+
+    public int getTpScrollRegion() {
+        return tpScrollRegion;
     }
 
     public String getDescription() {

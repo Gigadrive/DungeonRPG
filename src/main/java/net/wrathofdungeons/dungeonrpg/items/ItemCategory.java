@@ -6,5 +6,6 @@ public enum ItemCategory {
     WEAPON_BOW,
     WEAPON_STICK,
     MISC,
-    ARMOR
+    ARMOR,
+    TELEPORT_SCROLL
 }
