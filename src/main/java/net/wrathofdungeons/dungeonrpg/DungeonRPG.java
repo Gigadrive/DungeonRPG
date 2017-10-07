@@ -4,6 +4,7 @@ import com.sun.org.apache.regexp.internal.RE;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.ai.Navigator;
+import net.citizensnpcs.api.ai.goals.WanderGoal;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R3.EntityZombie;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
@@ -23,6 +24,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
+import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
@@ -276,15 +278,17 @@ public class DungeonRPG extends JavaPlugin {
         new BukkitRunnable(){
             @Override
             public void run() {
-                ArrayList<CustomEntity> toRemove = new ArrayList<CustomEntity>();
+                try {
+                    ArrayList<CustomEntity> toRemove = new ArrayList<CustomEntity>();
 
-                for(CustomEntity entity : CustomEntity.STORAGE.values()){
-                    if(entity.getBukkitEntity() == null || !entity.getBukkitEntity().isValid() || entity.getBukkitEntity().isDead()){
-                        toRemove.add(entity);
+                    for(CustomEntity entity : CustomEntity.STORAGE.values()){
+                        if(entity.getBukkitEntity() == null || !entity.getBukkitEntity().isValid() || entity.getBukkitEntity().isDead()){
+                            toRemove.add(entity);
+                        }
                     }
-                }
 
-                for(CustomEntity entity : toRemove) entity.remove();
+                    for(CustomEntity entity : toRemove) entity.remove();
+                } catch(ConcurrentModificationException e){}
             }
         }.runTaskTimerAsynchronously(this,0,10*20);
 
@@ -364,18 +368,33 @@ public class DungeonRPG extends JavaPlugin {
 
                                             if(m == MobType.AGGRO && mt == MobType.AGGRO){
                                                 n.cancelNavigation();
+                                                return;
                                             } else if(m == MobType.SUPPORTING && mt == MobType.SUPPORTING){
                                                 n.cancelNavigation();
+                                                return;
                                             } else if(m == MobType.PASSIVE || mt == MobType.PASSIVE){
                                                 n.cancelNavigation();
+                                                return;
                                             }
+
+                                            c.addWanderGoal();
                                         } else {
-                                            if(m == MobType.PASSIVE){
-                                                n.cancelNavigation();
-                                            } else if(m == MobType.SUPPORTING && target instanceof Player && GameUser.isLoaded((Player)target)){
+                                            if(target instanceof Player && GameUser.isLoaded((Player)target)){
+                                                if(m == MobType.PASSIVE){
+                                                    n.cancelNavigation();
+                                                    return;
+                                                } else if(m == MobType.SUPPORTING){
+                                                    n.cancelNavigation();
+                                                    return;
+                                                }
+
+                                                c.addWanderGoal();
+                                            } else {
                                                 n.cancelNavigation();
                                             }
                                         }
+                                    } else {
+                                        if(c.hasWanderGoal() && !c.getData().getAiSettings().mayDoRandomStroll()) c.removeWanderGoal();
                                     }
                                 }
                             }
@@ -434,6 +453,7 @@ public class DungeonRPG extends JavaPlugin {
 
         Bukkit.getServer().clearRecipes();
         TargetHandler.registerEntity("Zombie",54, EntityZombie.class, ZombieArcher.class);
+        TargetHandler.registerEntity("Zombie",54, EntityZombie.class, DungeonZombie.class);
     }
 
     public void onDisable(){

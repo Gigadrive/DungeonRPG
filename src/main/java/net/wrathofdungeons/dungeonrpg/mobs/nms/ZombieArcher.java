@@ -3,7 +3,7 @@ package net.wrathofdungeons.dungeonrpg.mobs.nms;
 import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.enchantments.Enchantment;
 
-public class ZombieArcher extends EntityZombie implements IRangedEntity {
+public class ZombieArcher extends DungeonZombie implements IRangedEntity {
     public ZombieArcher(World world){
         super(world);
     }

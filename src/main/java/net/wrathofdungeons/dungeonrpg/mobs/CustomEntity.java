@@ -11,6 +11,8 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.ai.Goal;
+import net.citizensnpcs.api.ai.GoalController;
 import net.citizensnpcs.api.ai.goals.WanderGoal;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.CitizensNPC;
@@ -23,6 +25,7 @@ import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
+import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
@@ -75,6 +78,8 @@ public class CustomEntity {
     private AttributeModifier speedModifier;
     public boolean damaged = false;
     public boolean playerMobSpeed = true;
+
+    private WanderGoal wanderGoal;
 
     public CustomEntity(MobData data){
         this.mobDataID = data.getId();
@@ -291,6 +296,46 @@ public class CustomEntity {
         }
     }
 
+    public WanderGoal getWanderGoal(){
+        /*if(toCitizensNPC() != null){
+            NPC npc = toCitizensNPC();
+
+            if(npc.getDefaultGoalController() != null){
+                while(npc.getDefaultGoalController().iterator().hasNext()){
+                    GoalController.GoalEntry g = npc.getDefaultGoalController().iterator().next();
+
+                    if(g.getGoal() instanceof WanderGoal){
+                        return (WanderGoal)g.getGoal();
+                    }
+                }
+            }
+        }
+
+        return null;*/
+        return wanderGoal;
+    }
+
+    public boolean hasWanderGoal(){
+        return getWanderGoal() != null;
+    }
+
+    public void addWanderGoal(){
+        if(!hasWanderGoal()){
+            if(toCitizensNPC() != null){
+                wanderGoal = WanderGoal.createWithNPCAndRange(npc,5,5);
+                toCitizensNPC().getDefaultGoalController().addGoal(wanderGoal,9);
+            }
+        }
+    }
+
+    public void removeWanderGoal(){
+        if(hasWanderGoal()){
+            if(toCitizensNPC() != null){
+                toCitizensNPC().getDefaultGoalController().removeGoal(getWanderGoal());
+            }
+        }
+    }
+
     public void spawn(Location loc){
         if(bukkitEntity == null && !STORAGE.containsValue(this) && npc == null){
             if(getData().getEntityType() == EntityType.PLAYER){
@@ -302,7 +347,7 @@ public class CustomEntity {
 
                 npc.setProtected(false);
                 npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed());
-                if(getData().getAiSettings().mayDoRandomStroll() && getData().getMobType() == MobType.PASSIVE) npc.getDefaultGoalController().addGoal(WanderGoal.createWithNPCAndRange(npc,10,10),9);
+                if(getData().getAiSettings().mayDoRandomStroll() && getData().getMobType() == MobType.PASSIVE) addWanderGoal();
 
                 /*CitizensNPC cnpc = (CitizensNPC)npc;
                 EntityHumanNPC.PlayerNPC np = (EntityHumanNPC.PlayerNPC) cnpc.getEntity();
@@ -321,7 +366,6 @@ public class CustomEntity {
                 if(url != null) npc.data().set(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA,url);*/
 
                 new BukkitRunnable(){
-                    @Override
                     public void run() {
                         DungeonRPG.IGNORE_SPAWN_NPC.remove(npc);
                     }
@@ -336,7 +380,16 @@ public class CustomEntity {
                 }.runTaskLater(DungeonRPG.getInstance(),1);
             } else {
                 if(getData().getAiSettings().getType() == MobAIType.MELEE){
-                    bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
+                    if(getData().getEntityType() == EntityType.ZOMBIE){
+                        World mcWorld = ((CraftWorld)loc.getWorld()).getHandle();
+                        DungeonZombie dungeonZombie = new DungeonZombie(mcWorld);
+                        dungeonZombie.setPosition(loc.getX(),loc.getY(),loc.getZ());
+                        mcWorld.addEntity(dungeonZombie, CreatureSpawnEvent.SpawnReason.CUSTOM);
+
+                        bukkitEntity = (Zombie)dungeonZombie.getBukkitEntity();
+                    } else {
+                        bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
+                    }
                 } else if(getData().getAiSettings().getType() == MobAIType.RANGED){
                     if(getData().getEntityType() == EntityType.ZOMBIE){
                         World mcWorld = ((CraftWorld)loc.getWorld()).getHandle();
@@ -377,6 +430,8 @@ public class CustomEntity {
         bukkitEntity.setHealth(bukkitEntity.getMaxHealth());
 
         if(bukkitEntity instanceof Zombie){
+            bukkitEntity.getEquipment().setHelmet(new ItemStack(Material.APPLE));
+
             Zombie z = (Zombie)bukkitEntity;
             z.setVillager(false);
 
@@ -437,6 +492,7 @@ public class CustomEntity {
             Creeper c = (Creeper)bukkitEntity;
         } else if(bukkitEntity instanceof Skeleton){
             Skeleton s = (Skeleton)bukkitEntity;
+            bukkitEntity.getEquipment().setHelmet(new ItemStack(Material.APPLE));
         } else if(bukkitEntity instanceof Spider){
             Spider s = (Spider)bukkitEntity;
         } else if(bukkitEntity instanceof Slime){

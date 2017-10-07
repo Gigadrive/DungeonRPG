@@ -27,13 +27,13 @@ public class DamageListener implements Listener {
     public void onDamage(EntityDamageEvent e){
         if(e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) return;
 
-        if(e.getEntity().getType() == EntityType.ZOMBIE || e.getEntity().getType() == EntityType.SKELETON){
+        /*if(e.getEntity().getType() == EntityType.ZOMBIE || e.getEntity().getType() == EntityType.SKELETON){
             e.getEntity().setFireTicks(0);
 
             if(e.getCause() == EntityDamageEvent.DamageCause.FIRE || e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK){
                 e.setCancelled(true);
             }
-        }
+        }*/
 
         if(e.getEntity() instanceof LivingEntity){
             LivingEntity ent = (LivingEntity)e.getEntity();
