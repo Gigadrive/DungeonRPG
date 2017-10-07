@@ -26,6 +26,8 @@ import net.wrathofdungeons.dungeonrpg.mobs.MobType;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
+import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
+import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkillStorage;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
@@ -85,6 +87,7 @@ public class DungeonRPG extends JavaPlugin {
         registerListeners();
         registerCommands();
 
+        MobSkillStorage.init();
         ItemData.init();
         MobData.init();
         Region.init();
@@ -336,8 +339,15 @@ public class DungeonRPG extends JavaPlugin {
             @Override
             public void run() {
                 for(DungeonProjectile proj : SHOT_PROJECTILE_DATA.values()){
-                    if(proj.getType() == DungeonProjectileType.EXPLOSION_ARROW && proj.getEntity() != null && proj.getEntity().isValid()){
-                        ParticleEffect.VILLAGER_HAPPY.display(0f,0f,0f,0.005f,1,proj.getEntity().getLocation(),600);
+                    if(proj.getEntity() != null && proj.getEntity().isValid()){
+                        DungeonProjectileType type = proj.getType();
+
+                        if(type == DungeonProjectileType.EXPLOSION_ARROW){
+                            ParticleEffect.VILLAGER_HAPPY.display(0f,0f,0f,0.005f,1,proj.getEntity().getLocation(),600);
+                        } else if(type == DungeonProjectileType.MOB_FIREBALL){
+                            ParticleEffect.FLAME.display(0.05f,0.05f,0.05f,0.005f,15,proj.getEntity().getLocation(),600);
+                            ParticleEffect.SMOKE_NORMAL.display(0.05f,0.05f,0.05f,0.005f,4,proj.getEntity().getLocation(),600);
+                        }
                     }
                 }
             }
@@ -538,6 +548,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CreatureListener(),this);
         Bukkit.getPluginManager().registerEvents(new DamageListener(),this);
         Bukkit.getPluginManager().registerEvents(new DeathListener(),this);
+        Bukkit.getPluginManager().registerEvents(new ExplodeListener(),this);
         Bukkit.getPluginManager().registerEvents(new FoodListener(),this);
         Bukkit.getPluginManager().registerEvents(new FrameProtectListener(),this);
         Bukkit.getPluginManager().registerEvents(new InteractListener(),this);

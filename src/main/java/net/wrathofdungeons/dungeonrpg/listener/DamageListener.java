@@ -243,8 +243,8 @@ public class DamageListener implements Listener {
 
                 if(adjustKnockback) c.giveNormalKnockback(e.getDamager().getLocation(),closerKnockbackLocation);
             } else {
-                if(e.getDamager() instanceof Arrow) {
-                    if (((Arrow) e.getDamager()).getShooter() == e.getEntity()) {
+                if(e.getDamager() instanceof Projectile) {
+                    if (((Projectile) e.getDamager()).getShooter() == e.getEntity()) {
                         e.setCancelled(true);
                         return;
                     }
@@ -261,9 +261,9 @@ public class DamageListener implements Listener {
                             }
 
                             if (!e.isCancelled()) {
-                                c = CustomEntity.fromEntity(((LivingEntity)((Arrow) e.getDamager()).getShooter()));
+                                c = CustomEntity.fromEntity(((LivingEntity)((Projectile) e.getDamager()).getShooter()));
 
-                                if(((Arrow) e.getDamager()).getShooter() instanceof LivingEntity && c != null){
+                                if(((Projectile) e.getDamager()).getShooter() instanceof LivingEntity && c != null){
                                     e.setDamage(0);
                                     double damage = DamageHandler.calculateMobToPlayerDamage(u,c);
                                     int thorns = u.getCurrentCharacter().getTotalValue(AwakeningType.THORNS);

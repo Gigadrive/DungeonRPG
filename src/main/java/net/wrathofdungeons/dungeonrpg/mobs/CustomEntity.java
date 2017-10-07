@@ -15,6 +15,7 @@ import net.citizensnpcs.api.ai.Goal;
 import net.citizensnpcs.api.ai.GoalController;
 import net.citizensnpcs.api.ai.goals.WanderGoal;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.npc.CitizensNPC;
 import net.citizensnpcs.npc.entity.EntityHumanNPC;
 import net.citizensnpcs.npc.skin.Skin;
@@ -27,6 +28,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
+import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
@@ -47,6 +49,7 @@ import org.bukkit.util.Vector;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
@@ -80,6 +83,8 @@ public class CustomEntity {
     public boolean playerMobSpeed = true;
 
     private WanderGoal wanderGoal;
+
+    private ArrayList<BukkitTask> tasks;
 
     public CustomEntity(MobData data){
         this.mobDataID = data.getId();
@@ -346,8 +351,8 @@ public class CustomEntity {
                 WorldUtilities.applySkinToNPC(npc,getData().getSkin(),getData().getSkinName());
 
                 npc.setProtected(false);
-                npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed());
-                if(getData().getAiSettings().mayDoRandomStroll() && getData().getMobType() == MobType.PASSIVE) addWanderGoal();
+                npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed()).useNewPathfinder();
+                if(getData().getAiSettings().mayDoRandomStroll()/* && getData().getMobType() == MobType.PASSIVE*/) addWanderGoal();
 
                 /*CitizensNPC cnpc = (CitizensNPC)npc;
                 EntityHumanNPC.PlayerNPC np = (EntityHumanNPC.PlayerNPC) cnpc.getEntity();
@@ -563,20 +568,31 @@ public class CustomEntity {
         new BukkitRunnable(){
             @Override
             public void run() {
-                if(bukkitEntity.getEquipment() != null){
-                    bukkitEntity.getEquipment().clear();
+                if(getData().getEntityType() == EntityType.PLAYER){
+                    if(npc != null){
+                        Equipment equipment = npc.getTrait(Equipment.class);
+                        equipment.set(Equipment.EquipmentSlot.HAND,getData().getWeapon());
+                        equipment.set(Equipment.EquipmentSlot.HELMET,getData().getHelmet());
+                        equipment.set(Equipment.EquipmentSlot.CHESTPLATE,getData().getChestplate());
+                        equipment.set(Equipment.EquipmentSlot.LEGGINGS,getData().getLeggings());
+                        equipment.set(Equipment.EquipmentSlot.BOOTS,getData().getBoots());
+                    }
+                } else {
+                    if(bukkitEntity.getEquipment() != null){
+                        bukkitEntity.getEquipment().clear();
 
-                    bukkitEntity.getEquipment().setItemInHand(new ItemStack(Material.AIR));
-                    bukkitEntity.getEquipment().setHelmet(new ItemStack(Material.AIR));
-                    bukkitEntity.getEquipment().setChestplate(new ItemStack(Material.AIR));
-                    bukkitEntity.getEquipment().setLeggings(new ItemStack(Material.AIR));
-                    bukkitEntity.getEquipment().setBoots(new ItemStack(Material.AIR));
+                        bukkitEntity.getEquipment().setItemInHand(new ItemStack(Material.AIR));
+                        bukkitEntity.getEquipment().setHelmet(new ItemStack(Material.AIR));
+                        bukkitEntity.getEquipment().setChestplate(new ItemStack(Material.AIR));
+                        bukkitEntity.getEquipment().setLeggings(new ItemStack(Material.AIR));
+                        bukkitEntity.getEquipment().setBoots(new ItemStack(Material.AIR));
 
-                    bukkitEntity.getEquipment().setItemInHand(getData().getWeapon());
-                    bukkitEntity.getEquipment().setHelmet(getData().getHelmet());
-                    bukkitEntity.getEquipment().setChestplate(getData().getChestplate());
-                    bukkitEntity.getEquipment().setLeggings(getData().getLeggings());
-                    bukkitEntity.getEquipment().setBoots(getData().getBoots());
+                        bukkitEntity.getEquipment().setItemInHand(getData().getWeapon());
+                        bukkitEntity.getEquipment().setHelmet(getData().getHelmet());
+                        bukkitEntity.getEquipment().setChestplate(getData().getChestplate());
+                        bukkitEntity.getEquipment().setLeggings(getData().getLeggings());
+                        bukkitEntity.getEquipment().setBoots(getData().getBoots());
+                    }
                 }
             }
         }.runTaskLater(DungeonRPG.getInstance(),2);
@@ -588,7 +604,40 @@ public class CustomEntity {
 
         startRegenTask();
 
+        tasks = new ArrayList<BukkitTask>();
+
+        final CustomEntity c = this;
+
+        for(MobSkill skill : getData().getSkills()){
+            tasks.add(new BukkitRunnable(){
+                @Override
+                public void run() {
+                    if(Util.getChanceBoolean(skill.getExecutionChanceTrue(),skill.getExecutionChanceFalse())){
+                        skill.execute(c);
+                    }
+                }
+            }.runTaskTimer(DungeonRPG.getInstance(),skill.getInterval()*20,skill.getInterval()*20));
+        }
+
         STORAGE.put(bukkitEntity,this);
+    }
+
+    public void playAttackAnimation(){
+        if(getData().getEntityType() != EntityType.PLAYER){
+            new PacketPlayOutAnimation(((CraftEntity) bukkitEntity).getHandle(), 0);
+        }
+    }
+
+    public LivingEntity getTarget(){
+        if(bukkitEntity != null && bukkitEntity instanceof Creature){
+            return ((Creature)bukkitEntity).getTarget();
+        } else {
+            return null;
+        }
+    }
+
+    public boolean hasTarget(){
+        return getTarget() != null;
     }
 
     public void remove(){
@@ -607,6 +656,8 @@ public class CustomEntity {
             if(!hologram.isDeleted()) hologram.delete();
             hologram = null;
         }
+
+        if(tasks != null) for(BukkitTask t : tasks) t.cancel();
 
         stopRegenTask();
     }

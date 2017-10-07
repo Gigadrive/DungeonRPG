@@ -1,5 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.mobs;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
@@ -8,6 +10,9 @@ import net.wrathofdungeons.dungeonapi.util.GameProfileBuilder;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
+import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkillStorage;
+import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -70,6 +75,7 @@ public class MobData {
     private boolean adult;
     private MobClass mobClass;
     private double speed;
+    private ArrayList<MobSkill> skills;
     private MobSoundData soundData;
     private AISettings aiSettings;
 
@@ -98,10 +104,14 @@ public class MobData {
                     //
                 } else {
                     this.helmet = Util.parseItemStack(rs.getString("helmet"));
+                    if(helmet != null) helmet = ItemUtil.setUnbreakable(helmet,true);
                 }
                 this.chestplate = Util.parseItemStack(rs.getString("chestplate"));
+                if(chestplate != null) chestplate = ItemUtil.setUnbreakable(chestplate,true);
                 this.leggings = Util.parseItemStack(rs.getString("leggings"));
+                if(leggings != null) leggings = ItemUtil.setUnbreakable(leggings,true);
                 this.boots = Util.parseItemStack(rs.getString("boots"));
+                if(boots != null) boots = ItemUtil.setUnbreakable(boots,true);
                 this.weapon = Util.parseItemStack(rs.getString("weapon"));
                 this.adult = rs.getBoolean("adult");
                 this.mobClass = MobClass.valueOf(rs.getString("class"));
@@ -114,6 +124,19 @@ public class MobData {
                             break;
                         }
                     }
+                }
+
+                String skillsString = rs.getString("skills");
+                if(skillsString != null){
+                    skills = new ArrayList<MobSkill>();
+
+                    for(String s : (ArrayList<String>)new Gson().fromJson(skillsString, new TypeToken<ArrayList<String>>(){}.getType())){
+                        if(MobSkillStorage.getSkill(s) != null){
+                            skills.add(MobSkillStorage.getSkill(s));
+                        }
+                    }
+                } else {
+                    skills = new ArrayList<MobSkill>();
                 }
 
                 this.soundData.volume = rs.getFloat("sound.volume");
@@ -249,6 +272,10 @@ public class MobData {
 
     public double getSpeed() {
         return speed;
+    }
+
+    public ArrayList<MobSkill> getSkills() {
+        return skills;
     }
 
     public boolean isAdult() {
