@@ -581,12 +581,14 @@ public class DungeonRPG extends JavaPlugin {
         new LoadRegionCommand();
         new ModifyNPCCommand();
         new PartyCommand();
+        new PingCommand();
         new ReloadCommand();
         new SaveNPCsCommand();
         new SaveRegionCommand();
         new SetLocationCommand();
         new SetupCommand();
         new SummonCommand();
+        new WorldBroadcastCommand();
     }
 
     public static void setLocationIndicator(Location loc, RegionLocationType type){
