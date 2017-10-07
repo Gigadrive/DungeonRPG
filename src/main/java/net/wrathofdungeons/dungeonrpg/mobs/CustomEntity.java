@@ -39,6 +39,7 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -623,8 +624,12 @@ public class CustomEntity {
     }
 
     public void playAttackAnimation(){
-        if(getData().getEntityType() != EntityType.PLAYER){
-            new PacketPlayOutAnimation(((CraftEntity) bukkitEntity).getHandle(), 0);
+        if(getBukkitEntity() != null){
+            if(getData().getEntityType() != EntityType.PLAYER){
+                for(Player p : getBukkitEntity().getWorld().getPlayers()){
+                    ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutAnimation(((CraftEntity) bukkitEntity).getHandle(), 0));
+                }
+            }
         }
     }
 
