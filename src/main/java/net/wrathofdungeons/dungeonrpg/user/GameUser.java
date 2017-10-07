@@ -177,7 +177,7 @@ public class GameUser extends User {
     private void doHPRegen(){
         if(getHP() < getMaxHP()){
             int hp = getHP();
-            hp += 5*getCurrentCharacter().getLevel();
+            hp += getCurrentCharacter().getLevel();
 
             hp += hp*(getCurrentCharacter().getTotalValue(AwakeningType.HP_REGENERATION)*0.01);
 
