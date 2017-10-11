@@ -478,6 +478,7 @@ public class GameUser extends User {
 
             bukkitReset();
             p.teleport(c.getStoredLocation());
+            p.setGameMode(GameMode.ADVENTURE);
             updateLevelBar();
 
             PlayerInventory inventory = c.getStoredInventory();
