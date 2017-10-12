@@ -30,7 +30,23 @@ public class ShootBowListener implements Listener {
 
                 CustomItem customItem = CustomItem.fromItemStack(e.getBow());
 
-                Arrow projectile = (Arrow)e.getProjectile();
+                e.setCancelled(true);
+
+                Arrow oldArrow = e.getProjectile() != null ? (Arrow)e.getProjectile() : null;
+                Arrow projectile;
+
+                if(oldArrow != null){
+                    projectile = (Arrow)p.launchProjectile(Arrow.class);
+
+                    projectile.setVelocity(oldArrow.getVelocity());
+                    projectile.setCritical(oldArrow.isCritical());
+                    projectile.setKnockbackStrength(oldArrow.getKnockbackStrength());
+
+                    oldArrow.remove();
+                } else {
+                    projectile = oldArrow;
+                }
+
                 double damage = 1;
                 damage += Util.randomDouble(customItem.getData().getAtkMin(), customItem.getData().getAtkMax());
 
