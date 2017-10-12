@@ -1,19 +1,21 @@
 package net.wrathofdungeons.dungeonrpg.lootchests;
 
 public enum LootChestTier {
-    TIER_1(1,6,"I"),
-    TIER_2(2,18,"II"),
-    TIER_3(3,29,"III"),
-    TIER_4(4,41,"IV"),
-    TIER_5(5,72,"V");
+    TIER_1(1,6,0,"I"),
+    TIER_2(2,18,1,"II"),
+    TIER_3(3,29,2,"III"),
+    TIER_4(4,41,3,"IV"),
+    TIER_5(5,72,4,"V");
 
     private int id;
     private int goldNuggetAmount;
+    private int itemAmount;
     private String display;
 
-    LootChestTier(int id,int goldNuggetAmount,String display){
+    LootChestTier(int id,int goldNuggetAmount,int itemAmount,String display){
         this.id = id;
         this.goldNuggetAmount = goldNuggetAmount;
+        this.itemAmount = itemAmount;
         this.display = display;
     }
 
@@ -23,6 +25,10 @@ public enum LootChestTier {
 
     public int getGoldNuggetAmount() {
         return goldNuggetAmount;
+    }
+
+    public int getItemAmount() {
+        return itemAmount;
     }
 
     public String getDisplay() {

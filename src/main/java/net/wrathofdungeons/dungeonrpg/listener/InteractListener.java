@@ -17,8 +17,11 @@ import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
 import net.wrathofdungeons.dungeonrpg.inv.GameMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
+import net.wrathofdungeons.dungeonrpg.items.ItemData;
+import net.wrathofdungeons.dungeonrpg.items.ItemRarity;
 import net.wrathofdungeons.dungeonrpg.lootchests.LootChest;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.mobs.MobClass;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
@@ -51,6 +54,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static net.wrathofdungeons.dungeonrpg.regions.RegionLocationType.*;
 
@@ -351,6 +355,32 @@ public class InteractListener implements Listener {
 
                                         added += a;
                                         toAdd.add(new CustomItem(7,added));
+                                    }
+
+                                    int items = c.getTier().getItemAmount() > 0 ? Util.randomInteger(c.getTier().getItemAmount()/2,c.getTier().getItemAmount()) : 0;
+                                    if(items > 0){
+                                        int[] usableLvls = new int[]{c.getLevel()-2, c.getLevel()-1, c.getLevel(), c.getLevel()+1, c.getLevel()+2};
+
+                                        firstloop:
+                                        for(int i = 0; i < items; i++){
+                                            ArrayList<ItemData> allItems = new ArrayList<ItemData>();
+                                            allItems.addAll(ItemData.STORAGE);
+                                            Collections.shuffle(allItems);
+
+                                            for(ItemData data : allItems){
+                                                if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK) {
+                                                    if (data.getRarity() != ItemRarity.NONE && data.getRarity() != ItemRarity.SPECIAL) {
+                                                        a:
+                                                        for (int ii : usableLvls) {
+                                                            if(ii == data.getNeededLevel()) {
+
+                                                                continue firstloop;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
 
                                     for(CustomItem i : toAdd){
