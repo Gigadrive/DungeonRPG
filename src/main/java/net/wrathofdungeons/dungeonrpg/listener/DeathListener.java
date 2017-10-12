@@ -93,6 +93,30 @@ public class DeathListener implements Listener {
                                     }
                                 }
 
+                                // DROP FOOD
+                                if(mob.getMobType() == MobType.AGGRO){
+                                    int limit = 2;
+
+                                    if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 95)){
+                                        int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
+
+                                        for(ItemData data : ItemData.STORAGE){
+                                            if(data.getCategory() == ItemCategory.FOOD){
+                                                for(int i : usableLvls){
+                                                    if(i == data.getNeededLevel()){
+                                                        if(limit != 0){
+                                                            WorldUtilities.dropItem(ent.getLocation(),new CustomItem(data),p);
+                                                            limit--;
+                                                        }
+
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
                                 // GIVE EXP
                                 double xp = Util.randomDouble(mob.getXp()/2, mob.getXp());
 

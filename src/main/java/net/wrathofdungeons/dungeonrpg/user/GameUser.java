@@ -74,6 +74,7 @@ public class GameUser extends User {
     private boolean init = false;
     public boolean __associateDamageWithSystem = true;
     private boolean attackCooldown = false;
+    private boolean foodCooldown = false;
     private boolean setupMode = false;
     public boolean mayActivateMobs = true;
     public boolean ignoreFistCheck = false;
@@ -290,6 +291,14 @@ public class GameUser extends User {
 
     public void setAttackCooldown(boolean b){
         this.attackCooldown = b;
+    }
+
+    public boolean isInFoodCooldown(){
+        return foodCooldown;
+    }
+
+    public void setFoodCooldown(boolean b){
+        this.foodCooldown = b;
     }
 
     public void damage(double damage){
@@ -538,6 +547,16 @@ public class GameUser extends User {
                 }
             } else {
                 p.hidePlayer(all);
+            }
+        }
+    }
+
+    public void consumeCurrentItem(int amount){
+        if(p.getItemInHand() != null){
+            if(p.getItemInHand().getAmount() > amount){
+                p.getItemInHand().setAmount(p.getItemInHand().getAmount()-amount);
+            } else {
+                p.setItemInHand(new ItemStack(Material.AIR));
             }
         }
     }

@@ -236,6 +236,39 @@ public class InteractListener implements Listener {
                                     p.sendMessage(ChatColor.RED + "Teleport failed.");
                                 }
                             }
+                        } else if(item.getData().getCategory() == ItemCategory.FOOD){
+                            e.setCancelled(true);
+                            e.setUseInteractedBlock(Event.Result.DENY);
+                            e.setUseItemInHand(Event.Result.DENY);
+
+                            if(item.getData().getFoodRegeneration() > 0 && item.getData().getFoodDelayInTicks() >= 0){
+                                if(u.getCurrentCharacter().getLevel() >= item.getData().getNeededLevel()){
+                                    if(!u.isInFoodCooldown()){
+                                        if(u.getHP() < u.getMaxHP()){
+                                            u.consumeCurrentItem(1);
+                                            u.addHP(item.getData().getFoodRegeneration());
+
+                                            p.playSound(p.getEyeLocation(),Sound.EAT,1f,1f);
+                                            ParticleEffect.HEART.display(0.005f,0.005f,0.005f,0.005f,30,p.getEyeLocation(),600);
+
+                                            if(item.getData().getFoodDelayInTicks() > 0){
+                                                u.setFoodCooldown(true);
+
+                                                new BukkitRunnable(){
+                                                    @Override
+                                                    public void run() {
+                                                        u.setFoodCooldown(false);
+                                                    }
+                                                }.runTaskLater(DungeonRPG.getInstance(),item.getData().getFoodDelayInTicks());
+                                            }
+                                        }
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "Please wait a little while before using that item again.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.DARK_RED + "This item is for level " + item.getData().getNeededLevel() + "+ only.");
+                                }
+                            }
                         }
                     }
 

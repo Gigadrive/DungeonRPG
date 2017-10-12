@@ -46,6 +46,9 @@ public class ItemData {
     private int defMin;
     private int defMax;
 
+    private int foodRegeneration;
+    private int foodDelay;
+
     private int neededLevel;
     private RPGClass neededClass;
 
@@ -80,6 +83,9 @@ public class ItemData {
 
                 this.defMin = rs.getInt("def.min");
                 this.defMax = rs.getInt("def.max");
+
+                this.foodRegeneration = rs.getInt("foodRegeneration");
+                this.foodDelay = rs.getInt("foodDelay");
 
                 this.neededLevel = rs.getInt("neededLevel");
                 this.neededClass = RPGClass.valueOf(rs.getString("neededClass"));
@@ -139,6 +145,18 @@ public class ItemData {
 
     public int getDefMax() {
         return defMax;
+    }
+
+    public int getFoodRegeneration() {
+        return foodRegeneration;
+    }
+
+    public int getFoodDelayInTicks() {
+        return foodDelay;
+    }
+
+    public double getFoodDelayInSeconds() {
+        return (double)foodDelay*20;
     }
 
     public int getNeededLevel() {

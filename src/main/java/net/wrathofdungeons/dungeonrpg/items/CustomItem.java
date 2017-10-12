@@ -316,6 +316,13 @@ public class CustomItem {
                     if(getData().getDescription() != null) iL.add(" ");
                 }
 
+                if(getData().getCategory() == ItemCategory.FOOD){
+                    if(getData().getNeededLevel() > 0) iL.add("Minimum Level: " + getData().getNeededLevel());
+                    iL.add(ChatColor.GOLD + "HP Regeneration: " + getData().getFoodRegeneration());
+
+                    if(getData().getDescription() != null) iL.add(" ");
+                }
+
                 if(getData().getDescription() != null){
                     for(String s : Util.getWordWrapLore(getData().getDescription())){
                         iL.add(ChatColor.GRAY + s);
