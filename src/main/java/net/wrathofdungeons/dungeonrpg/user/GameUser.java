@@ -510,6 +510,8 @@ public class GameUser extends User {
                     p.getInventory().addItem(new CustomItem(4,1,true).build(p));
                 }
 
+                p.getInventory().addItem(new CustomItem(54,5).build(p));
+
                 p.getInventory().setItem(8,new CustomItem(5).build(p));
 
                 p.getInventory().setHelmet(new CustomItem(14,1,true).build(p));
