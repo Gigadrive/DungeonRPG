@@ -88,7 +88,7 @@ public class WorldUtilities {
     }
 
     public static void applySkinToNPC(NPC npc, Skin skin){
-        applySkinToNPC(npc,skin,ChatColor.GREEN.toString());
+        applySkinToNPC(npc,skin,Util.randomString(3,16));
     }
 
     public static void applySkinToNPC(NPC npc, Skin skin, String skinName){

@@ -346,10 +346,11 @@ public class CustomEntity {
         if(bukkitEntity == null && !STORAGE.containsValue(this) && npc == null){
             if(getData().getEntityType() == EntityType.PLAYER){
                 DungeonRPG.IGNORE_SPAWN_NPC.add(npc);
-                npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER,ChatColor.GREEN.toString());
+                npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER,DungeonRPG.randomColor().toString());
                 npc.spawn(loc);
 
-                WorldUtilities.applySkinToNPC(npc,getData().getSkin(),getData().getSkinName());
+                //WorldUtilities.applySkinToNPC(npc,getData().getSkin(),getData().getSkinName());
+                WorldUtilities.applySkinToNPC(npc,getData().getSkin());
 
                 npc.setProtected(false);
                 npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed()).useNewPathfinder();

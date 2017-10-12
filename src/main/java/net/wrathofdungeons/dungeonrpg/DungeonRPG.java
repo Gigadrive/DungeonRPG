@@ -536,6 +536,10 @@ public class DungeonRPG extends JavaPlugin {
         return a;
     }
 
+    public static ChatColor randomColor(){
+        return ChatColor.values()[Util.randomInteger(0,ChatColor.values().length-1)];
+    }
+
     private void registerListeners(){
         Bukkit.getPluginManager().registerEvents(new AnimationListener(),this);
         Bukkit.getPluginManager().registerEvents(new AwakeningMenu(),this);

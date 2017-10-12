@@ -314,7 +314,7 @@ public class CustomNPC {
             DungeonRPG.IGNORE_SPAWN_NPC.add(npc);
             npc = CitizensAPI.getNPCRegistry().createNPC(getEntityType(),"a");
 
-            npc.setName(ChatColor.GREEN.toString());
+            npc.setName(DungeonRPG.randomColor().toString());
 
             if(getNpcType() == CustomNPCType.BUYING_MERCHANT){
                 npc.setBukkitEntityType(EntityType.VILLAGER);
@@ -328,7 +328,8 @@ public class CustomNPC {
                 new BukkitRunnable(){
                     @Override
                     public void run() {
-                        WorldUtilities.applySkinToNPC(npc,getSkin(),getSkinName());
+                        //WorldUtilities.applySkinToNPC(npc,getSkin(),getSkinName());
+                        WorldUtilities.applySkinToNPC(npc,getSkin());
                     }
                 }.runTaskLater(DungeonRPG.getInstance(),2*20);
             }
