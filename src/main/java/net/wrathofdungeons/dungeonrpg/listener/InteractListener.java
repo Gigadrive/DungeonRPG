@@ -373,6 +373,7 @@ public class InteractListener implements Listener {
                                                         a:
                                                         for (int ii : usableLvls) {
                                                             if(ii == data.getNeededLevel()) {
+                                                                toAdd.add(new CustomItem(data.getId()));
 
                                                                 continue firstloop;
                                                             }
