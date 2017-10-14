@@ -58,7 +58,7 @@ public class DeathListener implements Listener {
                                 if(mob.getMobType() == MobType.AGGRO){
                                     int limit = 2;
 
-                                    if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 125)){
+                                    if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 105)){
                                         int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
 
                                         for(ItemData data : ItemData.STORAGE){
@@ -97,7 +97,7 @@ public class DeathListener implements Listener {
                                 if(mob.getMobType() == MobType.AGGRO){
                                     int limit = 2;
 
-                                    if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 95)){
+                                    if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 125)){
                                         int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
 
                                         for(ItemData data : ItemData.STORAGE){
@@ -120,7 +120,7 @@ public class DeathListener implements Listener {
                                 // DROP MATERIAL
                                 ItemData materialData = ItemData.getData(mob.getMaterialDrop());
                                 if(materialData != null){
-                                    if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 80)){
+                                    if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 95)){
                                         WorldUtilities.dropItem(ent.getLocation(),new CustomItem(materialData),p);
                                     }
                                 }
