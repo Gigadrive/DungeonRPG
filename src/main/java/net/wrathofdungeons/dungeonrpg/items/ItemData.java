@@ -5,6 +5,7 @@ import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 
 import java.sql.PreparedStatement;
@@ -35,6 +36,7 @@ public class ItemData {
     private String name;
     private Material icon;
     private int durability;
+    private Color leatherArmorColor;
     private ItemCategory category;
     private ItemRarity rarity;
     private int tpScrollRegion;
@@ -73,6 +75,7 @@ public class ItemData {
                 if(rs.getString("name") != null) this.name = ChatColor.translateAlternateColorCodes('&',rs.getString("name"));
                 this.icon = Material.getMaterial(rs.getInt("icon"));
                 this.durability = rs.getInt("durability");
+                if(rs.getString("leatherArmorColor") != null) this.leatherArmorColor = Color.fromRGB(Integer.valueOf(rs.getString("leatherArmorColor").substring(1,3),16),Integer.valueOf(rs.getString("leatherArmorColor").substring(3,5),16),Integer.valueOf(rs.getString("leatherArmorColor").substring(5,7),16));
                 this.category = ItemCategory.valueOf(rs.getString("category"));
                 this.rarity = ItemRarity.valueOf(rs.getString("rarity"));
                 this.tpScrollRegion = rs.getInt("tpScroll.regionID");
@@ -113,6 +116,10 @@ public class ItemData {
 
     public int getDurability() {
         return durability;
+    }
+
+    public Color getLeatherArmorColor() {
+        return leatherArmorColor;
     }
 
     public ItemCategory getCategory() {

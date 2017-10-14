@@ -20,6 +20,7 @@ import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -302,6 +303,7 @@ public class CustomItem {
                 i.setAmount(amount);
                 i.setDurability((short)getData().getDurability());
                 ItemMeta iM = i.getItemMeta();
+
                 iM.setDisplayName(getData().getRarity().getColor() + getData().getName());
                 ArrayList<String> iL = new ArrayList<String>();
                 if(getData().getCategory().toString().startsWith("WEAPON_")){
@@ -372,6 +374,14 @@ public class CustomItem {
 
                 iM.setLore(iL);
                 i.setItemMeta(iM);
+
+                if(getData().getIcon() == Material.LEATHER_HELMET || getData().getIcon() == Material.LEATHER_CHESTPLATE || getData().getIcon() == Material.LEATHER_LEGGINGS || getData().getIcon() == Material.LEATHER_BOOTS){
+                    LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta)i.getItemMeta();
+
+                    if(getData().getLeatherArmorColor() != null) leatherArmorMeta.setColor(getData().getLeatherArmorColor());
+                    i.setItemMeta(leatherArmorMeta);
+                }
+
                 i = ItemUtil.hideFlags(ItemUtil.setUnbreakable(i,true));
 
                 i = assignNBTData(i);
