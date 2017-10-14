@@ -195,7 +195,19 @@ public class PartyCommand extends Command {
             if(args.length == 0){
                 showUsage(p);
             } else {
+                if(party != null){
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < args.length; i++) {
+                        sb.append(" ").append(args[i]);
+                    }
+                    String message = sb.toString().trim();
 
+                    for(Player p2 : party.getOnlinePlayers()){
+                        p2.sendMessage(ChatColor.DARK_GREEN + "[" + p.getName() + "] " + ChatColor.GREEN + message);
+                    }
+                } else {
+
+                }
             }
         }
     }
