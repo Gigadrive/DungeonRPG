@@ -12,6 +12,7 @@ import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import javax.naming.ldap.PagedResultsControl;
@@ -38,6 +39,7 @@ public class Character {
     private PlayerInventory storedInventory;
     private Timestamp creationTime;
     private Timestamp lastLogin;
+    private Inventory bank;
 
     public Character(int id, Player p){
         this.id = id;
@@ -62,6 +64,8 @@ public class Character {
                 if(rs.getString("inventory") != null) this.storedInventory = PlayerInventory.fromString(rs.getString("inventory"));
                 this.creationTime = rs.getTimestamp("time");
                 this.lastLogin = rs.getTimestamp("lastLogin");
+
+                this.bank = Bukkit.createInventory(null,9,"Your Bank");
 
                 if(lastLogin == null) storedLocation = DungeonRPG.getStartLocation();
             }
@@ -109,7 +113,7 @@ public class Character {
     }
 
     public PlayerInventory getConvertedInventory(Player p){
-        return PlayerInventory.fromInventory(p);
+        return PlayerInventory.fromInventory(p,this);
     }
 
     public Timestamp getCreationTime() {
@@ -210,6 +214,10 @@ public class Character {
                 agility += statpoints;
                 break;
         }
+    }
+
+    public Inventory getBank() {
+        return bank;
     }
 
     public CustomItem[] getEquipment(){

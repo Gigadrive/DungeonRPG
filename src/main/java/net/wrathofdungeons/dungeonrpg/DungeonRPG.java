@@ -122,6 +122,7 @@ public class DungeonRPG extends JavaPlugin {
         prepareWorld(MAIN_WORLD);
 
         DISALLOWED_BLOCKS.add(Material.CHEST);
+        DISALLOWED_BLOCKS.add(Material.ENDER_CHEST);
         DISALLOWED_BLOCKS.add(Material.TRAPPED_CHEST);
         DISALLOWED_BLOCKS.add(Material.FURNACE);
         DISALLOWED_BLOCKS.add(Material.ENCHANTMENT_TABLE);

@@ -332,7 +332,7 @@ public class InteractListener implements Listener {
                         e.setCancelled(true);
                         e.setUseInteractedBlock(Event.Result.DENY);
                         e.setUseItemInHand(Event.Result.DENY);
-                        if(e.getClickedBlock().getType() != Material.CHEST) return;
+                        if(e.getClickedBlock().getType() != Material.CHEST && e.getClickedBlock().getType() != Material.ENDER_CHEST) return;
                     }
 
                     if(e.getClickedBlock().getType() == Material.CHEST){
@@ -398,6 +398,9 @@ public class InteractListener implements Listener {
                             }
                         }
 
+                        return;
+                    } else if(e.getClickedBlock().getType() == Material.ENDER_CHEST){
+                        if(u.getCurrentCharacter().getBank() != null) p.openInventory(u.getCurrentCharacter().getBank());
                         return;
                     }
                 }

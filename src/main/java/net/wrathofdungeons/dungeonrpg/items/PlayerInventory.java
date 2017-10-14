@@ -1,9 +1,13 @@
 package net.wrathofdungeons.dungeonrpg.items;
 
 import com.google.gson.Gson;
+import net.wrathofdungeons.dungeonrpg.user.Character;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
 
 public class PlayerInventory {
     public CustomItem helmet;
@@ -48,7 +52,9 @@ public class PlayerInventory {
     public CustomItem slot34;
     public CustomItem slot35;
 
-    public static PlayerInventory fromInventory(Player p){
+    public HashMap<Integer,CustomItem> bank;
+
+    public static PlayerInventory fromInventory(Player p, Character c){
         PlayerInventory inv = new PlayerInventory();
 
         inv.helmet = CustomItem.fromItemStack(p.getInventory().getHelmet());
@@ -93,6 +99,18 @@ public class PlayerInventory {
         inv.slot34 = CustomItem.fromItemStack(p.getInventory().getItem(34));
         inv.slot35 = CustomItem.fromItemStack(p.getInventory().getItem(35));
 
+        if(c.getBank() != null){
+            inv.bank = new HashMap<Integer,CustomItem>();
+
+            for(int i = 0; i < c.getBank().getSize(); i++){
+                CustomItem item = CustomItem.fromItemStack(c.getBank().getItem(i));
+
+                if(item != null){
+                    inv.bank.put(i,item);
+                }
+            }
+        }
+
         return inv;
     }
 
@@ -104,6 +122,7 @@ public class PlayerInventory {
 
     public void loadToPlayer(Player p){
         GameUser u = GameUser.getUser(p);
+        Character c = u.getCurrentCharacter();
 
         if(helmet != null) p.getInventory().setHelmet(helmet.build(p));
         if(chestplate != null) p.getInventory().setChestplate(chestplate.build(p));
@@ -146,6 +165,14 @@ public class PlayerInventory {
         if(slot33 != null) p.getInventory().setItem(33,slot33.build(p));
         if(slot34 != null) p.getInventory().setItem(34,slot34.build(p));
         if(slot35 != null) p.getInventory().setItem(35,slot35.build(p));
+
+        if(bank != null){
+            for(int slot : bank.keySet()){
+                CustomItem item = bank.get(slot);
+
+                c.getBank().setItem(slot,item.build(p));
+            }
+        }
     }
 
     public String toString(){
