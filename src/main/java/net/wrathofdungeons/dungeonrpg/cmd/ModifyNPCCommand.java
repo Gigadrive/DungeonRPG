@@ -1,5 +1,8 @@
 package net.wrathofdungeons.dungeonrpg.cmd;
 
+import net.citizensnpcs.api.npc.NPC;
+import net.wrathofdungeons.dungeonapi.DungeonAPI;
+import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.util.Util;
@@ -12,6 +15,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Arrays;
 
 public class ModifyNPCCommand extends Command {
@@ -25,6 +31,7 @@ public class ModifyNPCCommand extends Command {
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> offers");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> addtextline");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> textlines");
+        p.sendMessage(ChatColor.RED + "/" + label + " <NPC> copy");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> customname [Name]");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> type <NPC-Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> entity <Entity Type>");
@@ -77,6 +84,46 @@ public class ModifyNPCCommand extends Command {
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Only Quest NPCs can hold text lines.");
                                 }
+                            } else if(args[1].equalsIgnoreCase("copy")){
+                                DungeonAPI.async(() -> {
+                                    try {
+                                        int n = 0;
+
+                                        PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `npcs` (`npcType`,`location.world`,`location.x`,`location.y`,`location.z`,`location.yaw`,`location.pitch`) VALUES(?,?,?,?,?,?,?);", Statement.RETURN_GENERATED_KEYS);
+                                        ps.setString(1,npc.getNpcType().toString());
+                                        ps.setString(2,p.getLocation().getWorld().getName());
+                                        ps.setDouble(3,p.getLocation().getX());
+                                        ps.setDouble(4,p.getLocation().getY());
+                                        ps.setDouble(5,p.getLocation().getZ());
+                                        ps.setFloat(6,p.getLocation().getYaw());
+                                        ps.setFloat(7,p.getLocation().getPitch());
+                                        ps.executeUpdate();
+
+                                        ResultSet rs = ps.getGeneratedKeys();
+                                        if(rs.first()){
+                                            n = rs.getInt(1);
+                                        }
+
+                                        if(n > 0){
+                                            CustomNPC copy = new CustomNPC(n);
+                                            copy.setEntityType(npc.getEntityType());
+                                            copy.setVillagerProfession(npc.getVillagerProfession());
+                                            copy.setCustomName(npc.getCustomName());
+                                            copy.setSkin(npc.getSkin());
+                                            copy.setLocation(p.getLocation());
+                                            copy.setOffers(npc.getOffers());
+
+                                            p.sendMessage(ChatColor.GREEN + "Created NPC! ID: #" + copy.getId());
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "An error occurred.");
+                                        }
+
+                                        MySQLManager.getInstance().closeResources(rs,ps);
+                                    } catch(Exception e){
+                                        p.sendMessage(ChatColor.RED + "An error occurred.");
+                                        e.printStackTrace();
+                                    }
+                                });
                             } else if(args[1].equalsIgnoreCase("customname")){
                                 npc.setCustomName(null);
                                 p.sendMessage(ChatColor.GREEN + "Success!");

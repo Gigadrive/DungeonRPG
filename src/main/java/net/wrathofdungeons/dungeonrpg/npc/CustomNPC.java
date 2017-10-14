@@ -263,6 +263,10 @@ public class CustomNPC {
         return offers;
     }
 
+    public void setOffers(ArrayList<MerchantOffer> offers){
+        if(offers != null) this.offers = offers;
+    }
+
     public Location getLocation() {
         return storedLocation;
     }
