@@ -9,6 +9,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobAIType;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList;
 import org.bukkit.entity.EntityType;
@@ -22,7 +23,7 @@ import java.util.*;
 public class TargetHandler {
     public static void giveTargets(LivingEntity entity, CustomEntity customEntity){
         if(entity.getType() != EntityType.PLAYER){
-            EntityCreature c = (EntityCreature) ((EntityInsentient)((CraftEntity)entity).getHandle());
+            EntityCreature c = (EntityCreature) (((CraftEntity)entity).getHandle());
 
             try {
                 Field bField = PathfinderGoalSelector.class.getDeclaredField("b");

@@ -68,7 +68,7 @@ public class Shockwave implements Skill {
                                         DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                         c.getData().playSound(livingEntity.getLocation());
                                         livingEntity.setVelocity(livingEntity.getLocation().toVector().subtract(startLocation.toVector()).normalize().multiply(2).setY(1));
-                                        livingEntity.damage(DamageHandler.calculatePlayerToMobDamage(u,c,shockwave),p);
+                                        c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,shockwave),p);
                                     } else {
                                         if(livingEntity instanceof Player){
                                             // TODO: handle duels

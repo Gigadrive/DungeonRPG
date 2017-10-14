@@ -102,7 +102,7 @@ public class LightningStrike implements Skill {
                             if(c != null){
                                 DungeonRPG.showBloodEffect(c.getBukkitEntity().getLocation());
                                 c.getData().playSound(c.getBukkitEntity().getLocation());
-                                c.getBukkitEntity().damage(DamageHandler.calculatePlayerToMobDamage(u,c,lightningStrike),p);
+                                c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,lightningStrike),p);
                             } else {
                                 if(entity instanceof Player){
                                     // TODO: handle duels

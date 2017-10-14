@@ -7,7 +7,7 @@ public class DungeonSheep extends EntitySheep {
         super(world);
     }
 
-    @Override
+    /*@Override
     protected void E(){
 
     }
@@ -40,7 +40,7 @@ public class DungeonSheep extends EntitySheep {
     @Override
     public int w() {
         return 120;
-    }
+    }*/
 
     @Override
     protected boolean isTypeNotPersistent() {

@@ -77,6 +77,104 @@ public class DamageListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e){
+        if(e.getEntity() instanceof LivingEntity){
+            CustomEntity c = CustomEntity.fromEntity((LivingEntity)e.getEntity());
+
+            if(c != null){
+                if(e.getDamager() instanceof Projectile){
+                    if(((Projectile) e.getDamager()).getShooter() != null && ((Projectile) e.getDamager()).getShooter() instanceof LivingEntity){
+                        if(((Projectile) e.getDamager()).getShooter() == e.getEntity()){
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        CustomEntity cd = CustomEntity.fromEntity((LivingEntity)((Projectile) e.getDamager()).getShooter());
+
+                        if(cd != null){
+                            e.setCancelled(true);
+                            e.getDamager().remove();
+                            DungeonRPG.callMobToMobDamage(cd,c,true);
+                        } else {
+                            if(((Projectile) e.getDamager()).getShooter() instanceof Player){
+                                Player p = (Player)((Projectile) e.getDamager()).getShooter();
+
+                                if(GameUser.isLoaded(p)){
+                                    GameUser u = GameUser.getUser(p);
+
+                                    if(u.getCurrentCharacter() != null){
+                                        e.setCancelled(true);
+                                        e.getDamager().remove();
+                                        DungeonRPG.callPlayerToMobDamage(p,c,true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    e.setCancelled(true);
+                }
+            } else {
+                if(e.getEntity() instanceof Player){
+                    Player p = (Player)e.getEntity();
+
+                    if(GameUser.isLoaded(p)){
+                        GameUser u = GameUser.getUser(p);
+
+                        if(e.getDamager() instanceof Projectile){
+                            if(((Projectile) e.getDamager()).getShooter() != null && ((Projectile) e.getDamager()).getShooter() instanceof LivingEntity && !(((Projectile) e.getDamager()).getShooter() instanceof Player)){
+                                if(((Projectile) e.getDamager()).getShooter() == e.getEntity()){
+                                    e.setCancelled(true);
+                                    return;
+                                }
+
+                                CustomEntity cd = CustomEntity.fromEntity((LivingEntity) ((Projectile) e.getDamager()).getShooter());
+
+                                if(cd != null){
+                                    e.setCancelled(true);
+                                    e.getDamager().remove();
+                                    DungeonRPG.callMobToPlayerDamage(cd,p,true);
+                                }
+                            } else {
+                                if(((Projectile) e.getDamager()).getShooter() instanceof Player){
+                                    if(((Projectile) e.getDamager()).getShooter() == e.getEntity()){
+                                        e.setCancelled(true);
+                                        return;
+                                    }
+
+                                    Player p2 = (Player)((Projectile) e.getDamager()).getShooter();
+
+                                    if(GameUser.isLoaded(p2)){
+                                        GameUser u2 = GameUser.getUser(p2);
+
+                                        if(u2.getCurrentCharacter() != null){
+                                            e.setCancelled(true);
+                                            e.getDamager().remove();
+                                            DungeonRPG.callPlayerToPlayerDamage(p,p2,true);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            if(e.getDamager() instanceof LivingEntity){
+                                LivingEntity l = (LivingEntity)e.getDamager();
+                                c = CustomEntity.fromEntity(l);
+
+                                if(c != null){
+                                    e.setCancelled(true);
+                                    DungeonRPG.callMobToPlayerDamage(c,p,false);
+                                } else {
+                                    e.setCancelled(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /*@EventHandler
+    public void onDamage(EntityDamageByEntityEvent e){
         Bukkit.broadcastMessage(String.valueOf(1));
         if(e.getEntity() instanceof LivingEntity){
             Bukkit.broadcastMessage(String.valueOf(2));
@@ -374,5 +472,5 @@ public class DamageListener implements Listener {
                 }
             }
         }
-    }
+    }*/
 }

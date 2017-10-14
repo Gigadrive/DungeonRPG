@@ -68,7 +68,7 @@ public class LandOnGroundListener implements Listener {
 
                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                 c.getData().playSound(livingEntity.getLocation());
-                                livingEntity.damage(DamageHandler.calculatePlayerToMobDamage(u,c,u.getSkillValues().stomperSkill),p);
+                                c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,u.getSkillValues().stomperSkill),p);
 
                                 new BukkitRunnable(){
                                     @Override

@@ -401,6 +401,10 @@ public class CustomItem {
         }
     }
 
+    public long getCooldownInTicks(){
+        return 10;
+    }
+
     public ItemStack assignNBTData(ItemStack i){
         net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(i);
         NBTTagCompound tag = nmsItem.hasTag() ? nmsItem.getTag() : new NBTTagCompound();

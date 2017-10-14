@@ -43,7 +43,8 @@ public class ProjectileHitListener implements Listener {
                                         u.ignoreDamageCheck = true;
                                         u.ignoreFistCheck = true;
                                         //livingEntity.damage(data.getDamage(),p);
-                                        livingEntity.damage(DamageHandler.calculatePlayerToMobDamage(u,c,data.getSkill()),p);
+                                        //livingEntity.damage(DamageHandler.calculatePlayerToMobDamage(u,c,data.getSkill()),p);
+                                        c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,data.getSkill()),p);
                                         DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                         c.getData().playSound(livingEntity.getLocation());
 

@@ -13,6 +13,7 @@ import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
+import net.wrathofdungeons.dungeonrpg.event.CustomDamageEvent;
 import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
 import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
 import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
@@ -544,6 +545,24 @@ public class DungeonRPG extends JavaPlugin {
         return ChatColor.values()[Util.randomInteger(0,ChatColor.values().length-1)];
     }
 
+    public static void callPlayerToMobDamage(Player p, CustomEntity mob, boolean isProjectile){
+        CustomDamageEvent event = new CustomDamageEvent(p,mob,true,isProjectile);
+        Bukkit.getPluginManager().callEvent(event);
+    }
+
+    public static void callMobToPlayerDamage(CustomEntity mob, Player p, boolean isProjectile){
+        CustomDamageEvent event = new CustomDamageEvent(p,mob,false,isProjectile);
+        Bukkit.getPluginManager().callEvent(event);
+    }
+
+    public static void callMobToMobDamage(CustomEntity mob, CustomEntity mob2, boolean isProjectile){
+        // TODO: Handle mob to mob damage
+    }
+
+    public static void callPlayerToPlayerDamage(Player p, Player p2, boolean isProjectile){
+        // TODO: Handle duel damage
+    }
+
     private void registerListeners(){
         Bukkit.getPluginManager().registerEvents(new AnimationListener(),this);
         Bukkit.getPluginManager().registerEvents(new AwakeningMenu(),this);
@@ -555,6 +574,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CombustListener(),this);
         Bukkit.getPluginManager().registerEvents(new CraftListener(),this);
         Bukkit.getPluginManager().registerEvents(new CreatureListener(),this);
+        Bukkit.getPluginManager().registerEvents(new CustomDamageListener(),this);
         Bukkit.getPluginManager().registerEvents(new DamageListener(),this);
         Bukkit.getPluginManager().registerEvents(new DeathListener(),this);
         Bukkit.getPluginManager().registerEvents(new ExplodeListener(),this);

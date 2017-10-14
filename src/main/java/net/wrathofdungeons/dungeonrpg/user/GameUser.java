@@ -33,6 +33,8 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -474,6 +476,48 @@ public class GameUser extends User {
                     CharacterSelectionMenu.CREATING.remove(p);
                 }
             });
+        }
+    }
+
+    public void giveNormalKnockback(Location from) {
+        giveNormalKnockback(from, false);
+    }
+
+    public void giveNormalKnockback(Location from, boolean closerLocation){
+        if(closerLocation){
+            double distance = from.distance(p.getLocation());
+            if(distance <= 1){
+                giveNormalKnockback(from,false);
+                return;
+            }
+
+            BlockIterator blocksToAdd = new BlockIterator(from, 0D, ((Double)distance).intValue());
+            Location lastLoc = null;
+            while (blocksToAdd.hasNext()) {
+                lastLoc = blocksToAdd.next().getLocation();
+            }
+
+            Location f = from;
+            Location fl = from;
+            Location finalLoc = from;
+
+            int c = (int) Math.ceil(finalLoc.distance(lastLoc) / 2F) - 1;
+            if (c > 0) {
+                Vector v = lastLoc.toVector().subtract(finalLoc.toVector()).normalize().multiply(2F);
+                Location l = finalLoc.clone();
+                for (int i = 0; i < c; i++) {
+                    l.add(v);
+                    f = fl;
+                    fl = finalLoc;
+                    finalLoc = l;
+                }
+            }
+
+            finalLoc = f;
+
+            giveNormalKnockback(finalLoc,false);
+        } else {
+            p.setVelocity(p.getLocation().toVector().subtract(from.toVector()).setY(-1).multiply(0.5));
         }
     }
 

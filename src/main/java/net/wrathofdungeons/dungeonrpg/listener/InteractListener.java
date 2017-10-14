@@ -11,6 +11,7 @@ import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.PlayerUtilities;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.damage.DamageManager;
 import net.wrathofdungeons.dungeonrpg.damage.DamageSource;
 import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
@@ -407,7 +408,7 @@ public class InteractListener implements Listener {
 
                 if(p.getItemInHand() != null && p.getItemInHand().getType() != null && p.getItemInHand().getItemMeta() != null && CustomItem.fromItemStack(p.getItemInHand()) != null) {
                     final CustomItem customItem = CustomItem.fromItemStack(p.getItemInHand());
-                    long itemCooldown = 20; // TODO: Add attack speed
+                    long itemCooldown = customItem.getCooldownInTicks(); // TODO: Add attack speed
 
                     if (u.getCurrentCharacter() == null) return;
                     if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
@@ -457,7 +458,9 @@ public class InteractListener implements Listener {
                                             for (LivingEntity target : DungeonRPG.getTargets(p, range, 2.0)) {
                                                 CustomEntity entity = CustomEntity.fromEntity(target);
 
-                                                if(entity != null) target.damage(5,p);
+                                                //if(entity != null) target.damage(5,p);
+                                                //if(entity != null) entity.damage(DamageHandler.calculatePlayerToMobDamage(u,entity,null),p);
+                                                if(entity != null) DungeonRPG.callPlayerToMobDamage(p,entity,true);
                                             }
 
                                             new BukkitRunnable(){
@@ -481,6 +484,29 @@ public class InteractListener implements Listener {
                                 }
                             } else {
                                 p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
+                            }
+                        } else if(customItem.getData().getCategory() == ItemCategory.WEAPON_AXE || customItem.getData().getCategory() == ItemCategory.WEAPON_SHEARS){
+                            e.setCancelled(true);
+                            e.setUseInteractedBlock(Event.Result.DENY);
+                            e.setUseItemInHand(Event.Result.DENY);
+
+                            if(u.isInAttackCooldown()) return;
+
+                            u.setAttackCooldown(true);
+                            new BukkitRunnable(){
+                                @Override
+                                public void run() {
+                                    u.setAttackCooldown(false);
+                                }
+                            }.runTaskLater(DungeonRPG.getInstance(),customItem.getCooldownInTicks());
+
+                            if (u.currentCombo.equals("")) {
+                                for (LivingEntity target : DungeonRPG.getTargets(p, 4, 2.0)) {
+                                    CustomEntity entity = CustomEntity.fromEntity(target);
+
+                                    //if(entity != null) target.damage(5,p);
+                                    if(entity != null) DungeonRPG.callPlayerToMobDamage(p,entity,false);
+                                }
                             }
                         }
                     }
@@ -646,6 +672,29 @@ public class InteractListener implements Listener {
                                 u.updateClickComboBar();
                                 return;
                             }
+                        }
+                    }
+                } else {
+                    if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                        if(!u.isInAttackCooldown()){
+                            long itemCooldown = 15;
+
+                            for (LivingEntity target : DungeonRPG.getTargets(p, 4, 2.0)) {
+                                CustomEntity entity = CustomEntity.fromEntity(target);
+
+                                if(entity != null){
+                                    DungeonRPG.callPlayerToMobDamage(p,entity,false);
+                                    break; // Only attack first entity when not using a weapon
+                                }
+                            }
+
+                            u.setAttackCooldown(true);
+
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(DungeonRPG.getInstance(), new Runnable() {
+                                public void run() {
+                                    u.setAttackCooldown(false);
+                                }
+                            }, itemCooldown);
                         }
                     }
                 }

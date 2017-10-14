@@ -21,21 +21,23 @@ import net.citizensnpcs.npc.entity.EntityHumanNPC;
 import net.citizensnpcs.npc.skin.Skin;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_8_R3.World;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.items.*;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonSheep;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
+import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
@@ -70,6 +72,9 @@ public class CustomEntity {
     private LivingEntity bukkitEntity;
     private NPC npc;
 
+    private double hp;
+    private double maxHP;
+
     private BukkitTask regenTask;
 
     private Hologram hologram;
@@ -88,12 +93,190 @@ public class CustomEntity {
     public boolean playerMobSpeed = true;
 
     private WanderGoal wanderGoal;
+    private Player lastDamager;
 
     private ArrayList<BukkitTask> tasks;
 
     public CustomEntity(MobData data){
         this.mobDataID = data.getId();
         this.damagers = new ArrayList<Entity>();
+
+        this.maxHP = data.getHealth();
+        this.hp = maxHP;
+    }
+
+    public double getHP() {
+        return hp;
+    }
+
+    public double getMaxHP() {
+        return maxHP;
+    }
+
+    public void setHP(double hp){
+        this.hp = maxHP;
+        checkHP();
+    }
+
+    public void addHP(double hp){
+        this.hp += hp;
+        checkHP();
+    }
+
+    public void reduceHP(double hp){
+        this.hp -= hp;
+        checkHP();
+    }
+
+    public void playDamageAnimation(){
+        if(bukkitEntity != null){
+            bukkitEntity.damage(0);
+            DungeonRPG.showBloodEffect(bukkitEntity.getLocation());
+            bukkitEntity.getWorld().playSound(bukkitEntity.getEyeLocation(), Sound.HURT_FLESH,1f,1f);
+            getData().playSound(bukkitEntity.getLocation());
+        }
+    }
+
+    private void checkHP(){
+        if(this.hp > this.maxHP) this.hp = this.maxHP;
+
+        if(this.hp <= 0) die();
+
+        updateHealthBar();
+    }
+
+    public void die(){
+        bukkitEntity.damage(bukkitEntity.getHealth());
+
+        getData().playDeathSound(bukkitEntity.getLocation());
+        MobData mob = getData();
+
+        if(lastDamager != null && lastDamager.isOnline()){
+            if(GameUser.isLoaded(lastDamager)){
+                Player p = lastDamager;
+                GameUser u = GameUser.getUser(lastDamager);
+
+                if(u.getCurrentCharacter() != null){
+                    // DROP GOLD
+                    if(mob.getMobType() == MobType.AGGRO) if(Util.getChanceBoolean(50+u.getCurrentCharacter().getTotalValue(AwakeningType.FORTUNE),190)) WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(7),p);
+
+                    //TODO: Add pre-defined dropable items
+
+                    // DROP WEAPONS [automated]
+                    if(mob.getMobType() == MobType.AGGRO){
+                        int limit = 2;
+
+                        if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 55)){
+                            int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
+
+                            for(ItemData data : ItemData.STORAGE){
+                                if(data.getRarity().getSources() != null){
+                                    for(ItemSource s : data.getRarity().getSources()){
+                                        if(s.mobClass != null){
+                                            if(s.mobClass == mob.getMobClass()){
+                                                //if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK || data.getCategory() == ItemCategory.WEAPON_SHEARS){
+                                                if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK){
+                                                    if(data.getRarity() != ItemRarity.NONE && data.getRarity() != ItemRarity.SPECIAL){
+                                                        for(int i : usableLvls){
+                                                            if(i == data.getNeededLevel()){
+                                                                if(mob.getMobClass().getChance(data.getRarity()) != null){
+                                                                    if(Util.getChanceBoolean(mob.getMobClass().getChance(data.getRarity()).min, mob.getMobClass().getChance(data.getRarity()).max)){
+                                                                        if(limit != 0){
+                                                                            WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(data),p);
+                                                                            limit--;
+                                                                        }
+                                                                    }
+
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // DROP FOOD
+                    if(mob.getMobType() == MobType.AGGRO){
+                        int limit = 2;
+
+                        if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 125)){
+                            int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
+
+                            for(ItemData data : ItemData.STORAGE){
+                                if(data.getCategory() == ItemCategory.FOOD){
+                                    for(int i : usableLvls){
+                                        if(i == data.getNeededLevel()){
+                                            if(limit != 0){
+                                                WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(data),p);
+                                                limit--;
+                                            }
+
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // DROP MATERIAL
+                    ItemData materialData = ItemData.getData(mob.getMaterialDrop());
+                    if(materialData != null){
+                        if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 95)){
+                            WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(materialData),p);
+                        }
+                    }
+
+                    // GIVE EXP
+                    double xp = Util.randomDouble(mob.getXp()/2, mob.getXp());
+
+                    if(Util.getIntegerDifference(u.getCurrentCharacter().getLevel(), mob.getLevel()) >= DungeonRPG.PLAYER_MOB_LEVEL_DIFFERENCE){
+                        xp /= Util.getIntegerDifference(u.getCurrentCharacter().getLevel(), mob.getLevel());
+                    }
+
+                    xp = xp+xp*(u.getCurrentCharacter().getTotalValue(AwakeningType.XP_BONUS)*0.01);
+
+                    if(xp > 0){
+                        xp = u.giveEXP(xp);
+                    }
+
+                    if(mob.getMobType() == MobType.AGGRO) p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
+
+                    final Hologram holo = HologramsAPI.createHologram(DungeonRPG.getInstance(), bukkitEntity.getLocation().clone().add(0,2,0));
+                    holo.appendTextLine(ChatColor.GOLD + "+" + ((Double)xp).intValue() + " EXP");
+
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            holo.delete();
+                        }
+                    }.runTaskLater(DungeonRPG.getInstance(),10);
+                }
+            }
+        }
+
+        remove();
+    }
+
+    public void damage(double hp){
+        damaged = true;
+
+        playDamageAnimation();
+        reduceHP(hp);
+    }
+
+    public void damage(double hp, Player source){
+        damaged = true;
+        if(!damagers.contains(source)) damagers.add(source);
+        lastDamager = source;
+        playDamageAnimation();
+        reduceHP(hp);
     }
 
     public Region getOriginRegion(){
@@ -146,12 +329,8 @@ public class CustomEntity {
                 @Override
                 public void run() {
                     if(bukkitEntity != null && bukkitEntity.isValid() && !bukkitEntity.isDead()){
-                        double h = bukkitEntity.getHealth();
+                        addHP(getData().getRegen());
 
-                        h += getData().getRegen();
-                        if(h > bukkitEntity.getMaxHealth()) h = bukkitEntity.getMaxHealth();
-
-                        bukkitEntity.setHealth(h);
                         if(damaged) updateHealthBar();
                     }
                 }
@@ -691,7 +870,7 @@ public class CustomEntity {
     }
 
     private String healthBarText(){
-        int div = ((Double)((bukkitEntity.getHealth()/bukkitEntity.getMaxHealth())*10)).intValue();
+        int div = ((Double)((getHP()/getMaxHP())*10)).intValue();
 
         String text = "";
         if(div == 10) text = ChatColor.DARK_RED + "[" + ChatColor.RED + "||||||||||" + ChatColor.DARK_RED + "]";
