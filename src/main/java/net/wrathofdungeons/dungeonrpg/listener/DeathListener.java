@@ -117,6 +117,14 @@ public class DeathListener implements Listener {
                                     }
                                 }
 
+                                // DROP MATERIAL
+                                ItemData materialData = ItemData.getData(mob.getMaterialDrop());
+                                if(materialData != null){
+                                    if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 80)){
+                                        WorldUtilities.dropItem(ent.getLocation(),new CustomItem(materialData),p);
+                                    }
+                                }
+
                                 // GIVE EXP
                                 double xp = Util.randomDouble(mob.getXp()/2, mob.getXp());
 

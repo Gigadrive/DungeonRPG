@@ -72,6 +72,7 @@ public class MobData {
     private ItemStack leggings;
     private ItemStack boots;
     private ItemStack weapon;
+    private int materialDrop;
     private boolean adult;
     private MobClass mobClass;
     private double speed;
@@ -113,6 +114,7 @@ public class MobData {
                 this.boots = Util.parseItemStack(rs.getString("boots"));
                 if(boots != null) boots = ItemUtil.setUnbreakable(boots,true);
                 this.weapon = Util.parseItemStack(rs.getString("weapon"));
+                this.materialDrop = rs.getInt("drop.material");
                 this.adult = rs.getBoolean("adult");
                 this.mobClass = MobClass.valueOf(rs.getString("class"));
                 this.soundData = new MobSoundData();
@@ -252,6 +254,10 @@ public class MobData {
 
     public ItemStack getWeapon() {
         return weapon;
+    }
+
+    public int getMaterialDrop() {
+        return materialDrop;
     }
 
     public MobClass getMobClass() {

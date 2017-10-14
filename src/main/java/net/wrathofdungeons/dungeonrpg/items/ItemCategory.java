@@ -8,5 +8,6 @@ public enum ItemCategory {
     MISC,
     ARMOR,
     TELEPORT_SCROLL,
-    FOOD
+    FOOD,
+    MATERIAL
 }

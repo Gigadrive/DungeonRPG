@@ -329,6 +329,10 @@ public class CustomItem {
                     }
                 }
 
+                if(getData().getCategory() == ItemCategory.MATERIAL){
+                    iL.add(ChatColor.DARK_AQUA + "Material");
+                }
+
                 if(canHoldAwakenings()){
                     if(hasAwakenings()){
                         for(Awakening a : getAwakenings()){
