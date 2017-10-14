@@ -77,8 +77,9 @@ public class DamageListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e){
-
+        Bukkit.broadcastMessage(String.valueOf(1));
         if(e.getEntity() instanceof LivingEntity){
+            Bukkit.broadcastMessage(String.valueOf(2));
             LivingEntity ent = (LivingEntity)e.getEntity();
             ent.setNoDamageTicks(0);
             CustomEntity c = CustomEntity.fromEntity(ent);
@@ -256,6 +257,7 @@ public class DamageListener implements Listener {
                     }
                 }
             } else {
+                Bukkit.broadcastMessage(String.valueOf(3));
                 if(e.getDamager() instanceof Projectile) {
                     if (((Projectile) e.getDamager()).getShooter() == e.getEntity()) {
                         e.setCancelled(true);
@@ -295,9 +297,11 @@ public class DamageListener implements Listener {
                 }
 
                 if(e.getEntity() instanceof Player && !(e.getDamager() instanceof Player)){
+                    Bukkit.broadcastMessage(String.valueOf(4));
                     Player p = (Player)e.getEntity();
 
                     if(GameUser.isLoaded(p)){
+                        Bukkit.broadcastMessage(String.valueOf(5));
                         GameUser u = GameUser.getUser(p);
 
                         if(u.getCurrentCharacter() == null){
@@ -305,12 +309,18 @@ public class DamageListener implements Listener {
                             return;
                         }
 
+                        Bukkit.broadcastMessage(String.valueOf(6));
+
                         if(!e.isCancelled()){
+                            Bukkit.broadcastMessage(String.valueOf(7));
                             if(e.getDamager() instanceof LivingEntity){
+                                Bukkit.broadcastMessage(String.valueOf(8));
                                 if(u.__associateDamageWithSystem){
+                                    Bukkit.broadcastMessage(String.valueOf(9));
                                     c = CustomEntity.fromEntity((LivingEntity)e.getDamager());
 
                                     if(c != null){
+                                        Bukkit.broadcastMessage(String.valueOf(10));
                                         e.setDamage(0);
                                         double damage = DamageHandler.calculateMobToPlayerDamage(u,c);
                                         int thorns = u.getCurrentCharacter().getTotalValue(AwakeningType.THORNS);

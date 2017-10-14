@@ -26,6 +26,7 @@ import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
+import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonSheep;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
@@ -402,6 +403,13 @@ public class CustomEntity {
                         mcWorld.addEntity(dungeonZombie, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
                         bukkitEntity = (Zombie)dungeonZombie.getBukkitEntity();
+                    } else if(getData().getEntityType() == EntityType.SHEEP){
+                        World mcWorld = ((CraftWorld)loc.getWorld()).getHandle();
+                        DungeonSheep dungeonSheep = new DungeonSheep(mcWorld);
+                        dungeonSheep.setPosition(loc.getX(),loc.getY(),loc.getZ());
+                        mcWorld.addEntity(dungeonSheep, CreatureSpawnEvent.SpawnReason.CUSTOM);
+
+                        bukkitEntity = (Sheep)dungeonSheep.getBukkitEntity();
                     } else {
                         bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
                     }

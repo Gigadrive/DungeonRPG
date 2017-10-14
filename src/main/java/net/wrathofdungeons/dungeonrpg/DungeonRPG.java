@@ -6,6 +6,7 @@ import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.goals.WanderGoal;
 import net.citizensnpcs.api.npc.NPC;
+import net.minecraft.server.v1_8_R3.EntitySheep;
 import net.minecraft.server.v1_8_R3.EntityZombie;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.user.User;
@@ -24,6 +25,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
+import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonSheep;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
@@ -465,6 +467,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getServer().clearRecipes();
         TargetHandler.registerEntity("Zombie",54, EntityZombie.class, ZombieArcher.class);
         TargetHandler.registerEntity("Zombie",54, EntityZombie.class, DungeonZombie.class);
+        TargetHandler.registerEntity("Sheep",91, EntitySheep.class, DungeonSheep.class);
     }
 
     public void onDisable(){
