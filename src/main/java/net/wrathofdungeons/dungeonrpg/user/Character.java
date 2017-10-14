@@ -65,7 +65,7 @@ public class Character {
                 this.creationTime = rs.getTimestamp("time");
                 this.lastLogin = rs.getTimestamp("lastLogin");
 
-                this.bank = Bukkit.createInventory(null,9,"Your Bank");
+                this.bank = Bukkit.createInventory(null,getBankSlots(),"Your Bank");
 
                 if(lastLogin == null) storedLocation = DungeonRPG.getStartLocation();
             }
@@ -218,6 +218,28 @@ public class Character {
 
     public Inventory getBank() {
         return bank;
+    }
+
+    public int getBankRows(){
+        if(getLevel() <= 9){
+            return 1;
+        } else if(getLevel() >= 10 && getLevel() <= 19){
+            return 2;
+        } else if(getLevel() >= 20 && getLevel() <= 29){
+            return 3;
+        } else if(getLevel() >= 30 && getLevel() <= 39){
+            return 4;
+        } else if(getLevel() >= 40 && getLevel() <= 49){
+            return 5;
+        } else if(getLevel() >= 50){
+            return 6;
+        }
+
+        return 1;
+    }
+
+    public int getBankSlots(){
+        return getBankRows()*9;
     }
 
     public CustomItem[] getEquipment(){
