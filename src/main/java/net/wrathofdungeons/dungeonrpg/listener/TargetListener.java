@@ -63,6 +63,8 @@ public class TargetListener implements Listener {
                     } else {
                         if((c.getData().getMobType() == MobType.SUPPORTING || c.getData().getMobType() == MobType.PASSIVE) && target instanceof Player){
                             e.setCancelled(true);
+                        } else if(m == MobType.NEUTRAL && !c.getDamagers().contains(target)){
+                            e.setCancelled(true);
                         }
                     }
                 } else {
@@ -73,6 +75,8 @@ public class TargetListener implements Listener {
                     } else if(m == MobType.SUPPORTING && mt == MobType.SUPPORTING){
                         e.setCancelled(true);
                     } else if(mt == MobType.PASSIVE){
+                        e.setCancelled(true);
+                    } else if(m == MobType.NEUTRAL && !c.getDamagers().contains(target)){
                         e.setCancelled(true);
                     }
                 }

@@ -41,6 +41,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -73,6 +74,8 @@ public class CustomEntity {
     private Hologram hologram;
     private TextLine healthLine;
 
+    private ArrayList<Entity> damagers;
+
     private static final UUID maxHealthUID = UUID.fromString("f8b0a945-2d6a-4bdb-9a6f-59c285bf1e5d");
     private static final UUID followRangeUID = UUID.fromString("1737400d-3c18-41ba-8314-49a158481e1e");
     private static final UUID knockbackResistanceUID = UUID.fromString("8742c557-fcd5-4079-a462-b58db99b0f2c");
@@ -89,6 +92,7 @@ public class CustomEntity {
 
     public CustomEntity(MobData data){
         this.mobDataID = data.getId();
+        this.damagers = new ArrayList<Entity>();
     }
 
     public Region getOriginRegion(){
@@ -173,6 +177,10 @@ public class CustomEntity {
         }
 
         return null;
+    }
+
+    public ArrayList<Entity> getDamagers() {
+        return damagers;
     }
 
     public void giveNormalKnockback(Location from) {
