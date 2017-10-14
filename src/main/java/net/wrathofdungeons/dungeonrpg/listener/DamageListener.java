@@ -244,7 +244,16 @@ public class DamageListener implements Listener {
                 if(adjustKnockback) c.giveNormalKnockback(e.getDamager().getLocation(),closerKnockbackLocation);
 
                 if(!e.isCancelled()){
-                    c.getDamagers().add(e.getDamager());
+                    if(e.getDamager() instanceof Projectile){
+                        LivingEntity shooter = (LivingEntity)((Projectile)e.getDamager()).getShooter();
+
+                        if(c.getTarget() == null) c.setTarget(shooter);
+
+                        c.getDamagers().add(shooter);
+                    } else if(e.getDamager() instanceof LivingEntity) {
+                        if(c.getTarget() == null) c.setTarget((LivingEntity)e.getDamager());
+                        c.getDamagers().add(e.getDamager());
+                    }
                 }
             } else {
                 if(e.getDamager() instanceof Projectile) {

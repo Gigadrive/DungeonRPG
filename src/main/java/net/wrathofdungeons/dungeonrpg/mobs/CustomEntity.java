@@ -650,6 +650,12 @@ public class CustomEntity {
         }
     }
 
+    public void setTarget(LivingEntity livingEntity){
+        if(bukkitEntity != null && bukkitEntity instanceof Creature){
+            ((Creature)bukkitEntity).setTarget(livingEntity);
+        }
+    }
+
     public boolean hasTarget(){
         return getTarget() != null;
     }
