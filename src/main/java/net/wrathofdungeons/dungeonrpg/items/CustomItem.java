@@ -237,6 +237,8 @@ public class CustomItem {
             }
 
             // TODO: Add awakenings etc. to calculation
+        } else if(getData().getCategory() == ItemCategory.MATERIAL){
+            sellprice = 2;
         }
 
         sellprice *= amount;
