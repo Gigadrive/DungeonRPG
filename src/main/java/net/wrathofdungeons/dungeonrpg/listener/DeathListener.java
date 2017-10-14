@@ -58,7 +58,7 @@ public class DeathListener implements Listener {
                                 if(mob.getMobType() == MobType.AGGRO){
                                     int limit = 2;
 
-                                    if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 105)){
+                                    if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 55)){
                                         int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
 
                                         for(ItemData data : ItemData.STORAGE){
