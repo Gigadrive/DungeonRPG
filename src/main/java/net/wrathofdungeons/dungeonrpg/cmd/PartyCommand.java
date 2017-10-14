@@ -198,7 +198,7 @@ public class PartyCommand extends Command {
                 if(party != null){
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < args.length; i++) {
-                        sb.append(" ").append(args[i]);
+                        sb.append(args[i]).append(" ");
                     }
                     String message = sb.toString().trim();
 
@@ -206,7 +206,7 @@ public class PartyCommand extends Command {
                         p2.sendMessage(ChatColor.DARK_GREEN + "[" + p.getName() + "] " + ChatColor.GREEN + message);
                     }
                 } else {
-
+                    p.sendMessage(ChatColor.RED + "You are not in a party.");
                 }
             }
         }
