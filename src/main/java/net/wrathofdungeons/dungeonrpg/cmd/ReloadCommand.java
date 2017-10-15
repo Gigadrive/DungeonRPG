@@ -80,7 +80,7 @@ public class ReloadCommand extends Command {
                     DungeonAPI.async(() -> {
                         p.sendMessage(ChatColor.GREEN + "Reloading NPCs..");
 
-                        p.sendMessage(ChatColor.GREEN + "Loading region data from database..");
+                        p.sendMessage(ChatColor.GREEN + "Loading NPC data from database..");
 
                         CustomNPC.init();
 
