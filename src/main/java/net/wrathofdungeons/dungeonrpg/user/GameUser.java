@@ -938,6 +938,7 @@ public class GameUser extends User {
 
             if(getCurrentCharacter().getLevel() >= DungeonRPG.getMaxLevel()) getCurrentCharacter().setExp(0);
             updateLevelBar();
+            getCurrentCharacter().updateBankSize();
         }
     }
 

@@ -242,6 +242,15 @@ public class Character {
         return getBankRows()*9;
     }
 
+    public void updateBankSize(){
+        if(getBankSlots() > bank.getSize()){
+            Inventory newBank = Bukkit.createInventory(null,getBankSlots(),"Your Bank");
+            newBank.setContents(bank.getContents());
+
+            bank = newBank;
+        }
+    }
+
     public CustomItem[] getEquipment(){
         ArrayList<CustomItem> a = new ArrayList<CustomItem>();
 
