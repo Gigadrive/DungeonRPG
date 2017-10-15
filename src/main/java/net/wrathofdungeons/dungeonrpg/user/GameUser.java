@@ -641,7 +641,8 @@ public class GameUser extends User {
                 if(b.getTeam("npcNameReset") == null){
                     Team n = b.registerNewTeam("npcNameReset");
                     n.setNameTagVisibility(NameTagVisibility.NEVER);
-                    n.addEntry(ChatColor.GREEN.toString());
+
+                    for(ChatColor color : ChatColor.values()) n.addEntry(color.toString());
                 }
             } else {
 
