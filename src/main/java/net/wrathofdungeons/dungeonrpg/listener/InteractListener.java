@@ -16,6 +16,7 @@ import net.wrathofdungeons.dungeonrpg.damage.DamageManager;
 import net.wrathofdungeons.dungeonrpg.damage.DamageSource;
 import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
 import net.wrathofdungeons.dungeonrpg.inv.GameMenu;
+import net.wrathofdungeons.dungeonrpg.inv.InteractionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
@@ -744,6 +745,24 @@ public class InteractListener implements Listener {
             if(c != null){
                 CustomNPCInteractEvent event = new CustomNPCInteractEvent(p,c);
                 Bukkit.getPluginManager().callEvent(event);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onRightClick(PlayerInteractEntityEvent e){
+        Player p = e.getPlayer();
+        GameUser u = GameUser.getUser(p);
+
+        if(e.getRightClicked() instanceof Player){
+            Player p2 = (Player)e.getRightClicked();
+
+            if(GameUser.isLoaded(p2)){
+                GameUser u2 = GameUser.getUser(p2);
+
+                if(u.getCurrentCharacter() != null && u2.getCurrentCharacter() != null){
+                    if(p.isSneaking()) InteractionMenu.open(p,p2);
+                }
             }
         }
     }
