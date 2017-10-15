@@ -9,6 +9,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R3.EntitySheep;
 import net.minecraft.server.v1_8_R3.EntityZombie;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
+import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
@@ -62,6 +63,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
 import org.mineskin.MineskinClient;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.*;
 
 public class DungeonRPG extends JavaPlugin {
@@ -78,9 +81,28 @@ public class DungeonRPG extends JavaPlugin {
     public static ArrayList<NPC> IGNORE_SPAWN_NPC = new ArrayList<NPC>();
     public static World MAIN_WORLD = null;
     public static final int QUEST_NPC_TEXT_LINE_DELAY = 4;
+    public static final ArrayList<String> BROADCAST_LINES = new ArrayList<String>();
+    private int broadcastCurrent = 0;
 
     public static int SETUP_REGION = 0;
     private static MineskinClient mineskinClient;
+
+    public static void reloadBroadcastLines(){
+        BROADCAST_LINES.clear();
+
+        try {
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `broadcastMessages` ORDER BY RAND()");
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                BROADCAST_LINES.add(rs.getString("text"));
+            }
+
+            MySQLManager.getInstance().closeResources(rs,ps);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     public void onEnable(){
         mineskinClient = new MineskinClient();
@@ -96,6 +118,7 @@ public class DungeonRPG extends JavaPlugin {
         Region.init();
         CustomNPC.init();
         LootChest.init();
+        reloadBroadcastLines();
 
         SkillStorage s = new SkillStorage();
 
@@ -464,6 +487,28 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this,10,10);
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                if(BROADCAST_LINES.size() == 0) return;
+                if(broadcastCurrent >= BROADCAST_LINES.size()) broadcastCurrent = 0;
+
+                String l = BROADCAST_LINES.get(broadcastCurrent);
+
+                for(Player p : Bukkit.getOnlinePlayers()){
+                    if(GameUser.isLoaded(p)){
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null){
+                            p.sendMessage(ChatColor.DARK_RED + "[INFO] " + ChatColor.WHITE + l);
+                        }
+                    }
+                }
+
+                broadcastCurrent++;
+            }
+        }.runTaskTimer(DungeonRPG.getInstance(),6*60*20,6*60*20);
 
         Bukkit.getServer().clearRecipes();
         TargetHandler.registerEntity("Zombie",54, EntityZombie.class, ZombieArcher.class);

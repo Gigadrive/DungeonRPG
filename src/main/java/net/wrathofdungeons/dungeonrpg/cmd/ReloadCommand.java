@@ -89,11 +89,21 @@ public class ReloadCommand extends Command {
                 } else {
                     p.sendMessage(ChatColor.RED + "There is unsaved data left over. Use /savenpcs to save your unsaved data before reloading.");
                 }
+            } else if(mode.equalsIgnoreCase("broadcast")){
+                DungeonAPI.async(() -> {
+                    p.sendMessage(ChatColor.GREEN + "Reloading broadcast lines..");
+
+                    p.sendMessage(ChatColor.GREEN + "Loading broadcast lines from database..");
+
+                    DungeonRPG.reloadBroadcastLines();
+
+                    p.sendMessage(ChatColor.GREEN + "Done!");
+                });
             } else {
-                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs>");
+                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast>");
             }
         } else {
-            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs>");
+            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast>");
         }
     }
 }
