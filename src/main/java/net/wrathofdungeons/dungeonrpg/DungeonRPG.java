@@ -494,7 +494,7 @@ public class DungeonRPG extends JavaPlugin {
                 if(BROADCAST_LINES.size() == 0) return;
                 if(broadcastCurrent >= BROADCAST_LINES.size()) broadcastCurrent = 0;
 
-                String l = BROADCAST_LINES.get(broadcastCurrent);
+                String l = ChatColor.translateAlternateColorCodes('&',BROADCAST_LINES.get(broadcastCurrent));
 
                 for(Player p : Bukkit.getOnlinePlayers()){
                     if(GameUser.isLoaded(p)){
