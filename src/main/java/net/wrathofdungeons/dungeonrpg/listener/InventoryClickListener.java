@@ -141,19 +141,23 @@ public class InventoryClickListener implements Listener {
                                     int currentOffers = t.isPlayer1(p) ? t.getOffers1().size() : t.getOffers2().size();
 
                                     if(currentOffers < Trade.MAX_OFFERS){
-                                        if(t.isPlayer1(p)){
-                                            p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
-                                            t.getOffers1().add(item.build(p));
-                                            t.setPlayer1Ready(false);
-                                            t.setPlayer2Ready(false);
-                                        } else if(t.isPlayer2(p)){
-                                            p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
-                                            t.getOffers2().add(item.build(p));
-                                            t.setPlayer1Ready(false);
-                                            t.setPlayer2Ready(false);
-                                        }
+                                        if(!item.isUntradeable()){
+                                            if(t.isPlayer1(p)){
+                                                p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
+                                                t.getOffers1().add(item.build(p));
+                                                t.setPlayer1Ready(false);
+                                                t.setPlayer2Ready(false);
+                                            } else if(t.isPlayer2(p)){
+                                                p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
+                                                t.getOffers2().add(item.build(p));
+                                                t.setPlayer1Ready(false);
+                                                t.setPlayer2Ready(false);
+                                            }
 
-                                        t.updateInventories();
+                                            t.updateInventories();
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "That item is untradeable.");
+                                        }
                                     } else {
                                         p.sendMessage(ChatColor.RED + "You can only trade " + Trade.MAX_OFFERS + " items at once.");
                                     }
