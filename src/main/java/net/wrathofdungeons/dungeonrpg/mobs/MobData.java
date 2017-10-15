@@ -13,10 +13,8 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkillStorage;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.entity.EntityType;
+import org.bukkit.*;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.mineskin.MineskinClient;
@@ -78,7 +76,9 @@ public class MobData {
     private double speed;
     private ArrayList<MobSkill> skills;
     private MobSoundData soundData;
+
     private AISettings aiSettings;
+    private EntitySettings entitySettings;
 
     private String skinName;
     private Skin mineSkin;
@@ -150,6 +150,24 @@ public class MobData {
                 this.aiSettings.setRandomStroll(rs.getBoolean("ai.randomStroll"));
                 this.aiSettings.setLookAtPlayer(rs.getBoolean("ai.lookAtPlayer"));
                 this.aiSettings.setLookAround(rs.getBoolean("ai.lookAround"));
+
+                this.entitySettings = new EntitySettings();
+                this.entitySettings.setZombieVillager(rs.getBoolean("settings.zombieVillager"));
+                this.entitySettings.setVillagerProfession(Villager.Profession.valueOf(rs.getString("settings.villagerProfession")));
+                this.entitySettings.setSheepColor(DyeColor.valueOf(rs.getString("settings.sheepColor")));
+                this.entitySettings.setCatType(Ocelot.Type.valueOf(rs.getString("settings.catType")));
+                this.entitySettings.setCreeperPowered(rs.getBoolean("settings.creeperPowered"));
+                this.entitySettings.setSkeletonType(Skeleton.SkeletonType.valueOf(rs.getString("settings.skeletonType")));
+                this.entitySettings.setSlimeSize(rs.getInt("settings.slimeSize"));
+                this.entitySettings.setEndermanBlock(Material.getMaterial(rs.getInt("settings.endermanBlock")));
+                this.entitySettings.setElderGuardian(rs.getBoolean("settings.elderGuardian"));
+                this.entitySettings.setHorseColor(Horse.Color.valueOf(rs.getString("settings.horseColor")));
+                this.entitySettings.setHasHorseChest(rs.getBoolean("settings.horseChest"));
+                this.entitySettings.setHorseStyle(Horse.Style.valueOf(rs.getString("settings.horseStyle")));
+                this.entitySettings.setHorseVariant(Horse.Variant.valueOf(rs.getString("settings.horseVariant")));
+                this.entitySettings.setHasHorseSaddle(rs.getBoolean("settings.horseSaddle"));
+                this.entitySettings.setHorseArmor(HorseArmor.valueOf(rs.getString("settings.horseArmor")));
+                this.entitySettings.setRabbitType(Rabbit.Type.valueOf(rs.getString("settings.rabbitType")));
 
                 updateSkinName();
 
@@ -290,5 +308,9 @@ public class MobData {
 
     public AISettings getAiSettings() {
         return aiSettings;
+    }
+
+    public EntitySettings getEntitySettings() {
+        return entitySettings;
     }
 }

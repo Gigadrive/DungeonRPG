@@ -47,6 +47,7 @@ import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BlockIterator;
@@ -635,7 +636,7 @@ public class CustomEntity {
             bukkitEntity.getEquipment().setHelmet(new ItemStack(Material.APPLE));
 
             Zombie z = (Zombie)bukkitEntity;
-            z.setVillager(false);
+            z.setVillager(getData().getEntitySettings().isZombieVillager());
 
             if(getData().isAdult()){
                 z.setBaby(false);
@@ -644,6 +645,8 @@ public class CustomEntity {
             }
         } else if(bukkitEntity instanceof Villager){
             Villager v = (Villager)bukkitEntity;
+
+            v.setProfession(getData().getEntitySettings().getVillagerProfession());
 
             if(getData().isAdult()){
                 v.setAdult();
@@ -669,6 +672,8 @@ public class CustomEntity {
         } else if(bukkitEntity instanceof Sheep){
             Sheep s = (Sheep)bukkitEntity;
 
+            s.setColor(getData().getEntitySettings().getSheepColor());
+
             if(getData().isAdult()){
                 s.setAdult();
             } else {
@@ -685,6 +690,8 @@ public class CustomEntity {
         } else if(bukkitEntity instanceof Ocelot){
             Ocelot o = (Ocelot)bukkitEntity;
 
+            o.setCatType(getData().getEntitySettings().getCatType());
+
             if(getData().isAdult()){
                 o.setAdult();
             } else {
@@ -692,29 +699,42 @@ public class CustomEntity {
             }
         } else if(bukkitEntity instanceof Creeper){
             Creeper c = (Creeper)bukkitEntity;
+
+            c.setPowered(getData().getEntitySettings().isCreeperPowered());
         } else if(bukkitEntity instanceof Skeleton){
             Skeleton s = (Skeleton)bukkitEntity;
-            bukkitEntity.getEquipment().setHelmet(new ItemStack(Material.APPLE));
+
+            s.setSkeletonType(getData().getEntitySettings().getSkeletonType());
         } else if(bukkitEntity instanceof Spider){
             Spider s = (Spider)bukkitEntity;
         } else if(bukkitEntity instanceof Slime){
             Slime s = (Slime)bukkitEntity;
+
+            s.setSize(getData().getEntitySettings().getSlimeSize());
         } else if(bukkitEntity instanceof Ghast){
             Ghast g = (Ghast)bukkitEntity;
         } else if(bukkitEntity instanceof Enderman){
             Enderman e = (Enderman)bukkitEntity;
+
+            e.setCarriedMaterial(new MaterialData(getData().getEntitySettings().getEndermanBlock()));
         } else if(bukkitEntity instanceof CaveSpider){
             CaveSpider c = (CaveSpider)bukkitEntity;
         } else if(bukkitEntity instanceof Blaze){
             Blaze b = (Blaze)bukkitEntity;
         } else if(bukkitEntity instanceof MagmaCube){
             MagmaCube m = (MagmaCube)bukkitEntity;
+
+            m.setSize(getData().getEntitySettings().getSlimeSize());
         } else if(bukkitEntity instanceof Bat){
             Bat b = (Bat)bukkitEntity;
+
+            b.setAwake(true);
         } else if(bukkitEntity instanceof Witch){
             Witch w = (Witch)bukkitEntity;
         } else if(bukkitEntity instanceof Guardian){
             Guardian g = (Guardian)bukkitEntity;
+
+            g.setElder(getData().getEntitySettings().isElderGuardian());
         } else if(bukkitEntity instanceof Cow){
             Cow c = (Cow)bukkitEntity;
 
@@ -744,6 +764,27 @@ public class CustomEntity {
         } else if(bukkitEntity instanceof Horse){
             Horse h = (Horse)bukkitEntity;
 
+            h.setColor(getData().getEntitySettings().getHorseColor());
+            h.setCarryingChest(getData().getEntitySettings().hasHorseChest());
+            h.setStyle(getData().getEntitySettings().getHorseStyle());
+            h.setVariant(getData().getEntitySettings().getHorseVariant());
+
+            if(getData().getEntitySettings().hasHorseSaddle()){
+                h.getInventory().setSaddle(new ItemStack(Material.SADDLE));
+            } else {
+                h.getInventory().setSaddle(new ItemStack(Material.AIR));
+            }
+
+            if(getData().getEntitySettings().getHorseArmor() == HorseArmor.NONE){
+                h.getInventory().setArmor(new ItemStack(Material.AIR));
+            } else if(getData().getEntitySettings().getHorseArmor() == HorseArmor.GOLD){
+                h.getInventory().setArmor(new ItemStack(Material.GOLD_BARDING));
+            } else if(getData().getEntitySettings().getHorseArmor() == HorseArmor.IRON){
+                h.getInventory().setArmor(new ItemStack(Material.IRON_BARDING));
+            } else if(getData().getEntitySettings().getHorseArmor() == HorseArmor.DIAMOND){
+                h.getInventory().setArmor(new ItemStack(Material.DIAMOND_BARDING));
+            }
+
             if(getData().isAdult()){
                 h.setAdult();
             } else {
@@ -751,6 +792,8 @@ public class CustomEntity {
             }
         } else if(bukkitEntity instanceof Rabbit){
             Rabbit r = (Rabbit)bukkitEntity;
+
+            r.setRabbitType(getData().getEntitySettings().getRabbitType());
 
             if(getData().isAdult()){
                 r.setAdult();
