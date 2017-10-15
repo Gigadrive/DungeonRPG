@@ -754,6 +754,8 @@ public class InteractListener implements Listener {
         Player p = e.getPlayer();
         GameUser u = GameUser.getUser(p);
 
+        e.setCancelled(true);
+
         if(e.getRightClicked() instanceof Player){
             Player p2 = (Player)e.getRightClicked();
 
