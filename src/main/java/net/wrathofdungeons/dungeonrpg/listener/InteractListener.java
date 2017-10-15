@@ -460,7 +460,15 @@ public class InteractListener implements Listener {
 
                                                 //if(entity != null) target.damage(5,p);
                                                 //if(entity != null) entity.damage(DamageHandler.calculatePlayerToMobDamage(u,entity,null),p);
-                                                if(entity != null) DungeonRPG.callPlayerToMobDamage(p,entity,true);
+                                                if(entity != null){
+                                                    DungeonRPG.callPlayerToMobDamage(p,entity,true);
+                                                } else {
+                                                    if(target instanceof Player){
+                                                        Player p2 = (Player)target;
+
+                                                        DungeonRPG.callPlayerToPlayerDamage(p,p2,false);
+                                                    }
+                                                }
                                             }
 
                                             new BukkitRunnable(){
@@ -505,7 +513,15 @@ public class InteractListener implements Listener {
                                     CustomEntity entity = CustomEntity.fromEntity(target);
 
                                     //if(entity != null) target.damage(5,p);
-                                    if(entity != null) DungeonRPG.callPlayerToMobDamage(p,entity,false);
+                                    if(entity != null){
+                                        DungeonRPG.callPlayerToMobDamage(p,entity,true);
+                                    } else {
+                                        if(target instanceof Player){
+                                            Player p2 = (Player)target;
+
+                                            DungeonRPG.callPlayerToPlayerDamage(p,p2,false);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -685,6 +701,13 @@ public class InteractListener implements Listener {
                                 if(entity != null){
                                     DungeonRPG.callPlayerToMobDamage(p,entity,false);
                                     break; // Only attack first entity when not using a weapon
+                                } else {
+                                    if(target instanceof Player){
+                                        Player p2 = (Player)target;
+
+                                        DungeonRPG.callPlayerToPlayerDamage(p,p2,false);
+                                        break; // Only attack first entity when not using a weapon
+                                    }
                                 }
                             }
 

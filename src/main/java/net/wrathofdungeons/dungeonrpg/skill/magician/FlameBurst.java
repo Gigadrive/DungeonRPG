@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.skill.magician;
 
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
+import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -94,7 +95,19 @@ public class FlameBurst implements Skill {
                                     livingEntity.setFireTicks(4*20);
                                 } else {
                                     if(livingEntity instanceof Player){
-                                        // TODO: handle duels
+                                        Player p2 = (Player)livingEntity;
+
+                                        if(GameUser.isLoaded(p2)){
+                                            GameUser u2 = GameUser.getUser(p2);
+
+                                            if(Duel.isDuelingWith(p,p2)){
+                                                entities.add(livingEntity);
+                                                DungeonRPG.showBloodEffect(livingEntity.getLocation());
+                                                u2.giveNormalKnockback(loc);
+                                                u2.damage(DamageHandler.calculatePlayerToPlayerDamage(u,u2,flameBurst),p);
+                                                livingEntity.setFireTicks(4*20);
+                                            }
+                                        }
                                     }
                                 }
                             }

@@ -16,6 +16,7 @@ import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageEvent;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageMobToMobEvent;
+import net.wrathofdungeons.dungeonrpg.event.CustomDamagePlayerToPlayerEvent;
 import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
 import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
 import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
@@ -607,7 +608,8 @@ public class DungeonRPG extends JavaPlugin {
     }
 
     public static void callPlayerToPlayerDamage(Player p, Player p2, boolean isProjectile){
-        // TODO: Handle duel damage
+        CustomDamagePlayerToPlayerEvent event = new CustomDamagePlayerToPlayerEvent(p,p2,isProjectile);
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     private void registerListeners(){
@@ -651,6 +653,7 @@ public class DungeonRPG extends JavaPlugin {
         new CreateLootChestCommand();
         new CreateRegionCommand();
         new CharSelCommand();
+        new DuelCommand();
         new ExpCommand();
         new GiveItemCommand();
         new ItemInfoCommand();

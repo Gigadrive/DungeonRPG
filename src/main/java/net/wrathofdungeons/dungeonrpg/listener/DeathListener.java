@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.wrathofdungeons.dungeonapi.util.Util;
+import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.*;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
@@ -34,6 +35,8 @@ public class DeathListener implements Listener {
     public void onDeath(PlayerDeathEvent e){
         Player p = e.getEntity();
 
+        p.setHealth(p.getMaxHealth());
+
         if(GameUser.isLoaded(p)){
             GameUser u = GameUser.getUser(p);
 
@@ -41,10 +44,21 @@ public class DeathListener implements Listener {
                 p.setHealth(p.getMaxHealth());
                 u.setHP(u.getMaxHP());
                 u.setMP(u.getMaxMP());
-                for(PotionEffect pe : p.getActivePotionEffects()) p.removePotionEffect(pe.getType());
 
-                p.teleport(DungeonRPG.getNearestTown(p));
-                p.sendMessage(ChatColor.RED + "You died!");
+                if(!Duel.isDueling(p)){
+                    for(PotionEffect pe : p.getActivePotionEffects()) p.removePotionEffect(pe.getType());
+
+                    p.teleport(DungeonRPG.getNearestTown(p));
+                    p.sendMessage(ChatColor.RED + "You died!");
+                } else {
+                    Duel d = Duel.getDuel(p);
+
+                    if(d.isPlayer1(p)){
+                        d.endGame(d.getPlayer2());
+                    } else {
+                        d.endGame(d.getPlayer1());
+                    }
+                }
             }
         }
     }

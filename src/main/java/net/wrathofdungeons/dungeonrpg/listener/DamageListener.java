@@ -1,26 +1,13 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
-import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
-import net.wrathofdungeons.dungeonrpg.damage.DamageManager;
-import net.wrathofdungeons.dungeonrpg.damage.DamageSource;
-import net.wrathofdungeons.dungeonrpg.items.CustomItem;
-import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
-import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
-import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
-import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
-import net.wrathofdungeons.dungeonrpg.user.RPGClass;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class DamageListener implements Listener {
     @EventHandler
@@ -162,7 +149,7 @@ public class DamageListener implements Listener {
                                         if(u2.getCurrentCharacter() != null){
                                             e.setCancelled(true);
                                             e.getDamager().remove();
-                                            DungeonRPG.callPlayerToPlayerDamage(p,p2,true);
+                                            DungeonRPG.callPlayerToPlayerDamage(p2,p,true);
                                         }
                                     }
                                 }

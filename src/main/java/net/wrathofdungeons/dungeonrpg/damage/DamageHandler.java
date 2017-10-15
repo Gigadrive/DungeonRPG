@@ -105,6 +105,69 @@ public class DamageHandler {
         Player p2 = u2.getPlayer();
         double damage = 1;
 
+        if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null){ // Player has weapon in hand
+            CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
+
+            if(item.getData().getCategory() == u.getCurrentCharacter().getRpgClass().getWeapon()){
+                damage += Util.randomDouble(item.getData().getAtkMin(), item.getData().getAtkMax());
+            }
+
+            damage = damage+damage*(u.getCurrentCharacter().getStatpointsTotal(StatPointType.STRENGTH)*0.1);
+            damage = damage+damage*(u.getCurrentCharacter().getTotalValue(AwakeningType.ATTACK_DAMAGE)*0.01);
+
+            if(skill == null){
+                damage = damage+damage*(u.getCurrentCharacter().getTotalValue(AwakeningType.MELEE_DAMAGE)*0.01);
+            } else {
+                damage = damage+damage*(u.getCurrentCharacter().getTotalValue(AwakeningType.SKILL_DAMAGE)*0.01);
+
+                if(skill instanceof DartRain){
+                    damage /= 2;
+                } else if(skill instanceof ExplosionArrow){
+                    damage *= 3.5;
+                } else if(skill instanceof Stomper){
+                    damage *= 3;
+                } else if(skill instanceof LightningStrike){
+                    damage *= 2.5;
+                } else if(skill instanceof Shockwave){
+                    damage *= 3.5;
+                } else if(skill instanceof FlameBurst){
+                    damage *= 1.5;
+                }
+            }
+
+            if(damage <= 0) damage = 1;
+        } else {
+            damage = 0;
+        }
+
+        // CRITICAL
+        if(Util.getChanceBoolean(u.getCurrentCharacter().getTotalCriticalHitChance(), 100)){
+            damage *= 2;
+            damage += damage*(u.getCurrentCharacter().getTotalValue(AwakeningType.ADOCH)*0.01);
+        }
+
+        for(CustomItem i : u.getCurrentCharacter().getEquipment()){
+            if(i.getData().getCategory().equals(ItemCategory.ARMOR)){
+                damage -= Util.randomDouble(i.getData().getDefMin(), i.getData().getDefMax());
+            }
+        }
+
+        int defense = u.getCurrentCharacter().getTotalValue(AwakeningType.DEFENSE);
+
+        if(defense > 0){
+            damage -= damage*(defense*0.01);
+        } else if(defense < 0) {
+            damage += damage*((defense/-1)*0.01);
+        }
+
+        if(damage <= 0) damage = 1;
+
+        if(Util.getChanceBoolean(u.getCurrentCharacter().getTotalDodgingChance(), 100)){
+            damage = 0;
+        }
+
+        if(damage < 1) damage = 1;
+
         return damage;
     }
 }
