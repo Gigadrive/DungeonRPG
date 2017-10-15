@@ -258,7 +258,23 @@ public class Character {
         if(p.getInventory().getChestplate() != null && CustomItem.fromItemStack(p.getInventory().getChestplate()) != null && CustomItem.fromItemStack(p.getInventory().getChestplate()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getChestplate()));
         if(p.getInventory().getLeggings() != null && CustomItem.fromItemStack(p.getInventory().getLeggings()) != null && CustomItem.fromItemStack(p.getInventory().getLeggings()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getLeggings()));
         if(p.getInventory().getBoots() != null && CustomItem.fromItemStack(p.getInventory().getBoots()) != null && CustomItem.fromItemStack(p.getInventory().getBoots()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getBoots()));
-        if(p.getInventory().getItemInHand() != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()) != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getItemInHand()));
+
+        if(CustomItem.fromItemStack(p.getItemInHand()) != null && CustomItem.fromItemStack(p.getItemInHand()).getData().getId() == 5){
+            for(int i = 0; i < 8; i++){
+                CustomItem item = CustomItem.fromItemStack(p.getInventory().getItem(i));
+
+                if(item != null){
+                    if(item.getData().getCategory().toString().startsWith("WEAPON_") && item.getData().getNeededClass().matches(getRpgClass())){
+                        if(item.getData().getNeededLevel() <= getLevel()){
+                            a.add(item);
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            if(p.getInventory().getItemInHand() != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()) != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getItemInHand()));
+        }
 
         return a.toArray(new CustomItem[]{});
     }
