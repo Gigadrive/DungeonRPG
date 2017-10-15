@@ -90,7 +90,7 @@ public class FlameBurst implements Skill {
                                     DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                     c.getData().playSound(livingEntity.getLocation());
                                     c.giveNormalKnockback(loc);
-                                    livingEntity.damage(DamageHandler.calculatePlayerToMobDamage(u,c,flameBurst),p);
+                                    c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,flameBurst),p);
                                     livingEntity.setFireTicks(4*20);
                                 } else {
                                     if(livingEntity instanceof Player){
