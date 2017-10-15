@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.Trade;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.lootchests.LootChest;
@@ -50,6 +51,12 @@ public class InventoryCloseListener implements Listener {
                                 }
                             }
                         }
+                    }
+                }
+
+                if(inv.getName().equals("Trading")){
+                    if(Trade.getTrade(p) != null){
+                        Trade.getTrade(p).cancelTrade();
                     }
                 }
 

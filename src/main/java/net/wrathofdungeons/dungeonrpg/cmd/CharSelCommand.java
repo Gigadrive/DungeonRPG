@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.cmd;
 
 import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
+import net.wrathofdungeons.dungeonrpg.Trade;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -16,6 +17,7 @@ public class CharSelCommand extends Command {
 
         if(!u.isInSetupMode()){
             if(u.getCurrentCharacter() != null){
+                Trade.clearRequests(p);
                 u.saveData(true);
             } else {
                 p.sendMessage(ChatColor.RED + "You are already in the character selection screen.");

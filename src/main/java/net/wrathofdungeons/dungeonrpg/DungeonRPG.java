@@ -664,6 +664,7 @@ public class DungeonRPG extends JavaPlugin {
         new SetLocationCommand();
         new SetupCommand();
         new SummonCommand();
+        new TradeCommand();
         new WorldBroadcastCommand();
     }
 
