@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageEvent;
+import net.wrathofdungeons.dungeonrpg.event.CustomDamageMobToMobEvent;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
@@ -121,5 +122,12 @@ public class CustomDamageListener implements Listener {
     // MOB -> MOB
     //
 
-    // TODO: Handle mob to mob damage
+    @EventHandler
+    public void mobToMob(CustomDamageMobToMobEvent e){
+        CustomEntity damager = e.getDamager();
+        CustomEntity entity = e.getEntity();
+
+        entity.damage(damager.getData().getAtk());
+        entity.giveNormalKnockback(damager.getBukkitEntity().getLocation(),e.isProjectile());
+    }
 }

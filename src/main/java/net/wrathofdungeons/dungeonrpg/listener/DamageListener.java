@@ -112,7 +112,19 @@ public class DamageListener implements Listener {
                         }
                     }
                 } else {
-                    e.setCancelled(true);
+                    if(e.getDamager() instanceof LivingEntity){
+                        LivingEntity l = (LivingEntity)e.getDamager();
+                        CustomEntity cd = CustomEntity.fromEntity(l);
+
+                        if(cd != null){
+                            e.setCancelled(true);
+                            DungeonRPG.callMobToMobDamage(cd,c,false);
+                        } else {
+                            e.setCancelled(true);
+                        }
+                    } else {
+                        e.setCancelled(true);
+                    }
                 }
             } else {
                 if(e.getEntity() instanceof Player){

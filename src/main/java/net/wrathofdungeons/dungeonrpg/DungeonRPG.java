@@ -15,6 +15,7 @@ import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageEvent;
+import net.wrathofdungeons.dungeonrpg.event.CustomDamageMobToMobEvent;
 import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
 import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
 import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
@@ -601,7 +602,8 @@ public class DungeonRPG extends JavaPlugin {
     }
 
     public static void callMobToMobDamage(CustomEntity mob, CustomEntity mob2, boolean isProjectile){
-        // TODO: Handle mob to mob damage
+        CustomDamageMobToMobEvent event = new CustomDamageMobToMobEvent(mob,mob2,isProjectile);
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     public static void callPlayerToPlayerDamage(Player p, Player p2, boolean isProjectile){
