@@ -40,7 +40,8 @@ public class DamageListener implements Listener {
             CustomEntity c = CustomEntity.fromEntity(ent);
 
             if(c != null){
-                c.damaged = true;
+                e.setCancelled(true);
+                c.damage(e.getDamage());
 
                 return;
             }
