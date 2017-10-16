@@ -146,8 +146,13 @@ public class DungeonRPG extends JavaPlugin {
         s.addSkill(new Shockwave());
         s.addSkill(new BlazingAxe());
 
-        MAIN_WORLD = Bukkit.getWorlds().get(0);
-        prepareWorld(MAIN_WORLD);
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                MAIN_WORLD = Bukkit.getWorlds().get(0);
+                prepareWorld(MAIN_WORLD);
+            }
+        }.runTaskLater(this,5*20);
 
         DISALLOWED_BLOCKS.add(Material.CHEST);
         DISALLOWED_BLOCKS.add(Material.ENDER_CHEST);
@@ -668,6 +673,7 @@ public class DungeonRPG extends JavaPlugin {
         new SetupCommand();
         new SummonCommand();
         new TradeCommand();
+        new WorldCommand();
         new WorldBroadcastCommand();
     }
 
@@ -695,20 +701,18 @@ public class DungeonRPG extends JavaPlugin {
     }
 
     public static void prepareWorld(World w){
-        if(MAIN_WORLD != null){
-            w.setTime(0);
-            w.setStorm(false);
-            w.setThundering(false);
+        w.setTime(0);
+        w.setStorm(false);
+        w.setThundering(false);
 
-            w.setDifficulty(Difficulty.EASY);
-            w.setAutoSave(true);
-            w.setPVP(true);
+        w.setDifficulty(Difficulty.EASY);
+        w.setAutoSave(true);
+        w.setPVP(true);
 
-            w.setGameRuleValue("doMobSpawning","false");
-            w.setGameRuleValue("doFireTick","false");
-            w.setGameRuleValue("naturalRegeneration","false");
-            w.setGameRuleValue("doDaylightCycle","true");
-        }
+        w.setGameRuleValue("doMobSpawning","false");
+        w.setGameRuleValue("doFireTick","false");
+        w.setGameRuleValue("naturalRegeneration","false");
+        w.setGameRuleValue("doDaylightCycle","true");
     }
 
     public static ArrayList<RegionLocation> sortedTownLocations(){
