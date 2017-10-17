@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.skill.magician;
 
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
+import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -105,7 +106,13 @@ public class LightningStrike implements Skill {
                                 c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,lightningStrike),p);
                             } else {
                                 if(entity instanceof Player){
-                                    // TODO: handle duels
+                                    Player p2 = (Player)entity;
+
+                                    if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
+                                        GameUser u2 = GameUser.getUser(p2);
+                                        DungeonRPG.showBloodEffect(entity.getLocation());
+                                        u2.damage(DamageHandler.calculatePlayerToPlayerDamage(u,u2,lightningStrike),p);
+                                    }
                                 }
                             }
                         }

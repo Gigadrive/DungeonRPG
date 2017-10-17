@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
+import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
@@ -78,7 +79,14 @@ public class LandOnGroundListener implements Listener {
                                 }.runTaskLater(DungeonRPG.getInstance(),1);
                             } else {
                                 if(ent.getType() == EntityType.PLAYER){
-                                    // TODO: handle duels
+                                    Player p2 = (Player)ent;
+
+                                    if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
+                                        GameUser u2 = GameUser.getUser(p2);
+
+                                        DungeonRPG.showBloodEffect(livingEntity.getLocation());
+                                        u2.damage(DamageHandler.calculatePlayerToPlayerDamage(u,u2,u.getSkillValues().stomperSkill),p);
+                                    }
                                 }
                             }
                         }

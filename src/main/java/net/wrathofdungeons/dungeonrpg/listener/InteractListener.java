@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Particle;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCPushEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
@@ -754,7 +755,7 @@ public class InteractListener implements Listener {
         Player p = e.getPlayer();
         GameUser u = GameUser.getUser(p);
 
-        e.setCancelled(true);
+        if(!CitizensAPI.getNPCRegistry().isNPC(e.getRightClicked())) e.setCancelled(true);
 
         if(e.getRightClicked() instanceof Player){
             Player p2 = (Player)e.getRightClicked();
