@@ -281,12 +281,12 @@ public class Trade {
             getPlayer1().closeInventory();
             getPlayer2().closeInventory();
 
-            for(ItemStack i : getOffers2()){
+            for(ItemStack i : getOffers1()){
                 CustomItem item = CustomItem.fromItemStack(i);
                 getPlayer1().getInventory().addItem(item.build(getPlayer1()));
             }
 
-            for(ItemStack i : getOffers1()){
+            for(ItemStack i : getOffers2()){
                 CustomItem item = CustomItem.fromItemStack(i);
                 getPlayer2().getInventory().addItem(item.build(getPlayer2()));
             }
