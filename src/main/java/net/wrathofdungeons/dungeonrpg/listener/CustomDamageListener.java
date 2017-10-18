@@ -32,6 +32,8 @@ public class CustomDamageListener implements Listener {
             GameUser u = GameUser.getUser(p);
             CustomEntity c = e.getEntity();
 
+            if(u.isDying()) return;
+
             if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null) {
                 CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
                 long itemCooldown = item.getCooldownInTicks();
@@ -104,6 +106,8 @@ public class CustomDamageListener implements Listener {
             GameUser u = GameUser.getUser(p);
             CustomEntity c = e.getEntity();
 
+            if(u.isDying()) return;
+
             p.damage(0);
 
             double damage = DamageHandler.calculateMobToPlayerDamage(u,c);
@@ -144,6 +148,8 @@ public class CustomDamageListener implements Listener {
 
         GameUser u = GameUser.getUser(p);
         GameUser u2 = GameUser.getUser(p2);
+
+        if(u2.isDying()) return;
 
         if(Duel.isDuelingWith(p,p2)){
             if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null) {

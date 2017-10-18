@@ -41,22 +41,31 @@ public class DeathListener implements Listener {
             GameUser u = GameUser.getUser(p);
 
             if(u.getCurrentCharacter() != null){
-                p.setHealth(p.getMaxHealth());
-                u.setHP(u.getMaxHP());
-                u.setMP(u.getMaxMP());
+                if(!u.isDying()){
+                    u.setDying(true);
+                    u.setHP(u.getMaxHP());
+                    u.setMP(u.getMaxMP());
 
-                if(!Duel.isDueling(p)){
-                    for(PotionEffect pe : p.getActivePotionEffects()) p.removePotionEffect(pe.getType());
+                    if(!Duel.isDueling(p)){
+                        for(PotionEffect pe : p.getActivePotionEffects()) p.removePotionEffect(pe.getType());
 
-                    p.teleport(DungeonRPG.getNearestTown(p));
-                    p.sendMessage(ChatColor.RED + "You died!");
-                } else {
-                    Duel d = Duel.getDuel(p);
+                        p.teleport(DungeonRPG.getNearestTown(p));
+                        p.sendMessage(ChatColor.RED + "You died!");
 
-                    if(d.isPlayer1(p)){
-                        d.endGame(d.getPlayer2());
+                        new BukkitRunnable(){
+                            @Override
+                            public void run() {
+                                u.setDying(false);
+                            }
+                        }.runTaskLater(DungeonRPG.getInstance(),2*20);
                     } else {
-                        d.endGame(d.getPlayer1());
+                        Duel d = Duel.getDuel(p);
+
+                        if(d.isPlayer1(p)){
+                            d.endGame(d.getPlayer2());
+                        } else {
+                            d.endGame(d.getPlayer1());
+                        }
                     }
                 }
             }

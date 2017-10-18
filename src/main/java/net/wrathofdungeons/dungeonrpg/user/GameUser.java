@@ -26,6 +26,7 @@ import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -102,10 +103,20 @@ public class GameUser extends User {
     private BukkitTask hpRegenTask;
     private BukkitTask comboResetTask;
 
+    private boolean dying = false;
+
     public GameUser(Player p){
         super(p);
 
         TEMP.put(p,this);
+    }
+
+    public boolean isDying() {
+        return dying;
+    }
+
+    public void setDying(boolean dying) {
+        this.dying = dying;
     }
 
     public int getHP(){
@@ -277,7 +288,12 @@ public class GameUser extends User {
             if(hp < 0) hp = 0;
             double healthDis = (((double)hp)/((double)getMaxHP()))*20;
             if(healthDis > p.getMaxHealth()) healthDis = p.getMaxHealth();
-            if(healthDis < 0.5) healthDis = 20;
+            if(healthDis < 0.5){
+                healthDis = 20;
+
+                PlayerDeathEvent event = new PlayerDeathEvent(p,null,0,null);
+                Bukkit.getPluginManager().callEvent(event);
+            }
 
             p.setHealth(healthDis);
         }
@@ -314,7 +330,7 @@ public class GameUser extends User {
         if(this.hp <= 0){
             if(source != null){
                 __associateDamageWithSystem = false;
-                p.damage(((Damageable)p).getMaxHealth(), source);
+                //p.damage(0, source);
 
                 Bukkit.getScheduler().scheduleSyncDelayedTask(DungeonAPI.getInstance(), new Runnable(){
                     public void run(){
@@ -322,7 +338,7 @@ public class GameUser extends User {
                     }
                 });
             } else {
-                p.damage(((Damageable)p).getMaxHealth());
+                //p.damage(0, source);
             }
         }
 

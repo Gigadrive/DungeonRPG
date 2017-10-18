@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -136,30 +137,77 @@ public class InventoryClickListener implements Listener {
                                 // player inventory
 
                                 CustomItem item = CustomItem.fromItemStack(e.getCurrentItem());
+                                if(e.getClick() == ClickType.RIGHT) item = new CustomItem(CustomItem.fromItemStack(e.getCurrentItem()).getData(),1);
 
                                 if(item != null){
                                     int currentOffers = t.isPlayer1(p) ? t.getOffers1().size() : t.getOffers2().size();
 
-                                    if(currentOffers < Trade.MAX_OFFERS){
-                                        if(!item.isUntradeable()){
-                                            if(t.isPlayer1(p)){
-                                                p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
-                                                t.getOffers1().add(item.build(p));
-                                                t.setPlayer1Ready(false);
-                                                t.setPlayer2Ready(false);
-                                            } else if(t.isPlayer2(p)){
-                                                p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
-                                                t.getOffers2().add(item.build(p));
-                                                t.setPlayer1Ready(false);
-                                                t.setPlayer2Ready(false);
-                                            }
+                                    ItemStack currentItem = null;
 
-                                            t.updateInventories();
-                                        } else {
-                                            p.sendMessage(ChatColor.RED + "That item is untradeable.");
+                                    if(t.isPlayer1(p)){
+                                        for(ItemStack iStack : t.getOffers1()){
+                                            CustomItem it = CustomItem.fromItemStack(iStack);
+
+                                            if(it.isSameItem(item) && it.getAmount()+item.getAmount() < 64){
+                                                currentItem = iStack;
+                                            }
                                         }
+                                    } else if(t.isPlayer2(p)){
+                                        for(ItemStack iStack : t.getOffers2()){
+                                            CustomItem it = CustomItem.fromItemStack(iStack);
+
+                                            if(it.isSameItem(item) && it.getAmount()+item.getAmount() < 64){
+                                                currentItem = iStack;
+                                            }
+                                        }
+                                    }
+
+                                    if(currentItem != null){
+                                        if(t.isPlayer1(p)){
+                                            t.getOffers1().remove(currentItem);
+                                            currentItem.setAmount(currentItem.getAmount()+item.getAmount());
+                                            t.getOffers1().add(currentItem);
+                                            t.setPlayer1Ready(false);
+                                            t.setPlayer2Ready(false);
+                                        } else if(t.isPlayer2(p)){
+                                            t.getOffers2().remove(currentItem);
+                                            currentItem.setAmount(currentItem.getAmount()+item.getAmount());
+                                            t.getOffers2().add(currentItem);
+                                            t.setPlayer1Ready(false);
+                                            t.setPlayer2Ready(false);
+                                        }
+
+                                        if(p.getInventory().getItem(e.getSlot()) != null && p.getInventory().getItem(e.getSlot()).getAmount() < item.getAmount()){
+                                            if(p.getInventory().getItem(e.getSlot()).getAmount()-item.getAmount() <= 1){
+                                                p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
+                                            } else {
+                                                p.getInventory().getItem(e.getSlot()).setAmount(p.getInventory().getItem(e.getSlot()).getAmount()-item.getAmount());
+                                            }
+                                        }
+
+                                        t.updateInventories();
                                     } else {
-                                        p.sendMessage(ChatColor.RED + "You can only trade " + Trade.MAX_OFFERS + " items at once.");
+                                        if(currentOffers < Trade.MAX_OFFERS){
+                                            if(!item.isUntradeable()){
+                                                if(t.isPlayer1(p)){
+                                                    p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
+                                                    t.getOffers1().add(item.build(p));
+                                                    t.setPlayer1Ready(false);
+                                                    t.setPlayer2Ready(false);
+                                                } else if(t.isPlayer2(p)){
+                                                    p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
+                                                    t.getOffers2().add(item.build(p));
+                                                    t.setPlayer1Ready(false);
+                                                    t.setPlayer2Ready(false);
+                                                }
+
+                                                t.updateInventories();
+                                            } else {
+                                                p.sendMessage(ChatColor.RED + "That item is untradeable.");
+                                            }
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "You can only trade " + Trade.MAX_OFFERS + " items at once.");
+                                        }
                                     }
                                 }
                             } else {

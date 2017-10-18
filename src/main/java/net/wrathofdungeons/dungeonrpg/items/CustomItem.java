@@ -431,6 +431,30 @@ public class CustomItem {
         return i;
     }
 
+    public boolean isSameItem(CustomItem item){
+        if(item == this){
+            return true;
+        } else {
+            if(getData().getId() == item.getData().getId()){
+                if(getAwakenings() == null && item.getAwakenings() == null){
+
+                } else if(item.getAwakenings().size() == getAwakenings().size()) {
+                    for(Awakening a : getAwakenings()){
+                        if(!(getAwakeningValue(a.type) == item.getAwakeningValue(a.type))) return false;
+                    }
+                } else {
+                    return false;
+                }
+
+                if(isUntradeable() == item.isUntradeable()){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static CustomItem fromString(String s){
         Gson gson = new Gson();
         CustomItem i = gson.fromJson(s,CustomItem.class);

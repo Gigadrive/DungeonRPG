@@ -40,6 +40,11 @@ public class DamageListener implements Listener {
             if(GameUser.isLoaded(p)){
                 GameUser u = GameUser.getUser(p);
 
+                if(u.isDying()){
+                    e.setCancelled(true);
+                    return;
+                }
+
                 if(u.getCurrentCharacter() != null){
                     if(e.getCause() == EntityDamageEvent.DamageCause.STARVATION || e.getCause() == EntityDamageEvent.DamageCause.FALL){
                         e.setCancelled(true);
@@ -119,6 +124,11 @@ public class DamageListener implements Listener {
 
                     if(GameUser.isLoaded(p)){
                         GameUser u = GameUser.getUser(p);
+
+                        if(u.isDying()){
+                            e.setCancelled(true);
+                            return;
+                        }
 
                         if(e.getDamager() instanceof Projectile){
                             if(((Projectile) e.getDamager()).getShooter() != null && ((Projectile) e.getDamager()).getShooter() instanceof LivingEntity && !(((Projectile) e.getDamager()).getShooter() instanceof Player)){
