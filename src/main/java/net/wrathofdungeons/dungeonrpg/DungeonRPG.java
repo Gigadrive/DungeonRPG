@@ -1,16 +1,12 @@
 package net.wrathofdungeons.dungeonrpg;
 
-import com.sun.org.apache.regexp.internal.RE;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.ai.Navigator;
-import net.citizensnpcs.api.ai.goals.WanderGoal;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R3.EntitySheep;
 import net.minecraft.server.v1_8_R3.EntityZombie;
-import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
-import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
@@ -20,7 +16,6 @@ import net.wrathofdungeons.dungeonrpg.event.CustomDamagePlayerToPlayerEvent;
 import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
 import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
 import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
-import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.inv.MerchantSetupMenu;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
@@ -32,7 +27,6 @@ import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonSheep;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
-import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkillStorage;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
@@ -51,7 +45,7 @@ import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
 import net.wrathofdungeons.dungeonrpg.skill.magician.FlameBurst;
 import net.wrathofdungeons.dungeonrpg.skill.magician.LightningStrike;
 import net.wrathofdungeons.dungeonrpg.skill.magician.MagicCure;
-import net.wrathofdungeons.dungeonrpg.skill.mercenary.AxeDance;
+import net.wrathofdungeons.dungeonrpg.skill.mercenary.AxeBlast;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.BlazingAxe;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.Shockwave;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
@@ -59,7 +53,6 @@ import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
@@ -141,7 +134,7 @@ public class DungeonRPG extends JavaPlugin {
         s.addSkill(new MagicCure());
 
         // MERCENARY
-        s.addSkill(new AxeDance());
+        s.addSkill(new AxeBlast());
         s.addSkill(new Stomper());
         s.addSkill(new Shockwave());
         s.addSkill(new BlazingAxe());

@@ -11,6 +11,7 @@ import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.archer.DartRain;
 import net.wrathofdungeons.dungeonrpg.skill.archer.ExplosionArrow;
 import net.wrathofdungeons.dungeonrpg.skill.magician.FlameBurst;
+import net.wrathofdungeons.dungeonrpg.skill.mercenary.AxeBlast;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.Shockwave;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
@@ -132,6 +133,8 @@ public class DamageHandler {
                     damage *= 3.5;
                 } else if(skill instanceof FlameBurst){
                     damage *= 1.5;
+                } else if(skill instanceof AxeBlast){
+                    damage *= 2;
                 }
             }
 
