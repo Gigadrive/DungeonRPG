@@ -28,7 +28,7 @@ public class DeathListener implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e){
         e.setDroppedExp(0);
-        e.getDrops().clear();
+        if(e.getDrops() != null) e.getDrops().clear();
     }
 
     @EventHandler
