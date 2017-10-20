@@ -180,7 +180,7 @@ public class CustomEntity {
                                                     for(int i : usableLvls){
                                                         if(i == data.getNeededLevel()){
                                                             if(mob.getMobClass().getChance(data.getRarity()) != null){
-                                                                if(Util.getChanceBoolean(mob.getMobClass().getChance(data.getRarity()).min, mob.getMobClass().getChance(data.getRarity()).max)){
+                                                                if(Util.getChanceBoolean(mob.getMobClass().getChance(data.getRarity()).min, mob.getMobClass().getChance(data.getRarity()).max-u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS))){
                                                                     if(limit != 0){
                                                                         WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(data),p);
                                                                         limit--;
