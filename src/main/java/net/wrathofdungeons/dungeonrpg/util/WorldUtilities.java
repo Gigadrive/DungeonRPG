@@ -70,12 +70,12 @@ public class WorldUtilities {
         int blocks = 0;
         int ingots = 0;
 
-        while(nuggets > 64){
+        while(nuggets >= 64){
             ingots++;
             nuggets -= 64;
         }
 
-        while(ingots > 64){
+        while(ingots >= 64){
             blocks++;
             ingots -= 64;
         }
