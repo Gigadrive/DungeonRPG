@@ -372,6 +372,10 @@ public class CustomItem {
                     iL.add(ChatColor.RED + "Untradeable");
                 }
 
+                if(getData().getRarity() != ItemRarity.NONE){
+                    iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
+                }
+
                 iM.setLore(iL);
                 i.setItemMeta(iM);
 
