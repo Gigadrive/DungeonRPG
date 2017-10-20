@@ -159,12 +159,12 @@ public class CustomEntity {
 
                 if(u.getCurrentCharacter() != null){
                     // DROP GOLD
-                    if(mob.getMobType() == MobType.AGGRO) if(Util.getChanceBoolean(50+u.getCurrentCharacter().getTotalValue(AwakeningType.FORTUNE),190)) WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(7),p);
+                    if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL) if(Util.getChanceBoolean(50+u.getCurrentCharacter().getTotalValue(AwakeningType.FORTUNE),190)) WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(7),p);
 
                     //TODO: Add pre-defined dropable items
 
                     // DROP WEAPONS [automated]
-                    if(mob.getMobType() == MobType.AGGRO){
+                    if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
                         int limit = 2;
 
                         if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 55)){
@@ -203,7 +203,7 @@ public class CustomEntity {
                     }
 
                     // DROP FOOD
-                    if(mob.getMobType() == MobType.AGGRO){
+                    if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
                         int limit = 2;
 
                         if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 125)){
@@ -247,7 +247,7 @@ public class CustomEntity {
                         xp = u.giveEXP(xp);
                     }
 
-                    if(mob.getMobType() == MobType.AGGRO) p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
+                    if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL) p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
 
                     final Hologram holo = HologramsAPI.createHologram(DungeonRPG.getInstance(), bukkitEntity.getLocation().clone().add(0,2,0));
                     holo.appendTextLine(ChatColor.GOLD + "+" + ((Double)xp).intValue() + " EXP");
