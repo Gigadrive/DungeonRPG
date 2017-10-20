@@ -167,29 +167,27 @@ public class CustomEntity {
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
                         int limit = 2;
 
-                        if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 55)){
-                            int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
+                        int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
 
-                            for(ItemData data : ItemData.STORAGE){
-                                if(data.getRarity().getSources() != null){
-                                    for(ItemSource s : data.getRarity().getSources()){
-                                        if(s.mobClass != null){
-                                            if(s.mobClass == mob.getMobClass()){
-                                                //if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK || data.getCategory() == ItemCategory.WEAPON_SHEARS){
-                                                if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK){
-                                                    if(data.getRarity() != ItemRarity.NONE && data.getRarity() != ItemRarity.SPECIAL){
-                                                        for(int i : usableLvls){
-                                                            if(i == data.getNeededLevel()){
-                                                                if(mob.getMobClass().getChance(data.getRarity()) != null){
-                                                                    if(Util.getChanceBoolean(mob.getMobClass().getChance(data.getRarity()).min, mob.getMobClass().getChance(data.getRarity()).max)){
-                                                                        if(limit != 0){
-                                                                            WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(data),p);
-                                                                            limit--;
-                                                                        }
+                        for(ItemData data : ItemData.STORAGE){
+                            if(data.getRarity().getSources() != null){
+                                for(ItemSource s : data.getRarity().getSources()){
+                                    if(s.mobClass != null){
+                                        if(s.mobClass == mob.getMobClass()){
+                                            //if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK || data.getCategory() == ItemCategory.WEAPON_SHEARS){
+                                            if(data.getCategory() == ItemCategory.ARMOR || data.getCategory() == ItemCategory.WEAPON_BOW || data.getCategory() == ItemCategory.WEAPON_AXE || data.getCategory() == ItemCategory.WEAPON_STICK){
+                                                if(data.getRarity() != ItemRarity.NONE && data.getRarity() != ItemRarity.SPECIAL){
+                                                    for(int i : usableLvls){
+                                                        if(i == data.getNeededLevel()){
+                                                            if(mob.getMobClass().getChance(data.getRarity()) != null){
+                                                                if(Util.getChanceBoolean(mob.getMobClass().getChance(data.getRarity()).min, mob.getMobClass().getChance(data.getRarity()).max)){
+                                                                    if(limit != 0){
+                                                                        WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(data),p);
+                                                                        limit--;
                                                                     }
-
-                                                                    break;
                                                                 }
+
+                                                                break;
                                                             }
                                                         }
                                                     }

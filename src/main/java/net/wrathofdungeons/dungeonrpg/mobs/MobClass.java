@@ -12,13 +12,13 @@ public enum MobClass {
     public MobClassRarityChance getChance(ItemRarity rarity){
         if(this == LOW){
             if(rarity == ItemRarity.COMMON){
-                return new MobClassRarityChance(1, 5);
+                return new MobClassRarityChance(1, 25);
             } else if(rarity == ItemRarity.RARE){
-                return new MobClassRarityChance(1, 95);
+                return new MobClassRarityChance(1, 135);
             } else if(rarity == ItemRarity.EPIC){
-                return new MobClassRarityChance(1, 210);
+                return new MobClassRarityChance(1, 260);
             } else if(rarity == ItemRarity.LEGENDARY){
-                return new MobClassRarityChance(1, 620);
+                return new MobClassRarityChance(1, 780);
             } /*else if(rarity == ItemRarity.MYTHIC){
                 return null;
             } */else {
@@ -26,13 +26,13 @@ public enum MobClass {
             }
         } else if(this == MID){
             if(rarity == ItemRarity.COMMON){
-                return new MobClassRarityChance(1, 40);
+                return new MobClassRarityChance(1, 60);
             } else if(rarity == ItemRarity.RARE){
-                return new MobClassRarityChance(1, 95);
+                return new MobClassRarityChance(1, 175);
             } else if(rarity == ItemRarity.EPIC){
-                return new MobClassRarityChance(1, 210);
+                return new MobClassRarityChance(1, 320);
             } else if(rarity == ItemRarity.LEGENDARY){
-                return new MobClassRarityChance(1, 620);
+                return new MobClassRarityChance(1, 990);
             } /*else if(rarity == ItemRarity.MYTHIC){
                 return null;
             } */else {
@@ -40,13 +40,13 @@ public enum MobClass {
             }
         } else if(this == HIGH){
             if(rarity == ItemRarity.COMMON){
-                return new MobClassRarityChance(1, 40);
+                return new MobClassRarityChance(1, 60);
             } else if(rarity == ItemRarity.RARE){
-                return new MobClassRarityChance(1, 95);
+                return new MobClassRarityChance(1, 175);
             } else if(rarity == ItemRarity.EPIC){
-                return new MobClassRarityChance(1, 210);
+                return new MobClassRarityChance(1, 320);
             } else if(rarity == ItemRarity.LEGENDARY){
-                return new MobClassRarityChance(1, 620);
+                return new MobClassRarityChance(1, 990);
             } /*else if(rarity == ItemRarity.MYTHIC){
                 return new MobClassRarityChance(20, Integer.MAX_VALUE);
             } */else {
