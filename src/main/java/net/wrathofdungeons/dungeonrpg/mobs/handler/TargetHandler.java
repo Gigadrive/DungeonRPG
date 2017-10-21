@@ -23,21 +23,23 @@ import java.util.*;
 public class TargetHandler {
     public static void giveTargets(LivingEntity entity, CustomEntity customEntity){
         if(entity.getType() != EntityType.PLAYER){
-            EntityCreature c = (EntityCreature) (((CraftEntity)entity).getHandle());
+            EntityInsentient c = (EntityInsentient) (((CraftEntity)entity).getHandle());
+            EntitySlime s = null;
+            if(c instanceof EntitySlime) s = (EntitySlime)c;
 
             try {
                 Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
                 bField.setAccessible(true);
                 Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
                 cField.setAccessible(true);
-                bField.set(c.goalSelector, new UnsafeList<PathfinderGoalSelector>());
+                if(s == null) bField.set(c.goalSelector, new UnsafeList<PathfinderGoalSelector>());
                 bField.set(c.targetSelector, new UnsafeList<PathfinderGoalSelector>());
-                cField.set(c.goalSelector, new UnsafeList<PathfinderGoalSelector>());
+                if(s == null) cField.set(c.goalSelector, new UnsafeList<PathfinderGoalSelector>());
                 cField.set(c.targetSelector, new UnsafeList<PathfinderGoalSelector>());
 
                 c.goalSelector.a(0, new PathfinderGoalFloat(c));
-                c.goalSelector.a(5, new PathfinderGoalMoveTowardsRestriction(c, 1.0D));
-                if(customEntity.getData().getAiSettings().mayDoRandomStroll()) c.goalSelector.a(7, new PathfinderGoalRandomStroll(c, 1.0D));
+                if(c instanceof EntityCreature) c.goalSelector.a(5, new PathfinderGoalMoveTowardsRestriction((EntityCreature)c, 1.0D));
+                if(c instanceof EntityCreature) if(customEntity.getData().getAiSettings().mayDoRandomStroll()) c.goalSelector.a(7, new PathfinderGoalRandomStroll((EntityCreature)c, 1.0D));
                 if(customEntity.getData().getAiSettings().mayLookAtPlayer()) c.goalSelector.a(8, new PathfinderGoalLookAtPlayer(c, EntityPlayer.class, 8.0F));
                 if(customEntity.getData().getAiSettings().mayLookAround()) c.goalSelector.a(8, new PathfinderGoalRandomLookaround(c));
                 if(customEntity.getData().getAiSettings().getType() == MobAIType.RANGED && c instanceof IRangedEntity) c.goalSelector.a(4, new PathfinderGoalArrowAttack((IRangedEntity)c, 0.25F, 60, 10.0F));
@@ -51,8 +53,8 @@ public class TargetHandler {
                     a.add(EntityVillager.class);
 
                     for(Class<? extends Entity> cl : a){
-                        if(customEntity.getData().getAiSettings().getType() == MobAIType.MELEE) c.goalSelector.a(2, new PathfinderGoalMeleeAttack(c, cl, 1.0D, false));
-                        c.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget(c, cl, false));
+                        if(c instanceof EntityCreature) if(customEntity.getData().getAiSettings().getType() == MobAIType.MELEE) c.goalSelector.a(2, new PathfinderGoalMeleeAttack((EntityCreature)c, cl, 1.0D, false));
+                        if(c instanceof EntityCreature) c.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget((EntityCreature)c, cl, false));
                     }
                 }
             } catch(Exception e){
