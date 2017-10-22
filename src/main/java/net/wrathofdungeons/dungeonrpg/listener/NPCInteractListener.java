@@ -5,9 +5,14 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
 import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
 import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
+import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPCType;
+import net.wrathofdungeons.dungeonrpg.npc.dialogue.NPCDialogue;
+import net.wrathofdungeons.dungeonrpg.npc.dialogue.NPCDialogueConditionType;
+import net.wrathofdungeons.dungeonrpg.quests.*;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.ChatColor;
@@ -36,25 +41,131 @@ public class NPCInteractListener implements Listener {
                 if(false){
                     // TODO: Check if npc is involved with quest
                 } else {
-                    if(npc.getTextLines().size() > 0 && !npc.READING.contains(p.getName())){
-                        npc.READING.add(p.getName());
+                    if(npc.getDialogues().size() > 0 && !CustomNPC.READING.contains(p.getName())){
+                        CustomNPC.READING.add(p.getName());
+                        NPCDialogue dialogue = npc.getPreferredDialogue(p);
 
-                        int i = 0;
-                        for(String line : npc.getTextLines()){
-                            final int j = i;
+                        if(dialogue != null && dialogue.lines.size() > 0){
+                            if(dialogue.condition.type == NPCDialogueConditionType.QUEST_ENDING){
+                                Quest q = Quest.getQuest(dialogue.condition.questID);
 
-                            new BukkitRunnable(){
-                                @Override
-                                public void run() {
-                                    p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&',line));
-
-                                    if(j == npc.getTextLines().size()-1){
-                                        npc.READING.remove(p.getName());
+                                if(q != null){
+                                    if(u.getEmptySlotsInInventory() < q.getSlotsNeededForReward()){
+                                        p.sendMessage(ChatColor.RED + "Please empty some space in your inventory.");
+                                        return;
                                     }
                                 }
-                            }.runTaskLater(DungeonRPG.getInstance(),DungeonRPG.QUEST_NPC_TEXT_LINE_DELAY*i*20);
+                            }
 
-                            i++;
+                            if(dialogue.condition.type == NPCDialogueConditionType.QUEST_STAGE_STARTING){
+                                Quest q = Quest.getQuest(dialogue.condition.questID);
+
+                                if(q != null){
+                                    QuestStage stage = q.getStages()[u.getCurrentCharacter().getCurrentStage(q)];
+
+                                    if(stage != null){
+                                        for(QuestObjective o : stage.objectives){
+                                            if(o.type == QuestObjectiveType.FIND_ITEM){
+                                                u.removeFromInventory(ItemData.getData(o.itemToFind),o.itemToFindAmount);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            int i = 0;
+                            for(String line : dialogue.lines){
+                                final int j = i;
+
+                                u.getCancellableTasks().add(new BukkitRunnable(){
+                                    @Override
+                                    public void run() {
+                                        p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&',line));
+
+                                        if(j == dialogue.lines.size()-1){
+                                            if(dialogue.condition.type == NPCDialogueConditionType.NONE || dialogue.condition.type == NPCDialogueConditionType.QUEST_NOTSTARTED || dialogue.condition.type == NPCDialogueConditionType.QUEST_RUNNING){
+                                                CustomNPC.READING.remove(p.getName());
+                                            } else if(dialogue.condition.type == NPCDialogueConditionType.QUEST_STARTING){
+                                                Quest q = Quest.getQuest(dialogue.condition.questID);
+
+                                                if(q != null){
+                                                    u.getCancellableTasks().add(new BukkitRunnable(){
+                                                        @Override
+                                                        public void run() {
+                                                            u.getCurrentCharacter().setQuestStatus(q, QuestProgressStatus.STARTED);
+                                                            u.getCurrentCharacter().setCurrentStage(q,0);
+                                                            p.sendMessage(ChatColor.YELLOW + "New Quest started! " + ChatColor.GOLD + q.getName());
+                                                            p.sendMessage(ChatColor.YELLOW + "Check your quest diary for help.");
+
+                                                            CustomNPC.READING.remove(p.getName());
+                                                        }
+                                                    }.runTaskLater(DungeonRPG.getInstance(),DungeonRPG.QUEST_NPC_TEXT_LINE_DELAY*20));
+                                                } else {
+                                                    CustomNPC.READING.remove(p.getName());
+                                                }
+                                            } else if(dialogue.condition.type == NPCDialogueConditionType.QUEST_STAGE_STARTING){
+                                                Quest q = Quest.getQuest(dialogue.condition.questID);
+
+                                                if(q != null){
+                                                    int newStageIndex = u.getCurrentCharacter().getCurrentStage(q)+1;
+
+                                                    u.getCancellableTasks().add(new BukkitRunnable(){
+                                                        @Override
+                                                        public void run() {
+                                                            u.getCurrentCharacter().setCurrentStage(q,newStageIndex);
+                                                            p.sendMessage(ChatColor.YELLOW + "Your quest diary has been updated.");
+
+                                                            CustomNPC.READING.remove(p.getName());
+                                                        }
+                                                    }.runTaskLater(DungeonRPG.getInstance(),DungeonRPG.QUEST_NPC_TEXT_LINE_DELAY*20));
+                                                } else {
+                                                    CustomNPC.READING.remove(p.getName());
+                                                }
+                                            } else if(dialogue.condition.type == NPCDialogueConditionType.QUEST_ENDING){
+                                                Quest q = Quest.getQuest(dialogue.condition.questID);
+
+                                                if(q != null){
+                                                    u.getCancellableTasks().add(new BukkitRunnable(){
+                                                        @Override
+                                                        public void run() {
+                                                            u.getCurrentCharacter().setQuestStatus(q,QuestProgressStatus.FINISHED);
+
+                                                            p.sendMessage(ChatColor.GOLD + "Quest finished: " + ChatColor.YELLOW + q.getName());
+                                                            if(q.getRewardExp() > 0){
+                                                                u.giveEXP(q.getRewardExp());
+
+                                                                p.sendMessage(ChatColor.GRAY + "+" + q.getRewardExp() + " EXP");
+                                                            }
+
+                                                            if(q.getRewardGoldenNuggets() > 0){
+                                                                p.sendMessage(ChatColor.GRAY + "+" + q.getRewardGoldenNuggets() + " Golden Nuggets");
+
+                                                                for(CustomItem item : WorldUtilities.convertNuggetAmount(q.getRewardGoldenNuggets())){
+                                                                    p.getInventory().addItem(item.build(p));
+                                                                }
+                                                            }
+
+                                                            if(q.getRewardItems().length > 0){
+                                                                for(CustomItem item : q.getRewardItems()){
+                                                                    p.sendMessage(ChatColor.GRAY + "+" + item.getAmount() + " " + item.getData().getName());
+
+                                                                    p.getInventory().addItem(item.build(p));
+                                                                }
+                                                            }
+
+                                                            CustomNPC.READING.remove(p.getName());
+                                                        }
+                                                    }.runTaskLater(DungeonRPG.getInstance(),DungeonRPG.QUEST_NPC_TEXT_LINE_DELAY*20));
+                                                } else {
+                                                    CustomNPC.READING.remove(p.getName());
+                                                }
+                                            }
+                                        }
+                                    }
+                                }.runTaskLater(DungeonRPG.getInstance(),DungeonRPG.QUEST_NPC_TEXT_LINE_DELAY*i*20));
+
+                                i++;
+                            }
                         }
                     }
                 }

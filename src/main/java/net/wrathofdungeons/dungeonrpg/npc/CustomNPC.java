@@ -14,6 +14,11 @@ import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
+import net.wrathofdungeons.dungeonrpg.npc.dialogue.NPCDialogue;
+import net.wrathofdungeons.dungeonrpg.npc.dialogue.NPCDialogueConditionType;
+import net.wrathofdungeons.dungeonrpg.quests.Quest;
+import net.wrathofdungeons.dungeonrpg.quests.QuestProgressStatus;
+import net.wrathofdungeons.dungeonrpg.quests.QuestStage;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
@@ -32,6 +37,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class CustomNPC {
@@ -97,7 +103,7 @@ public class CustomNPC {
     private EntityType entityType;
     private Villager.Profession villagerProfession;
     private int skinID;
-    private ArrayList<String> textLines;
+    private ArrayList<NPCDialogue> dialogues;
     private ArrayList<MerchantOffer> offers;
     private Location storedLocation;
 
@@ -108,12 +114,10 @@ public class CustomNPC {
 
     private boolean hasUnsavedData;
 
-    public ArrayList<String> READING;
+    public static ArrayList<String> READING = new ArrayList<String>();
 
     public CustomNPC(int id){
         if(fromID(id) != null) return;
-
-        READING = new ArrayList<String>();
 
         try {
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `npcs` WHERE `id` = ?");
@@ -137,9 +141,9 @@ public class CustomNPC {
 
                 String textLinesString = rs.getString("textLines");
                 if(textLinesString != null){
-                    this.textLines = gson.fromJson(textLinesString, new TypeToken<ArrayList<String>>(){}.getType());
+                    this.dialogues = gson.fromJson(textLinesString, new TypeToken<ArrayList<NPCDialogue>>(){}.getType());
                 } else {
-                    this.textLines = new ArrayList<String>();
+                    this.dialogues = new ArrayList<NPCDialogue>();
                 }
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
 
@@ -281,27 +285,8 @@ public class CustomNPC {
         }
     }
 
-    public ArrayList<String> getTextLines() {
-        return textLines;
-    }
-
-    public void addTextLine(String s){
-        getTextLines().add(s);
-        setHasUnsavedData(true);
-    }
-
-    public void removeTextLine(String s){
-        if(getTextLines().contains(s)){
-            getTextLines().remove(s);
-            setHasUnsavedData(true);
-        }
-    }
-
-    public void clearTextLines(){
-        if(getTextLines().size() > 0){
-            getTextLines().clear();
-            setHasUnsavedData(true);
-        }
+    public ArrayList<NPCDialogue> getDialogues() {
+        return dialogues;
     }
 
     public Hologram getHologram() {
@@ -489,6 +474,72 @@ public class CustomNPC {
         saveData(true);
     }
 
+    public NPCDialogue getPreferredDialogue(Player p){
+        if(!GameUser.isLoaded(p)) return null;
+        GameUser u = GameUser.getUser(p);
+        if(u.getCurrentCharacter() == null) return null;
+
+        for(NPCDialogue dialogue : getDialogues()){
+            Quest q = Quest.getQuest(dialogue.condition.questID);
+            if(q == null) continue;
+            //if(u.getCurrentCharacter().getCurrentStage(q) != dialogue.condition.questStageIndex) continue;
+
+            int stageIndex = u.getCurrentCharacter().getCurrentStage(q);
+
+            if(dialogue.condition.type == NPCDialogueConditionType.QUEST_ENDING){
+                if(u.getCurrentCharacter().isDoneWithStage(q,stageIndex) && stageIndex == q.getStages().length-1){
+                    return dialogue;
+                }
+            } else if(dialogue.condition.type == NPCDialogueConditionType.QUEST_STAGE_STARTING){
+                if(u.getCurrentCharacter().isDoneWithStage(q,stageIndex) && stageIndex < q.getStages().length-1){
+                    return dialogue;
+                }
+            } else if(dialogue.condition.type == NPCDialogueConditionType.QUEST_RUNNING){
+                if(!u.getCurrentCharacter().isDoneWithStage(q,stageIndex)){
+                    return dialogue;
+                }
+            } else if(dialogue.condition.type == NPCDialogueConditionType.QUEST_STARTING){
+                if(u.getCurrentCharacter().getStatus(q) == QuestProgressStatus.NOT_STARTED && u.getCurrentCharacter().mayStartQuest(q)){
+                    return dialogue;
+                }
+            } else if(dialogue.condition.type == NPCDialogueConditionType.QUEST_NOTSTARTED){
+                if(u.getCurrentCharacter().getStatus(q) == QuestProgressStatus.NOT_STARTED && !u.getCurrentCharacter().mayStartQuest(q)){
+                    return dialogue;
+                }
+            }
+
+            /*if(u.getCurrentCharacter().isDoneWithStage(q,stageIndex) && stageIndex == q.getStages().length-1){
+                return getDialogue(q,stageIndex,NPCDialogueConditionType.QUEST_ENDING);
+            } else if(u.getCurrentCharacter().isDoneWithStage(q,stageIndex) && stageIndex < q.getStages().length-1){
+                return getDialogue(q,stageIndex+1,NPCDialogueConditionType.QUEST_STAGE_STARTING);
+            } else if(!u.getCurrentCharacter().isDoneWithStage(q,stageIndex)){
+                return getDialogue(q,stageIndex,NPCDialogueConditionType.QUEST_RUNNING);
+            } else if(u.getCurrentCharacter().getS)*/
+        }
+
+        return getDefaultDialogue();
+    }
+
+    private NPCDialogue getDialogue(Quest q, int questStage, NPCDialogueConditionType type){
+        for(NPCDialogue dialogue : getDialogues()){
+            if(dialogue.lines == null || dialogue.lines.size() == 0) continue;
+
+            if(dialogue.condition != null && dialogue.condition.type == type && dialogue.condition.questID == q.getId() && dialogue.condition.questStageIndex == questStage) return dialogue;
+        }
+
+        return null;
+    }
+
+    private NPCDialogue getDefaultDialogue(){
+        for(NPCDialogue dialogue : getDialogues()){
+            if(dialogue.lines == null || dialogue.lines.size() == 0) continue;
+
+            if(dialogue.condition != null && dialogue.condition.type == NPCDialogueConditionType.NONE) return dialogue;
+        }
+
+        return null;
+    }
+
     public void saveData(boolean async){
         if(async){
             DungeonAPI.async(() -> saveData(false));
@@ -503,7 +554,7 @@ public class CustomNPC {
                 ps.setString(3,getEntityType().toString());
                 ps.setString(4,getVillagerProfession().toString());
                 ps.setInt(5,skinID);
-                ps.setString(6,gson.toJson(getTextLines()));
+                ps.setString(6,gson.toJson(getDialogues()));
                 ps.setString(7,gson.toJson(getOffers()));
                 ps.setString(8,getLocation().getWorld().getName());
                 ps.setDouble(9,getLocation().getX());

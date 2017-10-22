@@ -1,6 +1,8 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +17,11 @@ public class PlayerPickupListener implements Listener {
 
         if(GameUser.isLoaded(p)){
             GameUser u = GameUser.getUser(p);
+
+            if(CustomNPC.READING.contains(p.getName())){
+                e.setCancelled(true);
+                return;
+            }
 
             if(e.getItem().getItemStack() != null){
                 if(!e.isCancelled()){

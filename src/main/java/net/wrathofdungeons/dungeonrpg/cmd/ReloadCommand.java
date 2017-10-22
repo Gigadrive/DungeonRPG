@@ -8,6 +8,7 @@ import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
+import net.wrathofdungeons.dungeonrpg.quests.Quest;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
@@ -99,11 +100,25 @@ public class ReloadCommand extends Command {
 
                     p.sendMessage(ChatColor.GREEN + "Done!");
                 });
+            } else if(mode.equalsIgnoreCase("quests")){
+                if(Quest.getUnsavedData().size() == 0){
+                    DungeonAPI.async(() -> {
+                        p.sendMessage(ChatColor.GREEN + "Reloading quests..");
+
+                        p.sendMessage(ChatColor.GREEN + "Loading quests from database..");
+
+                        Quest.init();
+
+                        p.sendMessage(ChatColor.GREEN + "Done!");
+                    });
+                } else {
+                    p.sendMessage(ChatColor.RED + "There is unsaved data left over. Use /savequests to save your unsaved data before reloading.");
+                }
             } else {
-                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast>");
+                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests>");
             }
         } else {
-            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast>");
+            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests>");
         }
     }
 }

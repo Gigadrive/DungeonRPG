@@ -20,6 +20,7 @@ public class CharSelCommand extends Command {
             if(u.getCurrentCharacter() != null){
                 Trade.clearRequests(p);
                 Duel.clearRequests(p);
+                u.cancelAllTasks();
                 u.saveData(true);
             } else {
                 p.sendMessage(ChatColor.RED + "You are already in the character selection screen.");

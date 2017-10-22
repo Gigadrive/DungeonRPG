@@ -31,6 +31,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkillStorage;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
+import net.wrathofdungeons.dungeonrpg.quests.Quest;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
@@ -69,13 +70,15 @@ public class DungeonRPG extends JavaPlugin {
     public static final int PLAYER_MOB_LEVEL_DIFFERENCE = 7;
     public static final int STATPOINTS_LIMIT = 64;
     public static final double PARTY_EXP_RANGE = 50;
+    public static final boolean ENABLE_QUESTS = true;
+    public static final int QUEST_NPC_TEXT_LINE_DELAY = 4;
+
     public static HashMap<String, DungeonProjectile> SHOT_PROJECTILE_DATA = new HashMap<String, DungeonProjectile>();
     public static ArrayList<Material> DISALLOWED_BLOCKS = new ArrayList<Material>();
     public static ArrayList<Material> DISALLOWED_ITEMS = new ArrayList<Material>();
     public static ArrayList<Material> SETUP_ADD_NO_Y = new ArrayList<Material>();
     public static ArrayList<NPC> IGNORE_SPAWN_NPC = new ArrayList<NPC>();
     public static World MAIN_WORLD = null;
-    public static final int QUEST_NPC_TEXT_LINE_DELAY = 4;
     public static final ArrayList<String> BROADCAST_LINES = new ArrayList<String>();
     private int broadcastCurrent = 0;
 
@@ -114,6 +117,7 @@ public class DungeonRPG extends JavaPlugin {
         CustomNPC.init();
         LootChest.init();
         reloadBroadcastLines();
+        Quest.init();
 
         SkillStorage s = new SkillStorage();
 
@@ -510,6 +514,29 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(DungeonRPG.getInstance(),6*60*20,6*60*20);
 
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Player p : Bukkit.getOnlinePlayers()){
+                    if(GameUser.isLoaded(p)){
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null){
+                            for(Quest q : Quest.STORAGE.values()){
+                                if(u.getCurrentCharacter().mayStartQuest(q)){
+                                    CustomNPC giver = q.getGiverNPC();
+
+                                    if(giver != null){
+                                        ParticleEffect.VILLAGER_HAPPY.display(0.55f,1f,0.55f,1f,100,giver.getLocation(),p);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(DungeonRPG.getInstance(),10,10);
+
         Bukkit.getServer().clearRecipes();
         TargetHandler.registerEntity("Zombie",54, EntityZombie.class, ZombieArcher.class);
         TargetHandler.registerEntity("Zombie",54, EntityZombie.class, DungeonZombie.class);
@@ -650,6 +677,7 @@ public class DungeonRPG extends JavaPlugin {
         new CreateNPCCommand();
         new CreateLootChestCommand();
         new CreateRegionCommand();
+        new CreateQuestCommand();
         new CharSelCommand();
         new DuelCommand();
         new ExpCommand();
@@ -657,11 +685,13 @@ public class DungeonRPG extends JavaPlugin {
         new ItemInfoCommand();
         new LoadRegionCommand();
         new ModifyNPCCommand();
+        new ModifyQuestCommand();
         new PartyCommand();
         new PingCommand();
         new ReloadCommand();
         new SaveNPCsCommand();
         new SaveRegionCommand();
+        new SaveQuestsCommand();
         new SetLocationCommand();
         new SetupCommand();
         new SummonCommand();

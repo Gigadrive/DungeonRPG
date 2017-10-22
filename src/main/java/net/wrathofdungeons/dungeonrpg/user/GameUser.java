@@ -21,6 +21,9 @@ import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.party.Party;
+import net.wrathofdungeons.dungeonrpg.quests.Quest;
+import net.wrathofdungeons.dungeonrpg.quests.QuestObjective;
+import net.wrathofdungeons.dungeonrpg.quests.QuestStage;
 import net.wrathofdungeons.dungeonrpg.skill.SkillValues;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
@@ -97,11 +100,18 @@ public class GameUser extends User {
     public int merchantAddMoneyCost = -1;
     public ArrayList<CustomItem> merchantAddItemCosts = null;
 
+    public Quest questModifying = null;
+    public QuestStage stageAdding = null;
+    public QuestObjective objectiveAdding = null;
+    public boolean stageSettingItemsToGet = false;
+
     public CustomNPC npcAddTextLine = null;
 
     private BukkitTask mpRegenTask;
     private BukkitTask hpRegenTask;
     private BukkitTask comboResetTask;
+
+    private ArrayList<BukkitTask> cancellableTasks;
 
     private boolean dying = false;
 
@@ -1099,12 +1109,26 @@ public class GameUser extends User {
                 User.STORAGE.put(p,this);
                 init = true;
 
+                cancellableTasks = new ArrayList<BukkitTask>();
+
                 FinalDataLoadedEvent event = new FinalDataLoadedEvent(p);
                 Bukkit.getPluginManager().callEvent(event);
             } catch(Exception e){
                 e.printStackTrace();
             }
         });
+    }
+
+    public ArrayList<BukkitTask> getCancellableTasks() {
+        return cancellableTasks;
+    }
+
+    public void cancelAllTasks(){
+        for(BukkitTask t : getCancellableTasks()) t.cancel();
+
+        getCancellableTasks().clear();
+
+        CustomNPC.READING.remove(p);
     }
 
     private void loadCharacters(){

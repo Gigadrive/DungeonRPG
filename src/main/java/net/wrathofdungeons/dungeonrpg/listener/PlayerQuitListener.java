@@ -23,6 +23,7 @@ public class PlayerQuitListener implements Listener {
             if(u.getParty() != null) u.getParty().leaveParty(p);
             u.stopMPRegenTask();
             u.stopHPRegenTask();
+            u.cancelAllTasks();
         }
     }
 }

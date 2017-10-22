@@ -5,8 +5,14 @@ import net.wrathofdungeons.dungeonrpg.inv.MerchantSetupMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
+import net.wrathofdungeons.dungeonrpg.npc.CustomNPCType;
 import net.wrathofdungeons.dungeonrpg.npc.MerchantOffer;
 import net.wrathofdungeons.dungeonrpg.npc.MerchantOfferCost;
+import net.wrathofdungeons.dungeonrpg.quests.Quest;
+import net.wrathofdungeons.dungeonrpg.quests.QuestObjective;
+import net.wrathofdungeons.dungeonrpg.quests.QuestObjectiveType;
+import net.wrathofdungeons.dungeonrpg.quests.QuestStage;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
@@ -245,7 +251,7 @@ public class ChatListener implements Listener {
                                 }
                             }
                         }
-                    } else if(u.npcAddTextLine != null){
+                    } /*else if(u.npcAddTextLine != null){
                         msg = msg.trim();
 
                         if(msg.equalsIgnoreCase("cancel")){
@@ -255,6 +261,151 @@ public class ChatListener implements Listener {
                             u.npcAddTextLine.addTextLine(msg);
                             u.npcAddTextLine = null;
                             p.sendMessage(ChatColor.GREEN + "Line added!");
+                        }
+                    } */else if(u.stageAdding != null){
+                        msg = msg.trim();
+
+                        if(msg.equalsIgnoreCase("skip")){
+                            u.stageAdding = null;
+                            u.objectiveAdding = null;
+
+                            p.sendMessage(ChatColor.GREEN + "Finished.");
+                            return;
+                        }
+
+                        if(u.stageAdding.objectives.length == 0 && u.objectiveAdding == null){
+                            QuestObjectiveType type = null;
+
+                            for(QuestObjectiveType t : QuestObjectiveType.values()) if(t.toString().equalsIgnoreCase(msg)) type = t;
+
+                            if(type != null){
+                                if(type == QuestObjectiveType.KILL_MOBS){
+                                    p.sendMessage(ChatColor.GOLD + "Enter the ID of the mob that you want to add.");
+                                    p.sendMessage(ChatColor.GOLD + "Use ID[:AMOUNT] as a format template.");
+                                    p.sendMessage(ChatColor.GRAY + "(Type 'cancel' to cancel.)");
+                                } else if(type == QuestObjectiveType.FIND_ITEM){
+                                    p.sendMessage(ChatColor.GOLD + "Enter the ID of the item that you want to add.");
+                                    p.sendMessage(ChatColor.GOLD + "Use ID[:AMOUNT] as a format template.");
+                                    p.sendMessage(ChatColor.GRAY + "(Type 'cancel' to cancel.)");
+                                } else if(type == QuestObjectiveType.TALK_TO_NPC){
+                                    p.sendMessage(ChatColor.GOLD + "Enter the ID of the NPC that you want to add.");
+                                    p.sendMessage(ChatColor.GRAY + "(Type 'cancel' to cancel.)");
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Please enter a valid type.");
+                                    return;
+                                }
+
+                                QuestObjective o = new QuestObjective();
+                                o.type = type;
+                                u.objectiveAdding = o;
+                            } else {
+                                if(msg.equalsIgnoreCase("cancel")){
+                                    p.sendMessage(ChatColor.RED + "Operation aborted.");
+                                    u.stageAdding = null;
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Please enter a valid type.");
+                                }
+                            }
+                        } else if(u.objectiveAdding != null){
+                            if(msg.equalsIgnoreCase("cancel")){
+                                p.sendMessage(ChatColor.RED + "Operation aborted.");
+                                u.stageAdding = null;
+                                u.objectiveAdding = null;
+                                return;
+                            }
+
+                            if(u.objectiveAdding.type == QuestObjectiveType.KILL_MOBS){
+
+                            } else if(u.objectiveAdding.type == QuestObjectiveType.FIND_ITEM){
+                                String[] s = msg.split(":");
+                                if(s.length == 1 || s.length == 2){
+                                    if(Util.isValidInteger(s[0])){
+                                        int amount = 1;
+
+                                        if(s.length == 2){
+                                            if(Util.isValidInteger(s[1])){
+                                                amount = Integer.parseInt(s[1]);
+                                            } else {
+                                                p.sendMessage(ChatColor.RED + "Please enter a valid integer.");
+                                                return;
+                                            }
+                                        }
+
+                                        if(ItemData.getData(Integer.parseInt(s[0])) != null){
+                                            CustomItem item = new CustomItem(Integer.parseInt(s[0]),amount);
+                                            u.objectiveAdding.itemToFind = item.getData().getId();
+                                            u.objectiveAdding.itemToFindAmount = item.getAmount();
+
+                                            ArrayList<QuestObjective> ob = new ArrayList<QuestObjective>();
+                                            for(QuestObjective o : u.stageAdding.objectives) ob.add(o);
+                                            ob.add(u.objectiveAdding);
+
+                                            u.stageAdding.objectives = ob.toArray(new QuestObjective[]{});
+
+                                            ArrayList<QuestStage> ss = new ArrayList<QuestStage>();
+                                            for(QuestStage st : u.questModifying.getStages()) ss.add(st);
+                                            ss.add(u.stageAdding);
+
+                                            u.questModifying.setStages(ss.toArray(new QuestStage[]{}));
+
+                                            u.objectiveAdding = null;
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "That item doesn't exist.");
+                                        }
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "Please enter a valid integer.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Invalid format. Use ID[:AMOUNT]!");
+                                }
+                            } else if(u.objectiveAdding.type == QuestObjectiveType.TALK_TO_NPC){
+                                if(Util.isValidInteger(msg)){
+                                    if(CustomNPC.fromID(Integer.parseInt(msg)) != null){
+                                        if(CustomNPC.fromID(Integer.parseInt(msg)).getNpcType() == CustomNPCType.QUEST_NPC){
+                                            u.objectiveAdding.npcToTalkTo = Integer.parseInt(msg);
+
+                                            ArrayList<QuestObjective> ob = new ArrayList<QuestObjective>();
+                                            for(QuestObjective o : u.stageAdding.objectives) ob.add(o);
+                                            ob.add(u.objectiveAdding);
+
+                                            u.stageAdding.objectives = ob.toArray(new QuestObjective[]{});
+
+                                            ArrayList<QuestStage> s = new ArrayList<QuestStage>();
+                                            for(QuestStage st : u.questModifying.getStages()) s.add(st);
+                                            s.add(u.stageAdding);
+
+                                            u.questModifying.setStages(s.toArray(new QuestStage[]{}));
+
+                                            u.objectiveAdding = null;
+
+                                            String sts = "";
+                                            for(QuestObjectiveType type : QuestObjectiveType.values()){
+                                                if(sts.equals("")){
+                                                    sts = type.toString();
+                                                } else {
+                                                    sts += ", " + type.toString();
+                                                }
+                                            }
+
+                                            p.sendMessage(ChatColor.RED + "(Objective " + (u.stageAdding.objectives.length+1) + ")");
+                                            p.sendMessage(ChatColor.GOLD + "Enter the type of objective you want to add.");
+                                            p.sendMessage(ChatColor.GOLD + "The following ones are available: " + ChatColor.GREEN + sts);
+                                            p.sendMessage(ChatColor.GREEN + "(Type 'skip' to finish.)");
+                                            p.sendMessage(ChatColor.GRAY + "(Type 'cancel' to cancel.)");
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "The target NPC has to be a quest npc.");
+                                        }
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "Please enter a valid ID.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Please enter a valid ID.");
+                                }
+                            } else {
+                                p.sendMessage(ChatColor.RED + "Operation aborted.");
+                                u.stageAdding = null;
+                                u.objectiveAdding = null;
+                            }
                         }
                     }
                 }

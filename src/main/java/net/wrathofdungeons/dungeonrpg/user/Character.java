@@ -1,5 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import eu.the5zig.mod.server.api.Stat;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
@@ -7,8 +9,10 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
+import net.wrathofdungeons.dungeonrpg.quests.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -21,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class Character {
@@ -36,6 +41,7 @@ public class Character {
     private int agility;
     private int statpointsLeft;
     private Location storedLocation;
+    private ArrayList<QuestProgress> questProgress;
     private PlayerInventory storedInventory;
     private Timestamp creationTime;
     private Timestamp lastLogin;
@@ -43,6 +49,7 @@ public class Character {
 
     public Character(int id, Player p){
         this.id = id;
+        Gson gson = new Gson();
 
         try {
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `characters` WHERE `id` = ?");
@@ -61,6 +68,11 @@ public class Character {
                 this.agility = rs.getInt("statpoints.agi");
                 this.statpointsLeft = rs.getInt("statpoints.left");
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
+                if(rs.getString("questProgress") != null){
+                    this.questProgress = gson.fromJson(rs.getString("questProgress"),new TypeToken<ArrayList<QuestProgress>>(){}.getType());
+                } else {
+                    this.questProgress = new ArrayList<QuestProgress>();
+                }
                 if(rs.getString("inventory") != null) this.storedInventory = PlayerInventory.fromString(rs.getString("inventory"));
                 this.creationTime = rs.getTimestamp("time");
                 this.lastLogin = rs.getTimestamp("lastLogin");
@@ -238,6 +250,142 @@ public class Character {
         return 1;
     }
 
+    private void registerProgress(Quest q){
+        QuestProgress p = new QuestProgress();
+        p.questID = q.getId();
+        p.status = QuestProgressStatus.NOT_STARTED;
+        questProgress.add(p);
+    }
+
+    public QuestProgress getProgress(Quest q){
+        for(QuestProgress p : questProgress){
+            if(p.questID == q.getId()) return p;
+        }
+
+        registerProgress(q);
+        return getProgress(q);
+    }
+
+    public int getCurrentStage(Quest q){
+        if(getProgress(q).status == QuestProgressStatus.STARTED){
+            return getProgress(q).questStage;
+        } else {
+            return -1;
+        }
+    }
+
+    public QuestObjectiveProgress getObjectiveProgress(Quest q, QuestObjective o){
+        if(getCurrentStage(q) < q.getStages().length && getCurrentStage(q) >= 0){
+            QuestStage stage = q.getStages()[getCurrentStage(q)];
+
+            int objectiveIndex = Arrays.asList(stage.objectives).indexOf(o);
+            if(objectiveIndex >= 0){
+                for(QuestObjectiveProgress p : getProgress(q).objectiveProgress){
+                    if(p.objectiveIndex == objectiveIndex) return p;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public void setQuestStatus(Quest q, QuestProgressStatus status){
+        getProgress(q).status = status;
+    }
+
+    public QuestProgressStatus getStatus(Quest q){
+        return getProgress(q).status;
+    }
+
+    public void setCurrentStage(Quest q, int stageIndex){
+        if(stageIndex < q.getStages().length && stageIndex >= 0){
+            QuestStage s = q.getStages()[stageIndex];
+
+            if(s != null){
+                getProgress(q).questStage = stageIndex;
+
+                if(getProgress(q).objectiveProgress == null) getProgress(q).objectiveProgress = new ArrayList<QuestObjectiveProgress>();
+                getProgress(q).objectiveProgress.clear();
+
+                int index = 0;
+                for(QuestObjective o : s.objectives){
+                    QuestObjectiveProgress op = new QuestObjectiveProgress();
+                    op.objectiveIndex = index;
+                    op.killedMobs = 0;
+
+                    getProgress(q).objectiveProgress.add(op);
+                    index++;
+                }
+            }
+        }
+    }
+
+    public boolean isDoneWithStage(Quest q, int stageIndex){
+        if(getStatus(q) == QuestProgressStatus.NOT_STARTED){
+            return false;
+        } else if(getStatus(q) == QuestProgressStatus.STARTED){
+            QuestStage s = q.getStages()[stageIndex];
+
+            for(QuestObjective o : s.objectives){
+                if(o.type == QuestObjectiveType.KILL_MOBS){
+                    if(getObjectiveProgress(q,o).killedMobs < o.mobToKillAmount){
+                        return false;
+                    }
+                } else if(o.type == QuestObjectiveType.FIND_ITEM){
+                    if(getAmountInInventory(o.itemToFind) < o.itemToFindAmount){
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        } else if(getStatus(q) == QuestProgressStatus.FINISHED){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean mayStartQuest(Quest q){
+        if(getStatus(q) != QuestProgressStatus.NOT_STARTED){
+            return false;
+        } else {
+            if(getLevel() < q.getRequiredLevel()){
+                return false;
+            } else {
+                for(int qq : q.getRequiredQuests()){
+                    if(Quest.getQuest(qq) != null){
+                        Quest req = Quest.getQuest(qq);
+
+                        if(getStatus(req) != QuestProgressStatus.FINISHED){
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+        }
+    }
+
+    public int getAmountInInventory(ItemData data){
+        return getAmountInInventory(data.getId());
+    }
+
+    public int getAmountInInventory(int id){
+        int i = 0;
+
+        for(ItemStack iStack : p.getInventory().getContents()){
+            CustomItem item = CustomItem.fromItemStack(iStack);
+
+            if(item != null){
+                if(item.getData().getId() == id) i += item.getAmount();
+            }
+        }
+
+        return i;
+    }
+
     public int getBankSlots(){
         return getBankRows()*9;
     }
@@ -306,8 +454,9 @@ public class Character {
             try {
                 this.storedLocation = p.getLocation();
                 this.storedInventory = getConvertedInventory(p);
+                Gson gson = new Gson();
 
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `statpoints.str` = ?, `statpoints.sta` = ?, `statpoints.int` = ?, `statpoints.dex` = ?, `statpoints.agi` = ?, `statpoints.left` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `inventory` = ?, `lastLogin` = ? WHERE `id` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `statpoints.str` = ?, `statpoints.sta` = ?, `statpoints.int` = ?, `statpoints.dex` = ?, `statpoints.agi` = ?, `statpoints.left` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `questProgress` = ?, `inventory` = ?, `lastLogin` = ? WHERE `id` = ?");
                 ps.setInt(1,getLevel());
                 ps.setDouble(2,getExp());
                 ps.setInt(3,strength);
@@ -322,9 +471,10 @@ public class Character {
                 ps.setDouble(12,p.getLocation().getZ());
                 ps.setFloat(13,p.getLocation().getYaw());
                 ps.setFloat(14,p.getLocation().getPitch());
-                ps.setString(15,getConvertedInventory(p).toString());
-                ps.setTimestamp(16,lastLogin);
-                ps.setInt(17,getId());
+                ps.setString(15,gson.toJson(questProgress));
+                ps.setString(16,getConvertedInventory(p).toString());
+                ps.setTimestamp(17,lastLogin);
+                ps.setInt(18,getId());
                 ps.executeUpdate();
                 ps.close();
 
