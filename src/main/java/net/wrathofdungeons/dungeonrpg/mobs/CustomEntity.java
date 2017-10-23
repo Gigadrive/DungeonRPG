@@ -33,6 +33,10 @@ import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonSheep;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
+import net.wrathofdungeons.dungeonrpg.quests.Quest;
+import net.wrathofdungeons.dungeonrpg.quests.QuestObjective;
+import net.wrathofdungeons.dungeonrpg.quests.QuestProgressStatus;
+import net.wrathofdungeons.dungeonrpg.quests.QuestStage;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
@@ -256,6 +260,24 @@ public class CustomEntity {
                             holo.delete();
                         }
                     }.runTaskLater(DungeonRPG.getInstance(),10);
+
+                    for(Quest q : Quest.STORAGE.values()){
+                        if(u.getCurrentCharacter().getStatus(q) == QuestProgressStatus.STARTED){
+                            QuestStage stage = q.getStages()[u.getCurrentCharacter().getCurrentStage(q)];
+
+                            if(stage != null){
+                                for(QuestObjective o : stage.objectives){
+                                    if(o.mobToKill == mob.getId()){
+                                        if(u.getCurrentCharacter().getObjectiveProgress(q,o).killedMobs < o.mobToKillAmount){
+                                            u.getCurrentCharacter().getObjectiveProgress(q,o).killedMobs++;
+
+                                            p.sendMessage(ChatColor.GRAY + "[Kill " + mob.getName() + " " + ChatColor.WHITE + "(" + u.getCurrentCharacter().getObjectiveProgress(q,o).killedMobs + "/" + o.mobToKillAmount + ")" + ChatColor.GRAY + "]");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
