@@ -46,8 +46,6 @@ public class NPCInteractListener implements Listener {
                         NPCDialogue dialogue = npc.getPreferredDialogue(p);
 
                         if(dialogue != null && dialogue.lines.size() > 0){
-                            CustomNPC.READING.add(p.getName());
-
                             if(dialogue.condition.type == NPCDialogueConditionType.QUEST_ENDING){
                                 Quest q = Quest.getQuest(dialogue.condition.questID);
 
@@ -74,6 +72,8 @@ public class NPCInteractListener implements Listener {
                                     }
                                 }
                             }
+
+                            CustomNPC.READING.add(p.getName());
 
                             int i = 0;
                             for(String line : dialogue.lines){
