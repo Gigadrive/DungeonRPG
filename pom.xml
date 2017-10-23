@@ -85,5 +85,10 @@
             <artifactId>viaversion</artifactId>
             <version>1.2.0-17w31a-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.rex2go</groupId>
+            <artifactId>ComAPI</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
 </project>

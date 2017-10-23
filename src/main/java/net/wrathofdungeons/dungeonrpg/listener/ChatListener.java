@@ -5,6 +5,7 @@ import net.wrathofdungeons.dungeonrpg.inv.MerchantSetupMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPCType;
 import net.wrathofdungeons.dungeonrpg.npc.MerchantOffer;
@@ -273,7 +274,7 @@ public class ChatListener implements Listener {
                             return;
                         }
 
-                        if(u.stageAdding.objectives.length == 0 && u.objectiveAdding == null){
+                        if(/*u.stageAdding.objectives.length == 0 && */u.objectiveAdding == null){
                             QuestObjectiveType type = null;
 
                             for(QuestObjectiveType t : QuestObjectiveType.values()) if(t.toString().equalsIgnoreCase(msg)) type = t;
@@ -306,7 +307,7 @@ public class ChatListener implements Listener {
                                     p.sendMessage(ChatColor.RED + "Please enter a valid type.");
                                 }
                             }
-                        } else if(u.objectiveAdding != null){
+                        } else {
                             if(msg.equalsIgnoreCase("cancel")){
                                 p.sendMessage(ChatColor.RED + "Operation aborted.");
                                 u.stageAdding = null;
@@ -315,7 +316,62 @@ public class ChatListener implements Listener {
                             }
 
                             if(u.objectiveAdding.type == QuestObjectiveType.KILL_MOBS){
+                                String[] s = msg.split(":");
+                                if(s.length == 1 || s.length == 2){
+                                    if(Util.isValidInteger(s[0])){
+                                        int amount = 1;
 
+                                        if(s.length == 2){
+                                            if(Util.isValidInteger(s[1])){
+                                                amount = Integer.parseInt(s[1]);
+                                            } else {
+                                                p.sendMessage(ChatColor.RED + "Please enter a valid integer.");
+                                                return;
+                                            }
+                                        }
+
+                                        if(MobData.getData(Integer.parseInt(s[0])) != null){
+                                            MobData mob = MobData.getData(Integer.parseInt(s[0]));
+                                            u.objectiveAdding.mobToKill = mob.getId();
+                                            u.objectiveAdding.mobToKillAmount = amount;
+
+                                            ArrayList<QuestObjective> ob = new ArrayList<QuestObjective>();
+                                            for(QuestObjective o : u.stageAdding.objectives) ob.add(o);
+                                            ob.add(u.objectiveAdding);
+
+                                            u.stageAdding.objectives = ob.toArray(new QuestObjective[]{});
+
+                                            ArrayList<QuestStage> ss = new ArrayList<QuestStage>();
+                                            for(QuestStage st : u.questModifying.getStages()) ss.add(st);
+                                            ss.add(u.stageAdding);
+
+                                            u.questModifying.setStages(ss.toArray(new QuestStage[]{}));
+
+                                            u.objectiveAdding = null;
+
+                                            String sts = "";
+                                            for(QuestObjectiveType type : QuestObjectiveType.values()){
+                                                if(sts.equals("")){
+                                                    sts = type.toString();
+                                                } else {
+                                                    sts += ", " + type.toString();
+                                                }
+                                            }
+
+                                            p.sendMessage(ChatColor.RED + "(Objective " + (u.stageAdding.objectives.length+1) + ")");
+                                            p.sendMessage(ChatColor.GOLD + "Enter the type of objective you want to add.");
+                                            p.sendMessage(ChatColor.GOLD + "The following ones are available: " + ChatColor.GREEN + sts);
+                                            p.sendMessage(ChatColor.GREEN + "(Type 'skip' to finish.)");
+                                            p.sendMessage(ChatColor.GRAY + "(Type 'cancel' to cancel.)");
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "That mob doesn't exist.");
+                                        }
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "Please enter a valid integer.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Invalid format. Use ID[:AMOUNT]!");
+                                }
                             } else if(u.objectiveAdding.type == QuestObjectiveType.FIND_ITEM){
                                 String[] s = msg.split(":");
                                 if(s.length == 1 || s.length == 2){
@@ -349,6 +405,21 @@ public class ChatListener implements Listener {
                                             u.questModifying.setStages(ss.toArray(new QuestStage[]{}));
 
                                             u.objectiveAdding = null;
+
+                                            String sts = "";
+                                            for(QuestObjectiveType type : QuestObjectiveType.values()){
+                                                if(sts.equals("")){
+                                                    sts = type.toString();
+                                                } else {
+                                                    sts += ", " + type.toString();
+                                                }
+                                            }
+
+                                            p.sendMessage(ChatColor.RED + "(Objective " + (u.stageAdding.objectives.length+1) + ")");
+                                            p.sendMessage(ChatColor.GOLD + "Enter the type of objective you want to add.");
+                                            p.sendMessage(ChatColor.GOLD + "The following ones are available: " + ChatColor.GREEN + sts);
+                                            p.sendMessage(ChatColor.GREEN + "(Type 'skip' to finish.)");
+                                            p.sendMessage(ChatColor.GRAY + "(Type 'cancel' to cancel.)");
                                         } else {
                                             p.sendMessage(ChatColor.RED + "That item doesn't exist.");
                                         }
