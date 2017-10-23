@@ -482,7 +482,7 @@ public class CustomNPC {
         for(NPCDialogue dialogue : getDialogues()){
             Quest q = Quest.getQuest(dialogue.condition.questID);
             if(q == null) continue;
-            if(u.getCurrentCharacter().getStatus(q) != QuestProgressStatus.STARTED && dialogue.condition.type != NPCDialogueConditionType.QUEST_NOTSTARTED) continue;
+            if(u.getCurrentCharacter().getStatus(q) != QuestProgressStatus.STARTED && (dialogue.condition.type != NPCDialogueConditionType.QUEST_NOTSTARTED && dialogue.condition.type != NPCDialogueConditionType.QUEST_STARTING)) continue;
             //if(u.getCurrentCharacter().getCurrentStage(q) != dialogue.condition.questStageIndex) continue;
 
             int stageIndex = u.getCurrentCharacter().getCurrentStage(q);
