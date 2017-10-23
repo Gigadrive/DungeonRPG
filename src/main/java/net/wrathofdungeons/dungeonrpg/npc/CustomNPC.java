@@ -486,7 +486,8 @@ public class CustomNPC {
             //if(u.getCurrentCharacter().getCurrentStage(q) != dialogue.condition.questStageIndex) continue;
 
             int stageIndex = u.getCurrentCharacter().getCurrentStage(q);
-            QuestStage stage = q.getStages()[stageIndex];
+            QuestStage stage = null;
+            if(stageIndex >= 0) stage = q.getStages()[stageIndex];
 
             if(dialogue.condition.type == NPCDialogueConditionType.QUEST_ENDING){
                 if(u.getCurrentCharacter().isDoneWithStage(q,stageIndex) && stageIndex == q.getStages().length-1){
