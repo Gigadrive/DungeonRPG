@@ -85,7 +85,7 @@ public class DamageHandler {
                 } else if(skill instanceof FlameBurst){
                     damage *= 1.5;
                 } else if(skill instanceof AxeBlast){
-                    damage *= 2;
+                    damage *= 2.5;
                 }
             }
 
@@ -136,7 +136,7 @@ public class DamageHandler {
                 } else if(skill instanceof FlameBurst){
                     damage *= 1.5;
                 } else if(skill instanceof AxeBlast){
-                    damage *= 2;
+                    damage *= 2.5;
                 }
             }
 

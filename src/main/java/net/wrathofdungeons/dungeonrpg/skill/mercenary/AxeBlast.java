@@ -114,7 +114,7 @@ public class AxeBlast implements Skill {
                                     DungeonRPG.showBloodEffect(c.getBukkitEntity().getLocation());
                                     c.getData().playSound(c.getBukkitEntity().getLocation());
                                     c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,axeBlast),p);
-                                    c.giveNormalKnockback(castLocation);
+                                    c.giveNormalKnockback(playerLoc);
                                 } else {
                                     if(livingEntity instanceof Player){
                                         Player p2 = (Player)livingEntity;
