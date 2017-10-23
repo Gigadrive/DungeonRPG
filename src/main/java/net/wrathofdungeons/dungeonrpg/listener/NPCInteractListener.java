@@ -96,8 +96,8 @@ public class NPCInteractListener implements Listener {
                                                         public void run() {
                                                             u.getCurrentCharacter().setQuestStatus(q, QuestProgressStatus.STARTED);
                                                             u.getCurrentCharacter().setCurrentStage(q,0);
-                                                            p.sendMessage(ChatColor.YELLOW + "New Quest started! " + ChatColor.GOLD + q.getName());
-                                                            p.sendMessage(ChatColor.YELLOW + "Check your quest diary for help.");
+                                                            p.sendMessage(ChatColor.GOLD + "New Quest started! " + ChatColor.YELLOW + q.getName());
+                                                            p.sendMessage(ChatColor.GOLD + "Check your quest diary for help.");
 
                                                             CustomNPC.READING.remove(p.getName());
                                                         }
