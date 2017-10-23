@@ -634,6 +634,12 @@ public class GameUser extends User {
         }
     }
 
+    public void reloadFriends(){
+        super.reloadFriends();
+
+        DungeonRPG.updateNames();
+    }
+
     public void updateName(){
         for(Player all : Bukkit.getOnlinePlayers()){
             if(GameUser.isLoaded(all)){
