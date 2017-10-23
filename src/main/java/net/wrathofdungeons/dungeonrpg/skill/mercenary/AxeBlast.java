@@ -92,6 +92,7 @@ public class AxeBlast implements Skill {
             }
 
             if(bashes > locations.size()) bashes = locations.size();
+            final Location playerLoc = loc;
 
             for(int casts = 0; casts < bashes; casts++){
                 final int castNumber = casts;
@@ -124,7 +125,7 @@ public class AxeBlast implements Skill {
                                             if(Duel.isDuelingWith(p,p2)){
                                                 DungeonRPG.showBloodEffect(entity.getLocation());
                                                 u2.damage(DamageHandler.calculatePlayerToPlayerDamage(u,u2,axeBlast),p);
-                                                u2.giveNormalKnockback(castLocation);
+                                                u2.giveNormalKnockback(playerLoc);
                                             }
                                         }
                                     }
