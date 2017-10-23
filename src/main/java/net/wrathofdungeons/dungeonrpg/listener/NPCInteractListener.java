@@ -59,7 +59,7 @@ public class NPCInteractListener implements Listener {
                                 }
                             }
 
-                            if(dialogue.condition.type == NPCDialogueConditionType.QUEST_STAGE_STARTING){
+                            if(dialogue.condition.type == NPCDialogueConditionType.QUEST_STAGE_STARTING || dialogue.condition.type == NPCDialogueConditionType.QUEST_ENDING){
                                 Quest q = Quest.getQuest(dialogue.condition.questID);
 
                                 if(q != null){
