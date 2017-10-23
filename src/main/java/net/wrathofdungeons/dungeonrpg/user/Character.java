@@ -320,6 +320,10 @@ public class Character {
         }
     }
 
+    public boolean isDoneWithStage(Quest q){
+        return isDoneWithStage(q,getCurrentStage(q));
+    }
+
     public boolean isDoneWithStage(Quest q, int stageIndex){
         if(getStatus(q) == QuestProgressStatus.NOT_STARTED){
             return false;

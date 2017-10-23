@@ -332,17 +332,16 @@ public class ChatListener implements Listener {
 
                                         if(MobData.getData(Integer.parseInt(s[0])) != null){
                                             MobData mob = MobData.getData(Integer.parseInt(s[0]));
+                                            ArrayList<QuestObjective> ob = new ArrayList<QuestObjective>();
+                                            for(QuestObjective o : u.stageAdding.objectives) if(o != u.objectiveAdding) ob.add(o);
                                             u.objectiveAdding.mobToKill = mob.getId();
                                             u.objectiveAdding.mobToKillAmount = amount;
-
-                                            ArrayList<QuestObjective> ob = new ArrayList<QuestObjective>();
-                                            for(QuestObjective o : u.stageAdding.objectives) ob.add(o);
                                             ob.add(u.objectiveAdding);
 
                                             u.stageAdding.objectives = ob.toArray(new QuestObjective[]{});
 
                                             ArrayList<QuestStage> ss = new ArrayList<QuestStage>();
-                                            for(QuestStage st : u.questModifying.getStages()) ss.add(st);
+                                            for(QuestStage st : u.questModifying.getStages()) if(st != u.stageAdding) ss.add(st);
                                             ss.add(u.stageAdding);
 
                                             u.questModifying.setStages(ss.toArray(new QuestStage[]{}));
@@ -389,17 +388,16 @@ public class ChatListener implements Listener {
 
                                         if(ItemData.getData(Integer.parseInt(s[0])) != null){
                                             CustomItem item = new CustomItem(Integer.parseInt(s[0]),amount);
+                                            ArrayList<QuestObjective> ob = new ArrayList<QuestObjective>();
+                                            for(QuestObjective o : u.stageAdding.objectives) if(o != u.objectiveAdding) ob.add(o);
                                             u.objectiveAdding.itemToFind = item.getData().getId();
                                             u.objectiveAdding.itemToFindAmount = item.getAmount();
-
-                                            ArrayList<QuestObjective> ob = new ArrayList<QuestObjective>();
-                                            for(QuestObjective o : u.stageAdding.objectives) ob.add(o);
                                             ob.add(u.objectiveAdding);
 
                                             u.stageAdding.objectives = ob.toArray(new QuestObjective[]{});
 
                                             ArrayList<QuestStage> ss = new ArrayList<QuestStage>();
-                                            for(QuestStage st : u.questModifying.getStages()) ss.add(st);
+                                            for(QuestStage st : u.questModifying.getStages()) if(st != u.stageAdding) ss.add(st);
                                             ss.add(u.stageAdding);
 
                                             u.questModifying.setStages(ss.toArray(new QuestStage[]{}));
@@ -433,16 +431,15 @@ public class ChatListener implements Listener {
                                 if(Util.isValidInteger(msg)){
                                     if(CustomNPC.fromID(Integer.parseInt(msg)) != null){
                                         if(CustomNPC.fromID(Integer.parseInt(msg)).getNpcType() == CustomNPCType.QUEST_NPC){
-                                            u.objectiveAdding.npcToTalkTo = Integer.parseInt(msg);
-
                                             ArrayList<QuestObjective> ob = new ArrayList<QuestObjective>();
-                                            for(QuestObjective o : u.stageAdding.objectives) ob.add(o);
+                                            for(QuestObjective o : u.stageAdding.objectives) if(o != u.objectiveAdding) ob.add(o);
+                                            u.objectiveAdding.npcToTalkTo = Integer.parseInt(msg);
                                             ob.add(u.objectiveAdding);
 
                                             u.stageAdding.objectives = ob.toArray(new QuestObjective[]{});
 
                                             ArrayList<QuestStage> s = new ArrayList<QuestStage>();
-                                            for(QuestStage st : u.questModifying.getStages()) s.add(st);
+                                            for(QuestStage st : u.questModifying.getStages()) if(st != u.stageAdding) s.add(st);
                                             s.add(u.stageAdding);
 
                                             u.questModifying.setStages(s.toArray(new QuestStage[]{}));

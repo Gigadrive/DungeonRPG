@@ -43,10 +43,11 @@ public class NPCInteractListener implements Listener {
                     // TODO: Check if npc is involved with quest
                 } else {
                     if(npc.getDialogues().size() > 0 && !CustomNPC.READING.contains(p.getName())){
-                        CustomNPC.READING.add(p.getName());
                         NPCDialogue dialogue = npc.getPreferredDialogue(p);
 
                         if(dialogue != null && dialogue.lines.size() > 0){
+                            CustomNPC.READING.add(p.getName());
+
                             if(dialogue.condition.type == NPCDialogueConditionType.QUEST_ENDING){
                                 Quest q = Quest.getQuest(dialogue.condition.questID);
 

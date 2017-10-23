@@ -507,14 +507,6 @@ public class CustomNPC {
                     return dialogue;
                 }
             }
-
-            /*if(u.getCurrentCharacter().isDoneWithStage(q,stageIndex) && stageIndex == q.getStages().length-1){
-                return getDialogue(q,stageIndex,NPCDialogueConditionType.QUEST_ENDING);
-            } else if(u.getCurrentCharacter().isDoneWithStage(q,stageIndex) && stageIndex < q.getStages().length-1){
-                return getDialogue(q,stageIndex+1,NPCDialogueConditionType.QUEST_STAGE_STARTING);
-            } else if(!u.getCurrentCharacter().isDoneWithStage(q,stageIndex)){
-                return getDialogue(q,stageIndex,NPCDialogueConditionType.QUEST_RUNNING);
-            } else if(u.getCurrentCharacter().getS)*/
         }
 
         return getDefaultDialogue();

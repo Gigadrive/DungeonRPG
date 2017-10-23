@@ -166,14 +166,17 @@ public class ModifyQuestCommand extends Command {
 
                                     int i = 0;
                                     for(QuestStage stage : quest.getStages()){
-                                        if(i == index) continue;
+                                        if(i == index){
+                                            i++;
+                                            continue;
+                                        }
 
                                         stages.add(stage);
                                     }
 
                                     quest.setStages(stages.toArray(new QuestStage[]{}));
 
-                                    p.sendMessage(ChatColor.GREEN + "Updated reward items.");
+                                    p.sendMessage(ChatColor.GREEN + "Stage removed.");
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Please enter a valid index number.");
                                 }
