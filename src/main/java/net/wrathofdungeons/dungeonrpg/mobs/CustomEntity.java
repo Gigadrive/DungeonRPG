@@ -165,7 +165,22 @@ public class CustomEntity {
                     // DROP GOLD
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL) if(Util.getChanceBoolean(50+u.getCurrentCharacter().getTotalValue(AwakeningType.FORTUNE),190)) WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(7),p);
 
-                    //TODO: Add pre-defined dropable items
+                    // DROP PREDEFINED ITEMS
+                    if(mob.getPredefinedItemDrops() != null && mob.getPredefinedItemDrops().size() > 0){
+                        for(PredefinedItemDrop drop : mob.getPredefinedItemDrops()){
+                            if(drop.chance > 0){
+                                if(!Util.getChanceBoolean(1,drop.chance)) continue;
+                            } else if(drop.chance == 0){
+                                // 100% drop chance
+                            } else {
+                                continue;
+                            }
+
+                            if(drop.itemID > 0 && ItemData.getData(drop.itemID) != null){
+                                WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(drop.itemID),p);
+                            }
+                        }
+                    }
 
                     // DROP WEAPONS [automated]
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){

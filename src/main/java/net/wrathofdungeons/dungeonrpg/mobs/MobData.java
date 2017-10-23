@@ -71,6 +71,7 @@ public class MobData {
     private ItemStack boots;
     private ItemStack weapon;
     private int materialDrop;
+    private ArrayList<PredefinedItemDrop> predefinedItemDrops;
     private boolean adult;
     private MobClass mobClass;
     private double speed;
@@ -139,6 +140,13 @@ public class MobData {
                     }
                 } else {
                     skills = new ArrayList<MobSkill>();
+                }
+
+                String predefinedItemDropsString = rs.getString("drop.predefined");
+                if(predefinedItemDropsString != null){
+                    predefinedItemDrops = new Gson().fromJson(predefinedItemDropsString,new TypeToken<ArrayList<PredefinedItemDrop>>(){}.getType());
+                } else {
+                    predefinedItemDrops = new ArrayList<PredefinedItemDrop>();
                 }
 
                 this.soundData.volume = rs.getFloat("sound.volume");
@@ -276,6 +284,10 @@ public class MobData {
 
     public int getMaterialDrop() {
         return materialDrop;
+    }
+
+    public ArrayList<PredefinedItemDrop> getPredefinedItemDrops() {
+        return predefinedItemDrops;
     }
 
     public MobClass getMobClass() {
