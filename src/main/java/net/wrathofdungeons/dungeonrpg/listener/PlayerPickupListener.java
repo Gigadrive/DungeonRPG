@@ -38,7 +38,7 @@ public class PlayerPickupListener implements Listener {
                                 e.getItem().remove();
                                 p.getInventory().addItem(item.build(p));
                             } else {
-                                if(now-dropTime >= 30*1000){
+                                if(now-dropTime >= 30*1000 && !item.isUntradeable()){
                                     e.getItem().remove();
                                     p.getInventory().addItem(item.build(p));
                                 }
