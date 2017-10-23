@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.Trade;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -55,6 +56,11 @@ public class InventoryClickListener implements Listener {
                                 return;
                             }
                         }
+                    }
+
+                    if(CustomNPC.READING.contains(p.getName())){
+                        e.setCancelled(true);
+                        return;
                     }
 
                     if(inv.getName().equals("Trading")){

@@ -339,6 +339,11 @@ public class InteractListener implements Listener {
                     }
 
                     if(e.getClickedBlock().getType() == Material.CHEST){
+                        if(CustomNPC.READING.contains(p.getName())){
+                            e.setCancelled(true);
+                            return;
+                        }
+
                         LootChest c = LootChest.getChest(e.getClickedBlock().getLocation());
                         if(c != null){
                             if(c.isSpawned()){
