@@ -573,28 +573,11 @@ public class CustomEntity {
                 npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER,DungeonRPG.randomColor().toString());
                 npc.spawn(loc);
 
-                //WorldUtilities.applySkinToNPC(npc,getData().getSkin(),getData().getSkinName());
                 WorldUtilities.applySkinToNPC(npc,getData().getSkin());
 
                 npc.setProtected(false);
-                npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed()).useNewPathfinder();
+                npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed()).useNewPathfinder(true);
                 if(getData().getAiSettings().mayDoRandomStroll()/* && getData().getMobType() == MobType.PASSIVE*/) addWanderGoal();
-
-                /*CitizensNPC cnpc = (CitizensNPC)npc;
-                EntityHumanNPC.PlayerNPC np = (EntityHumanNPC.PlayerNPC) cnpc.getEntity();
-                GameProfile originalGameProfile = np.getProfile();
-                PropertyMap pm = originalGameProfile.getProperties();
-
-                String p = "https://textures.minecraft.net/texture/";
-                String url = getData().getSkin().startsWith(p) ? getData().getSkin() : p + getData().getSkin();
-
-                if(pm == null){
-                    throw new IllegalArgumentException("Profile doesn't contain a property map");
-                }
-                byte[] encoded =  Base64Coder.encodeString("{textures:{SKIN:{url:\"" + url + "\"}}}").getBytes();
-                pm.put("textures", new Property("textures", new String(encoded)));
-
-                if(url != null) npc.data().set(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA,url);*/
 
                 new BukkitRunnable(){
                     public void run() {

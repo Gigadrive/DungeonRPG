@@ -24,6 +24,7 @@ import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -209,6 +210,7 @@ public class CustomNPC {
 
         updateSkinName();
         reloadSkin();
+        respawnNPC();
     }
 
     public void reloadSkin(){
@@ -217,8 +219,6 @@ public class CustomNPC {
                 @Override
                 public void done(Skin skin) {
                     mineSkin = skin;
-
-                    if(isSpawned()) respawnNPC();
                 }
             });
         } else {
@@ -301,31 +301,18 @@ public class CustomNPC {
     public void spawnNPC(){
         if(!isSpawned()){
             DungeonRPG.IGNORE_SPAWN_NPC.add(npc);
-            npc = CitizensAPI.getNPCRegistry().createNPC(getEntityType(),"a");
-
-            npc.setName(DungeonRPG.randomColor().toString());
-
-            if(getNpcType() == CustomNPCType.BUYING_MERCHANT){
-                npc.setBukkitEntityType(EntityType.VILLAGER);
-            }
+            npc = CitizensAPI.getNPCRegistry().createNPC(getEntityType(),DungeonRPG.randomColor().toString());
 
             npc.spawn(getLocation());
 
             if(getEntityType() == EntityType.VILLAGER){
                 npc.getTrait(VillagerProfession.class).setProfession(getVillagerProfession());
             } else if(getEntityType() == EntityType.PLAYER){
-                new BukkitRunnable(){
-                    @Override
-                    public void run() {
-                        //WorldUtilities.applySkinToNPC(npc,getSkin(),getSkinName());
-                        WorldUtilities.applySkinToNPC(npc,getSkin());
-                    }
-                }.runTaskLater(DungeonRPG.getInstance(),2*20);
+                //WorldUtilities.applySkinToNPC(npc,getSkin());
             }
 
             if(getEntityType() != EntityType.PLAYER){
                 DungeonAPI.nmsMakeSilent(npc.getEntity());
-                ((LivingEntity)npc.getEntity()).setRemoveWhenFarAway(false);
             }
 
             new BukkitRunnable(){
@@ -333,7 +320,7 @@ public class CustomNPC {
                 public void run() {
                     DungeonRPG.IGNORE_SPAWN_NPC.remove(npc);
                 }
-            }.runTaskLater(DungeonRPG.getInstance(),10*20);
+            }.runTaskLater(DungeonRPG.getInstance(),5);
         }
 
         updateHologram();

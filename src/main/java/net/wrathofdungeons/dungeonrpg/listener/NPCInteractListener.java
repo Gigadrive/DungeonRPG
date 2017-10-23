@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.citizensnpcs.api.event.NPCSpawnEvent;
+import net.citizensnpcs.trait.VillagerProfession;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
@@ -213,8 +214,6 @@ public class NPCInteractListener implements Listener {
         if(!DungeonRPG.IGNORE_SPAWN_NPC.contains(e.getNPC())){
             CustomNPC customNPC = CustomNPC.fromCitizensNPC(e.getNPC());
             if(customNPC != null){
-                DungeonAPI.nmsMakeSilent(e.getNPC().getEntity());
-
                 if(customNPC.getEntityType() == EntityType.PLAYER){
                     new BukkitRunnable(){
                         @Override
@@ -226,11 +225,12 @@ public class NPCInteractListener implements Listener {
                                 @Override
                                 public void run() {
                                     DungeonRPG.IGNORE_SPAWN_NPC.remove(e.getNPC());
-
                                 }
                             }.runTaskLater(DungeonRPG.getInstance(),20);
                         }
                     }.runTaskLater(DungeonRPG.getInstance(),2*20);
+                } else {
+                    DungeonAPI.nmsMakeSilent(e.getNPC().getEntity());
                 }
             }
         }

@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
+import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
@@ -98,6 +99,8 @@ public class WorldUtilities {
     public static void applySkinToNPC(NPC npc, Skin skin, String skinName, int repeat){
         if(skin == null || skinName == null) return;
 
+        //System.out.println("[APPLYING SKIN] NAME: " + skinName + " | ID: " + skin.id);
+
         npc.data().setPersistent(PLAYER_SKIN_UUID_METADATA, skinName);
         npc.data().setPersistent(PLAYER_SKIN_USE_LATEST,false);
 
@@ -135,7 +138,7 @@ public class WorldUtilities {
                     Method met = clazz.getDeclaredMethod("setData", GameProfile.class);
 
                     met.setAccessible(true);
-                    met.invoke(net.citizensnpcs.npc.skin.Skin.get(skinnable.getSkinName()),profile);
+                    met.invoke(net.citizensnpcs.npc.skin.Skin.get(skinName),profile);
                 } catch(Exception e){
                     e.printStackTrace();
                 }
