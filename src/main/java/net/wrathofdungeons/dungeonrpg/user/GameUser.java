@@ -649,8 +649,7 @@ public class GameUser extends User {
                     if(all != p){
                         if(a.getParty() != null && a.getParty().hasMember(p)){
                             t.setPrefix(ChatColor.GREEN.toString());
-                        } else if(false){
-                            // TODO: Add prefix for friends
+                        } else if(getFriends().contains(all.getUniqueId().toString())){
                             t.setPrefix(ChatColor.AQUA.toString());
                         } else if(false){
                             // TODO: Add prefix for guild
