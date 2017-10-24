@@ -29,6 +29,9 @@ public class CustomDamageListener implements Listener {
     public void playerToMob(CustomDamageEvent e){
         if(e.isPlayerAttacking()){
             Player p = e.getPlayer();
+
+            if(!GameUser.isLoaded(p)) return;
+
             GameUser u = GameUser.getUser(p);
             CustomEntity c = e.getEntity();
 
@@ -103,6 +106,9 @@ public class CustomDamageListener implements Listener {
     public void mobToPlayer(CustomDamageEvent e){
         if(!e.isPlayerAttacking()){
             Player p = e.getPlayer();
+
+            if(!GameUser.isLoaded(p)) return;
+
             GameUser u = GameUser.getUser(p);
             CustomEntity c = e.getEntity();
 
@@ -145,6 +151,9 @@ public class CustomDamageListener implements Listener {
     public void playerToPlayer(CustomDamagePlayerToPlayerEvent e){
         Player p = e.getDamager();
         Player p2 = e.getEntity();
+
+        if(!GameUser.isLoaded(p)) return;
+        if(!GameUser.isLoaded(p2)) return;
 
         GameUser u = GameUser.getUser(p);
         GameUser u2 = GameUser.getUser(p2);
