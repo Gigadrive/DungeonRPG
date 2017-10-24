@@ -365,6 +365,17 @@ public class ModifyNPCCommand extends Command {
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Invalid integer number!");
                                 }
+                            } else if(args[1].equalsIgnoreCase("customname")){
+                                StringBuilder sb = new StringBuilder("");
+                                for (int i = 2; i < args.length; i++) {
+                                    sb.append(args[i]).append(" ");
+                                }
+                                String s = sb.toString().trim();
+
+                                npc.setCustomName(ChatColor.translateAlternateColorCodes('&',s));
+                                p.sendMessage(ChatColor.GREEN + "Success!");
+                            } else {
+                                sendUsage(p,label);
                             }
                         } else {
                             if(args[1].equalsIgnoreCase("customname")){

@@ -634,10 +634,16 @@ public class GameUser extends User {
         }
     }
 
+    private boolean f = false;
+
     public void reloadFriends(){
         super.reloadFriends();
 
-        DungeonRPG.updateNames();
+        if(!f){
+            f = true;
+        } else {
+            DungeonRPG.updateNames();
+        }
     }
 
     public void updateName(){
@@ -645,6 +651,9 @@ public class GameUser extends User {
             if(GameUser.isLoaded(all)){
                 GameUser a = GameUser.getUser(all);
                 Scoreboard b = a.getScoreboard();
+
+                if(b == null) continue;
+
                 Team t = b.getTeam(p.getName());
                 if(t == null) t = b.registerNewTeam(p.getName());
                 t.addEntry(p.getName());
