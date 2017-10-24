@@ -954,6 +954,8 @@ public class CustomEntity {
     }
 
     public void updateHealthBar(boolean delay){
+        if(!damaged) return;
+
         if(delay){
             updateHealthBar(false);
 
