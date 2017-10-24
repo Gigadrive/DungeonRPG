@@ -43,7 +43,10 @@ public class NPCInteractListener implements Listener {
                 if(npc.getDialogues().size() > 0 && !CustomNPC.READING.contains(p.getName())){
                     NPCDialogue dialogue = npc.getPreferredDialogue(p);
 
+                    //if(dialogue == null) p.sendMessage("null");
+
                     if(dialogue != null && dialogue.lines.size() > 0){
+                        //p.sendMessage(dialogue.condition.type.toString());
                         if(dialogue.condition.type == NPCDialogueConditionType.QUEST_ENDING){
                             Quest q = Quest.getQuest(dialogue.condition.questID);
 

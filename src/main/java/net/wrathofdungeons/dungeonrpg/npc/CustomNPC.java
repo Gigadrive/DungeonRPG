@@ -481,14 +481,16 @@ public class CustomNPC {
                     return dialogue;
                 }
             } else if(dialogue.condition.type == NPCDialogueConditionType.QUEST_STAGE_STARTING){
-                if(u.getCurrentCharacter().isDoneWithStage(q,stageIndex) && stageIndex < q.getStages().length-1){
+                if(u.getCurrentCharacter().isDoneWithStage(q,stageIndex) && stageIndex < q.getStages().length-1 && stageIndex == dialogue.condition.questStageIndex-1){
                     return dialogue;
                 }
             } else if(dialogue.condition.type == NPCDialogueConditionType.QUEST_RUNNING){
-                if(!u.getCurrentCharacter().isDoneWithStage(q,stageIndex) || !stage.isLastNPC(this)){
+                if((!u.getCurrentCharacter().isDoneWithStage(q,stageIndex) || !stage.isLastNPC(this)) && (stageIndex == dialogue.condition.questStageIndex)){
                     return dialogue;
                 }
             } else if(dialogue.condition.type == NPCDialogueConditionType.QUEST_STARTING){
+                //p.sendMessage("status: " + u.getCurrentCharacter().getStatus(q).toString());
+                //p.sendMessage("may start: " + u.getCurrentCharacter().mayStartQuest(q));
                 if(u.getCurrentCharacter().getStatus(q) == QuestProgressStatus.NOT_STARTED && u.getCurrentCharacter().mayStartQuest(q)){
                     return dialogue;
                 }
