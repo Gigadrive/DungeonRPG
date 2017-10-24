@@ -104,6 +104,7 @@ public class GameUser extends User {
     public QuestStage stageAdding = null;
     public QuestObjective objectiveAdding = null;
     public boolean stageSettingItemsToGet = false;
+    public boolean definingRewardItems = false;
 
     public CustomNPC npcAddTextLine = null;
 

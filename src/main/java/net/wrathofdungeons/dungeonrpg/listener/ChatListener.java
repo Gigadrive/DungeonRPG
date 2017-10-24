@@ -475,6 +475,37 @@ public class ChatListener implements Listener {
                                 u.objectiveAdding = null;
                             }
                         }
+                    } else if(u.questModifying != null && u.definingRewardItems){
+                        String[] s = msg.split(":");
+                        if(s.length == 1 || s.length == 2) {
+                            if (Util.isValidInteger(s[0])) {
+                                int amount = 1;
+
+                                if (s.length == 2) {
+                                    if (Util.isValidInteger(s[1])) {
+                                        amount = Integer.parseInt(s[1]);
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "Please enter a valid integer.");
+                                        return;
+                                    }
+                                }
+
+                                if(ItemData.getData(Integer.parseInt(s[0])) != null){
+                                    ArrayList<CustomItem> items = new ArrayList<CustomItem>();
+                                    if(u.questModifying.getRewardItems() != null) for(CustomItem item : u.questModifying.getRewardItems()) items.add(item);
+                                    items.add(new CustomItem(Integer.parseInt(s[0]),amount));
+                                    u.questModifying.setRewardItems(items.toArray(new CustomItem[]{}));
+
+                                    p.sendMessage(ChatColor.GREEN + "Reward items updated.");
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "That item doesn't exist.");
+                                }
+                            } else {
+                                p.sendMessage(ChatColor.RED + "Please enter a valid integer.");
+                            }
+                        } else {
+                            p.sendMessage(ChatColor.RED + "Invalid format. Use ID[:AMOUNT]!");
+                        }
                     }
                 }
             }

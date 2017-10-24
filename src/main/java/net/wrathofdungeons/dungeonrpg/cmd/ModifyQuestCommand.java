@@ -142,7 +142,12 @@ public class ModifyQuestCommand extends Command {
                             p.sendMessage(ChatColor.GOLD + "The following ones are available: " + ChatColor.GREEN + s);
                             p.sendMessage(ChatColor.GRAY + "(Type 'cancel' to cancel.)");
                         } else if(args[1].equalsIgnoreCase("addrewarditem")){
+                            u.questModifying = quest;
+                            u.definingRewardItems = true;
 
+                            p.sendMessage(ChatColor.GOLD + "Enter the ID of the item that you want to add as a reward.");
+                            p.sendMessage(ChatColor.GOLD + "Use ID[:AMOUNT] as a format template.");
+                            p.sendMessage(ChatColor.GRAY + "(Type 'cancel' to cancel.)");
                         } else {
                             sendUsage(p,label);
                         }
