@@ -9,5 +9,6 @@ public enum ItemCategory {
     ARMOR,
     TELEPORT_SCROLL,
     FOOD,
-    MATERIAL
+    MATERIAL,
+    QUEST
 }

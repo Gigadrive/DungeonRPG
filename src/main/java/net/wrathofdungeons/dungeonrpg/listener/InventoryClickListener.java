@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.Trade;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
@@ -194,7 +195,7 @@ public class InventoryClickListener implements Listener {
                                         t.updateInventories();
                                     } else {
                                         if(currentOffers < Trade.MAX_OFFERS){
-                                            if(!item.isUntradeable()){
+                                            if(!item.isUntradeable() && item.getData().getCategory() != ItemCategory.QUEST){
                                                 if(t.isPlayer1(p)){
                                                     p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
                                                     t.getOffers1().add(item.build(p));
@@ -218,6 +219,17 @@ public class InventoryClickListener implements Listener {
                                 }
                             } else {
                                 // anything else (out of container?)
+                            }
+                        }
+                    } else if(inv.getName().endsWith("] Loot Chest")){
+                        if(e.getCurrentItem() != null) {
+                            CustomItem item = CustomItem.fromItemStack(e.getCurrentItem());
+
+                            if (item != null) {
+                                if(item.getData().getCategory() == ItemCategory.QUEST){
+                                    e.setCancelled(true);
+                                    return;
+                                }
                             }
                         }
                     }

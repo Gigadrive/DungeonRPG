@@ -2,9 +2,11 @@ package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,6 +33,12 @@ public class PlayerDropListener implements Listener {
                         if(item != null){
                             if(item.getData().getId() == 5 || ((DungeonRPG.ENABLE_BOWDRAWBACK) && item.getData().getId() == 6)){
                                 e.setCancelled(true);
+                                return;
+                            }
+
+                            if(item.getData().getCategory() == ItemCategory.QUEST){
+                                e.setCancelled(true);
+                                p.sendMessage(ChatColor.RED + "You might need this item later.");
                                 return;
                             }
                         }
