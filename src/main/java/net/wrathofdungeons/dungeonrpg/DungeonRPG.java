@@ -603,7 +603,7 @@ public class DungeonRPG extends JavaPlugin {
                 if(e instanceof LivingEntity){
                     if(e.getLocation().distance(loc) <= maxDistance){
                         if(!a.contains((LivingEntity)e)){
-                            a.add((LivingEntity)e);
+                            if(CustomNPC.fromEntity(e) == null) a.add((LivingEntity)e);
                         }
                     }
                 }
