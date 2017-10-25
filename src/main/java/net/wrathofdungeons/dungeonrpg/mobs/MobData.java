@@ -13,6 +13,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkillStorage;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
+import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -196,6 +197,11 @@ public class MobData {
                     this.gameProfile.getProperties().put("textures",new Property("textures",new String(Base64Coder.encodeString("{\"SKIN\":{\"url\":\"" + skinURL + "\"}}").getBytes())));
                     //if(getSkinSignature() != null) this.gameProfile.getProperties().put("textures",new Property("signature",getSkinSignature()));*/
                 }
+
+                if(this.health == -1) this.health = (int)FormularUtils.getMobHP(mobClass,level);
+                if(this.atk == -1) this.atk = (int)FormularUtils.getMobATK(mobClass,level);
+                if(this.xp == -1) this.xp = (int)FormularUtils.getMobEXP(mobClass,level);
+                if(this.regen == -1) this.regen = (int)FormularUtils.getMobRegen(mobClass,level);
 
                 STORAGE.add(this);
             }
