@@ -38,7 +38,7 @@ public class PlayerMoveListener implements Listener {
 
                     if(Math.floor(to.getX()) != x || Math.floor(to.getZ()) != z){
                         for(Region region : Region.STORAGE){
-                            if(region.getMobData() != null && region.getMobLimit() > 0 && region.mayActivateMobs()){
+                            if(region.getMobData() != null && region.getMobLimit() > 0 && region.mayActivateMobs() && region.isActive()){
                                 if(region.isInRegion(p.getLocation())){
                                     region.startMobActivationTimer();
 

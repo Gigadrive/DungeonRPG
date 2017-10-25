@@ -54,6 +54,7 @@ public class Region {
     private int mobDataID;
     private int mobLimit;
     private ArrayList<RegionLocation> locations;
+    private boolean active;
 
     private boolean mayActivateMobs = true;
     private BukkitTask activationTimer = null;
@@ -69,6 +70,7 @@ public class Region {
                 this.mobDataID = rs.getInt("mobDataID");
                 this.mobLimit = rs.getInt("mobLimit");
                 String locationString = rs.getString("locations");
+                this.active = rs.getBoolean("active");
                 Gson gson = new Gson();
                 if(locationString != null){
                     this.locations = gson.fromJson(locationString, new TypeToken<ArrayList<RegionLocation>>(){}.getType());
@@ -95,6 +97,14 @@ public class Region {
 
     public int getMobLimit(){
         return mobLimit;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public ArrayList<RegionLocation> getLocations() {
@@ -199,9 +209,10 @@ public class Region {
 
     public void saveData(){
         try {
-            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `regions` SET `locations` = ?  WHERE `id` = ?");
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `regions` SET `locations` = ?, `active` =? WHERE `id` = ?");
             ps.setString(1,new Gson().toJson(getLocations()));
-            ps.setInt(2,getID());
+            ps.setBoolean(2,active);
+            ps.setInt(3,getID());
             ps.executeUpdate();
             ps.close();
         } catch(Exception e){
