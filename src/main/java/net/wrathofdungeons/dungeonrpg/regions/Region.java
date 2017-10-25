@@ -95,6 +95,18 @@ public class Region {
         return MobData.getData(mobDataID);
     }
 
+    public void setMobLimit(int mobLimit) {
+        this.mobLimit = mobLimit;
+    }
+
+    public void setMobDataID(int mobDataID) {
+        this.mobDataID = mobDataID;
+    }
+
+    public void setMobData(MobData data) {
+        this.mobDataID = data.getId();
+    }
+
     public int getMobLimit(){
         return mobLimit;
     }
@@ -209,10 +221,12 @@ public class Region {
 
     public void saveData(){
         try {
-            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `regions` SET `locations` = ?, `active` =? WHERE `id` = ?");
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `regions` SET `locations` = ?, `active` = ?, `mobDataID` = ?, `mobLimit` = ? WHERE `id` = ?");
             ps.setString(1,new Gson().toJson(getLocations()));
             ps.setBoolean(2,active);
-            ps.setInt(3,getID());
+            ps.setInt(3,mobDataID);
+            ps.setInt(4,mobLimit);
+            ps.setInt(5,getID());
             ps.executeUpdate();
             ps.close();
         } catch(Exception e){

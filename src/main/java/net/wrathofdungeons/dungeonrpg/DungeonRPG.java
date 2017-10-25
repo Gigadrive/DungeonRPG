@@ -686,6 +686,7 @@ public class DungeonRPG extends JavaPlugin {
         new LoadRegionCommand();
         new ModifyNPCCommand();
         new ModifyQuestCommand();
+        new ModifyRegionCommand();
         new PartyCommand();
         new PingCommand();
         new ReloadCommand();
