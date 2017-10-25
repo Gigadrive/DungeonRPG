@@ -79,6 +79,7 @@ public class DungeonRPG extends JavaPlugin {
     public static ArrayList<Material> SETUP_ADD_NO_Y = new ArrayList<Material>();
     public static ArrayList<NPC> IGNORE_SPAWN_NPC = new ArrayList<NPC>();
     public static World MAIN_WORLD = null;
+    public static World DUNGEON_WORLD = null;
     public static final ArrayList<String> BROADCAST_LINES = new ArrayList<String>();
     private int broadcastCurrent = 0;
 
@@ -541,6 +542,8 @@ public class DungeonRPG extends JavaPlugin {
         TargetHandler.registerEntity("Zombie",54, EntityZombie.class, ZombieArcher.class);
         TargetHandler.registerEntity("Zombie",54, EntityZombie.class, DungeonZombie.class);
         TargetHandler.registerEntity("Sheep",91, EntitySheep.class, DungeonSheep.class);
+
+        DUNGEON_WORLD = new WorldCreator("Dungeons").createWorld();
     }
 
     public void onDisable(){
