@@ -196,9 +196,8 @@ public class Character {
         int i = 0;
 
         for(CustomItem item : getEquipment()){
-            if(item.hasAwakening(type)){
-                i += item.getAwakeningValue(type);
-            }
+            if(item.hasAwakening(type)) i += item.getAwakeningValue(type);
+            if(item.getData().hasAdditionalStat(type)) i += item.getData().getAdditionalStatValue(type);
         }
 
         return i;

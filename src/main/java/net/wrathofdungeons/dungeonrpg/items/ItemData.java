@@ -1,8 +1,12 @@
 package net.wrathofdungeons.dungeonrpg.items;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -51,6 +55,8 @@ public class ItemData {
     private int foodRegeneration;
     private int foodDelay;
 
+    private ArrayList<Awakening> additionalStats;
+
     private int neededLevel;
     private RPGClass neededClass;
 
@@ -65,6 +71,8 @@ public class ItemData {
     }
 
     public ItemData(int id){
+        Gson gson = new Gson();
+
         try {
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `items` WHERE `id` = ?");
             ps.setInt(1,id);
@@ -86,6 +94,12 @@ public class ItemData {
 
                 this.defMin = rs.getInt("def.min");
                 this.defMax = rs.getInt("def.max");
+
+                if(rs.getString("additionalStats") != null){
+                    this.additionalStats = gson.fromJson(rs.getString("additionalStats"),new TypeToken<ArrayList<Awakening>>(){}.getType());
+                } else {
+                    this.additionalStats = new ArrayList<Awakening>();
+                }
 
                 this.foodRegeneration = rs.getInt("foodRegeneration");
                 this.foodDelay = rs.getInt("foodDelay");
@@ -152,6 +166,28 @@ public class ItemData {
 
     public int getDefMax() {
         return defMax;
+    }
+
+    public ArrayList<Awakening> getAdditionalStats() {
+        return additionalStats;
+    }
+
+    public boolean hasAdditionalStat(AwakeningType type){
+        return getAdditionalStat(type) != null;
+    }
+
+    public Awakening getAdditionalStat(AwakeningType type){
+        for(Awakening a : getAdditionalStats()) if(a.type == type) return a;
+
+        return null;
+    }
+
+    public int getAdditionalStatValue(AwakeningType type){
+        if(hasAdditionalStat(type)){
+            return getAdditionalStat(type).value;
+        } else {
+            return 0;
+        }
     }
 
     public int getFoodRegeneration() {

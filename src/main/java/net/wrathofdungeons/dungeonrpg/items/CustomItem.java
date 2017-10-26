@@ -333,6 +333,37 @@ public class CustomItem {
                     }
                 }
 
+                if(getData().getAdditionalStats() != null && getData().getAdditionalStats().size() > 0){
+                    iL.add(" ");
+
+                    for(Awakening a : getData().getAdditionalStats()){
+                        if(a.value > 0){
+                            // IS POSITIVE
+                            if(a.isPercentage){
+                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                            }
+                        } else if(a.value == 0){
+                            // IS NEUTRAL (shouldn't really happen)
+                            if(a.isPercentage){
+                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                            }
+                        } else {
+                            // IS NEGATIVE
+                            if(a.isPercentage){
+                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                            }
+                        }
+                    }
+
+                    iL.add(" ");
+                }
+
                 if(getData().getCategory() == ItemCategory.MATERIAL){
                     iL.add(ChatColor.DARK_AQUA + "Material");
                 } else if(getData().getCategory() == ItemCategory.QUEST){

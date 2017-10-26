@@ -39,7 +39,7 @@ public class CustomDamageListener implements Listener {
 
             if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null) {
                 CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
-                long itemCooldown = item.getCooldownInTicks();
+                long itemCooldown = u.getCurrentCharacter().getAttackSpeedTicks();
 
                 boolean wrongClass = false;
 
@@ -163,7 +163,7 @@ public class CustomDamageListener implements Listener {
         if(Duel.isDuelingWith(p,p2)){
             if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null) {
                 CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
-                long itemCooldown = item.getCooldownInTicks();
+                long itemCooldown = u.getCurrentCharacter().getAttackSpeedTicks();
 
                 boolean wrongClass = false;
 
