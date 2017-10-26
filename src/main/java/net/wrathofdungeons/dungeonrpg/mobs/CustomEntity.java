@@ -163,6 +163,8 @@ public class CustomEntity {
                 case COW:
                 case SQUID:
                 case MUSHROOM_COW:
+                case MAGMA_CUBE:
+                case SLIME:
                     return true;
             }
         }

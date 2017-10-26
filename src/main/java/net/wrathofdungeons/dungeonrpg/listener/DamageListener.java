@@ -110,7 +110,7 @@ public class DamageListener implements Listener {
 
                         if(cd != null){
                             e.setCancelled(true);
-                            DungeonRPG.callMobToMobDamage(cd,c,false);
+                            if(!cd.requiresNewDamageHandler()) DungeonRPG.callMobToMobDamage(cd,c,false);
                         } else {
                             e.setCancelled(true);
                         }
