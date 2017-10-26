@@ -4,6 +4,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
+import net.minecraft.server.v1_8_R3.EntityMagmaCube;
 import net.minecraft.server.v1_8_R3.EntitySheep;
 import net.minecraft.server.v1_8_R3.EntityZombie;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
@@ -26,6 +27,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.MobType;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonSheep;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
+import net.wrathofdungeons.dungeonrpg.mobs.nms.EntityManager;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkillStorage;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
@@ -538,10 +540,39 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(DungeonRPG.getInstance(),10,10);
 
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(CustomEntity entity : CustomEntity.STORAGE.values()){
+                    if(entity.getBukkitEntity() == null || !entity.requiresNewDamageHandler()) continue;
+
+                    if(entity.attackDelay > 0){
+                        entity.attackDelay--;
+                        continue;
+                    }
+
+                    if(entity.hasTarget()){
+                        if(entity.getBukkitEntity().getLocation().distance(entity.getTarget().getLocation()) > 2) continue;
+
+                        if(entity.getTarget() instanceof Player){
+                            Player p = (Player)entity.getTarget();
+
+                            if(GameUser.isLoaded(p)) callMobToPlayerDamage(entity,(Player)entity.getTarget(),false);
+                        } else {
+                            CustomEntity mob = CustomEntity.fromEntity(entity.getTarget());
+
+                            if(mob != null){
+                                callMobToMobDamage(entity,mob,false);
+                                entity.attackDelay = 10;
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(DungeonRPG.getInstance(),1,1);
+
         Bukkit.getServer().clearRecipes();
-        TargetHandler.registerEntity("Zombie",54, EntityZombie.class, ZombieArcher.class);
-        TargetHandler.registerEntity("Zombie",54, EntityZombie.class, DungeonZombie.class);
-        TargetHandler.registerEntity("Sheep",91, EntitySheep.class, DungeonSheep.class);
+        EntityManager.registerEntities();
 
         DUNGEON_WORLD = new WorldCreator("Dungeons").createWorld();
     }

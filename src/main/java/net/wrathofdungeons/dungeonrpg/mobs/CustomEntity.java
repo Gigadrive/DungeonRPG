@@ -29,6 +29,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.*;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
+import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonHorse;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonSheep;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
@@ -96,6 +97,7 @@ public class CustomEntity {
     private AttributeModifier speedModifier;
     public boolean damaged = false;
     public boolean playerMobSpeed = true;
+    public long attackDelay = 0;
 
     private WanderGoal wanderGoal;
     private Player lastDamager;
@@ -148,6 +150,24 @@ public class CustomEntity {
         if(this.hp <= 0) die();
 
         updateHealthBar();
+    }
+
+    public boolean requiresNewDamageHandler(){
+        if(bukkitEntity != null){
+            switch(bukkitEntity.getType()){
+                case HORSE:
+                case SHEEP:
+                case CHICKEN:
+                case VILLAGER:
+                case BAT:
+                case COW:
+                case SQUID:
+                case MUSHROOM_COW:
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     public void die(){
@@ -608,6 +628,13 @@ public class CustomEntity {
                         mcWorld.addEntity(dungeonSheep, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
                         bukkitEntity = (Sheep)dungeonSheep.getBukkitEntity();
+                    } else if(getData().getEntityType() == EntityType.HORSE){
+                        World mcWorld = ((CraftWorld)loc.getWorld()).getHandle();
+                        DungeonHorse dungeonHorse = new DungeonHorse(mcWorld);
+                        dungeonHorse.setPosition(loc.getX(),loc.getY(),loc.getZ());
+                        mcWorld.addEntity(dungeonHorse, CreatureSpawnEvent.SpawnReason.CUSTOM);
+
+                        bukkitEntity = (Horse)dungeonHorse.getBukkitEntity();
                     } else {
                         bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
                     }
