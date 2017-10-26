@@ -415,9 +415,11 @@ public class InteractListener implements Listener {
 
                 if(p.getItemInHand() != null && p.getItemInHand().getType() != null && p.getItemInHand().getItemMeta() != null && CustomItem.fromItemStack(p.getItemInHand()) != null) {
                     final CustomItem customItem = CustomItem.fromItemStack(p.getItemInHand());
-                    long itemCooldown = customItem.getCooldownInTicks(); // TODO: Add attack speed
 
                     if (u.getCurrentCharacter() == null) return;
+
+                    long itemCooldown = u.getCurrentCharacter().getAttackSpeedTicks();
+
                     if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
                         if (customItem.getData().getCategory() == ItemCategory.WEAPON_STICK) {
                             if (u.getCurrentCharacter().getRpgClass() == RPGClass.MAGICIAN) {
@@ -513,7 +515,7 @@ public class InteractListener implements Listener {
                                 public void run() {
                                     u.setAttackCooldown(false);
                                 }
-                            }.runTaskLater(DungeonRPG.getInstance(),customItem.getCooldownInTicks());
+                            }.runTaskLater(DungeonRPG.getInstance(),itemCooldown);
 
                             if (u.currentCombo.equals("")) {
                                 for (LivingEntity target : DungeonRPG.getTargets(p, 4, 2.0)) {

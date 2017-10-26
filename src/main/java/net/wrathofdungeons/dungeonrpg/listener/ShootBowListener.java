@@ -19,14 +19,16 @@ public class ShootBowListener implements Listener {
     public void onShoot(EntityShootBowEvent e){
         if(e.getEntity() instanceof Player){
             Player p = (Player)e.getEntity();
-            int itemCooldown = 10;
 
             if(GameUser.isLoaded(p)){
                 GameUser u = GameUser.getUser(p);
 
                 if(u.getCurrentCharacter() == null || (u.getCurrentCharacter() != null && !u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER)) || CustomItem.fromItemStack(e.getBow()) == null){
                     e.setCancelled(true);
+                    return;
                 }
+
+                long itemCooldown = u.getCurrentCharacter().getAttackSpeedTicks();
 
                 CustomItem customItem = CustomItem.fromItemStack(e.getBow());
 

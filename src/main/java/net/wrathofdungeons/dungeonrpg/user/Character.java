@@ -204,6 +204,10 @@ public class Character {
         return i;
     }
 
+    public long getAttackSpeedTicks(){
+        return 10;
+    }
+
     public void addStatpoint(StatPointType type){
         addStatpoints(type,1);
     }
