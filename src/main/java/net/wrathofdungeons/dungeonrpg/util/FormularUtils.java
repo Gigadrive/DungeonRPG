@@ -22,7 +22,8 @@ public class FormularUtils {
 
     public static double getMobHP(MobClass mobClass, int level){
         if(mobClass == MobClass.LOW){
-            return (level*1.5)+48*((level+1)/2); // 100%
+            //return (level*1.5)+48*((level+1)/2); // 100%
+            return (Math.pow(level,2))+18*((level+2)); // 100%
         } else if(mobClass == MobClass.MID){
             return getMobHP(MobClass.LOW,level)*1.2; // 120%
         } else if(mobClass == MobClass.HIGH){
