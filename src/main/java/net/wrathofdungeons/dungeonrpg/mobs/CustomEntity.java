@@ -544,7 +544,7 @@ public class CustomEntity {
         if(b){
             c();
         } else {
-            removeSpeedAttribute();
+            adjustSpeed();
         }
     }
 
