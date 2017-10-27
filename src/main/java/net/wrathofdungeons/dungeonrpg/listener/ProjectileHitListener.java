@@ -4,6 +4,7 @@ import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
@@ -45,7 +46,18 @@ public class ProjectileHitListener implements Listener {
                                         u.ignoreFistCheck = true;
                                         //livingEntity.damage(data.getDamage(),p);
                                         //livingEntity.damage(DamageHandler.calculatePlayerToMobDamage(u,c,data.getSkill()),p);
-                                        c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,data.getSkill()),p);
+                                        double damage = DamageHandler.calculatePlayerToMobDamage(u,c,data.getSkill());
+                                        int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
+                                        if(hpLeech > 0){
+                                            u.addHP(damage*(hpLeech*0.01));
+                                        }
+
+                                        int mpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.MP_LEECH);
+                                        if(mpLeech > 0){
+                                            u.addMP(damage*(mpLeech*0.01));
+                                        }
+
+                                        c.damage(damage,p);
                                         DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                         c.getData().playSound(livingEntity.getLocation());
 
