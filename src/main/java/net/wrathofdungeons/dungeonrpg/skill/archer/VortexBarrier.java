@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.skill.archer;
 
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
+import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -51,7 +52,7 @@ public class VortexBarrier implements Skill {
                 u.getSkillValues().vortexBarrierTask = null;
             }
 
-            u.getSkillValues().vortexBarrierLoc = p.getLocation().clone();
+            final Location loc = p.getLocation().clone();
             int range = 7;
 
             PotionEffect speed = new PotionEffect(PotionEffectType.SPEED,3*60*20,1,true,true);
@@ -61,19 +62,21 @@ public class VortexBarrier implements Skill {
                 p.sendMessage(ChatColor.GREEN + p.getName() + " has given you speed.");
             }
 
-            for(Entity e : p.getNearbyEntities(7,7,7)){
+            for(Entity e : p.getNearbyEntities(range,range,range)){
                 if(e instanceof LivingEntity){
                     LivingEntity ent = (LivingEntity)e;
                     CustomEntity c = CustomEntity.fromEntity(ent);
 
                     if(c != null){
-                        ent.setVelocity(ent.getLocation().toVector().subtract(u.getSkillValues().vortexBarrierLoc.toVector()).normalize().multiply(0.75).setY(1.25));
+                        ent.setVelocity(ent.getLocation().toVector().subtract(loc.toVector()).normalize().multiply(0.75).setY(1.25));
                     } else {
                         if(ent instanceof Player){
                             Player p2 = (Player)ent;
 
-                            if(false){
-                                // TODO: handle duels
+                            if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
+                                GameUser u2 = GameUser.getUser(p2);
+
+                                if(u2.getCurrentCharacter() != null) ent.setVelocity(ent.getLocation().toVector().subtract(loc.toVector()).normalize().multiply(0.75).setY(1.25));
                             } else {
                                 if(GameUser.isLoaded(p2)){
                                     GameUser u2 = GameUser.getUser(p2);
@@ -91,23 +94,18 @@ public class VortexBarrier implements Skill {
                 }
             }
 
-            u.getSkillValues().vortexBarrierTask = new BukkitRunnable(){
-                @Override
-                public void run() {
-                    if(u.getSkillValues().vortexBarrierCount == 5){
-                        cancel();
-                        u.getSkillValues().vortexBarrierCount = 0;
-                        u.getSkillValues().vortexBarrierTask = null;
-                        return;
-                    }
+            for(int i = 0; i < 5; i++){
+                final int j = i;
 
-                    for(Location loc : WorldUtilities.getParticleCircle(u.getSkillValues().vortexBarrierLoc.clone().add(0,u.getSkillValues().vortexBarrierCount,0),2+(u.getSkillValues().vortexBarrierCount/2),15)){
-                        ParticleEffect.CLOUD.display(0f,0f,0f, 0f,2,loc,30);
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        for(Location loc : WorldUtilities.getParticleCircle(loc.clone().add(0,j,0),2+(j/2),15)){
+                            ParticleEffect.CLOUD.display(0f,0f,0f, 0f,2,loc,30);
+                        }
                     }
-
-                    u.getSkillValues().vortexBarrierCount++;
-                }
-            }.runTaskTimer(DungeonRPG.getInstance(),0,1);
+                }.runTaskLater(DungeonRPG.getInstance(),j);
+            }
         }
     }
 }

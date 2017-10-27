@@ -28,6 +28,7 @@ public class Fireball implements MobSkill {
     public void execute(CustomEntity entity) {
         if(entity.hasTarget()){
             entity.setCancelMovement(true);
+            entity.executingSkill = true;
 
             new BukkitRunnable(){
                 @Override
@@ -50,6 +51,7 @@ public class Fireball implements MobSkill {
                 @Override
                 public void run() {
                     entity.setCancelMovement(false);
+                    entity.executingSkill = false;
                 }
             }.runTaskLater(DungeonRPG.getInstance(),2*20);
         }

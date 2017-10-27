@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.mobs;
 
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import org.bukkit.ChatColor;
 
 public enum MobType {
@@ -16,6 +17,10 @@ public enum MobType {
 
     public ChatColor getColor() {
         return color;
+    }
+
+    public boolean mayAttack(MobType t){
+        return DungeonRPG.mayAttack(this,t);
     }
 
     public static MobType fromColor(ChatColor color){

@@ -104,6 +104,8 @@ public class CustomEntity {
 
     private ArrayList<BukkitTask> tasks;
 
+    public boolean executingSkill = false;
+
     public CustomEntity(MobData data){
         this.mobDataID = data.getId();
         this.damagers = new ArrayList<Entity>();
@@ -899,11 +901,9 @@ public class CustomEntity {
             tasks.add(new BukkitRunnable(){
                 @Override
                 public void run() {
-                    if(Util.getChanceBoolean(skill.getExecutionChanceTrue(),skill.getExecutionChanceFalse())){
-                        skill.execute(c);
-                    }
+                    if(!executingSkill && Util.getChanceBoolean(skill.getExecutionChanceTrue(),skill.getExecutionChanceFalse())) skill.execute(c);
                 }
-            }.runTaskTimer(DungeonRPG.getInstance(),skill.getInterval()*20,skill.getInterval()*20));
+            }.runTaskTimer(DungeonRPG.getInstance(),Util.randomInteger(0,skill.getInterval()*20),skill.getInterval()*20));
         }
 
         STORAGE.put(bukkitEntity,this);

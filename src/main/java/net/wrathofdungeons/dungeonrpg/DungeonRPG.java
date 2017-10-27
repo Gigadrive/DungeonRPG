@@ -608,6 +608,20 @@ public class DungeonRPG extends JavaPlugin {
         }
     }
 
+    public static boolean mayAttack(MobType t1, MobType t2){
+        if(t1 == MobType.AGGRO){
+            return t2 != MobType.PASSIVE && t2 != MobType.AGGRO;
+        } else if(t1 == MobType.NEUTRAL){
+            return t2 != MobType.PASSIVE && t2 != MobType.AGGRO;
+        } else if(t1 == MobType.PASSIVE){
+            return false;
+        } else if(t1 == MobType.SUPPORTING){
+            return t2 == MobType.AGGRO || t2 == MobType.NEUTRAL;
+        }
+
+        return true;
+    }
+
     public static void updateNames(){
         for(Player all : Bukkit.getOnlinePlayers()){
             if(GameUser.isLoaded(all)) GameUser.getUser(all).updateName();
