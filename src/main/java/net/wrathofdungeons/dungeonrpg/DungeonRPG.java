@@ -557,7 +557,10 @@ public class DungeonRPG extends JavaPlugin {
                         if(entity.getTarget() instanceof Player){
                             Player p = (Player)entity.getTarget();
 
-                            if(GameUser.isLoaded(p)) callMobToPlayerDamage(entity,(Player)entity.getTarget(),false);
+                            if(GameUser.isLoaded(p)){
+                                callMobToPlayerDamage(entity,(Player)entity.getTarget(),false);
+                                entity.attackDelay = 10;
+                            }
                         } else {
                             CustomEntity mob = CustomEntity.fromEntity(entity.getTarget());
 
