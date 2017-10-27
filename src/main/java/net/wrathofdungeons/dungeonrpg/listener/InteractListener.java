@@ -676,6 +676,13 @@ public class InteractListener implements Listener {
 
                                             if(playAfter) p.playSound(p.getEyeLocation(),Sound.SUCCESSFUL_HIT,1f,0.5f);
 
+                                            if(toCast.getType().getMinLevel() == 1){
+                                                if(!u.getCurrentCharacter().getVariables().hasDoneFirstSkill){
+                                                    p.sendMessage(ChatColor.DARK_GREEN + "Great! Remember: You can unlock new skills and upgrade your current ones by leveling up.");
+                                                    u.getCurrentCharacter().getVariables().hasDoneFirstSkill = true;
+                                                }
+                                            }
+
                                             new BukkitRunnable(){
                                                 @Override
                                                 public void run() {

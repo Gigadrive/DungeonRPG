@@ -53,6 +53,7 @@ import net.wrathofdungeons.dungeonrpg.skill.mercenary.BlazingAxe;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.Shockwave;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.*;
@@ -280,6 +281,8 @@ public class DungeonRPG extends JavaPlugin {
         SETUP_ADD_NO_Y.add(Material.WALL_SIGN);
         SETUP_ADD_NO_Y.add(Material.getMaterial(38));
 
+        // UPDATE PLAYER HP/MP BAR
+
         if(SHOW_HP_IN_ACTION_BAR){
             new BukkitRunnable(){
                 @Override
@@ -297,6 +300,8 @@ public class DungeonRPG extends JavaPlugin {
             }.runTaskTimer(this,20,20);
         }
 
+        // TELEPORT MOB NAME PLATES
+
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -311,6 +316,8 @@ public class DungeonRPG extends JavaPlugin {
                 } catch(ConcurrentModificationException e){}
             }
         }.runTaskTimerAsynchronously(this,1,1);
+
+        // REMOVE INVALID ENTITIES
 
         new BukkitRunnable(){
             @Override
@@ -329,6 +336,8 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimerAsynchronously(this,0,10*20);
 
+        // SAVE PLAYER DATA
+
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -343,6 +352,8 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimerAsynchronously(this,2*60*20,2*60*20);
+
+        // STOMPER PARTICLES
 
         new BukkitRunnable(){
             @Override
@@ -369,6 +380,8 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(this,1,1);
 
+        // ARROW TRAILS
+
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -386,6 +399,8 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this,1,1);
+
+        // HANDLE NPC TARGETS
 
         new BukkitRunnable(){
             @Override
@@ -448,6 +463,8 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(this,1,1);
 
+        // REMOVE ARROWS IN PLAYERS
+
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -462,6 +479,8 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this,1,1);
+
+        // PLAYER MOB IDLING
 
         new BukkitRunnable(){
             @Override
@@ -484,6 +503,8 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(this,2*20,2*20);
 
+        // LOOTCHEST PARTICLES
+
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -494,6 +515,8 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this,10,10);
+
+        // AUTO BROADCAST
 
         new BukkitRunnable(){
             @Override
@@ -517,6 +540,8 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(DungeonRPG.getInstance(),6*60*20,6*60*20);
 
+        // QUEST PARTICLES
+
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -539,6 +564,8 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimer(DungeonRPG.getInstance(),10,10);
+
+        // DAMAGE HANDLER
 
         new BukkitRunnable(){
             @Override
@@ -573,6 +600,29 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimer(DungeonRPG.getInstance(),1,1);
+
+        // FIRST SKILL REMINDER
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Player p : Bukkit.getOnlinePlayers()){
+                    if(GameUser.isLoaded(p)){
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null){
+                            if(!u.getCurrentCharacter().getVariables().hasDoneFirstSkill){
+                                if(u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER)){
+                                    p.sendMessage(ChatColor.DARK_RED + "You can cast different skills by using various click combinations. Try to cast a skill by doing this click combination, while holding your weapon: " + ChatColor.RED + "Left - Right - Left" + ChatColor.DARK_RED + "!");
+                                } else {
+                                    p.sendMessage(ChatColor.DARK_RED + "You can cast different skills by using various click combinations. Try to cast a skill by doing this click combination, while holding your weapon: " + ChatColor.RED + "Right - Left - Right" + ChatColor.DARK_RED + "!");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(DungeonRPG.getInstance(), 0,25*20);
 
         Bukkit.getServer().clearRecipes();
         EntityManager.registerEntities();

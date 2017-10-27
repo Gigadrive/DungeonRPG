@@ -42,6 +42,7 @@ public class Character {
     private int statpointsLeft;
     private Location storedLocation;
     private ArrayList<QuestProgress> questProgress;
+    private UserVariables variables;
     private PlayerInventory storedInventory;
     private Timestamp creationTime;
     private Timestamp lastLogin;
@@ -68,6 +69,12 @@ public class Character {
                 this.agility = rs.getInt("statpoints.agi");
                 this.statpointsLeft = rs.getInt("statpoints.left");
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
+                if(rs.getString("variables") != null){
+                    this.variables = gson.fromJson(rs.getString("variables"),UserVariables.class);
+                } else {
+                    this.variables = new UserVariables();
+                }
+
                 if(rs.getString("questProgress") != null){
                     this.questProgress = gson.fromJson(rs.getString("questProgress"),new TypeToken<ArrayList<QuestProgress>>(){}.getType());
                 } else {
@@ -442,6 +449,10 @@ public class Character {
         return getStatpointsTotal(StatPointType.DEXTERITY);
     }
 
+    public UserVariables getVariables() {
+        return variables;
+    }
+
     public void setLastLogin(Timestamp t){
         this.lastLogin = t;
     }
@@ -463,7 +474,7 @@ public class Character {
                 this.storedInventory = getConvertedInventory(p);
                 Gson gson = new Gson();
 
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `statpoints.str` = ?, `statpoints.sta` = ?, `statpoints.int` = ?, `statpoints.dex` = ?, `statpoints.agi` = ?, `statpoints.left` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `questProgress` = ?, `inventory` = ?, `lastLogin` = ? WHERE `id` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `statpoints.str` = ?, `statpoints.sta` = ?, `statpoints.int` = ?, `statpoints.dex` = ?, `statpoints.agi` = ?, `statpoints.left` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `questProgress` = ?, `variables` = ?, `inventory` = ?, `lastLogin` = ? WHERE `id` = ?");
                 ps.setInt(1,getLevel());
                 ps.setDouble(2,getExp());
                 ps.setInt(3,strength);
@@ -479,9 +490,10 @@ public class Character {
                 ps.setFloat(13,p.getLocation().getYaw());
                 ps.setFloat(14,p.getLocation().getPitch());
                 ps.setString(15,gson.toJson(questProgress));
-                ps.setString(16,getConvertedInventory(p).toString());
-                ps.setTimestamp(17,lastLogin);
-                ps.setInt(18,getId());
+                ps.setString(16,gson.toJson(variables));
+                ps.setString(17,getConvertedInventory(p).toString());
+                ps.setTimestamp(18,lastLogin);
+                ps.setInt(19,getId());
                 ps.executeUpdate();
                 ps.close();
 
