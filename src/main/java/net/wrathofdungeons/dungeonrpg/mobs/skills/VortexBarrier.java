@@ -36,6 +36,7 @@ public class VortexBarrier implements MobSkill {
 
         entity.setCancelMovement(true);
         entity.executingSkill = true;
+        entity.playDamageAnimation();
 
         final Location loc = entity.getBukkitEntity().getLocation().clone();
         int range = 7;

@@ -7,6 +7,7 @@ import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
+import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.archer.DartRain;
 import net.wrathofdungeons.dungeonrpg.skill.archer.ExplosionArrow;
@@ -21,6 +22,10 @@ import org.bukkit.entity.Player;
 
 public class DamageHandler {
     public static double calculateMobToPlayerDamage(GameUser u, CustomEntity c){
+        return calculateMobToPlayerDamage(u,c,null);
+    }
+
+    public static double calculateMobToPlayerDamage(GameUser u, CustomEntity c, MobSkill skill){
         Player p = u.getPlayer();
         LivingEntity e = c.getBukkitEntity();
         double damage = 1;
@@ -28,6 +33,10 @@ public class DamageHandler {
         MobData mob = c.getData();
 
         damage += mob.getAtk();
+
+        if(skill instanceof net.wrathofdungeons.dungeonrpg.mobs.skills.Shockwave){
+            damage *= 1.35;
+        }
 
         for(CustomItem i : u.getCurrentCharacter().getEquipment()){
             if(i.getData().getCategory().equals(ItemCategory.ARMOR)){
