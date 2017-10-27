@@ -10,6 +10,7 @@ public class MobSkillStorage {
         if(!init){
             addSkill("FIREBALL",new Fireball());
             addSkill("VORTEX_BARRIER",new VortexBarrier());
+            addSkill("SHOCKWAVE",new Shockwave());
 
             init = true;
         }
