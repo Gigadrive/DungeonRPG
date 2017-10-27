@@ -28,7 +28,9 @@ public class TargetListener implements Listener {
             CustomEntity c = CustomEntity.fromEntity(entity);
 
             if(c != null){
-
+                if(!c.getData().getAiSettings().mayDoRandomStroll()){
+                    c.setCancelMovement(true);
+                }
             }
         }
     }
@@ -79,6 +81,10 @@ public class TargetListener implements Listener {
                     } else if(m == MobType.NEUTRAL && !c.getDamagers().contains(target)){
                         e.setCancelled(true);
                     }
+                }
+
+                if(!e.isCancelled() && !c.getData().getAiSettings().mayDoRandomStroll()){
+                    c.setCancelMovement(false);
                 }
             }
         }
