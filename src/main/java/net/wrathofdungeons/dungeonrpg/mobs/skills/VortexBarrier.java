@@ -32,6 +32,8 @@ public class VortexBarrier implements MobSkill {
 
     @Override
     public void execute(CustomEntity entity) {
+        if(!entity.hasTarget()) return;
+
         entity.setCancelMovement(true);
         entity.executingSkill = true;
 
