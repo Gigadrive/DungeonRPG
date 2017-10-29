@@ -6,7 +6,8 @@ public class FormularUtils {
     // http://people.rit.edu/sms6462/mc/exp
 
     public static double getExpNeededForLevel(int level){
-        return 3*(Math.pow(level, 2))+24*level+48;
+        //return 3*(Math.pow(level, 2))+24*level+48;
+        return 6*Math.pow(level,3)+36*level+64;
     }
 
     public static double getBaseHPOnLevel(int level){
@@ -23,7 +24,7 @@ public class FormularUtils {
     public static double getMobHP(MobClass mobClass, int level){
         if(mobClass == MobClass.LOW){
             //return (level*1.5)+48*((level+1)/2); // 100%
-            return (Math.pow(level,2))+18*((level+2)); // 100%
+            return (Math.pow(level,2.25))+18*((level+2)); // 100%
         } else if(mobClass == MobClass.MID){
             return getMobHP(MobClass.LOW,level)*1.2; // 120%
         } else if(mobClass == MobClass.HIGH){
@@ -53,7 +54,8 @@ public class FormularUtils {
         if(mobClass == MobClass.LOW){
             return getMobEXP(MobClass.MID,level)*0.8; // 80%
         } else if(mobClass == MobClass.MID){
-            return level*3; // 100%
+            //return level*3;
+            return 0.5*Math.pow(level,1.5)+32; // 100%
         } else if(mobClass == MobClass.HIGH){
             return getMobEXP(MobClass.MID,level)*1.2; // 120%
         } else if(mobClass == MobClass.BOSS){
