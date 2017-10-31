@@ -47,6 +47,8 @@ public class Character {
     private Timestamp creationTime;
     private Timestamp lastLogin;
     private Inventory bank;
+    private int playtime;
+    private Timestamp lastPlaytimeSave;
 
     public Character(int id, Player p){
         this.id = id;
@@ -83,6 +85,7 @@ public class Character {
                 if(rs.getString("inventory") != null) this.storedInventory = PlayerInventory.fromString(rs.getString("inventory"));
                 this.creationTime = rs.getTimestamp("time");
                 this.lastLogin = rs.getTimestamp("lastLogin");
+                this.playtime = rs.getInt("playtime");
 
                 this.bank = Bukkit.createInventory(null,getBankSlots(),"Your Bank");
 
@@ -141,6 +144,19 @@ public class Character {
 
     public Timestamp getLastLogin() {
         return lastLogin;
+    }
+
+    public int getPlaytime() {
+        return playtime+playtimeToAdd();
+    }
+
+    private int playtimeToAdd(){
+        Timestamp l = lastPlaytimeSave;
+        if(l == null) l = new Timestamp(System.currentTimeMillis());
+
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
+        return (int)((now.getTime()-l.getTime())/1000);
     }
 
     public boolean mayGetEXP(){
@@ -474,7 +490,10 @@ public class Character {
                 this.storedInventory = getConvertedInventory(p);
                 Gson gson = new Gson();
 
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `statpoints.str` = ?, `statpoints.sta` = ?, `statpoints.int` = ?, `statpoints.dex` = ?, `statpoints.agi` = ?, `statpoints.left` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `questProgress` = ?, `variables` = ?, `inventory` = ?, `lastLogin` = ? WHERE `id` = ?");
+                playtime = getPlaytime();
+                lastPlaytimeSave = new Timestamp(System.currentTimeMillis());
+
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `statpoints.str` = ?, `statpoints.sta` = ?, `statpoints.int` = ?, `statpoints.dex` = ?, `statpoints.agi` = ?, `statpoints.left` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw` = ?, `location.pitch` = ?, `playtime` = ?, `questProgress` = ?, `variables` = ?, `inventory` = ?, `lastLogin` = ? WHERE `id` = ?");
                 ps.setInt(1,getLevel());
                 ps.setDouble(2,getExp());
                 ps.setInt(3,strength);
@@ -489,11 +508,12 @@ public class Character {
                 ps.setDouble(12,p.getLocation().getZ());
                 ps.setFloat(13,p.getLocation().getYaw());
                 ps.setFloat(14,p.getLocation().getPitch());
-                ps.setString(15,gson.toJson(questProgress));
-                ps.setString(16,gson.toJson(variables));
-                ps.setString(17,getConvertedInventory(p).toString());
-                ps.setTimestamp(18,lastLogin);
-                ps.setInt(19,getId());
+                ps.setInt(15,playtime);
+                ps.setString(16,gson.toJson(questProgress));
+                ps.setString(17,gson.toJson(variables));
+                ps.setString(18,getConvertedInventory(p).toString());
+                ps.setTimestamp(19,lastLogin);
+                ps.setInt(20,getId());
                 ps.executeUpdate();
                 ps.close();
 
@@ -508,6 +528,8 @@ public class Character {
                     DungeonRPG.updateVanishing();
 
                     CharacterSelectionMenu.openSelection(p);
+
+                    lastPlaytimeSave = null;
                 }
             } catch(Exception e){
                 e.printStackTrace();
