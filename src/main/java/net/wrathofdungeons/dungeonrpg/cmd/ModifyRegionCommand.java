@@ -6,6 +6,7 @@ import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
+import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ public class ModifyRegionCommand extends Command {
         p.sendMessage(ChatColor.RED + "/" + label + " list");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> info");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> toggle");
+        p.sendMessage(ChatColor.RED + "/" + label + " <ID> teleport");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> mob <Level>");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> moblimit <Stage Index>");
     }
@@ -77,6 +79,13 @@ public class ModifyRegionCommand extends Command {
                                 p.sendMessage(ChatColor.GREEN + "Mobs from this region will now spawn again.");
 
                                 DungeonAPI.async(() -> region.saveData());
+                            }
+                        } else if(args[1].equalsIgnoreCase("teleport")){
+                            if(region.getLocations().size() > 0){
+                                p.teleport(region.getRandomizedLocations().get(0).toBukkitLocation());
+                                p.sendMessage(ChatColor.GREEN + "Teleporting to a random location..");
+                            } else {
+                                p.sendMessage(ChatColor.RED + "That region doesn't have any location to teleport to.");
                             }
                         } else {
                             sendUsage(p,label);

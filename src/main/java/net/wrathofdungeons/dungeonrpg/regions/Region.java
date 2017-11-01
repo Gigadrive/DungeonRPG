@@ -133,6 +133,28 @@ public class Region {
         return a;
     }
 
+    public ArrayList<RegionLocation> getRandomizedLocations() {
+        ArrayList<RegionLocation> a = new ArrayList<RegionLocation>();
+
+        a.addAll(getLocations());
+
+        Collections.shuffle(a);
+
+        return a;
+    }
+
+    public ArrayList<RegionLocation> getRandomizedLocations(RegionLocationType type) {
+        ArrayList<RegionLocation> a = new ArrayList<RegionLocation>();
+
+        for(RegionLocation l : getLocations()){
+            if(l.type == type) a.add(l);
+        }
+
+        Collections.shuffle(a);
+
+        return a;
+    }
+
     public ArrayList<CustomEntity> getEntitiesSpawned(){
         ArrayList<CustomEntity> a = new ArrayList<CustomEntity>();
 
