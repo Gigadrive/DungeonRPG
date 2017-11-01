@@ -114,6 +114,16 @@ public class DungeonRPG extends JavaPlugin {
         registerListeners();
         registerCommands();
 
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                MAIN_WORLD = Bukkit.getWorlds().get(0);
+                prepareWorld(MAIN_WORLD);
+            }
+        }.runTaskLater(this,5*20);
+
+        DUNGEON_WORLD = new WorldCreator("Dungeons").createWorld();
+
         MobSkillStorage.init();
         ItemData.init();
         MobData.init();
@@ -146,14 +156,6 @@ public class DungeonRPG extends JavaPlugin {
         s.addSkill(new Stomper());
         s.addSkill(new Shockwave());
         s.addSkill(new BlazingAxe());
-
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                MAIN_WORLD = Bukkit.getWorlds().get(0);
-                prepareWorld(MAIN_WORLD);
-            }
-        }.runTaskLater(this,5*20);
 
         DISALLOWED_BLOCKS.add(Material.CHEST);
         DISALLOWED_BLOCKS.add(Material.ENDER_CHEST);
@@ -626,8 +628,6 @@ public class DungeonRPG extends JavaPlugin {
 
         Bukkit.getServer().clearRecipes();
         EntityManager.registerEntities();
-
-        DUNGEON_WORLD = new WorldCreator("Dungeons").createWorld();
     }
 
     public void onDisable(){
