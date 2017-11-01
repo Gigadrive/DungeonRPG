@@ -113,6 +113,9 @@ public class CustomNPC {
     private Hologram hologram;
     private String skinName;
 
+    public CustomItem keyMasterItem;
+    public KeyMasterLocation keyMasterLocation;
+
     private boolean hasUnsavedData;
 
     public static ArrayList<String> READING = new ArrayList<String>();
@@ -146,6 +149,36 @@ public class CustomNPC {
                 } else {
                     this.dialogues = new ArrayList<NPCDialogue>();
                 }
+
+                String keyMasterLocationString = rs.getString("keyMaster.location");
+                if(keyMasterLocationString != null){
+                    this.keyMasterLocation = gson.fromJson(keyMasterLocationString,KeyMasterLocation.class);
+                } else {
+                    this.keyMasterLocation = null;
+                }
+
+                String keyMasterItemString = rs.getString("keyMaster.item");
+                if(keyMasterItemString != null && !keyMasterItemString.isEmpty()){
+                    String[] s = keyMasterItemString.split(":");
+                    if(s.length == 1){
+                        if(Util.isValidInteger(s[0])){
+                            this.keyMasterItem = new CustomItem(Integer.parseInt(s[0]));
+                        } else {
+                            this.keyMasterItem = null;
+                        }
+                    } else if(s.length == 2){
+                        if(Util.isValidInteger(s[0]) && Util.isValidInteger(s[1])){
+                            this.keyMasterItem = new CustomItem(Integer.parseInt(s[0]),Integer.parseInt(s[1]));
+                        } else {
+                            this.keyMasterItem = null;
+                        }
+                    } else {
+                        this.keyMasterItem = null;
+                    }
+                } else {
+                    this.keyMasterItem = null;
+                }
+
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
 
                 updateSkinName();
@@ -283,6 +316,24 @@ public class CustomNPC {
             if(npc != null) npc.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
             updateHologram();
         }
+    }
+
+    public CustomItem getKeyMasterItem() {
+        return keyMasterItem;
+    }
+
+    public KeyMasterLocation getKeyMasterLocation() {
+        return keyMasterLocation;
+    }
+
+    public void setKeyMasterItem(CustomItem keyMasterItem) {
+        setHasUnsavedData(true);
+        this.keyMasterItem = keyMasterItem;
+    }
+
+    public void setKeyMasterLocation(KeyMasterLocation keyMasterLocation) {
+        setHasUnsavedData(true);
+        this.keyMasterLocation = keyMasterLocation;
     }
 
     public ArrayList<NPCDialogue> getDialogues() {
@@ -531,8 +582,14 @@ public class CustomNPC {
             setHasUnsavedData(false);
             Gson gson = new Gson();
 
+            String keyMasterItemString = null;
+            String keyMasterLocationString = null;
+
+            if(getKeyMasterItem() != null) keyMasterItemString = getKeyMasterItem().getData().getId() + ":" + getKeyMasterItem().getAmount();
+            if(getKeyMasterLocation() != null) keyMasterLocationString = gson.toJson(getKeyMasterLocation());
+
             try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `villager.profession` = ?, `player.skin` = ?, `textLines` = ?, `merchant.offers` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ? WHERE `id` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `villager.profession` = ?, `player.skin` = ?, `textLines` = ?, `merchant.offers` = ?, `keyMaster.item` = ?, `keyMaster.location` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ? WHERE `id` = ?");
                 ps.setString(1,getCustomName());
                 ps.setString(2,getNpcType().toString());
                 ps.setString(3,getEntityType().toString());
@@ -540,6 +597,8 @@ public class CustomNPC {
                 ps.setInt(5,skinID);
                 ps.setString(6,gson.toJson(getDialogues()));
                 ps.setString(7,gson.toJson(getOffers()));
+                ps.setString(8,keyMasterItemString);
+                ps.setString(9,keyMasterLocationString);
                 ps.setString(8,getLocation().getWorld().getName());
                 ps.setDouble(9,getLocation().getX());
                 ps.setDouble(10,getLocation().getY());

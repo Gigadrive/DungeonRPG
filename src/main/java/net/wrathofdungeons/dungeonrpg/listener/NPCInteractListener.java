@@ -39,6 +39,15 @@ public class NPCInteractListener implements Listener {
                 AwakeningMenu.openFor(p);
             } else if(npc.getNpcType() == CustomNPCType.MERCHANT){
                 npc.openShop(p);
+            } else if(npc.getNpcType() == CustomNPCType.DUNGEON_KEY_MASTER){
+                if(npc.getKeyMasterItem() != null && npc.getKeyMasterItem().getAmount() > 0 && npc.getKeyMasterLocation() != null){
+                    if(u.hasInInventory(npc.getKeyMasterItem().getData(),npc.getKeyMasterItem().getAmount())){
+                        u.removeFromInventory(npc.getKeyMasterItem().getData(),npc.getKeyMasterItem().getAmount());
+                        p.teleport(npc.getKeyMasterLocation().toBukkitLocation());
+                    } else {
+                        p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "This gate requires the following item: " + ChatColor.DARK_AQUA + "[" + npc.getKeyMasterItem().getAmount() + "x " + npc.getKeyMasterItem().getData().getName() + "]");
+                    }
+                }
             } else if(npc.getNpcType() == CustomNPCType.QUEST_NPC){
                 if(npc.getDialogues().size() > 0 && !CustomNPC.READING.contains(p.getName())){
                     NPCDialogue dialogue = npc.getPreferredDialogue(p);

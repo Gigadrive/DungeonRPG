@@ -7,8 +7,10 @@ import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.inv.MerchantSetupMenu;
+import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPCType;
+import net.wrathofdungeons.dungeonrpg.npc.KeyMasterLocation;
 import net.wrathofdungeons.dungeonrpg.npc.dialogue.NPCDialogue;
 import net.wrathofdungeons.dungeonrpg.npc.dialogue.NPCDialogueCondition;
 import net.wrathofdungeons.dungeonrpg.npc.dialogue.NPCDialogueConditionType;
@@ -39,6 +41,9 @@ public class ModifyNPCCommand extends Command {
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> addline <Dialogue Index> <Text>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> removeline <Dialogue Index> <Line Index>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> lines <Dialogue Index>");
+        p.sendMessage(ChatColor.RED + "/" + label + " <NPC> keymasteritem <Item>");
+        p.sendMessage(ChatColor.RED + "/" + label + " <NPC> keymasterlocation");
+        p.sendMessage(ChatColor.RED + "/" + label + " <NPC> keymaster");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> dialogues");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> copy");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> customname [Name]");
@@ -69,6 +74,33 @@ public class ModifyNPCCommand extends Command {
                                     MerchantSetupMenu.open(p,npc);
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Only Merchant NPCs can hold item offers.");
+                                }
+                            } else if(args[1].equalsIgnoreCase("keymaster")){
+                                if(npc.getNpcType() == CustomNPCType.DUNGEON_KEY_MASTER){
+                                    if(npc.getKeyMasterLocation() != null){
+                                        p.sendMessage(ChatColor.GREEN + "Location: " + ChatColor.YELLOW + npc.getKeyMasterLocation().world + " " + npc.getKeyMasterLocation().x + " " + npc.getKeyMasterLocation().y + " " + npc.getKeyMasterLocation().z + " " + npc.getKeyMasterLocation().yaw + " " + npc.getKeyMasterLocation().pitch);
+                                    }
+
+                                    if(npc.getKeyMasterItem() != null){
+                                        p.sendMessage(ChatColor.GREEN + "Item: " + ChatColor.YELLOW + npc.getKeyMasterItem().getAmount() + "x " + ChatColor.stripColor(npc.getKeyMasterItem().getData().getName()));
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "That NPC is not a DUNGEON_KEY_MASTER type.");
+                                }
+                            } else if(args[1].equalsIgnoreCase("keymasterlocation")){
+                                if(npc.getNpcType() == CustomNPCType.DUNGEON_KEY_MASTER){
+                                    KeyMasterLocation loc = new KeyMasterLocation();
+                                    loc.world = p.getWorld().getName();
+                                    loc.x = p.getLocation().getX();
+                                    loc.y = p.getLocation().getY();
+                                    loc.z = p.getLocation().getZ();
+                                    loc.yaw = p.getLocation().getYaw();
+                                    loc.pitch = p.getLocation().getPitch();
+
+                                    npc.setKeyMasterLocation(loc);
+                                    p.sendMessage(ChatColor.GREEN + "Updated key master location.");
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "That NPC is not a DUNGEON_KEY_MASTER type.");
                                 }
                             } else if(args[1].equalsIgnoreCase("dialogues")){
                                 if(npc.getNpcType() != CustomNPCType.QUEST_NPC){
@@ -232,6 +264,29 @@ public class ModifyNPCCommand extends Command {
                                     }
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Dialogue index must be an integer!");
+                                }
+                            } else if(args[1].equalsIgnoreCase("keymasteritem")){
+                                if(npc.getNpcType() == CustomNPCType.DUNGEON_KEY_MASTER){
+                                    String[] s = args[2].split(":");
+                                    if(s.length == 1){
+                                        if(Util.isValidInteger(args[0])){
+                                            npc.setKeyMasterItem(new CustomItem(Integer.parseInt(args[0])));
+                                            p.sendMessage(ChatColor.GREEN + "Key Master item set to: " + ChatColor.YELLOW + npc.getKeyMasterItem().getAmount() + "x " + npc.getKeyMasterItem().getData().getName());
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "Please use the format ID[:AMOUNT]");
+                                        }
+                                    } else if(s.length == 2){
+                                        if(Util.isValidInteger(args[0]) && Util.isValidInteger(args[1])){
+                                            npc.setKeyMasterItem(new CustomItem(Integer.parseInt(args[0]),Integer.parseInt(args[1])));
+                                            p.sendMessage(ChatColor.GREEN + "Key Master item set to: " + ChatColor.YELLOW + npc.getKeyMasterItem().getAmount() + "x " + npc.getKeyMasterItem().getData().getName());
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "Please use the format ID[:AMOUNT]");
+                                        }
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "Please use the format ID[:AMOUNT]");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "That NPC is not a DUNGEON_KEY_MASTER type.");
                                 }
                             } else if(args[1].equalsIgnoreCase("removedialogue")){
                                 if(npc.getNpcType() != CustomNPCType.QUEST_NPC){

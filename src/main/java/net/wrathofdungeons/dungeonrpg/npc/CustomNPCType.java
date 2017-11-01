@@ -6,7 +6,8 @@ public enum  CustomNPCType {
     AWAKENING_SPECIALIST(ChatColor.LIGHT_PURPLE,"Awakening Specialist"),
     BUYING_MERCHANT(ChatColor.LIGHT_PURPLE,"Buying Merchant"),
     QUEST_NPC(ChatColor.BLUE,"Quest NPC"),
-    MERCHANT(ChatColor.DARK_GREEN,"Merchant");
+    MERCHANT(ChatColor.DARK_GREEN,"Merchant"),
+    DUNGEON_KEY_MASTER(ChatColor.LIGHT_PURPLE,"Dungeon Key Master");
 
     private ChatColor color;
     private String defaultName;
