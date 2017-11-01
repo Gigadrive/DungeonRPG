@@ -45,7 +45,7 @@ public class NPCInteractListener implements Listener {
                         u.removeFromInventory(npc.getKeyMasterItem().getData(),npc.getKeyMasterItem().getAmount());
                         p.teleport(npc.getKeyMasterLocation().toBukkitLocation());
                     } else {
-                        p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "This gate requires the following item: " + ChatColor.DARK_AQUA + "[" + npc.getKeyMasterItem().getAmount() + "x " + npc.getKeyMasterItem().getData().getName() + "]");
+                        p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "This gate requires the following item: " + ChatColor.DARK_AQUA + "[" + npc.getKeyMasterItem().getAmount() + "x " + ChatColor.stripColor(npc.getKeyMasterItem().getData().getName()) + "]");
                     }
                 }
             } else if(npc.getNpcType() == CustomNPCType.QUEST_NPC){
