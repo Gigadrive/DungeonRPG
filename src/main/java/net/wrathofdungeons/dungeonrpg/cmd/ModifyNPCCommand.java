@@ -269,15 +269,15 @@ public class ModifyNPCCommand extends Command {
                                 if(npc.getNpcType() == CustomNPCType.DUNGEON_KEY_MASTER){
                                     String[] s = args[2].split(":");
                                     if(s.length == 1){
-                                        if(Util.isValidInteger(args[0])){
-                                            npc.setKeyMasterItem(new CustomItem(Integer.parseInt(args[0])));
+                                        if(Util.isValidInteger(s[0])){
+                                            npc.setKeyMasterItem(new CustomItem(Integer.parseInt(s[0])));
                                             p.sendMessage(ChatColor.GREEN + "Key Master item set to: " + ChatColor.YELLOW + npc.getKeyMasterItem().getAmount() + "x " + npc.getKeyMasterItem().getData().getName());
                                         } else {
                                             p.sendMessage(ChatColor.RED + "Please use the format ID[:AMOUNT]");
                                         }
                                     } else if(s.length == 2){
-                                        if(Util.isValidInteger(args[0]) && Util.isValidInteger(args[1])){
-                                            npc.setKeyMasterItem(new CustomItem(Integer.parseInt(args[0]),Integer.parseInt(args[1])));
+                                        if(Util.isValidInteger(s[0]) && Util.isValidInteger(s[1])){
+                                            npc.setKeyMasterItem(new CustomItem(Integer.parseInt(s[0]),Integer.parseInt(s[1])));
                                             p.sendMessage(ChatColor.GREEN + "Key Master item set to: " + ChatColor.YELLOW + npc.getKeyMasterItem().getAmount() + "x " + npc.getKeyMasterItem().getData().getName());
                                         } else {
                                             p.sendMessage(ChatColor.RED + "Please use the format ID[:AMOUNT]");
