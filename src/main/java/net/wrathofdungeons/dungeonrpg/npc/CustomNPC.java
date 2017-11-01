@@ -599,13 +599,13 @@ public class CustomNPC {
                 ps.setString(7,gson.toJson(getOffers()));
                 ps.setString(8,keyMasterItemString);
                 ps.setString(9,keyMasterLocationString);
-                ps.setString(8,getLocation().getWorld().getName());
-                ps.setDouble(9,getLocation().getX());
-                ps.setDouble(10,getLocation().getY());
-                ps.setDouble(11,getLocation().getZ());
-                ps.setFloat(12,getLocation().getYaw());
-                ps.setFloat(13,getLocation().getPitch());
-                ps.setInt(14,getId());
+                ps.setString(10,getLocation().getWorld().getName());
+                ps.setDouble(11,getLocation().getX());
+                ps.setDouble(12,getLocation().getY());
+                ps.setDouble(13,getLocation().getZ());
+                ps.setFloat(14,getLocation().getYaw());
+                ps.setFloat(15,getLocation().getPitch());
+                ps.setInt(16,getId());
                 ps.executeUpdate();
                 ps.close();
             } catch(Exception e){
