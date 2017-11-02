@@ -13,6 +13,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
+import net.wrathofdungeons.dungeonrpg.guilds.Guild;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
@@ -329,6 +330,14 @@ public class GameUser extends User {
 
     public void setFoodCooldown(boolean b){
         this.foodCooldown = b;
+    }
+
+    public Guild getGuild(){
+        return getGuildID() > 0 ? Guild.getGuild(getGuildID()) : null;
+    }
+
+    public boolean isInGuild(){
+        return getGuild() != null;
     }
 
     public void damage(double damage){

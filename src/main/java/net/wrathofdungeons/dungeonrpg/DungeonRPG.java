@@ -7,6 +7,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R3.EntityMagmaCube;
 import net.minecraft.server.v1_8_R3.EntitySheep;
 import net.minecraft.server.v1_8_R3.EntityZombie;
+import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
@@ -86,6 +87,8 @@ public class DungeonRPG extends JavaPlugin {
     public static World DUNGEON_WORLD = null;
     public static final ArrayList<String> BROADCAST_LINES = new ArrayList<String>();
     private int broadcastCurrent = 0;
+
+    public static int RESTART_COUNT = Util.randomInteger(2*60*60,3*60*60);
 
     public static int SETUP_REGION = 0;
     private static MineskinClient mineskinClient;
@@ -628,6 +631,131 @@ public class DungeonRPG extends JavaPlugin {
                 }
             }
         }.runTaskTimer(DungeonRPG.getInstance(), 0,25*20);
+
+        // SERVER RESTART
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                RESTART_COUNT--;
+
+                if(RESTART_COUNT == 30*60){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 30 minutes.");
+                    }
+                } else if(RESTART_COUNT == 20*60){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 20 minutes.");
+                    }
+                } else if(RESTART_COUNT == 10*60){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 10 minutes.");
+                    }
+                } else if(RESTART_COUNT == 5*60){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 5 minutes.");
+                    }
+                } else if(RESTART_COUNT == 2*60){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 2 minutes.");
+                    }
+                } else if(RESTART_COUNT == 60){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 1 minute.");
+                    }
+                } else if(RESTART_COUNT == 30){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 30 seconds.");
+                    }
+                } else if(RESTART_COUNT == 20){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 20 seconds.");
+                    }
+                } else if(RESTART_COUNT == 10){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 10 seconds.");
+                    }
+                } else if(RESTART_COUNT == 5){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 5 seconds.");
+                    }
+                } else if(RESTART_COUNT == 4){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 4 seconds.");
+                    }
+                } else if(RESTART_COUNT == 3){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 3 seconds.");
+                    }
+                } else if(RESTART_COUNT == 2){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 2 seconds.");
+                    }
+                } else if(RESTART_COUNT == 1){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) p.sendMessage(ChatColor.GOLD + "This server will restart in 1 seconds.");
+                    }
+                } else if(RESTART_COUNT == 0){
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(!GameUser.isLoaded(p)) continue;
+                        GameUser u = GameUser.getUser(p);
+
+                        DungeonAPI.executeBungeeCommand(p.getName(),"hub");
+                    }
+
+                    cancel();
+
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            Bukkit.shutdown();
+                        }
+                    }.runTaskLater(DungeonRPG.getInstance(),2*20);
+                }
+            }
+        }.runTaskTimer(DungeonRPG.getInstance(),0,20);
 
         Bukkit.getServer().clearRecipes();
         EntityManager.registerEntities();
