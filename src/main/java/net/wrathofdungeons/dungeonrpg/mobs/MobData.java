@@ -107,6 +107,7 @@ public class MobData {
                 this.entityType = EntityType.valueOf(rs.getString("entityType"));
                 if(rs.getString("skins") != null){
                     skins = gson.fromJson(rs.getString("skins"),int[].class);
+                    mineSkins = new ArrayList<Skin>();
                 } else {
                     skins = new int[]{};
                 }

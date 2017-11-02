@@ -489,9 +489,11 @@ public class DungeonRPG extends JavaPlugin {
             @Override
             public void run() {
                 for(CustomEntity c : CustomEntity.STORAGE.values()){
+                    if(c.getData() == null) continue;
+
                     if(c.getData().getEntityType() == EntityType.PLAYER && c.getData().getAiSettings().mayDoRandomStroll()){
                         if(c.getBukkitEntity() != null && c.toCitizensNPC() != null){
-                            if(Util.getChanceBoolean(500,150)){
+                            if(Util.getChanceBoolean(50,15)){
                                 if(c.playerMobSpeed){
                                     c.toCitizensNPC().getNavigator().getDefaultParameters().baseSpeed(0f);
                                     c.playerMobSpeed = false;

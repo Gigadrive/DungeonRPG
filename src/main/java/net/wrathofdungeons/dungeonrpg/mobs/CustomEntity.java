@@ -604,14 +604,16 @@ public class CustomEntity {
                 npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER,DungeonRPG.randomColor().toString());
                 npc.spawn(loc);
 
-                if(getData().getSkins().size() == 1){
-                    WorldUtilities.applySkinToNPC(npc,getData().getSkins().get(0));
-                } else if(getData().getSkins().size() > 1){
-                    WorldUtilities.applySkinToNPC(npc,getData().getSkins().get(Util.randomInteger(0,getData().getSkins().size()-1)));
+                if(getData().getSkins() != null){
+                    if(getData().getSkins().size() == 1){
+                        WorldUtilities.applySkinToNPC(npc,getData().getSkins().get(0));
+                    } else if(getData().getSkins().size() > 1){
+                        WorldUtilities.applySkinToNPC(npc,getData().getSkins().get(Util.randomInteger(0,getData().getSkins().size()-1)));
+                    }
                 }
 
                 npc.setProtected(false);
-                npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed()).useNewPathfinder(true);
+                npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed())/*.useNewPathfinder(true)*/;
                 if(getData().getAiSettings().mayDoRandomStroll()/* && getData().getMobType() == MobType.PASSIVE*/) addWanderGoal();
 
                 new BukkitRunnable(){
