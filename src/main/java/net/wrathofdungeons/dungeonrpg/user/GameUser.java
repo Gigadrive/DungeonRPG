@@ -192,7 +192,7 @@ public class GameUser extends User {
             if(mpToAdd < 1) mpToAdd = 1;
             mp += mpToAdd;
 
-            hp += hp*(getCurrentCharacter().getTotalValue(AwakeningType.MP_REGENERATION)*0.01);
+            if(getCurrentCharacter().getTotalValue(AwakeningType.MP_REGENERATION) > 0) hp += hp*(getCurrentCharacter().getTotalValue(AwakeningType.MP_REGENERATION)*0.01);
 
             if(mp > getMaxMP()) mp = getMaxMP();
 
@@ -205,7 +205,7 @@ public class GameUser extends User {
             int hp = getHP();
             hp += getCurrentCharacter().getLevel();
 
-            hp += hp*(getCurrentCharacter().getTotalValue(AwakeningType.HP_REGENERATION)*0.01);
+            if(getCurrentCharacter().getTotalValue(AwakeningType.HP_REGENERATION) > 0) hp += hp*(getCurrentCharacter().getTotalValue(AwakeningType.HP_REGENERATION)*0.01);
 
             if(hp > getMaxHP()) hp = getMaxHP();
 
