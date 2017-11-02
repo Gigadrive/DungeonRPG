@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.trait.VillagerProfession;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
+import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
 import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
@@ -208,7 +209,7 @@ public class NPCInteractListener implements Listener {
                         @Override
                         public void run() {
                             DungeonRPG.IGNORE_SPAWN_NPC.add(e.getNPC());
-                            WorldUtilities.applySkinToNPC(e.getNPC(),c.getData().getSkin(),c.getData().getSkinName());
+                            WorldUtilities.applySkinToNPC(e.getNPC(),c.getData().getSkins().get(Util.randomInteger(0,c.getData().getSkins().size()-1)),c.getData().getSkinName());
 
                             new BukkitRunnable(){
                                 @Override

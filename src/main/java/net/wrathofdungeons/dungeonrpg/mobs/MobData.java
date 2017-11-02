@@ -56,6 +56,8 @@ public class MobData {
         return null;
     }
 
+    int i = 0;
+
     private int id;
     private String name;
     private int level;
@@ -65,7 +67,7 @@ public class MobData {
     private int xp;
     private int regen;
     private EntityType entityType;
-    private int skin;
+    private int[] skins;
     private ItemStack helmet;
     private ItemStack chestplate;
     private ItemStack leggings;
@@ -83,10 +85,11 @@ public class MobData {
     private EntitySettings entitySettings;
 
     private String skinName;
-    private Skin mineSkin;
+    private ArrayList<Skin> mineSkins;
 
     public MobData(int id){
         this.id = id;
+        Gson gson = new Gson();
 
         try {
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `mobs` WHERE `id` = ?");
@@ -102,13 +105,17 @@ public class MobData {
                 this.xp = rs.getInt("xp");
                 this.regen = rs.getInt("regen");
                 this.entityType = EntityType.valueOf(rs.getString("entityType"));
-                this.skin = rs.getInt("skin");
-                if(skin != 0 && entityType != EntityType.PLAYER){
-                    //
+                if(rs.getString("skins") != null){
+                    skins = gson.fromJson(rs.getString("skins"),int[].class);
                 } else {
+                    skins = new int[]{};
+                }
+
+                if((skins == null || skins.length == 0) && entityType != EntityType.PLAYER){
                     this.helmet = Util.parseItemStack(rs.getString("helmet"));
                     if(helmet != null) helmet = ItemUtil.setUnbreakable(helmet,true);
                 }
+
                 this.chestplate = Util.parseItemStack(rs.getString("chestplate"));
                 if(chestplate != null) chestplate = ItemUtil.setUnbreakable(chestplate,true);
                 this.leggings = Util.parseItemStack(rs.getString("leggings"));
@@ -180,14 +187,21 @@ public class MobData {
 
                 updateSkinName();
 
-                if(this.skin != 0){
-                    DungeonRPG.getMineskinClient().getSkin(this.skin, new SkinCallback() {
-                        @Override
-                        public void done(Skin skin) {
-                            mineSkin = skin;
-                            h();
-                        }
-                    });
+                if(this.skins != null && this.skins.length > 0){
+                    for(int skinID : this.skins){
+                        DungeonRPG.getMineskinClient().getSkin(skinID, new SkinCallback() {
+                            @Override
+                            public void done(Skin skin) {
+                                mineSkins.add(skin);
+
+                                if(i == skins.length-1){
+                                    h();
+                                } else {
+                                    i++;
+                                }
+                            }
+                        });
+                    }
 
                     /*String skinURL = this.skin;
                     if(!skinURL.startsWith("http://textures.minecraft.net/texture/")) skinURL = "http://textures.minecraft.net/texture/" + skinURL;
@@ -213,7 +227,7 @@ public class MobData {
     }
 
     private void h(){
-        if(mineSkin != null && entityType != EntityType.PLAYER) helmet = ItemUtil.profiledSkullCustom(mineSkin.data.texture.url);
+        if((mineSkins != null && mineSkins.size() > 0) && entityType != EntityType.PLAYER) helmet = ItemUtil.profiledSkullCustom(mineSkins.get(0).data.texture.url);
     }
 
     public int getId() {
@@ -252,12 +266,12 @@ public class MobData {
         return entityType;
     }
 
-    public int getSkinID(){
-        return skin;
+    public int[] getSkinIDs(){
+        return skins;
     }
 
-    public Skin getSkin() {
-        return mineSkin;
+    public ArrayList<Skin> getSkins() {
+        return mineSkins;
     }
 
     public String getSkinName() {

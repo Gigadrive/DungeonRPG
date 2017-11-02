@@ -604,7 +604,11 @@ public class CustomEntity {
                 npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER,DungeonRPG.randomColor().toString());
                 npc.spawn(loc);
 
-                WorldUtilities.applySkinToNPC(npc,getData().getSkin());
+                if(getData().getSkins().size() == 1){
+                    WorldUtilities.applySkinToNPC(npc,getData().getSkins().get(0));
+                } else if(getData().getSkins().size() > 1){
+                    WorldUtilities.applySkinToNPC(npc,getData().getSkins().get(Util.randomInteger(0,getData().getSkins().size()-1)));
+                }
 
                 npc.setProtected(false);
                 npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed()).useNewPathfinder(true);
