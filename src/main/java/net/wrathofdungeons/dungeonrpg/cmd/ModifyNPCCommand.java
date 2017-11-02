@@ -271,14 +271,14 @@ public class ModifyNPCCommand extends Command {
                                     if(s.length == 1){
                                         if(Util.isValidInteger(s[0])){
                                             npc.setKeyMasterItem(new CustomItem(Integer.parseInt(s[0])));
-                                            p.sendMessage(ChatColor.GREEN + "Key Master item set to: " + ChatColor.YELLOW + npc.getKeyMasterItem().getAmount() + "x " + npc.getKeyMasterItem().getData().getName());
+                                            p.sendMessage(ChatColor.GREEN + "Key Master item set to: " + ChatColor.YELLOW + npc.getKeyMasterItem().getAmount() + "x " + ChatColor.stripColor(npc.getKeyMasterItem().getData().getName()));
                                         } else {
                                             p.sendMessage(ChatColor.RED + "Please use the format ID[:AMOUNT]");
                                         }
                                     } else if(s.length == 2){
                                         if(Util.isValidInteger(s[0]) && Util.isValidInteger(s[1])){
                                             npc.setKeyMasterItem(new CustomItem(Integer.parseInt(s[0]),Integer.parseInt(s[1])));
-                                            p.sendMessage(ChatColor.GREEN + "Key Master item set to: " + ChatColor.YELLOW + npc.getKeyMasterItem().getAmount() + "x " + npc.getKeyMasterItem().getData().getName());
+                                            p.sendMessage(ChatColor.GREEN + "Key Master item set to: " + ChatColor.YELLOW + npc.getKeyMasterItem().getAmount() + "x " + ChatColor.stripColor(npc.getKeyMasterItem().getData().getName()));
                                         } else {
                                             p.sendMessage(ChatColor.RED + "Please use the format ID[:AMOUNT]");
                                         }
