@@ -7,7 +7,7 @@ public class FormularUtils {
 
     public static double getExpNeededForLevel(int level){
         //return 3*(Math.pow(level, 2))+24*level+48;
-        return 6*Math.pow(level,2.5)+36*level+64;
+        return 6*Math.pow(level,2.25)+36*level+64;
     }
 
     public static double getBaseHPOnLevel(int level){

@@ -368,6 +368,8 @@ public class CustomItem {
                     iL.add(ChatColor.DARK_AQUA + "Material");
                 } else if(getData().getCategory() == ItemCategory.QUEST){
                     iL.add(ChatColor.RED + "Quest Item");
+                } else if(getData().getCategory() == ItemCategory.COLLECTIBLE){
+                    iL.add(ChatColor.GOLD + "Collectible");
                 }
 
                 if(canHoldAwakenings()){

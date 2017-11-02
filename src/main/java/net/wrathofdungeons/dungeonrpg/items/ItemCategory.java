@@ -10,5 +10,6 @@ public enum ItemCategory {
     TELEPORT_SCROLL,
     FOOD,
     MATERIAL,
+    COLLECTIBLE,
     QUEST
 }
