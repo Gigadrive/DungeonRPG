@@ -243,6 +243,13 @@ public class CustomEntity {
                         }
                     }
 
+                    // DROP CRYSTALS
+                    if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
+                        if(Util.getChanceBoolean(1,3800)){
+                            WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(DungeonRPG.CRYSTAL_IDS[Util.randomInteger(0,DungeonRPG.CRYSTAL_IDS.length-1)]),p);
+                        }
+                    }
+
                     // DROP FOOD
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
                         int limit = 2;
