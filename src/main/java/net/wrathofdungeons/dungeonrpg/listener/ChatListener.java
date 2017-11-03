@@ -37,7 +37,10 @@ public class ChatListener implements Listener {
             if(u.getCurrentCharacter() != null){
                 e.setCancelled(true);
 
-                p.sendMessage(ChatColor.GRAY + "[" + u.getCurrentCharacter().getRpgClass().getName().substring(0,2) + u.getCurrentCharacter().getLevel() + "] " + u.getRank().getColor() + p.getName() + ": " + ChatColor.WHITE + msg);
+                String prefix = u.getRank().getChatPrefix() != null ? u.getRank().getChatPrefix() : "";
+                if(!prefix.isEmpty() && !prefix.endsWith(" ")) prefix += " ";
+
+                p.sendMessage(ChatColor.GRAY + "[" + u.getCurrentCharacter().getRpgClass().getName().substring(0,2) + u.getCurrentCharacter().getLevel() + "] " + prefix + u.getRank().getColor() + p.getName() + ": " + ChatColor.WHITE + msg);
 
                 if(!u.getCurrentCharacter().getVariables().hasSeenChatRangeInfo){
                     p.sendMessage(ChatColor.GRAY + "(Note: Only players near you will see your chat messages.)");
@@ -66,7 +69,7 @@ public class ChatListener implements Listener {
                                     }
 
                                     if(color != null){
-                                        p2.sendMessage(ChatColor.GRAY + "[" + u.getCurrentCharacter().getRpgClass().getName().substring(0,2) + u.getCurrentCharacter().getLevel() + "] " + u.getRank().getColor() + p.getName() + ": " + color + msg);
+                                        p2.sendMessage(ChatColor.GRAY + "[" + u.getCurrentCharacter().getRpgClass().getName().substring(0,2) + u.getCurrentCharacter().getLevel() + "] " + prefix + u.getRank().getColor() + p.getName() + ": " + color + msg);
                                     }
                                 }
                             }
