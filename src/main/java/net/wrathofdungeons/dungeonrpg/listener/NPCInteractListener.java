@@ -93,7 +93,7 @@ public class NPCInteractListener implements Listener {
                             u.getCancellableTasks().add(new BukkitRunnable(){
                                 @Override
                                 public void run() {
-                                    p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&',line));
+                                    p.sendMessage(ChatColor.GRAY + "[" + (j+1) + "/" + dialogue.lines.size() + "] " + ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + ChatColor.translateAlternateColorCodes('&',line));
 
                                     if(j == dialogue.lines.size()-1){
                                         if(dialogue.condition.type == NPCDialogueConditionType.NONE || dialogue.condition.type == NPCDialogueConditionType.QUEST_NOTSTARTED || dialogue.condition.type == NPCDialogueConditionType.QUEST_RUNNING){
