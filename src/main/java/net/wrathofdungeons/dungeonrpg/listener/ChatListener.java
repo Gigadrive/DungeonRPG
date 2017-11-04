@@ -40,7 +40,7 @@ public class ChatListener implements Listener {
                 String prefix = u.getRank().getChatPrefix() != null ? u.getRank().getChatPrefix() : "";
                 if(!prefix.isEmpty() && !prefix.endsWith(" ")) prefix += " ";
 
-                p.sendMessage(ChatColor.GRAY + "[" + u.getCurrentCharacter().getRpgClass().getName().substring(0,2) + u.getCurrentCharacter().getLevel() + "] " + prefix + u.getRank().getColor() + p.getName() + ": " + ChatColor.WHITE + msg);
+                p.sendMessage(ChatColor.DARK_GRAY + "<" + ChatColor.GRAY + u.getCurrentCharacter().getLevel() + ChatColor.DARK_GRAY + "> " + prefix + u.getRank().getColor() + p.getName() + ": " + ChatColor.WHITE + msg);
 
                 if(!u.getCurrentCharacter().getVariables().hasSeenChatRangeInfo){
                     p.sendMessage(ChatColor.GRAY + "(Note: Only players near you will see your chat messages.)");
@@ -58,6 +58,11 @@ public class ChatListener implements Listener {
                                 if(u2.getCurrentCharacter() != null){
                                     double distance = p.getLocation().distance(p2.getLocation());
 
+                                    String d = "";
+                                    if(u2.getFriends().contains(p.getUniqueId().toString())) d += ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + "F";
+                                    if(u.getParty() == u2.getParty()) d += ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "P";
+                                    if(false) d += ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "G"; // TODO: Check if player is in same guild
+
                                     ChatColor color = null;
 
                                     if(distance < 35){
@@ -69,7 +74,7 @@ public class ChatListener implements Listener {
                                     }
 
                                     if(color != null){
-                                        p2.sendMessage(ChatColor.GRAY + "[" + u.getCurrentCharacter().getRpgClass().getName().substring(0,2) + u.getCurrentCharacter().getLevel() + "] " + prefix + u.getRank().getColor() + p.getName() + ": " + color + msg);
+                                        p2.sendMessage(d + ChatColor.DARK_GRAY + "<" + ChatColor.GRAY + u.getCurrentCharacter().getLevel() + ChatColor.DARK_GRAY + "> " + prefix + u.getRank().getColor() + p.getName() + ": " + color + msg);
                                     }
                                 }
                             }
