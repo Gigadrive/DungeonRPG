@@ -102,6 +102,7 @@ public class Party {
 
     public void leaveParty(Player p){
         GameUser u = GameUser.getUser(p);
+        p.closeInventory();
 
         if(u.getParty() == this){
             if(getRank(p) == PartyRank.LEADER){
@@ -120,6 +121,7 @@ public class Party {
 
     public void disband(){
         for(Player all : getOnlinePlayers()){
+            all.closeInventory();
             all.sendMessage(ChatColor.DARK_RED + "The party has been disbanded.");
         }
 

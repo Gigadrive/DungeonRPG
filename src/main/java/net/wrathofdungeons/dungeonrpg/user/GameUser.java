@@ -22,9 +22,12 @@ import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.party.Party;
+import net.wrathofdungeons.dungeonrpg.party.PartyMember;
 import net.wrathofdungeons.dungeonrpg.quests.Quest;
 import net.wrathofdungeons.dungeonrpg.quests.QuestObjective;
 import net.wrathofdungeons.dungeonrpg.quests.QuestStage;
+import net.wrathofdungeons.dungeonrpg.skill.Skill;
+import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.skill.SkillValues;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
@@ -949,7 +952,7 @@ public class GameUser extends User {
             int levels = 0;
             double required = 0;
 
-            while((getCurrentCharacter().getExp() >= (required = FormularUtils.getExpNeededForLevel(getCurrentCharacter().getLevel() + levels))) && (getCurrentCharacter().getLevel() + levels < DungeonRPG.getMaxLevel())){
+            while((getCurrentCharacter().getExp() >= (required = FormularUtils.getExpNeededForLevel(getCurrentCharacter().getLevel()+1 + levels))) && (getCurrentCharacter().getLevel() + levels < DungeonRPG.getMaxLevel())){
                 getCurrentCharacter().setExp(getCurrentCharacter().getExp()-required);
                 levels++;
             }
@@ -975,6 +978,34 @@ public class GameUser extends User {
                     getCurrentCharacter().setLevel(getCurrentCharacter().getLevel()+1);
                     getCurrentCharacter().addStatpointsLeft(2);
                     statpointsGained += 2;
+
+                    if(getParty() != null){
+                        for(PartyMember member : getParty().getMembers()){
+                            if(member.p == p) continue;
+
+                            member.p.sendMessage(ChatColor.GREEN + p.getName() + " has reached level " + getCurrentCharacter().getLevel() + "!");
+                        }
+                    }
+
+                    p.sendMessage(" ");
+                    sendCenteredMessage(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD.toString() + "Level Up!");
+                    sendCenteredMessage(ChatColor.AQUA.toString() + "You are now level " + getCurrentCharacter().getLevel());
+                    p.sendMessage(" ");
+                    p.sendMessage(ChatColor.YELLOW + "+2 Stat Points" + ChatColor.GRAY + " [Use them from the Game Menu]");
+
+                    for(Quest q : Quest.STORAGE.values()) if(q.getRequiredLevel() == getCurrentCharacter().getLevel()){
+                        p.sendMessage(ChatColor.YELLOW + "+ New Quests available!");
+                        break;
+                    }
+
+                    for(Skill skill : SkillStorage.getInstance().getSkills()){
+                        if(skill.getRPGClass() == getCurrentCharacter().getRpgClass() && skill.getType().getMinLevel() == getCurrentCharacter().getLevel()){
+                            p.sendMessage(ChatColor.DARK_GREEN + "[New Skill available! " + ChatColor.GREEN + skill.getName() + ChatColor.DARK_GREEN + "]");
+                            p.sendMessage(ChatColor.WHITE + "   Click Combo: " + ChatColor.GRAY + DungeonRPG.convertComboString(skill.getCombo()));
+                        }
+                    }
+
+                    p.sendMessage(" ");
                 }
             }
 
@@ -990,6 +1021,10 @@ public class GameUser extends User {
             if(getCurrentCharacter().getLevel() >= DungeonRPG.getMaxLevel()) getCurrentCharacter().setExp(0);
             updateLevelBar();
             getCurrentCharacter().updateBankSize();
+
+            p.playSound(p.getEyeLocation(),Sound.LEVEL_UP,1f,1f);
+
+            BountifulAPI.sendTitle(p,5,3*20,5,ChatColor.DARK_AQUA.toString() + ChatColor.BOLD.toString() + "Level Up!",ChatColor.AQUA.toString() + "New stat points are available!");
         }
     }
 

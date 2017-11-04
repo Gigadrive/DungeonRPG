@@ -869,6 +869,20 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().callEvent(event);
     }
 
+    public static String convertComboString(String s){
+        switch(s){
+            case "LLL": return "Left - Left - Left";
+            case "LLR": return "Left - Left - Right";
+            case "LRL": return "Left - Right - Left";
+            case "LRR": return "Left - Right - Right";
+            case "RRR": return "Right - Right - Right";
+            case "RRL": return "Right - Right - Left";
+            case "RLR": return "Right - Left - Right";
+            case "RLL": return "Right - Left - Left";
+            default: return s;
+        }
+    }
+
     private void registerListeners(){
         Bukkit.getPluginManager().registerEvents(new AnimationListener(),this);
         Bukkit.getPluginManager().registerEvents(new AwakeningMenu(),this);

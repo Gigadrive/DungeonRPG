@@ -4,7 +4,11 @@ import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.StatPointType;
+import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
+import net.wrathofdungeons.dungeonrpg.party.PartyMember;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -12,25 +16,119 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.inventivetalent.menubuilder.inventory.InventoryMenuBuilder;
 
 import java.util.ArrayList;
 
 public class GameMenu {
     public static void openFor(Player p){
+        if(!GameUser.isLoaded(p)) return;
         GameUser u = GameUser.getUser(p);
-        InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.INVENTORY_1ROW);
-        if(u.getCurrentCharacter().getStatpointsLeft() <= 0){
-            inv.withTitle("Game Menu");
-        } else {
-            inv.withTitle("[" + u.getCurrentCharacter().getStatpointsLeft() + "] Game Menu");
+        if(u.getCurrentCharacter() == null) return;
+
+        InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.MAX_INVENTORY_SIZE);
+        inv.withTitle(u.getCurrentCharacter().getStatpointsLeft() > 0 ? "[" + u.getCurrentCharacter().getStatpointsLeft() + "] Game Menu" : "Game Menu");
+
+        ItemStack cashShop = ItemUtil.namedItem(Material.GOLD_INGOT, ChatColor.GOLD + "Cash Shop",null);
+        ItemStack quests = ItemUtil.namedItem(Material.BOOK, ChatColor.GOLD + "Quest Diary",null);
+        ItemStack skills = ItemUtil.namedItem(Material.ARROW, ChatColor.GOLD + "Skills",null);
+        ItemStack horse = ItemUtil.namedItem(Material.SADDLE, ChatColor.GOLD + "Horse",null);
+        ItemStack settings = ItemUtil.namedItem(Material.DIODE, ChatColor.GOLD + "Settings",null);
+        ItemStack party = ItemUtil.namedItem(Material.FIREWORK, ChatColor.GOLD + "Party",null);
+        ItemStack friends = ItemUtil.namedItem(Material.SKULL_ITEM, ChatColor.GOLD + "Friends",null,3);
+        ItemStack guild = ItemUtil.namedItem(Material.PAINTING, ChatColor.GOLD + "Guild",null);
+        ItemStack statsInfo = ItemUtil.namedItem(Material.IRON_SWORD, ChatColor.GOLD + "Stats Info",null);
+        ItemStack statistics = ItemUtil.namedItem(Material.SKULL_ITEM, ChatColor.GOLD + "Statistics",null,2);
+
+        ArrayList<String> statsLore = new ArrayList<String>();
+        for(AwakeningType a : AwakeningType.values()){
+            int value = u.getCurrentCharacter().getTotalValue(a);
+
+            if(value != 0){
+                if(value > 0){
+                    if(a.mayBePercentage()){
+                        statsLore.add(ChatColor.GRAY + a.getDisplayName() + ": " + ChatColor.GREEN + "+" + value + "%");
+                    } else {
+                        statsLore.add(ChatColor.GRAY + a.getDisplayName() + ": " + ChatColor.GREEN + "+" + value);
+                    }
+                } else {
+                    if(a.mayBePercentage()){
+                        statsLore.add(ChatColor.GRAY + a.getDisplayName() + ": " + ChatColor.RED + value + "%");
+                    } else {
+                        statsLore.add(ChatColor.GRAY + a.getDisplayName() + ": " + ChatColor.RED + value);
+                    }
+                }
+            }
         }
 
-        inv.withItem(2, b(u,StatPointType.STRENGTH,"Increases all damage dealt."),((player, action, item) -> c(p,StatPointType.STRENGTH)), ClickType.LEFT);
-        inv.withItem(3,b(u,StatPointType.STAMINA,"Increases total health."),((player, action, item) -> c(p,StatPointType.STAMINA)), ClickType.LEFT);
-        inv.withItem(4,b(u,StatPointType.INTELLIGENCE,"Increases mana regeneration."),((player, action, item) -> c(p,StatPointType.INTELLIGENCE)), ClickType.LEFT);
-        inv.withItem(5,b(u,StatPointType.DEXTERITY,"Increases the chance to do critical hits."),((player, action, item) -> c(p,StatPointType.DEXTERITY)), ClickType.LEFT);
-        inv.withItem(6,b(u,StatPointType.AGILITY,"Increases the chance to dodge enemy attacks."),((player, action, item) -> c(p,StatPointType.AGILITY)), ClickType.LEFT);
+        ItemMeta sM = statsInfo.getItemMeta();
+        sM.setLore(statsLore);
+        statsInfo.setItemMeta(sM);
+
+        ItemStack profile = new ItemStack(Material.SKULL_ITEM);
+        profile.setDurability((short)3);
+        SkullMeta m = (SkullMeta)profile.getItemMeta();
+        m.setOwner(p.getName());
+        m.setDisplayName(u.getRank().getColor() + p.getName());
+        ArrayList<String> l = new ArrayList<String>();
+        l.add(ChatColor.GOLD + "Class: " + ChatColor.YELLOW + u.getCurrentCharacter().getRpgClass().getName());
+        l.add(ChatColor.GOLD + "Level: " + ChatColor.YELLOW + u.getCurrentCharacter().getLevel());
+        l.add(ChatColor.GOLD + "EXP: " + ChatColor.YELLOW + Util.round((u.getCurrentCharacter().getExp()/ FormularUtils.getExpNeededForLevel(u.getCurrentCharacter().getLevel()+1))*100,2) + "%");
+        l.add(ChatColor.GOLD + "Rank: " + u.getRank().getColor() + u.getRank().getName());
+        m.setLore(l);
+        profile.setItemMeta(m);
+
+        inv.withItem(22,profile);
+        inv.withItem(29, b(u,StatPointType.STRENGTH,"Increases all damage dealt."),((player, action, item) -> c(p,StatPointType.STRENGTH)), ClickType.LEFT);
+        inv.withItem(30,b(u,StatPointType.STAMINA,"Increases total health."),((player, action, item) -> c(p,StatPointType.STAMINA)), ClickType.LEFT);
+        inv.withItem(31,b(u,StatPointType.INTELLIGENCE,"Increases mana regeneration."),((player, action, item) -> c(p,StatPointType.INTELLIGENCE)), ClickType.LEFT);
+        inv.withItem(32,b(u,StatPointType.DEXTERITY,"Increases the chance to do critical hits."),((player, action, item) -> c(p,StatPointType.DEXTERITY)), ClickType.LEFT);
+        inv.withItem(33,b(u,StatPointType.AGILITY,"Increases the chance to dodge enemy attacks."),((player, action, item) -> c(p,StatPointType.AGILITY)), ClickType.LEFT);
+
+        inv.withItem(2,ItemUtil.hideFlags(cashShop),((player, action, item) -> {
+            // TODO
+        }),ClickType.LEFT);
+
+        inv.withItem(4,ItemUtil.hideFlags(quests),((player, action, item) -> {
+            // TODO
+        }),ClickType.LEFT);
+
+        inv.withItem(6,ItemUtil.hideFlags(skills),((player, action, item) -> {
+            // TODO
+        }),ClickType.LEFT);
+
+        inv.withItem(17,ItemUtil.hideFlags(horse),((player, action, item) -> {
+            // TODO
+        }),ClickType.LEFT);
+
+        inv.withItem(44,ItemUtil.hideFlags(settings),((player, action, item) -> {
+            // TODO
+        }),ClickType.LEFT);
+
+        inv.withItem(51,ItemUtil.hideFlags(party),((player, action, item) -> {
+            if(u.getParty() != null){
+                PartyMenu.openFor(p);
+            } else {
+                p.sendMessage(ChatColor.RED + "You are not in a party.");
+            }
+        }),ClickType.LEFT);
+
+        inv.withItem(49,ItemUtil.hideFlags(friends),((player, action, item) -> {
+            // TODO
+        }),ClickType.LEFT);
+
+        inv.withItem(47,ItemUtil.hideFlags(guild),((player, action, item) -> {
+            // TODO
+        }),ClickType.LEFT);
+
+        inv.withItem(36,ItemUtil.hideFlags(statsInfo),((player, action, item) -> {
+            // TODO
+        }),ClickType.LEFT);
+
+        inv.withItem(9,ItemUtil.hideFlags(statistics),((player, action, item) -> {
+            // TODO
+        }),ClickType.LEFT);
 
         inv.show(p);
     }
