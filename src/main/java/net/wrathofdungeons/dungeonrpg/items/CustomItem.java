@@ -6,6 +6,7 @@ import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import net.minecraft.server.v1_8_R3.NBTTagInt;
 import net.minecraft.server.v1_8_R3.NBTTagList;
 import net.minecraft.server.v1_8_R3.NBTTagString;
+import net.wrathofdungeons.dungeonapi.util.ChatIcons;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
@@ -306,25 +307,191 @@ public class CustomItem {
 
                 iM.setDisplayName(getData().getRarity().getColor() + getData().getName());
                 ArrayList<String> iL = new ArrayList<String>();
-                if(getData().getCategory().toString().startsWith("WEAPON_")){
-                    iL.add("Minimum Level: " + getData().getNeededLevel());
-                    iL.add(ChatColor.GOLD + "ATK: " + getData().getAtkMin() + "-" + getData().getAtkMax());
+                if(getData().getCategory() == ItemCategory.WEAPON_BOW || getData().getCategory() == ItemCategory.WEAPON_AXE || getData().getCategory() == ItemCategory.WEAPON_SHEARS || getData().getCategory() == ItemCategory.WEAPON_STICK){
+                    iL.add(" ");
+                    iL.add(ChatColor.YELLOW + "Damage: " + getData().getAtkMin() + "-" + getData().getAtkMax());
+                    for(Awakening a : getData().getAdditionalStats()){
+                        if(a.value > 0){
+                            // IS POSITIVE
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                            }
+                        } else if(a.value == 0){
+                            // IS NEUTRAL (shouldn't really happen)
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                            }
+                        } else {
+                            // IS NEGATIVE
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                            }
+                        }
+                    }
+                    iL.add(" ");
+                    if(u.getCurrentCharacter().getLevel() >= getData().getNeededLevel()){
+                        iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
+                    } else {
+                        iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
+                    }
+
+                    if(getData().getNeededClass() != RPGClass.NONE){
+                        if(u.getCurrentCharacter().getRpgClass().matches(getData().getNeededClass())){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        }
+                    }
+
+                    iL.add(" ");
+
+                    if(canHoldAwakenings()){
+                        if(hasAwakenings()){
+                            for(Awakening a : getAwakenings()){
+                                if(a.value > 0){
+                                    // IS POSITIVE
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                                    }
+                                } else if(a.value == 0){
+                                    // IS NEUTRAL (shouldn't really happen)
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                                    }
+                                } else {
+                                    // IS NEGATIVE
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                                    }
+                                }
+                            }
+                        } else {
+                            iL.add(ChatColor.AQUA + "Awakening available!");
+                        }
+                    }
+
+                    iL.add(" ");
+                    // TODO: Add crystal info
+                    iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
 
                     if(getData().getDescription() != null) iL.add(" ");
-                }
+                } else if(getData().getCategory() == ItemCategory.ARMOR){
+                    iL.add(" ");
+                    iL.add(ChatColor.YELLOW + "Defense: " + getData().getDefMin() + "-" + getData().getDefMax());
+                    for(Awakening a : getData().getAdditionalStats()){
+                        if(a.value > 0){
+                            // IS POSITIVE
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                            }
+                        } else if(a.value == 0){
+                            // IS NEUTRAL (shouldn't really happen)
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                            }
+                        } else {
+                            // IS NEGATIVE
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                            }
+                        }
+                    }
+                    iL.add(" ");
+                    if(u.getCurrentCharacter().getLevel() >= getData().getNeededLevel()){
+                        iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
+                    } else {
+                        iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
+                    }
 
-                if(getData().getCategory() == ItemCategory.ARMOR){
-                    iL.add("Minimum Level: " + getData().getNeededLevel());
-                    iL.add(ChatColor.GOLD + "DEF: " + getData().getDefMin() + "-" + getData().getDefMax());
+                    if(getData().getNeededClass() != RPGClass.NONE){
+                        if(u.getCurrentCharacter().getRpgClass().matches(getData().getNeededClass())){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        }
+                    }
+
+                    iL.add(" ");
+
+                    if(canHoldAwakenings()){
+                        if(hasAwakenings()){
+                            for(Awakening a : getAwakenings()){
+                                if(a.value > 0){
+                                    // IS POSITIVE
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                                    }
+                                } else if(a.value == 0){
+                                    // IS NEUTRAL (shouldn't really happen)
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                                    }
+                                } else {
+                                    // IS NEGATIVE
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                                    }
+                                }
+                            }
+                        } else {
+                            iL.add(ChatColor.AQUA + "Awakening available!");
+                        }
+                    }
+
+                    iL.add(" ");
+                    // TODO: Add crystal info
+                    iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
 
                     if(getData().getDescription() != null) iL.add(" ");
-                }
+                } else if(getData().getCategory() == ItemCategory.FOOD){
+                    iL.add(" ");
+                    iL.add(ChatColor.GOLD + "Regeneration: " + getData().getFoodRegeneration());
+                    iL.add(" ");
+                    if(u.getCurrentCharacter().getLevel() >= getData().getNeededLevel()){
+                        iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
+                    } else {
+                        iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
+                    }
 
-                if(getData().getCategory() == ItemCategory.FOOD){
-                    if(getData().getNeededLevel() > 0) iL.add("Minimum Level: " + getData().getNeededLevel());
-                    iL.add(ChatColor.GOLD + "HP Regeneration: " + getData().getFoodRegeneration());
+                    if(getData().getNeededClass() != RPGClass.NONE){
+                        if(u.getCurrentCharacter().getRpgClass().matches(getData().getNeededClass())){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        }
+                    }
 
                     if(getData().getDescription() != null) iL.add(" ");
+                } else if(getData().getCategory() == ItemCategory.MATERIAL){
+                    iL.add(ChatColor.BLUE + "Material");
+                } else if(getData().getCategory() == ItemCategory.COLLECTIBLE){
+                    iL.add(ChatColor.GOLD + "Collectible");
+                } else if(getData().getCategory() == ItemCategory.QUEST){
+                    iL.add(ChatColor.RED + "Quest ITem");
                 }
 
                 if(getData().getDescription() != null){
@@ -333,82 +500,8 @@ public class CustomItem {
                     }
                 }
 
-                if(getData().getAdditionalStats() != null && getData().getAdditionalStats().size() > 0){
-                    iL.add(" ");
-
-                    for(Awakening a : getData().getAdditionalStats()){
-                        if(a.value > 0){
-                            // IS POSITIVE
-                            if(a.isPercentage){
-                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
-                            } else {
-                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
-                            }
-                        } else if(a.value == 0){
-                            // IS NEUTRAL (shouldn't really happen)
-                            if(a.isPercentage){
-                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
-                            } else {
-                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
-                            }
-                        } else {
-                            // IS NEGATIVE
-                            if(a.isPercentage){
-                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
-                            } else {
-                                iL.add(ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
-                            }
-                        }
-                    }
-
-                    iL.add(" ");
-                }
-
-                if(getData().getCategory() == ItemCategory.MATERIAL){
-                    iL.add(ChatColor.DARK_AQUA + "Material");
-                } else if(getData().getCategory() == ItemCategory.QUEST){
-                    iL.add(ChatColor.RED + "Quest Item");
-                } else if(getData().getCategory() == ItemCategory.COLLECTIBLE){
-                    iL.add(ChatColor.GOLD + "Collectible");
-                }
-
-                if(canHoldAwakenings()){
-                    if(hasAwakenings()){
-                        for(Awakening a : getAwakenings()){
-                            if(a.value > 0){
-                                // IS POSITIVE
-                                if(a.isPercentage){
-                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
-                                } else {
-                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
-                                }
-                            } else if(a.value == 0){
-                                // IS NEUTRAL (shouldn't really happen)
-                                if(a.isPercentage){
-                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
-                                } else {
-                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
-                                }
-                            } else {
-                                // IS NEGATIVE
-                                if(a.isPercentage){
-                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
-                                } else {
-                                    iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
-                                }
-                            }
-                        }
-                    } else {
-                        iL.add(ChatColor.BLUE + "Awakening available!");
-                    }
-                }
-
                 if(isUntradeable()){
                     iL.add(ChatColor.RED + "Untradeable");
-                }
-
-                if(getData().getRarity() != ItemRarity.NONE){
-                    iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
                 }
 
                 iM.setLore(iL);
