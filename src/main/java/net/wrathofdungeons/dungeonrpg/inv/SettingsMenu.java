@@ -64,12 +64,12 @@ public class SettingsMenu {
         }
 
         if(u.getSettingsManager().allowsDuelRequests()){
-            inv.withItem(4, ItemUtil.namedItem(Material.DIAMOND_SWORD, ChatColor.YELLOW + "Duel Requests",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"}),((player, action, item) -> {
+            inv.withItem(4, ItemUtil.hideFlags(ItemUtil.namedItem(Material.DIAMOND_SWORD, ChatColor.YELLOW + "Duel Requests",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"})),((player, action, item) -> {
                 u.getSettingsManager().setDuelRequests(false);
                 SettingsMenu.openFor(p);
             }),ClickType.LEFT);
         } else {
-            inv.withItem(4, ItemUtil.namedItem(Material.DIAMOND_SWORD, ChatColor.YELLOW + "Duel Requests",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"}),((player, action, item) -> {
+            inv.withItem(4, ItemUtil.hideFlags(ItemUtil.namedItem(Material.DIAMOND_SWORD, ChatColor.YELLOW + "Duel Requests",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"})),((player, action, item) -> {
                 u.getSettingsManager().setDuelRequests(true);
                 SettingsMenu.openFor(p);
             }),ClickType.LEFT);
