@@ -155,7 +155,7 @@ public class InventoryClickListener implements Listener {
                                         for(ItemStack iStack : t.getOffers1()){
                                             CustomItem it = CustomItem.fromItemStack(iStack);
 
-                                            if(it.isSameItem(item) && it.getAmount()+item.getAmount() < 64){
+                                            if(it.isSameItem(item) && it.getAmount()+item.getAmount() < it.getData().getStackLimit()){
                                                 currentItem = iStack;
                                             }
                                         }
@@ -163,7 +163,7 @@ public class InventoryClickListener implements Listener {
                                         for(ItemStack iStack : t.getOffers2()){
                                             CustomItem it = CustomItem.fromItemStack(iStack);
 
-                                            if(it.isSameItem(item) && it.getAmount()+item.getAmount() < 64){
+                                            if(it.isSameItem(item) && it.getAmount()+item.getAmount() < it.getData().getStackLimit()){
                                                 currentItem = iStack;
                                             }
                                         }

@@ -190,6 +190,14 @@ public class ItemData {
         }
     }
 
+    public int getStackLimit(){
+        if(getCategory() == ItemCategory.WEAPON_STICK){
+            return 1;
+        } else {
+            return getIcon().getMaxStackSize();
+        }
+    }
+
     public int getFoodRegeneration() {
         return foodRegeneration;
     }

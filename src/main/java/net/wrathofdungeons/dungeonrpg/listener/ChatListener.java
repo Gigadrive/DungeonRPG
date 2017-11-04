@@ -47,7 +47,7 @@ public class ChatListener implements Listener {
                     u.getCurrentCharacter().getVariables().hasSeenChatRangeInfo = true;
                 }
 
-                for(Entity entity : p.getNearbyEntities(60,60,60)){
+                for(Entity entity : p.getNearbyEntities(90,90,90)){
                     if(entity instanceof Player){
                         if(CustomEntity.fromEntity((LivingEntity)entity) == null){
                             Player p2 = (Player)entity;
@@ -60,7 +60,7 @@ public class ChatListener implements Listener {
 
                                     String d = "";
                                     if(u2.getFriends().contains(p.getUniqueId().toString())) d += ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + "F";
-                                    if(u.getParty() == u2.getParty()) d += ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "P";
+                                    if(u.getParty() != null && u2.getParty() != null && u.getParty() == u2.getParty()) d += ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "P";
                                     if(false) d += ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "G"; // TODO: Check if player is in same guild
 
                                     ChatColor color = null;

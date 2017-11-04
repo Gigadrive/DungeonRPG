@@ -79,7 +79,7 @@ public class GameMenu {
         profile.setDurability((short)3);
         SkullMeta m = (SkullMeta)profile.getItemMeta();
         m.setOwner(p.getName());
-        m.setDisplayName(u.getRank().getColor() + p.getName());
+        m.setDisplayName(ChatColor.GOLD + p.getName());
         ArrayList<String> l = new ArrayList<String>();
         l.add(ChatColor.GRAY + "Class: " + ChatColor.WHITE + u.getCurrentCharacter().getRpgClass().getName());
         l.add(ChatColor.GRAY + "Level: " + ChatColor.WHITE + u.getCurrentCharacter().getLevel());
@@ -158,6 +158,23 @@ public class GameMenu {
 
     private static ItemStack b(GameUser u, StatPointType type, String description){
         ItemStack strength = new ItemStack(Material.ENCHANTED_BOOK);
+        switch(type){
+            case STRENGTH:
+                strength.setType(Material.REDSTONE_BLOCK);
+                break;
+            case STAMINA:
+                strength.setType(Material.GOLD_BLOCK);
+                break;
+            case INTELLIGENCE:
+                strength.setType(Material.LAPIS_BLOCK);
+                break;
+            case DEXTERITY:
+                strength.setType(Material.EMERALD_BLOCK);
+                break;
+            case AGILITY:
+                strength.setType(Material.IRON_BLOCK);
+                break;
+        }
         strength.setAmount(u.getCurrentCharacter().getStatpointsPure(type));
         ItemMeta strengthMeta = strength.getItemMeta();
         strengthMeta.setDisplayName(type.getColor() + type.getName());
@@ -172,6 +189,8 @@ public class GameMenu {
         strengthMeta.setLore(strengthLore);
         strength.setItemMeta(strengthMeta);
         strength = ItemUtil.hideFlags(strength);
+
+        if(u.getCurrentCharacter().getStatpointsPure(type) >= DungeonRPG.STATPOINTS_LIMIT) strength = ItemUtil.addGlow(strength);
 
         return strength;
     }

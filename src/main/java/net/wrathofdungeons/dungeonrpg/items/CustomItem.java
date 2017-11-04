@@ -551,7 +551,7 @@ public class CustomItem {
             }
         }
 
-        if(getData().getCategory() == ItemCategory.WEAPON_STICK) tag.set("stackProtection", new NBTTagInt(Util.randomInteger(-5000, 5000)));
+        if(getData().getStackLimit() == 1) tag.set("stackProtection", new NBTTagInt(Util.randomInteger(-5000, 5000)));
 
         nmsItem.setTag(tag);
         i = CraftItemStack.asCraftMirror(nmsItem);
