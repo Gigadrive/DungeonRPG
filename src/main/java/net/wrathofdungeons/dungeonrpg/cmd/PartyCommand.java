@@ -67,9 +67,13 @@ public class PartyCommand extends Command {
 
                                     if(u2.getCurrentCharacter() != null){
                                         if(!party.isInvited(p2)){
-                                            party.getInvited().add(p2);
-                                            p.sendMessage(ChatColor.GREEN + "The invitation has been sent.");
-                                            p2.sendMessage(ChatColor.GREEN + "You have been invited to a party by " + p.getName() + ". Use " + ChatColor.YELLOW + "/party accept " + p.getName() + ChatColor.GREEN + " to accept.");
+                                            if(u2.getSettingsManager().allowsPartyRequests()){
+                                                party.getInvited().add(p2);
+                                                p.sendMessage(ChatColor.GREEN + "The invitation has been sent.");
+                                                p2.sendMessage(ChatColor.GREEN + "You have been invited to a party by " + p.getName() + ". Use " + ChatColor.YELLOW + "/party accept " + p.getName() + ChatColor.GREEN + " to accept.");
+                                            } else {
+                                                p.sendMessage(ChatColor.RED + "That player doesn't allow party requests.");
+                                            }
                                         } else {
                                             p.sendMessage(ChatColor.RED + "You have already invited that player.");
                                         }

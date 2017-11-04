@@ -31,12 +31,16 @@ public class DuelCommand extends Command {
                                 if(!Duel.isDueling(p2)){
                                     if(Duel.getRequest(p,p2) == null){
                                         if(Duel.getRequest(p2,p) == null){
-                                            Duel.Request r = Duel.createRequest(p,p2);
+                                            if(u2.getSettingsManager().allowsDuelRequests()){
+                                                Duel.Request r = Duel.createRequest(p,p2);
 
-                                            p.sendMessage(ChatColor.AQUA + "Duel request sent!");
+                                                p.sendMessage(ChatColor.AQUA + "Duel request sent!");
 
-                                            p2.playSound(p2.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
-                                            p2.sendMessage(ChatColor.YELLOW + p.getName() + " " + ChatColor.AQUA + "[Level " + u.getCurrentCharacter().getLevel() + "] wants to duel with you. Use " + ChatColor.YELLOW + "/duel " + p.getName() + ChatColor.AQUA + " to accept their request.");
+                                                p2.playSound(p2.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+                                                p2.sendMessage(ChatColor.YELLOW + p.getName() + " " + ChatColor.AQUA + "[Level " + u.getCurrentCharacter().getLevel() + "] wants to duel with you. Use " + ChatColor.YELLOW + "/duel " + p.getName() + ChatColor.AQUA + " to accept their request.");
+                                            } else {
+                                                p.sendMessage(ChatColor.RED + "That player doesn't allow duel requests.");
+                                            }
                                         } else {
                                             Duel.getRequest(p2,p).accept();
                                         }

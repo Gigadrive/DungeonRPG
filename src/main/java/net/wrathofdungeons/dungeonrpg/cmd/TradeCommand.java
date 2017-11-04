@@ -34,12 +34,16 @@ public class TradeCommand extends Command {
                                             if(!Trade.isTrading(p2)){
                                                 if(Trade.getRequest(p,p2) == null){
                                                     if(Trade.getRequest(p2,p) == null){
-                                                        Trade.Request r = Trade.createRequest(p,p2);
+                                                        if(u2.getSettingsManager().allowsTradeRequests()){
+                                                            Trade.Request r = Trade.createRequest(p,p2);
 
-                                                        p.sendMessage(ChatColor.GREEN + "Trade request sent!");
+                                                            p.sendMessage(ChatColor.GREEN + "Trade request sent!");
 
-                                                        p2.playSound(p2.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
-                                                        p2.sendMessage(ChatColor.YELLOW + p.getName() + " " + ChatColor.GREEN + "wants to trade with you. Use " + ChatColor.YELLOW + "/trade " + p.getName() + ChatColor.GREEN + " to accept their request.");
+                                                            p2.playSound(p2.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+                                                            p2.sendMessage(ChatColor.YELLOW + p.getName() + " " + ChatColor.GREEN + "wants to trade with you. Use " + ChatColor.YELLOW + "/trade " + p.getName() + ChatColor.GREEN + " to accept their request.");
+                                                        } else {
+                                                            p.sendMessage(ChatColor.RED + "That player doesn't allow trade requests.");
+                                                        }
                                                     } else {
                                                         Trade.getRequest(p2,p).accept();
                                                     }

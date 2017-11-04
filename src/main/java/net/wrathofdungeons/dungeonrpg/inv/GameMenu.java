@@ -103,7 +103,7 @@ public class GameMenu {
         }),ClickType.LEFT);
 
         inv.withItem(44,ItemUtil.hideFlags(settings),((player, action, item) -> {
-            // TODO
+            SettingsMenu.openFor(p);
         }),ClickType.LEFT);
 
         inv.withItem(51,ItemUtil.hideFlags(party),((player, action, item) -> {
