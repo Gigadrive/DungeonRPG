@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
+import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
@@ -131,7 +132,7 @@ public class DamageListener implements Listener {
                         }
 
                         if(e.getDamager() instanceof Projectile){
-                            if(((Projectile) e.getDamager()).getShooter() != null && ((Projectile) e.getDamager()).getShooter() instanceof LivingEntity && !(((Projectile) e.getDamager()).getShooter() instanceof Player)){
+                            if(((Projectile) e.getDamager()).getShooter() != null){
                                 if(((Projectile) e.getDamager()).getShooter() == e.getEntity()){
                                     e.setCancelled(true);
                                     return;
@@ -143,26 +144,28 @@ public class DamageListener implements Listener {
                                     e.setCancelled(true);
                                     e.getDamager().remove();
                                     if(!cd.requiresNewDamageHandler()) DungeonRPG.callMobToPlayerDamage(cd,p,true);
-                                }
-                            } else {
-                                if(((Projectile) e.getDamager()).getShooter() instanceof Player){
-                                    if(((Projectile) e.getDamager()).getShooter() == e.getEntity()){
-                                        e.setCancelled(true);
-                                        return;
-                                    }
-
-                                    Player p2 = (Player)((Projectile) e.getDamager()).getShooter();
-
-                                    if(GameUser.isLoaded(p2)){
-                                        GameUser u2 = GameUser.getUser(p2);
-
-                                        if(u2.getCurrentCharacter() != null){
+                                } else {
+                                    if(((Projectile) e.getDamager()).getShooter() instanceof Player){
+                                        if(((Projectile) e.getDamager()).getShooter() == e.getEntity()){
                                             e.setCancelled(true);
-                                            e.getDamager().remove();
-                                            DungeonRPG.callPlayerToPlayerDamage(p2,p,true);
+                                            return;
+                                        }
+
+                                        Player p2 = (Player)((Projectile) e.getDamager()).getShooter();
+
+                                        if(GameUser.isLoaded(p2)){
+                                            GameUser u2 = GameUser.getUser(p2);
+
+                                            if(u2.getCurrentCharacter() != null){
+                                                e.setCancelled(true);
+                                                e.getDamager().remove();
+                                                if(Duel.isDuelingWith(p,p2)) DungeonRPG.callPlayerToPlayerDamage(p2,p,true);
+                                            }
                                         }
                                     }
                                 }
+                            } else {
+                                e.setCancelled(true);
                             }
                         } else {
                             if(e.getDamager() instanceof LivingEntity){

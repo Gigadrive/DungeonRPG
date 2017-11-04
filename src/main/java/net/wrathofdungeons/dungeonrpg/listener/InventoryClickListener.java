@@ -144,7 +144,7 @@ public class InventoryClickListener implements Listener {
                                 // player inventory
 
                                 CustomItem item = CustomItem.fromItemStack(e.getCurrentItem());
-                                if(e.getClick() == ClickType.RIGHT) item = new CustomItem(CustomItem.fromItemStack(e.getCurrentItem()).getData(),1);
+                                if(e.getCurrentItem() != null && e.getClick() == ClickType.RIGHT) item = new CustomItem(CustomItem.fromItemStack(e.getCurrentItem()).getData(),1);
 
                                 if(item != null){
                                     int currentOffers = t.isPlayer1(p) ? t.getOffers1().size() : t.getOffers2().size();
@@ -184,11 +184,14 @@ public class InventoryClickListener implements Listener {
                                             t.setPlayer2Ready(false);
                                         }
 
-                                        if(p.getInventory().getItem(e.getSlot()) != null && p.getInventory().getItem(e.getSlot()).getAmount() < item.getAmount()){
-                                            if(p.getInventory().getItem(e.getSlot()).getAmount()-item.getAmount() <= 1){
-                                                p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
+                                        ItemStack current = p.getInventory().getItem(e.getSlot()) != null ? p.getInventory().getItem(e.getSlot()) : e.getCurrentItem();
+                                        if(current != null/* && current.getAmount() < item.getAmount()*/){
+                                            //p.sendMessage(String.valueOf(current.getAmount()-item.getAmount()));
+                                            if(current.getAmount()-item.getAmount() > 0){
+                                                current.setAmount(current.getAmount()-item.getAmount());
+                                                p.getInventory().setItem(e.getSlot(),current);
                                             } else {
-                                                p.getInventory().getItem(e.getSlot()).setAmount(p.getInventory().getItem(e.getSlot()).getAmount()-item.getAmount());
+                                                p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
                                             }
                                         }
 
@@ -197,15 +200,26 @@ public class InventoryClickListener implements Listener {
                                         if(currentOffers < Trade.MAX_OFFERS){
                                             if(!item.isUntradeable() && item.getData().getCategory() != ItemCategory.QUEST){
                                                 if(t.isPlayer1(p)){
-                                                    p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
+                                                    //p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
                                                     t.getOffers1().add(item.build(p));
                                                     t.setPlayer1Ready(false);
                                                     t.setPlayer2Ready(false);
                                                 } else if(t.isPlayer2(p)){
-                                                    p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
+                                                    //p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
                                                     t.getOffers2().add(item.build(p));
                                                     t.setPlayer1Ready(false);
                                                     t.setPlayer2Ready(false);
+                                                }
+
+                                                ItemStack current = p.getInventory().getItem(e.getSlot()) != null ? p.getInventory().getItem(e.getSlot()) : e.getCurrentItem();
+                                                if(current != null/* && current.getAmount() < item.getAmount()*/){
+                                                    //p.sendMessage(String.valueOf(current.getAmount()-item.getAmount()));
+                                                    if(current.getAmount()-item.getAmount() > 0){
+                                                        current.setAmount(current.getAmount()-item.getAmount());
+                                                        p.getInventory().setItem(e.getSlot(),current);
+                                                    } else {
+                                                        p.getInventory().setItem(e.getSlot(),new ItemStack(Material.AIR));
+                                                    }
                                                 }
 
                                                 t.updateInventories();
