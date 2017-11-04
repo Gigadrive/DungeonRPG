@@ -28,15 +28,19 @@ public class PlayerMoveListener implements Listener {
             GameUser u = GameUser.getUser(p);
 
             if(u.getCurrentCharacter() != null){
+                Location from = e.getFrom();
+                Location to = e.getTo();
+                double x = Math.floor(from.getX());
+                double z = Math.floor(from.getZ());
+
+                boolean newBlock = Math.floor(to.getX()) != x || Math.floor(to.getZ()) != z;
+
+                if(newBlock) u.getCurrentCharacter().getVariables().statisticsManager.blocksWalked++;
+
                 if(((Entity)p).isOnGround()) u.getSkillValues().leapIsInAir = false;
 
                 if(u.mayActivateMobs){
-                    Location from = e.getFrom();
-                    Location to = e.getTo();
-                    double x = Math.floor(from.getX());
-                    double z = Math.floor(from.getZ());
-
-                    if(Math.floor(to.getX()) != x || Math.floor(to.getZ()) != z){
+                    if(newBlock){
                         for(Region region : Region.STORAGE){
                             if(region.getMobData() != null && region.getMobLimit() > 0 && region.mayActivateMobs() && region.isActive()){
                                 if(region.isInRegion(p.getLocation())){

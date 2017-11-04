@@ -114,6 +114,8 @@ public class AwakeningMenu implements Listener {
                                             p.closeInventory();
                                             p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
 
+                                            u.getCurrentCharacter().getVariables().statisticsManager.itemsAwakened += toAwaken.size();
+
                                             if(toAwaken.size() == 1){
                                                 if(awakeningPrice == 1){
                                                     p.sendMessage(ChatColor.GREEN + "You awakened " + ChatColor.YELLOW + toAwaken.size() + " " + ChatColor.GREEN + "item for " + ChatColor.YELLOW + awakeningPrice + ChatColor.GREEN + " golden nugget.");

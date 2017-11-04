@@ -1021,6 +1021,7 @@ public class GameUser extends User {
             if(getCurrentCharacter().getLevel() >= DungeonRPG.getMaxLevel()) getCurrentCharacter().setExp(0);
             updateLevelBar();
             getCurrentCharacter().updateBankSize();
+            updateInventory();
 
             p.playSound(p.getEyeLocation(),Sound.LEVEL_UP,1f,1f);
 

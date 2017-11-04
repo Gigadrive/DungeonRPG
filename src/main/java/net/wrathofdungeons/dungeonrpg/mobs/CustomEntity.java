@@ -186,6 +186,14 @@ public class CustomEntity {
                 GameUser u = GameUser.getUser(lastDamager);
 
                 if(u.getCurrentCharacter() != null){
+                    int currentValue = 0;
+                    if(u.getCurrentCharacter().getVariables().statisticsManager.mobsKilled.containsKey(getData().getId())){
+                        currentValue = u.getCurrentCharacter().getVariables().statisticsManager.mobsKilled.get(getData().getId());
+                        u.getCurrentCharacter().getVariables().statisticsManager.mobsKilled.remove(getData().getId());
+                    }
+
+                    u.getCurrentCharacter().getVariables().statisticsManager.mobsKilled.put(getData().getId(),currentValue+1);
+
                     // DROP GOLD
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL) if(Util.getChanceBoolean(50+u.getCurrentCharacter().getTotalValue(AwakeningType.FORTUNE),190)) WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(7),p);
 

@@ -30,6 +30,9 @@ public class GameMenu {
         InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.MAX_INVENTORY_SIZE);
         inv.withTitle(u.getCurrentCharacter().getStatpointsLeft() > 0 ? "[" + u.getCurrentCharacter().getStatpointsLeft() + "] Game Menu" : "Game Menu");
 
+        int mobsKilled = 0;
+        for(int id : u.getCurrentCharacter().getVariables().statisticsManager.mobsKilled.keySet()) mobsKilled += u.getCurrentCharacter().getVariables().statisticsManager.mobsKilled.get(id);
+
         ItemStack cashShop = ItemUtil.namedItem(Material.GOLD_INGOT, ChatColor.GOLD + "Cash Shop",null);
         ItemStack quests = ItemUtil.namedItem(Material.BOOK, ChatColor.GOLD + "Quest Diary",null);
         ItemStack skills = ItemUtil.namedItem(Material.ARROW, ChatColor.GOLD + "Skills",null);
@@ -39,7 +42,13 @@ public class GameMenu {
         ItemStack friends = ItemUtil.namedItem(Material.SKULL_ITEM, ChatColor.GOLD + "Friends",null,3);
         ItemStack guild = ItemUtil.namedItem(Material.PAINTING, ChatColor.GOLD + "Guild",null);
         ItemStack statsInfo = ItemUtil.namedItem(Material.IRON_SWORD, ChatColor.GOLD + "Stats Info",null);
-        ItemStack statistics = ItemUtil.namedItem(Material.SKULL_ITEM, ChatColor.GOLD + "Statistics",null,2);
+        ItemStack statistics = ItemUtil.namedItem(Material.SKULL_ITEM, ChatColor.GOLD + "Statistics",new String[]{
+                ChatColor.GRAY + "Playtime: " + ChatColor.WHITE + Util.round(u.getCurrentCharacter().getPlaytime()/60/60,1) + " h",
+                ChatColor.GRAY + "Mobs killed: " + ChatColor.WHITE + mobsKilled,
+                ChatColor.GRAY + "Items awakened: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.itemsAwakened,
+                ChatColor.GRAY + "Chests looted: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.chestsLooted,
+                ChatColor.GRAY + "Blocks walked: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.blocksWalked
+        },2);
 
         ArrayList<String> statsLore = new ArrayList<String>();
         for(AwakeningType a : AwakeningType.values()){
@@ -72,10 +81,10 @@ public class GameMenu {
         m.setOwner(p.getName());
         m.setDisplayName(u.getRank().getColor() + p.getName());
         ArrayList<String> l = new ArrayList<String>();
-        l.add(ChatColor.GOLD + "Class: " + ChatColor.YELLOW + u.getCurrentCharacter().getRpgClass().getName());
-        l.add(ChatColor.GOLD + "Level: " + ChatColor.YELLOW + u.getCurrentCharacter().getLevel());
-        l.add(ChatColor.GOLD + "EXP: " + ChatColor.YELLOW + Util.round((u.getCurrentCharacter().getExp()/ FormularUtils.getExpNeededForLevel(u.getCurrentCharacter().getLevel()+1))*100,2) + "%");
-        l.add(ChatColor.GOLD + "Rank: " + u.getRank().getColor() + u.getRank().getName());
+        l.add(ChatColor.GRAY + "Class: " + ChatColor.WHITE + u.getCurrentCharacter().getRpgClass().getName());
+        l.add(ChatColor.GRAY + "Level: " + ChatColor.WHITE + u.getCurrentCharacter().getLevel());
+        l.add(ChatColor.GRAY + "EXP: " + ChatColor.WHITE + Util.round((u.getCurrentCharacter().getExp()/ FormularUtils.getExpNeededForLevel(u.getCurrentCharacter().getLevel()+1))*100,2) + "%");
+        l.add(ChatColor.GRAY + "Rank: " + u.getRank().getColor() + u.getRank().getName());
         m.setLore(l);
         profile.setItemMeta(m);
 
@@ -122,13 +131,9 @@ public class GameMenu {
             // TODO
         }),ClickType.LEFT);
 
-        inv.withItem(36,ItemUtil.hideFlags(statsInfo),((player, action, item) -> {
-            // TODO
-        }),ClickType.LEFT);
+        inv.withItem(36,ItemUtil.hideFlags(statsInfo));
 
-        inv.withItem(9,ItemUtil.hideFlags(statistics),((player, action, item) -> {
-            // TODO
-        }),ClickType.LEFT);
+        inv.withItem(9,ItemUtil.hideFlags(statistics));
 
         inv.show(p);
     }

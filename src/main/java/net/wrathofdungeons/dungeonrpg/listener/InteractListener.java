@@ -339,6 +339,7 @@ public class InteractListener implements Listener {
                         if(c != null){
                             if(c.isSpawned()){
                                 if(!c.isClaimed()){
+                                    u.getCurrentCharacter().getVariables().statisticsManager.chestsLooted++;
                                     c.claim(p);
                                     c.getLocation().getWorld().playSound(c.getLocation(), Sound.CHEST_OPEN, 1f, 1f);
                                     Inventory inv = Bukkit.createInventory(null,Util.INVENTORY_3ROWS,"[" + c.getTier().getDisplay() + "] Loot Chest");
