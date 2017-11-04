@@ -29,11 +29,18 @@ public class InteractionMenu {
                     p.chat("/trade " + p2.getName());
                 }, ClickType.LEFT);
 
-                inv.withItem(2, ItemUtil.hideFlags(ItemUtil.namedItem(Material.FIREWORK, ChatColor.GOLD + "Invite to party",null)), (player, action, item) -> {
-                    p.closeInventory();
-                    if(u.getParty() == null) p.chat("/party create");
-                    p.chat("/party invite " + p2.getName());
-                }, ClickType.LEFT);
+                if(u2.getParty() != null && u2.getParty().getInvited().contains(p)){
+                    inv.withItem(2, ItemUtil.hideFlags(ItemUtil.namedItem(Material.FIREWORK, ChatColor.GOLD + "Accept party request",null)), (player, action, item) -> {
+                        p.closeInventory();
+                        p.chat("/party accept " + p2.getName());
+                    }, ClickType.LEFT);
+                } else {
+                    inv.withItem(2, ItemUtil.hideFlags(ItemUtil.namedItem(Material.FIREWORK, ChatColor.GOLD + "Invite to party",null)), (player, action, item) -> {
+                        p.closeInventory();
+                        if(u.getParty() == null) p.chat("/party create");
+                        p.chat("/party invite " + p2.getName());
+                    }, ClickType.LEFT);
+                }
 
                 inv.withItem(8, ItemUtil.hideFlags(ItemUtil.namedItem(Material.BARRIER, ChatColor.DARK_RED + "Close",null)), (player, action, item) -> p.closeInventory(), ClickType.LEFT);
 
