@@ -9,6 +9,7 @@ import net.minecraft.server.v1_8_R3.NBTTagString;
 import net.wrathofdungeons.dungeonapi.util.ChatIcons;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
@@ -32,6 +33,7 @@ public class CustomItem {
     private int amount = 1;
     private boolean untradeable = false;
     private ArrayList<Awakening> awakenings;
+    private int upgradeValue = 0;
 
     public CustomItem(int data){
         this.dataID = data;
@@ -59,6 +61,19 @@ public class CustomItem {
         this.amount = amount;
         this.untradeable = untradeable;
         this.awakenings = new ArrayList<Awakening>();
+
+        if(awakenings != null && awakenings.length > 0){
+            this.awakenings = new ArrayList<Awakening>();
+            this.awakenings.addAll(Arrays.asList(awakenings));
+        }
+    }
+
+    public CustomItem(int data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue){
+        this.dataID = data;
+        this.amount = amount;
+        this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+        this.upgradeValue = upgradeValue;
 
         if(awakenings != null && awakenings.length > 0){
             this.awakenings = new ArrayList<Awakening>();
@@ -98,6 +113,18 @@ public class CustomItem {
         }
     }
 
+    public CustomItem(ItemData data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue){
+        this.dataID = data.getId();
+        this.amount = amount;
+        this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+        this.upgradeValue = upgradeValue;
+
+        if(awakenings != null && awakenings.length > 0){
+            this.awakenings.addAll(Arrays.asList(awakenings));
+        }
+    }
+
     public ItemData getData() {
         return ItemData.getData(dataID);
     }
@@ -113,8 +140,11 @@ public class CustomItem {
                 if(tag.hasKey("dataID")){
                     int id = tag.getInt("dataID");
                     boolean untradeable = ItemData.getData(id).isUntradeable();
+                    int upgradeValue = 0;
 
                     if(tag.hasKey("untradeable")) untradeable = Util.convertIntegerToBoolean(tag.getInt("untradeable"));
+
+                    if(tag.hasKey("upgradeValue")) upgradeValue = tag.getInt("upgradeValue");
 
                     if(tag.hasKey("awakenings")){
                         NBTTagList list = tag.getList("awakenings", NBTTypeID.STRING);
@@ -127,9 +157,9 @@ public class CustomItem {
                             awakenings.add(Awakening.fromString(s));
                         }
 
-                        return new CustomItem(id,i.getAmount(),untradeable,awakenings.toArray(new Awakening[]{}));
+                        return new CustomItem(id,i.getAmount(),untradeable,awakenings.toArray(new Awakening[]{}),upgradeValue);
                     } else {
-                        return new CustomItem(id,i.getAmount(),untradeable);
+                        return new CustomItem(id,i.getAmount(),untradeable,null,upgradeValue);
                     }
                 }
             }
@@ -144,6 +174,42 @@ public class CustomItem {
 
     public boolean isUntradeable() {
         return untradeable;
+    }
+
+    public int getUpgradeValue() {
+        return upgradeValue;
+    }
+
+    public void setUpgradeValue(int upgradeValue) {
+        this.upgradeValue = upgradeValue;
+    }
+
+    public double getModifiedAtkMin(){
+        double base = getData().getAtkMin();
+        double p = ((double)getUpgradeValue())/DungeonRPG.UPGRADING_STONE_DIVIDING_VALUE;
+
+        return (base+(base*p));
+    }
+
+    public double getModifiedAtkMax(){
+        double base = getData().getAtkMax();
+        double p = ((double)getUpgradeValue())/DungeonRPG.UPGRADING_STONE_DIVIDING_VALUE;
+
+        return (base+(base*p));
+    }
+
+    public double getModifiedDefMin(){
+        double base = getData().getDefMin();
+        double p = ((double)getUpgradeValue())/DungeonRPG.UPGRADING_STONE_DIVIDING_VALUE;
+
+        return (base+(base*p));
+    }
+
+    public double getModifiedDefMax(){
+        double base = getData().getDefMax();
+        double p = ((double)getUpgradeValue())/DungeonRPG.UPGRADING_STONE_DIVIDING_VALUE;
+
+        return (base+(base*p));
     }
 
     public boolean mayUse(Player p){
@@ -305,11 +371,13 @@ public class CustomItem {
                 i.setDurability((short)getData().getDurability());
                 ItemMeta iM = i.getItemMeta();
 
-                iM.setDisplayName(getData().getRarity().getColor() + getData().getName());
+                String g = getUpgradeValue() > 0 ? " " + ChatColor.YELLOW + "[+" + getUpgradeValue() + "]" : "";
+
+                iM.setDisplayName(getData().getRarity().getColor() + getData().getName() + g);
                 ArrayList<String> iL = new ArrayList<String>();
                 if(getData().getCategory() == ItemCategory.WEAPON_BOW || getData().getCategory() == ItemCategory.WEAPON_AXE || getData().getCategory() == ItemCategory.WEAPON_SHEARS || getData().getCategory() == ItemCategory.WEAPON_STICK){
                     iL.add(" ");
-                    iL.add(ChatColor.YELLOW + "Damage: " + getData().getAtkMin() + "-" + getData().getAtkMax());
+                    iL.add(ChatColor.YELLOW + "Damage: " + (int)getModifiedAtkMin() + "-" + (int)getModifiedAtkMax());
                     for(Awakening a : getData().getAdditionalStats()){
                         if(a.value > 0){
                             // IS POSITIVE
@@ -389,7 +457,7 @@ public class CustomItem {
                     if(getData().getDescription() != null) iL.add(" ");
                 } else if(getData().getCategory() == ItemCategory.ARMOR){
                     iL.add(" ");
-                    iL.add(ChatColor.YELLOW + "Defense: " + getData().getDefMin() + "-" + getData().getDefMax());
+                    iL.add(ChatColor.YELLOW + "Defense: " + (int)getModifiedDefMin() + "-" + (int)getModifiedDefMax());
                     for(Awakening a : getData().getAdditionalStats()){
                         if(a.value > 0){
                             // IS POSITIVE
@@ -515,7 +583,7 @@ public class CustomItem {
                 }
 
                 i = ItemUtil.hideFlags(ItemUtil.setUnbreakable(i,true));
-
+                if(getUpgradeValue() >= 10) i = ItemUtil.addGlow(i);
                 i = assignNBTData(i);
 
                 return i;
@@ -539,6 +607,8 @@ public class CustomItem {
         if(!tag.hasKey("dataID")) tag.set("dataID",new NBTTagInt(getData().getId()));
 
         if(!tag.hasKey("untradeable")) tag.set("untradeable",new NBTTagInt(Util.convertBooleanToInteger(isUntradeable())));
+
+        if(!tag.hasKey("upgradeValue")) tag.set("upgradeValue",new NBTTagInt(getUpgradeValue()));
 
         if(hasAwakenings()){
             if(!tag.hasKey("awakenings")){

@@ -76,7 +76,11 @@ public class DungeonRPG extends JavaPlugin {
     public static final double PARTY_EXP_RANGE = 50;
     public static final boolean ENABLE_QUESTS = true;
     public static final int QUEST_NPC_TEXT_LINE_DELAY = 4;
+
     public static final int[] CRYSTAL_IDS = new int[]{11,12,13};
+    public static final int UPGRADING_STONE = 645;
+
+    public static final double UPGRADING_STONE_DIVIDING_VALUE = 25d;
 
     public static HashMap<String, DungeonProjectile> SHOT_PROJECTILE_DATA = new HashMap<String, DungeonProjectile>();
     public static ArrayList<Material> DISALLOWED_BLOCKS = new ArrayList<Material>();

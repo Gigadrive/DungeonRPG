@@ -40,7 +40,7 @@ public class DamageHandler {
 
         for(CustomItem i : u.getCurrentCharacter().getEquipment()){
             if(i.getData().getCategory().equals(ItemCategory.ARMOR)){
-                damage -= Util.randomDouble(i.getData().getDefMin(), i.getData().getDefMax());
+                damage -= Util.randomDouble(i.getModifiedDefMin(), i.getModifiedDefMax());
             }
         }
 
@@ -70,7 +70,7 @@ public class DamageHandler {
             CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
 
             if(item.getData().getCategory() == u.getCurrentCharacter().getRpgClass().getWeapon()){
-                damage += Util.randomDouble(item.getData().getAtkMin(), item.getData().getAtkMax());
+                damage += Util.randomDouble(item.getModifiedAtkMin(), item.getModifiedAtkMax());
             }
 
             damage = damage+damage*(u.getCurrentCharacter().getStatpointsTotal(StatPointType.STRENGTH)*0.1);
@@ -121,7 +121,7 @@ public class DamageHandler {
             CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
 
             if(item.getData().getCategory() == u.getCurrentCharacter().getRpgClass().getWeapon()){
-                damage += Util.randomDouble(item.getData().getAtkMin(), item.getData().getAtkMax());
+                damage += Util.randomDouble(item.getModifiedAtkMin(), item.getModifiedAtkMax());
             }
 
             damage = damage+damage*(u.getCurrentCharacter().getStatpointsTotal(StatPointType.STRENGTH)*0.1);
@@ -162,7 +162,7 @@ public class DamageHandler {
 
         for(CustomItem i : u.getCurrentCharacter().getEquipment()){
             if(i.getData().getCategory().equals(ItemCategory.ARMOR)){
-                damage -= Util.randomDouble(i.getData().getDefMin(), i.getData().getDefMax());
+                damage -= Util.randomDouble(i.getModifiedDefMin(), i.getModifiedDefMax());
             }
         }
 

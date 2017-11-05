@@ -258,6 +258,13 @@ public class CustomEntity {
                         }
                     }
 
+                    // DROP UPGRADING STONE
+                    if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
+                        if(Util.getChanceBoolean(1,4200)){
+                            WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(DungeonRPG.UPGRADING_STONE),p);
+                        }
+                    }
+
                     // DROP FOOD
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
                         int limit = 2;

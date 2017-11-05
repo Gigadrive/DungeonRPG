@@ -48,6 +48,22 @@ public class InventoryClickListener implements Listener {
                 if(u.getCurrentCharacter() != null){
                     u.checkRequirements();
 
+                    /*if(e.getInventory() != null && e.getInventory().getName() != null) p.sendMessage("INVENTORY: " + e.getInventory().getName());
+                    if(e.getClickedInventory() != null && e.getClickedInventory().getName() != null) p.sendMessage("CLICKED INVENTORY: " + e.getClickedInventory().getName());
+                    p.sendMessage("ACTION: " + e.getAction().toString());
+                    p.sendMessage("CLICK: " + e.getClick().toString());
+                    if(e.getCurrentItem() != null && CustomItem.fromItemStack(e.getCurrentItem()) != null){
+                        p.sendMessage("CURRENT ITEM: " + CustomItem.fromItemStack(e.getCurrentItem()).getData().getId());
+                    }
+
+                    if(e.getClickedInventory().getItem(e.getSlot()) != null && CustomItem.fromItemStack(e.getClickedInventory().getItem(e.getSlot())) != null){
+                        p.sendMessage("SLOT ITEM: " + CustomItem.fromItemStack(e.getClickedInventory().getItem(e.getSlot())).getData().getId());
+                    }
+
+                    if(e.getCursor() != null && CustomItem.fromItemStack(e.getCursor()) != null){
+                        p.sendMessage("CURSOR ITEM: " + CustomItem.fromItemStack(e.getCursor()).getData().getId());
+                    }*/
+
                     if(e.getCurrentItem() != null){
                         CustomItem item = CustomItem.fromItemStack(e.getCurrentItem());
 
@@ -62,6 +78,51 @@ public class InventoryClickListener implements Listener {
                     if(CustomNPC.READING.contains(p.getName())){
                         e.setCancelled(true);
                         return;
+                    }
+
+                    if(e.getInventory() != null && e.getInventory().getName() != null && e.getInventory().getName().equals("container.crafting") && e.getClickedInventory() != null && e.getClickedInventory().getName() != null &&e.getClickedInventory().getName().equals("container.inventory")){
+                        // player clicks in inventory
+
+                        if(e.getAction() == InventoryAction.SWAP_WITH_CURSOR){
+                            if(e.getCurrentItem() != null){
+                                CustomItem item = CustomItem.fromItemStack(e.getCurrentItem());
+
+                                if(item != null){
+                                    if(e.getCursor() != null){
+                                        CustomItem used = CustomItem.fromItemStack(e.getCursor());
+
+                                        if(used != null){
+                                            // used item on item
+
+                                            if(used.getData().getId() == DungeonRPG.UPGRADING_STONE){
+                                                if(item.getData().getCategory() == ItemCategory.WEAPON_STICK || item.getData().getCategory() == ItemCategory.WEAPON_BOW || item.getData().getCategory() == ItemCategory.WEAPON_AXE || item.getData().getCategory() == ItemCategory.WEAPON_SHEARS || item.getData().getCategory() == ItemCategory.ARMOR){
+                                                    // used upgrading stone
+                                                    //p.sendMessage("used upgrading stone");
+
+                                                    if(item.getUpgradeValue() < 10){
+                                                        item.setUpgradeValue(item.getUpgradeValue()+1);
+                                                        p.sendMessage(ChatColor.GREEN + "Your " + ChatColor.stripColor(item.getData().getName()) + " was upgraded to " + ChatColor.YELLOW + "+" + item.getUpgradeValue() + ChatColor.GREEN + "!");
+                                                        p.playSound(p.getEyeLocation(),Sound.DIG_STONE,2f,1f);
+
+                                                        if(used.getAmount() > 1){
+                                                            e.setCursor(new CustomItem(used.getData(),used.getAmount()-1).build(p));
+                                                        } else {
+                                                            e.setCursor(new ItemStack(Material.AIR));
+                                                        }
+
+                                                        e.setCurrentItem(item.build(p));
+                                                    } else {
+                                                        p.sendMessage(ChatColor.RED + "That item has already been upgraded to +10!");
+                                                    }
+
+                                                    e.setCancelled(true);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     if(inv.getName().equals("Trading")){
