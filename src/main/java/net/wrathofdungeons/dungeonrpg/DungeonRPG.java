@@ -79,7 +79,7 @@ public class DungeonRPG extends JavaPlugin {
 
     public static final int[] CRYSTAL_IDS = new int[]{11,12,13};
     public static final int UPGRADING_STONE = 645;
-
+    public static final GameMode PLAYER_DEFAULT_GAMEMODE = GameMode.ADVENTURE;
     public static final double UPGRADING_STONE_DIVIDING_VALUE = 25d;
 
     public static HashMap<String, DungeonProjectile> SHOT_PROJECTILE_DATA = new HashMap<String, DungeonProjectile>();

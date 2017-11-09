@@ -30,6 +30,7 @@ import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.*;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -198,6 +199,15 @@ public class InteractListener implements Listener {
                 if(e.getAction() == Action.PHYSICAL){
                     if(e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.SOIL){
                         e.setCancelled(true);
+                    }
+                }
+
+                if(p.getGameMode() == GameMode.SURVIVAL && e.getAction() == Action.RIGHT_CLICK_BLOCK){
+                    if(e.getClickedBlock() != null && e.getBlockFace() != null && e.getClickedBlock().getRelative(e.getBlockFace()) != null){
+                        if(e.getClickedBlock().getRelative(e.getBlockFace()).getType() == Material.FIRE){
+                            e.setCancelled(true);
+                            e.setUseInteractedBlock(Event.Result.DENY);
+                        }
                     }
                 }
 

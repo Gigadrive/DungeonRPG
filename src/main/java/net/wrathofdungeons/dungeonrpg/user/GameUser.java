@@ -579,7 +579,7 @@ public class GameUser extends User {
 
             bukkitReset();
             p.teleport(c.getStoredLocation());
-            p.setGameMode(GameMode.ADVENTURE);
+            p.setGameMode(DungeonRPG.PLAYER_DEFAULT_GAMEMODE);
             updateLevelBar();
 
             getGuild(); // load guild
