@@ -45,6 +45,8 @@ public class NPCInteractListener implements Listener {
                 GuildMasterMenu.openFor(p);
             } else if(npc.getNpcType() == CustomNPCType.GUILD_BANK_MANAGER){
                 // TODO: Add Guild bank
+            } else if(npc.getNpcType() == CustomNPCType.PROFESSION_MASTER){
+                // TODO: Add Professions
             } else if(npc.getNpcType() == CustomNPCType.DUNGEON_KEY_MASTER){
                 if(npc.getKeyMasterItem() != null && npc.getKeyMasterItem().getAmount() > 0 && npc.getKeyMasterLocation() != null){
                     if(u.hasInInventory(npc.getKeyMasterItem().getData(),npc.getKeyMasterItem().getAmount())){

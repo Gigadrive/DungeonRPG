@@ -26,6 +26,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.party.Party;
 import net.wrathofdungeons.dungeonrpg.party.PartyMember;
+import net.wrathofdungeons.dungeonrpg.professions.Profession;
 import net.wrathofdungeons.dungeonrpg.quests.Quest;
 import net.wrathofdungeons.dungeonrpg.quests.QuestObjective;
 import net.wrathofdungeons.dungeonrpg.quests.QuestStage;
@@ -580,7 +581,9 @@ public class GameUser extends User {
             p.teleport(c.getStoredLocation());
             p.setGameMode(GameMode.ADVENTURE);
             updateLevelBar();
+
             getGuild(); // load guild
+            for(Profession p : Profession.values()) c.getVariables().getProfessionProgress(p); // load professions
 
             PlayerInventory inventory = c.getStoredInventory();
             if(inventory != null){
