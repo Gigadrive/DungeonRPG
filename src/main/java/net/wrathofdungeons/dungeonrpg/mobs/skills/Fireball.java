@@ -27,6 +27,7 @@ public class Fireball implements MobSkill {
     @Override
     public void execute(CustomEntity entity) {
         if(entity.hasTarget()){
+            if(entity.getBukkitEntity() == null) return;
             entity.setCancelMovement(true);
             entity.executingSkill = true;
 
