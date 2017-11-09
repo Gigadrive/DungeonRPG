@@ -1,6 +1,11 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
+import com.google.gson.Gson;
+import net.wrathofdungeons.dungeonapi.DungeonAPI;
+import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.util.Util;
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.guilds.*;
 import net.wrathofdungeons.dungeonrpg.inv.MerchantSetupMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
@@ -16,6 +21,7 @@ import net.wrathofdungeons.dungeonrpg.quests.QuestObjectiveType;
 import net.wrathofdungeons.dungeonrpg.quests.QuestStage;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -23,13 +29,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class ChatListener implements Listener {
     @EventHandler
     public void onChat(PlayerChatEvent e){
         Player p = e.getPlayer();
-        String msg = e.getMessage();
+        String msg = e.getMessage().trim();
 
         if(GameUser.isLoaded(p)){
             GameUser u = GameUser.getUser(p);
@@ -37,44 +47,185 @@ public class ChatListener implements Listener {
             if(u.getCurrentCharacter() != null){
                 e.setCancelled(true);
 
-                String prefix = u.getRank().getChatPrefix() != null ? u.getRank().getChatPrefix() : "";
-                if(!prefix.isEmpty() && !prefix.endsWith(" ")) prefix += " ";
+                if(u.guildCreationStatus != null){
+                    if(msg.equalsIgnoreCase("cancel")){
+                        p.sendMessage(ChatColor.RED + "The operation has been cancelled.");
 
-                p.sendMessage(ChatColor.DARK_GRAY + "<" + ChatColor.GRAY + u.getCurrentCharacter().getLevel() + ChatColor.DARK_GRAY + "> " + prefix + u.getRank().getColor() + p.getName() + ": " + ChatColor.WHITE + msg);
+                        GuildUtil.releaseReservedName(u.guildCreationName);
+                        u.guildCreationStatus = null;
+                        u.guildCreationName = null;
+                        u.guildCreationTag = null;
+                    } else {
+                        if(u.guildCreationStatus == GuildCreationStatus.CHOOSING_NAME && u.guildCreationName == null && u.guildCreationTag == null){
+                            String name = msg;
 
-                if(!u.getCurrentCharacter().getVariables().hasSeenChatRangeInfo){
-                    p.sendMessage(ChatColor.GRAY + "(Note: Only players near you will see your chat messages.)");
-                    u.getCurrentCharacter().getVariables().hasSeenChatRangeInfo = true;
-                }
+                            if(name.length() >= 3 && name.length() <= 20){
+                                if(Util.isAlphaNumeric(name.replace(" ",""))){
+                                    DungeonAPI.async(() -> {
+                                        if(GuildUtil.isNameAvailable(name)){
+                                            u.guildCreationStatus = GuildCreationStatus.CHOOSING_TAG;
+                                            u.guildCreationName = name;
 
-                for(Entity entity : p.getNearbyEntities(90,90,90)){
-                    if(entity instanceof Player){
-                        if(CustomEntity.fromEntity((LivingEntity)entity) == null){
-                            Player p2 = (Player)entity;
+                                            try {
+                                                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `reservedGuildNames` (`name`,`uuid`) VALUES(?,?);");
+                                                ps.setString(1,name);
+                                                ps.setString(2,p.getUniqueId().toString());
+                                                ps.executeUpdate();
+                                                ps.close();
 
-                            if(GameUser.isLoaded(p2)){
-                                GameUser u2 = GameUser.getUser(p2);
+                                                p.sendMessage(" ");
+                                                p.sendMessage(ChatColor.DARK_AQUA + "Please choose a tag for your guild, by typing it in the chat.");
+                                                p.sendMessage(ChatColor.GRAY + "(Type 'cancel' to cancel the creation.)");
+                                                p.sendMessage(" ");
+                                            } catch(Exception e1){
+                                                e1.printStackTrace();
+                                                p.sendMessage(ChatColor.RED + "An error occurred.");
+                                                p.sendMessage(ChatColor.RED + "The operation has been cancelled.");
 
-                                if(u2.getCurrentCharacter() != null){
-                                    double distance = p.getLocation().distance(p2.getLocation());
+                                                GuildUtil.releaseReservedName(u.guildCreationName);
+                                                u.guildCreationStatus = null;
+                                                u.guildCreationName = null;
+                                                u.guildCreationTag = null;
+                                            }
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "That name is not available.");
+                                        }
+                                    });
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "A guild name must be alphanumeric (only letters and numbers).");
+                                }
+                            } else {
+                                p.sendMessage(ChatColor.RED + "A guild name must be 3-20 characters long.");
+                            }
+                        } else if(u.guildCreationStatus == GuildCreationStatus.CHOOSING_TAG && u.guildCreationName != null && u.guildCreationTag == null){
+                            String tag = msg;
 
-                                    String d = "";
-                                    if(u2.getFriends().contains(p.getUniqueId().toString())) d += ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + "F";
-                                    if(u.getParty() != null && u2.getParty() != null && u.getParty() == u2.getParty()) d += ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "P";
-                                    if(false) d += ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "G"; // TODO: Check if player is in same guild
+                            if(tag.length() >= 2 && tag.length() <= 5){
+                                if(Util.isAlphaNumeric(tag)){
+                                    DungeonAPI.async(() -> {
+                                        if(GuildUtil.isTagAvailable(tag)){
+                                            String name = u.guildCreationName;
 
-                                    ChatColor color = null;
+                                            if(u.getTotalMoneyInInventory() >= 4096*3){
+                                                try {
+                                                    Gson gson = new Gson();
+                                                    ArrayList<GuildMember> members = new ArrayList<GuildMember>();
+                                                    GuildMember m = new GuildMember();
+                                                    m.setUUID(p.getUniqueId());
+                                                    m.setGuildRank(GuildRank.LEADER);
+                                                    m.setTimeJoined(new Timestamp(System.currentTimeMillis()));
+                                                    members.add(m);
+                                                    String membersSerialized = gson.toJson(members);
 
-                                    if(distance < 35){
-                                        color = ChatColor.WHITE;
-                                    } else if(distance > 35 && distance < 65){
-                                        color = ChatColor.GRAY;
-                                    } else if(distance > 65 && distance < 90){
-                                        color = ChatColor.DARK_GRAY;
-                                    }
+                                                    PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `guilds` (`name`,`tag`,`creator`,`members`) VALUES(?,?,?,?);", Statement.RETURN_GENERATED_KEYS);
+                                                    ps.setString(1,name);
+                                                    ps.setString(2,tag);
+                                                    ps.setString(3,p.getUniqueId().toString());
+                                                    ps.setString(4,membersSerialized);
+                                                    ps.executeUpdate();
 
-                                    if(color != null){
-                                        p2.sendMessage(d + ChatColor.DARK_GRAY + "<" + ChatColor.GRAY + u.getCurrentCharacter().getLevel() + ChatColor.DARK_GRAY + "> " + prefix + u.getRank().getColor() + p.getName() + ": " + color + msg);
+                                                    ResultSet rs = ps.getGeneratedKeys();
+                                                    int guildID = -1;
+                                                    if(rs.first()) guildID = rs.getInt(1);
+
+                                                    MySQLManager.getInstance().closeResources(rs,ps);
+
+                                                    if(guildID > -1){
+                                                        Guild.getGuild(guildID);
+                                                        u.setGuildID(guildID);
+                                                        GuildUtil.releaseReservedName(u.guildCreationName);
+
+                                                        u.guildCreationStatus = null;
+                                                        u.guildCreationName = null;
+                                                        u.guildCreationTag = null;
+
+                                                        u.removeMoneyFromInventory(4096*3);
+                                                        p.sendMessage(ChatColor.GREEN + "Your guild has been created!");
+                                                        p.playSound(p.getEyeLocation(), Sound.LEVEL_UP,1f,1f);
+                                                        DungeonRPG.updateNames();
+                                                    } else {
+                                                        p.sendMessage(ChatColor.RED + "An error occurred.");
+                                                        p.sendMessage(ChatColor.RED + "The operation has been cancelled.");
+
+                                                        GuildUtil.releaseReservedName(u.guildCreationName);
+                                                        u.guildCreationStatus = null;
+                                                        u.guildCreationName = null;
+                                                        u.guildCreationTag = null;
+                                                    }
+                                                } catch(Exception e1){
+                                                    e1.printStackTrace();
+                                                    p.sendMessage(ChatColor.RED + "An error occurred.");
+                                                    p.sendMessage(ChatColor.RED + "The operation has been cancelled.");
+
+                                                    GuildUtil.releaseReservedName(u.guildCreationName);
+                                                    u.guildCreationStatus = null;
+                                                    u.guildCreationName = null;
+                                                    u.guildCreationTag = null;
+                                                }
+                                            } else {
+                                                p.sendMessage(ChatColor.RED + "You do not have enough money to create a guild.");
+                                            }
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "That tag is not available.");
+                                        }
+                                    });
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "A guild tag must be alphanumeric (only letters and numbers).");
+                                }
+                            } else {
+                                p.sendMessage(ChatColor.RED + "A guild tag must be 2-5 characters long.");
+                            }
+                        } else {
+                            p.sendMessage(ChatColor.RED + "The operation has been cancelled.");
+
+                            GuildUtil.releaseReservedName(u.guildCreationName);
+                            u.guildCreationStatus = null;
+                            u.guildCreationName = null;
+                            u.guildCreationTag = null;
+                        }
+                    }
+                } else {
+                    String prefix = u.getRank().getChatPrefix() != null ? u.getRank().getChatPrefix() : "";
+                    if(!prefix.isEmpty() && !prefix.endsWith(" ")) prefix += " ";
+
+                    String guildPrefix = u.isInGuild() ? ChatColor.DARK_GRAY + "|" + ChatColor.GRAY + u.getGuild().getTag() : "";
+
+                    p.sendMessage(ChatColor.DARK_GRAY + "<" + ChatColor.GRAY + u.getCurrentCharacter().getLevel() + guildPrefix +  ChatColor.DARK_GRAY + "> " + prefix + u.getRank().getColor() + p.getName() + ": " + ChatColor.WHITE + msg);
+
+                    if(!u.getCurrentCharacter().getVariables().hasSeenChatRangeInfo){
+                        p.sendMessage(ChatColor.GRAY + "(Note: Only players near you will see your chat messages.)");
+                        u.getCurrentCharacter().getVariables().hasSeenChatRangeInfo = true;
+                    }
+
+                    for(Entity entity : p.getNearbyEntities(90,90,90)){
+                        if(entity instanceof Player){
+                            if(CustomEntity.fromEntity((LivingEntity)entity) == null){
+                                Player p2 = (Player)entity;
+
+                                if(GameUser.isLoaded(p2)){
+                                    GameUser u2 = GameUser.getUser(p2);
+
+                                    if(u2.getCurrentCharacter() != null){
+                                        double distance = p.getLocation().distance(p2.getLocation());
+
+                                        String d = "";
+                                        if(u2.getFriends().contains(p.getUniqueId().toString())) d += ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + "F";
+                                        if(u.getParty() != null && u2.getParty() != null && u.getParty() == u2.getParty()) d += ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "P";
+                                        if(u.isInGuild() && u2.isInGuild() && u.getGuild() == u2.getGuild()) d += ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "G";
+
+                                        ChatColor color = null;
+
+                                        if(distance < 35){
+                                            color = ChatColor.WHITE;
+                                        } else if(distance > 35 && distance < 65){
+                                            color = ChatColor.GRAY;
+                                        } else if(distance > 65 && distance < 90){
+                                            color = ChatColor.DARK_GRAY;
+                                        }
+
+                                        if(color != null){
+                                            p2.sendMessage(d + ChatColor.DARK_GRAY + "<" + ChatColor.GRAY + u.getCurrentCharacter().getLevel() + guildPrefix + ChatColor.DARK_GRAY + "> " + prefix + u.getRank().getColor() + p.getName() + ": " + color + msg);
+                                        }
                                     }
                                 }
                             }

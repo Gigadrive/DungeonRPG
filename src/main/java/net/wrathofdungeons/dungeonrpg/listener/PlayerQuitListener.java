@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.Trade;
+import net.wrathofdungeons.dungeonrpg.guilds.GuildUtil;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +17,7 @@ public class PlayerQuitListener implements Listener {
         e.setQuitMessage(null);
         Trade.clearRequests(p);
         Duel.clearRequests(p);
+        GuildUtil.clearInvites(p);
 
         if(GameUser.isLoaded(p)){
             GameUser u = GameUser.getUser(p);

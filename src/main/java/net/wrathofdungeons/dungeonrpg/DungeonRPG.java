@@ -815,7 +815,13 @@ public class DungeonRPG extends JavaPlugin {
 
     public static void showBloodEffect(Location loc){
         loc.getWorld().playSound(loc, Sound.HURT_FLESH, 1F, 1F);
-        loc.getWorld().playEffect(loc.add(0.0D, 0.8D, 0.0D), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
+        for(Player p : loc.getWorld().getPlayers()){
+            if(GameUser.isLoaded(p)){
+                GameUser u = GameUser.getUser(p);
+
+                if(u.getSettingsManager().mayShowBlood()) p.playEffect(loc.add(0.0D, 0.8D, 0.0D), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
+            }
+        }
     }
 
     public static ArrayList<LivingEntity> getTargets(LivingEntity ent){
@@ -920,6 +926,13 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SplitListener(),this);
         Bukkit.getPluginManager().registerEvents(new TargetListener(),this);
         Bukkit.getPluginManager().registerEvents(new WeatherChangeListener(),this);
+
+        Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(this, "TheChest");
+
+        PluginMessageListener l = new PluginMessageListener();
+        Bukkit.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", l);
+        Bukkit.getServer().getMessenger().registerIncomingPluginChannel(this, "TheChest", l);
     }
 
     private void registerCommands(){
@@ -932,6 +945,7 @@ public class DungeonRPG extends JavaPlugin {
         new DuelCommand();
         new ExpCommand();
         new GiveItemCommand();
+        new GuildCommand();
         new ItemInfoCommand();
         new LoadRegionCommand();
         new ModifyNPCCommand();

@@ -1,6 +1,8 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
+import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.lib.network.ChannelUser;
+import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import net.citizensnpcs.api.CitizensAPI;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
@@ -14,6 +16,7 @@ import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.guilds.Guild;
+import net.wrathofdungeons.dungeonrpg.guilds.GuildCreationStatus;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
@@ -119,6 +122,10 @@ public class GameUser extends User {
     private ArrayList<BukkitTask> cancellableTasks;
 
     private boolean dying = false;
+
+    public GuildCreationStatus guildCreationStatus = null;
+    public String guildCreationName = null;
+    public String guildCreationTag = null;
 
     public GameUser(Player p){
         super(p);
@@ -573,6 +580,7 @@ public class GameUser extends User {
             p.teleport(c.getStoredLocation());
             p.setGameMode(GameMode.ADVENTURE);
             updateLevelBar();
+            getGuild(); // load guild
 
             PlayerInventory inventory = c.getStoredInventory();
             if(inventory != null){
@@ -679,8 +687,7 @@ public class GameUser extends User {
                             t.setPrefix(ChatColor.GREEN.toString());
                         } else if(getFriends().contains(all.getUniqueId().toString())){
                             t.setPrefix(ChatColor.AQUA.toString());
-                        } else if(false){
-                            // TODO: Add prefix for guild
+                        } else if(isInGuild() && a.isInGuild() && getGuild() == a.getGuild()){
                             t.setPrefix(ChatColor.LIGHT_PURPLE.toString());
                         } else {
                             t.setPrefix(ChatColor.WHITE.toString());

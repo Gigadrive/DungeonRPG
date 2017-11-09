@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.cmd;
 import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.Trade;
+import net.wrathofdungeons.dungeonrpg.guilds.GuildUtil;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ public class CharSelCommand extends Command {
             if(u.getCurrentCharacter() != null){
                 Trade.clearRequests(p);
                 Duel.clearRequests(p);
+                GuildUtil.clearInvites(p);
                 u.cancelAllTasks();
                 u.saveData(true);
             } else {

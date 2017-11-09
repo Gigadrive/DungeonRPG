@@ -12,7 +12,8 @@ import org.inventivetalent.menubuilder.inventory.InventoryMenuBuilder;
 public class SettingsMenu {
     public static void openFor(Player p){
         GameUser u = GameUser.getUser(p);
-        InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.INVENTORY_1ROW);
+        int size = Util.INVENTORY_3ROWS;
+        InventoryMenuBuilder inv = new InventoryMenuBuilder(size);
         inv.withTitle("Settings");
 
         if(u.getSettingsManager().allowsFriendRequests()){
@@ -87,7 +88,31 @@ public class SettingsMenu {
             }),ClickType.LEFT);
         }
 
-        inv.withItem(8,ItemUtil.namedItem(Material.BARRIER,ChatColor.DARK_RED + "Close",null),((player, action, item) -> GameMenu.openFor(p)), ClickType.LEFT);
+        if(u.getSettingsManager().mayShowBlood()){
+            inv.withItem(6, ItemUtil.namedItem(Material.REDSTONE, ChatColor.YELLOW + "Blood & Gore",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"}),((player, action, item) -> {
+                u.getSettingsManager().setShowBlood(false);
+                SettingsMenu.openFor(p);
+            }),ClickType.LEFT);
+        } else {
+            inv.withItem(6, ItemUtil.namedItem(Material.REDSTONE, ChatColor.YELLOW + "Blood & Gore",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"}),((player, action, item) -> {
+                u.getSettingsManager().setShowBlood(true);
+                SettingsMenu.openFor(p);
+            }),ClickType.LEFT);
+        }
+
+        if(u.getSettingsManager().mayShowDamageIndicators()){
+            inv.withItem(7, ItemUtil.namedItem(Material.IRON_AXE, ChatColor.YELLOW + "Show Damage",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"}),((player, action, item) -> {
+                u.getSettingsManager().setShowDamageIndicators(false);
+                SettingsMenu.openFor(p);
+            }),ClickType.LEFT);
+        } else {
+            inv.withItem(7, ItemUtil.namedItem(Material.IRON_AXE, ChatColor.YELLOW + "Show Damage",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"}),((player, action, item) -> {
+                u.getSettingsManager().setShowDamageIndicators(true);
+                SettingsMenu.openFor(p);
+            }),ClickType.LEFT);
+        }
+
+        inv.withItem(size-1,ItemUtil.namedItem(Material.BARRIER,ChatColor.DARK_RED + "Close",null),((player, action, item) -> GameMenu.openFor(p)), ClickType.LEFT);
 
         inv.show(p);
     }

@@ -42,6 +42,18 @@ public class InteractionMenu {
                     }, ClickType.LEFT);
                 }
 
+                if(u2.getGuild() != null && u2.getGuild().getInvitedPlayers().contains(p)){
+                    inv.withItem(3, ItemUtil.hideFlags(ItemUtil.namedItem(Material.PAINTING, ChatColor.GOLD + "Accept guild request",null)), (player, action, item) -> {
+                        p.closeInventory();
+                        p.chat("/guild accept " + u2.getGuild().getId());
+                    }, ClickType.LEFT);
+                } else {
+                    inv.withItem(3, ItemUtil.hideFlags(ItemUtil.namedItem(Material.PAINTING, ChatColor.GOLD + "Invite to guild",null)), (player, action, item) -> {
+                        p.closeInventory();
+                        p.chat("/guild invite " + p2.getName());
+                    }, ClickType.LEFT);
+                }
+
                 inv.withItem(8, ItemUtil.hideFlags(ItemUtil.namedItem(Material.BARRIER, ChatColor.DARK_RED + "Close",null)), (player, action, item) -> p.closeInventory(), ClickType.LEFT);
 
                 inv.show(p);
