@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageEvent;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageMobToMobEvent;
@@ -78,7 +79,8 @@ public class CustomDamageListener implements Listener {
                     return;
                 }
 
-                double damage = DamageHandler.calculatePlayerToMobDamage(u,c,null);
+                DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,null);
+                double damage = damageData.getDamage();
                 int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
                 if(hpLeech > 0){
                     u.addHP(damage*(hpLeech*0.01));
@@ -91,8 +93,12 @@ public class CustomDamageListener implements Listener {
 
                 c.damage(damage,p);
                 c.giveNormalKnockback(p.getLocation(),e.isProjectile());
+                DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
             } else {
-                c.damage(1,p);
+                DamageData damageData = new DamageData();
+                damageData.setDamage(1);
+                DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
+                c.damage(damageData.getDamage(),p);
                 c.giveNormalKnockback(p.getLocation(),e.isProjectile());
             }
         }
@@ -116,7 +122,8 @@ public class CustomDamageListener implements Listener {
 
             p.damage(0);
 
-            double damage = DamageHandler.calculateMobToPlayerDamage(u,c);
+            DamageData damageData = DamageHandler.calculateMobToPlayerDamage(u,c);
+            double damage = damageData.getDamage();
             int thorns = u.getCurrentCharacter().getTotalValue(AwakeningType.THORNS);
             u.damage(damage,c.getBukkitEntity());
 
@@ -202,7 +209,8 @@ public class CustomDamageListener implements Listener {
                     return;
                 }
 
-                double damage = DamageHandler.calculatePlayerToPlayerDamage(u,u2,null);
+                DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,null);
+                double damage = damageData.getDamage();
                 int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
                 if(hpLeech > 0){
                     u.addHP(damage*(hpLeech*0.01));
@@ -217,11 +225,15 @@ public class CustomDamageListener implements Listener {
                 p2.damage(0);
                 DungeonRPG.showBloodEffect(p2.getLocation());
                 u2.giveNormalKnockback(p.getLocation(),e.isProjectile());
+                DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
             } else {
-                u2.damage(1,p);
+                DamageData damageData = new DamageData();
+                damageData.setDamage(1);
+                u2.damage(damageData.getDamage(),p);
                 p2.damage(0);
                 DungeonRPG.showBloodEffect(p2.getLocation());
                 u2.giveNormalKnockback(p.getLocation(),e.isProjectile());
+                DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
             }
         }
     }
