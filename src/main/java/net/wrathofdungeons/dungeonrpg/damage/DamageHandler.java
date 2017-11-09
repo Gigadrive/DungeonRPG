@@ -25,6 +25,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class DamageHandler {
     public static DamageData calculateMobToPlayerDamage(GameUser u, CustomEntity c){
@@ -204,7 +205,7 @@ public class DamageHandler {
 
             if(u.getCurrentCharacter() != null){
                 if(u.getSettingsManager().mayShowDamageIndicators()){
-                    Hologram holo = HologramsAPI.createHologram(DungeonRPG.getInstance(),loc.clone().add(Util.randomInteger(-2,2),Util.randomInteger(0,2),Util.randomInteger(-2,2)));
+                    Hologram holo = HologramsAPI.createHologram(DungeonRPG.getInstance(),loc.clone().add(Util.randomInteger(-1,1),Util.randomInteger(1,3),Util.randomInteger(-1,1)));
 
                     if(damageData.isDodged()){
                         holo.appendTextLine(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD.toString() + "MISSED!");
@@ -218,6 +219,13 @@ public class DamageHandler {
 
                     holo.getVisibilityManager().setVisibleByDefault(false);
                     holo.getVisibilityManager().showTo(p);
+
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            if(!holo.isDeleted()) holo.delete();
+                        }
+                    }.runTaskLater(DungeonRPG.getInstance(),20);
                 }
             }
         }
