@@ -885,6 +885,7 @@ public class CustomEntity {
         new BukkitRunnable(){
             @Override
             public void run() {
+                if(bukkitEntity == null) return;
                 if(getData().getEntityType() == EntityType.PLAYER){
                     if(npc != null){
                         Equipment equipment = npc.getTrait(Equipment.class);
