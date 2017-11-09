@@ -4,6 +4,7 @@ import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -69,7 +70,9 @@ public class LandOnGroundListener implements Listener {
 
                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                 c.getData().playSound(livingEntity.getLocation());
-                                c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,u.getSkillValues().stomperSkill),p);
+                                DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,u.getSkillValues().stomperSkill);
+                                c.damage(damageData.getDamage(),p);
+                                DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
 
                                 new BukkitRunnable(){
                                     @Override
@@ -85,7 +88,9 @@ public class LandOnGroundListener implements Listener {
                                         GameUser u2 = GameUser.getUser(p2);
 
                                         DungeonRPG.showBloodEffect(livingEntity.getLocation());
-                                        u2.damage(DamageHandler.calculatePlayerToPlayerDamage(u,u2,u.getSkillValues().stomperSkill),p);
+                                        DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,u.getSkillValues().stomperSkill);
+                                        u2.damage(damageData.getDamage(),p);
+                                        DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
                                     }
                                 }
                             }

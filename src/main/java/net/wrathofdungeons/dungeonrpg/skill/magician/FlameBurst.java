@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.skill.magician;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
@@ -91,7 +92,9 @@ public class FlameBurst implements Skill {
                                     DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                     c.getData().playSound(livingEntity.getLocation());
                                     c.giveNormalKnockback(loc);
-                                    c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,flameBurst),p);
+                                    DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,flameBurst);
+                                    c.damage(damageData.getDamage(),p);
+                                    DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
                                     livingEntity.setFireTicks(4*20);
                                 } else {
                                     if(livingEntity instanceof Player){
@@ -104,7 +107,9 @@ public class FlameBurst implements Skill {
                                                 entities.add(livingEntity);
                                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                                 u2.giveNormalKnockback(loc);
-                                                u2.damage(DamageHandler.calculatePlayerToPlayerDamage(u,u2,flameBurst),p);
+                                                DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,flameBurst);
+                                                u2.damage(damageData.getDamage(),p);
+                                                DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
                                                 livingEntity.setFireTicks(4*20);
                                             }
                                         }

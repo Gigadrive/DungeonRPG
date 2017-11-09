@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.mobs.skills;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
@@ -76,7 +77,8 @@ public class Shockwave implements MobSkill {
 
                                                 if(u.getCurrentCharacter() != null){
                                                     if(c.getData().getMobType() == MobType.AGGRO || (c.getData().getMobType() == MobType.NEUTRAL && c.getDamagers().contains(p))){
-                                                        u.damage(DamageHandler.calculateMobToPlayerDamage(u,c,shockwave));
+                                                        DamageData damageData = DamageHandler.calculateMobToPlayerDamage(u,c,shockwave);
+                                                        u.damage(damageData.getDamage());
                                                         livingEntity.setVelocity(livingEntity.getLocation().toVector().subtract(startLocation.toVector()).normalize().multiply(2).setY(1));
                                                         DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                                         entities.add(livingEntity);

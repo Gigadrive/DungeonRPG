@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.skill.mercenary;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
@@ -69,7 +70,9 @@ public class Shockwave implements Skill {
                                         DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                         c.getData().playSound(livingEntity.getLocation());
                                         livingEntity.setVelocity(livingEntity.getLocation().toVector().subtract(startLocation.toVector()).normalize().multiply(2).setY(1));
-                                        c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,shockwave),p);
+                                        DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,shockwave);
+                                        c.damage(damageData.getDamage(),p);
+                                        DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
                                     } else {
                                         if(livingEntity instanceof Player){
                                             Player p2 = (Player)livingEntity;
@@ -79,7 +82,9 @@ public class Shockwave implements Skill {
                                                 entities.add(livingEntity);
                                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                                 livingEntity.setVelocity(livingEntity.getLocation().toVector().subtract(startLocation.toVector()).normalize().multiply(2).setY(1));
-                                                u2.damage(DamageHandler.calculatePlayerToPlayerDamage(u,u2,shockwave),p);
+                                                DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,shockwave);
+                                                u2.damage(damageData.getDamage(),p);
+                                                DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
                                             }
                                         }
                                     }

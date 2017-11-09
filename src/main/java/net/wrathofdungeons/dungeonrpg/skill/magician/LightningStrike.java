@@ -4,6 +4,7 @@ import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
@@ -103,7 +104,9 @@ public class LightningStrike implements Skill {
                             if(c != null){
                                 DungeonRPG.showBloodEffect(c.getBukkitEntity().getLocation());
                                 c.getData().playSound(c.getBukkitEntity().getLocation());
-                                c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,lightningStrike),p);
+                                DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,lightningStrike);
+                                c.damage(damageData.getDamage(),p);
+                                DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
                             } else {
                                 if(entity instanceof Player){
                                     Player p2 = (Player)entity;
@@ -111,7 +114,9 @@ public class LightningStrike implements Skill {
                                     if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
                                         GameUser u2 = GameUser.getUser(p2);
                                         DungeonRPG.showBloodEffect(entity.getLocation());
-                                        u2.damage(DamageHandler.calculatePlayerToPlayerDamage(u,u2,lightningStrike),p);
+                                        DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,lightningStrike);
+                                        u2.damage(damageData.getDamage(),p);
+                                        DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
                                     }
                                 }
                             }

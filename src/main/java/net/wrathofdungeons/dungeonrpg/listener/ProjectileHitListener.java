@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -46,7 +47,8 @@ public class ProjectileHitListener implements Listener {
                                         u.ignoreFistCheck = true;
                                         //livingEntity.damage(data.getDamage(),p);
                                         //livingEntity.damage(DamageHandler.calculatePlayerToMobDamage(u,c,data.getSkill()),p);
-                                        double damage = DamageHandler.calculatePlayerToMobDamage(u,c,data.getSkill());
+                                        DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,data.getSkill());
+                                        double damage = damageData.getDamage();
                                         int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
                                         if(hpLeech > 0){
                                             u.addHP(damage*(hpLeech*0.01));
@@ -60,6 +62,7 @@ public class ProjectileHitListener implements Listener {
                                         c.damage(damage,p);
                                         DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                         c.getData().playSound(livingEntity.getLocation());
+                                        DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
 
                                         new BukkitRunnable(){
                                             @Override
@@ -75,8 +78,10 @@ public class ProjectileHitListener implements Listener {
                                             if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
                                                 GameUser u2 = GameUser.getUser(p2);
 
-                                                u2.damage(DamageHandler.calculatePlayerToPlayerDamage(u,u2,data.getSkill()),p);
+                                                DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,data.getSkill());
+                                                u2.damage(damageData.getDamage(),p);
                                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());
+                                                DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
                                             }
                                         }
                                     }

@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.skill.mercenary;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
@@ -113,7 +114,9 @@ public class AxeBlast implements Skill {
                                 if(c != null){
                                     DungeonRPG.showBloodEffect(c.getBukkitEntity().getLocation());
                                     c.getData().playSound(c.getBukkitEntity().getLocation());
-                                    c.damage(DamageHandler.calculatePlayerToMobDamage(u,c,axeBlast),p);
+                                    DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,axeBlast);
+                                    c.damage(damageData.getDamage(),p);
+                                    DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
                                     c.giveNormalKnockback(playerLoc);
                                 } else {
                                     if(livingEntity instanceof Player){
@@ -124,7 +127,9 @@ public class AxeBlast implements Skill {
 
                                             if(Duel.isDuelingWith(p,p2)){
                                                 DungeonRPG.showBloodEffect(entity.getLocation());
-                                                u2.damage(DamageHandler.calculatePlayerToPlayerDamage(u,u2,axeBlast),p);
+                                                DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,axeBlast);
+                                                u2.damage(damageData.getDamage(),p);
+                                                DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
                                                 u2.giveNormalKnockback(playerLoc);
                                             }
                                         }
