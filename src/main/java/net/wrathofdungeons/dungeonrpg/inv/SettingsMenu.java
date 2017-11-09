@@ -77,36 +77,36 @@ public class SettingsMenu {
         }
 
         if(u.getSettingsManager().allowsTradeRequests()){
-            inv.withItem(5, ItemUtil.namedItem(Material.CHEST, ChatColor.YELLOW + "Trade Requests",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"}),((player, action, item) -> {
+            inv.withItem(5, ItemUtil.hideFlags(ItemUtil.namedItem(Material.CHEST, ChatColor.YELLOW + "Trade Requests",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"})),((player, action, item) -> {
                 u.getSettingsManager().setTradeRequests(false);
                 SettingsMenu.openFor(p);
             }),ClickType.LEFT);
         } else {
-            inv.withItem(5, ItemUtil.namedItem(Material.CHEST, ChatColor.YELLOW + "Trade Requests",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"}),((player, action, item) -> {
+            inv.withItem(5, ItemUtil.hideFlags(ItemUtil.namedItem(Material.CHEST, ChatColor.YELLOW + "Trade Requests",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"})),((player, action, item) -> {
                 u.getSettingsManager().setTradeRequests(true);
                 SettingsMenu.openFor(p);
             }),ClickType.LEFT);
         }
 
         if(u.getSettingsManager().mayShowBlood()){
-            inv.withItem(6, ItemUtil.namedItem(Material.REDSTONE, ChatColor.YELLOW + "Blood & Gore",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"}),((player, action, item) -> {
+            inv.withItem(6, ItemUtil.hideFlags(ItemUtil.namedItem(Material.REDSTONE, ChatColor.YELLOW + "Blood & Gore",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"})),((player, action, item) -> {
                 u.getSettingsManager().setShowBlood(false);
                 SettingsMenu.openFor(p);
             }),ClickType.LEFT);
         } else {
-            inv.withItem(6, ItemUtil.namedItem(Material.REDSTONE, ChatColor.YELLOW + "Blood & Gore",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"}),((player, action, item) -> {
+            inv.withItem(6, ItemUtil.hideFlags(ItemUtil.namedItem(Material.REDSTONE, ChatColor.YELLOW + "Blood & Gore",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"})),((player, action, item) -> {
                 u.getSettingsManager().setShowBlood(true);
                 SettingsMenu.openFor(p);
             }),ClickType.LEFT);
         }
 
         if(u.getSettingsManager().mayShowDamageIndicators()){
-            inv.withItem(7, ItemUtil.namedItem(Material.IRON_AXE, ChatColor.YELLOW + "Show Damage",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"}),((player, action, item) -> {
+            inv.withItem(7, ItemUtil.hideFlags(ItemUtil.namedItem(Material.IRON_AXE, ChatColor.YELLOW + "Show Damage",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"})),((player, action, item) -> {
                 u.getSettingsManager().setShowDamageIndicators(false);
                 SettingsMenu.openFor(p);
             }),ClickType.LEFT);
         } else {
-            inv.withItem(7, ItemUtil.namedItem(Material.IRON_AXE, ChatColor.YELLOW + "Show Damage",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"}),((player, action, item) -> {
+            inv.withItem(7, ItemUtil.hideFlags(ItemUtil.namedItem(Material.IRON_AXE, ChatColor.YELLOW + "Show Damage",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"})),((player, action, item) -> {
                 u.getSettingsManager().setShowDamageIndicators(true);
                 SettingsMenu.openFor(p);
             }),ClickType.LEFT);
