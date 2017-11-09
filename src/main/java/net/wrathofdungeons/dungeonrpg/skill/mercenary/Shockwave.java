@@ -71,8 +71,8 @@ public class Shockwave implements Skill {
                                         c.getData().playSound(livingEntity.getLocation());
                                         livingEntity.setVelocity(livingEntity.getLocation().toVector().subtract(startLocation.toVector()).normalize().multiply(2).setY(1));
                                         DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,shockwave);
-                                        c.damage(damageData.getDamage(),p);
                                         DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
+                                        c.damage(damageData.getDamage(),p);
                                     } else {
                                         if(livingEntity instanceof Player){
                                             Player p2 = (Player)livingEntity;
@@ -83,8 +83,8 @@ public class Shockwave implements Skill {
                                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                                 livingEntity.setVelocity(livingEntity.getLocation().toVector().subtract(startLocation.toVector()).normalize().multiply(2).setY(1));
                                                 DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,shockwave);
-                                                u2.damage(damageData.getDamage(),p);
                                                 DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
+                                                u2.damage(damageData.getDamage(),p);
                                             }
                                         }
                                     }

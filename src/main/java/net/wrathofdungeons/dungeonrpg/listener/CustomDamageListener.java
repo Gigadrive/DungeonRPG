@@ -91,9 +91,9 @@ public class CustomDamageListener implements Listener {
                     u.addMP(damage*(mpLeech*0.01));
                 }
 
+                DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
                 c.damage(damage,p);
                 c.giveNormalKnockback(p.getLocation(),e.isProjectile());
-                DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
             } else {
                 DamageData damageData = new DamageData();
                 damageData.setDamage(1);

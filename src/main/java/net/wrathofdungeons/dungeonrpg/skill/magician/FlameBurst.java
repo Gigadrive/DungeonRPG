@@ -93,8 +93,8 @@ public class FlameBurst implements Skill {
                                     c.getData().playSound(livingEntity.getLocation());
                                     c.giveNormalKnockback(loc);
                                     DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,flameBurst);
-                                    c.damage(damageData.getDamage(),p);
                                     DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
+                                    c.damage(damageData.getDamage(),p);
                                     livingEntity.setFireTicks(4*20);
                                 } else {
                                     if(livingEntity instanceof Player){
@@ -108,8 +108,8 @@ public class FlameBurst implements Skill {
                                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                                 u2.giveNormalKnockback(loc);
                                                 DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,flameBurst);
-                                                u2.damage(damageData.getDamage(),p);
                                                 DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
+                                                u2.damage(damageData.getDamage(),p);
                                                 livingEntity.setFireTicks(4*20);
                                             }
                                         }

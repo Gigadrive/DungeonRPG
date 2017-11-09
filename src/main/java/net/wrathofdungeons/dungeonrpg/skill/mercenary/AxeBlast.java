@@ -115,8 +115,8 @@ public class AxeBlast implements Skill {
                                     DungeonRPG.showBloodEffect(c.getBukkitEntity().getLocation());
                                     c.getData().playSound(c.getBukkitEntity().getLocation());
                                     DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,axeBlast);
-                                    c.damage(damageData.getDamage(),p);
                                     DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
+                                    c.damage(damageData.getDamage(),p);
                                     c.giveNormalKnockback(playerLoc);
                                 } else {
                                     if(livingEntity instanceof Player){
@@ -128,8 +128,8 @@ public class AxeBlast implements Skill {
                                             if(Duel.isDuelingWith(p,p2)){
                                                 DungeonRPG.showBloodEffect(entity.getLocation());
                                                 DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,axeBlast);
-                                                u2.damage(damageData.getDamage(),p);
                                                 DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
+                                                u2.damage(damageData.getDamage(),p);
                                                 u2.giveNormalKnockback(playerLoc);
                                             }
                                         }

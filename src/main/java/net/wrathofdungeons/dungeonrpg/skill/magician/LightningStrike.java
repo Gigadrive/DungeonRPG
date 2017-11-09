@@ -105,8 +105,8 @@ public class LightningStrike implements Skill {
                                 DungeonRPG.showBloodEffect(c.getBukkitEntity().getLocation());
                                 c.getData().playSound(c.getBukkitEntity().getLocation());
                                 DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,lightningStrike);
-                                c.damage(damageData.getDamage(),p);
                                 DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
+                                c.damage(damageData.getDamage(),p);
                             } else {
                                 if(entity instanceof Player){
                                     Player p2 = (Player)entity;
@@ -115,8 +115,8 @@ public class LightningStrike implements Skill {
                                         GameUser u2 = GameUser.getUser(p2);
                                         DungeonRPG.showBloodEffect(entity.getLocation());
                                         DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,lightningStrike);
-                                        u2.damage(damageData.getDamage(),p);
                                         DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
+                                        u2.damage(damageData.getDamage(),p);
                                     }
                                 }
                             }

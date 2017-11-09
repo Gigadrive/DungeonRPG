@@ -59,10 +59,10 @@ public class ProjectileHitListener implements Listener {
                                             u.addMP(damage*(mpLeech*0.01));
                                         }
 
+                                        DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
                                         c.damage(damage,p);
                                         DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                         c.getData().playSound(livingEntity.getLocation());
-                                        DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
 
                                         new BukkitRunnable(){
                                             @Override
@@ -79,9 +79,9 @@ public class ProjectileHitListener implements Listener {
                                                 GameUser u2 = GameUser.getUser(p2);
 
                                                 DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,data.getSkill());
+                                                DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
                                                 u2.damage(damageData.getDamage(),p);
                                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());
-                                                DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
                                             }
                                         }
                                     }
