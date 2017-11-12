@@ -1,5 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
+import net.wrathofdungeons.dungeonrpg.professions.OreLevel;
+
 import java.util.HashMap;
 
 public class StatisticsManager {
@@ -8,4 +10,5 @@ public class StatisticsManager {
     public int chestsLooted = 0;
 
     public HashMap<Integer,Integer> mobsKilled = new HashMap<Integer,Integer>();
+    public HashMap<OreLevel,Integer> oresMined = new HashMap<OreLevel,Integer>();
 }

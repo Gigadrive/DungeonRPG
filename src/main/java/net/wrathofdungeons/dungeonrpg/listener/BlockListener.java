@@ -98,6 +98,14 @@ public class BlockListener implements Listener {
                                 ore.setAvailable(false);
                                 ore.timer += Util.randomInteger(5,7)*60;
 
+                                int currentValue = 0;
+                                if(u.getCurrentCharacter().getVariables().statisticsManager.oresMined.containsKey(ore.getLevel())){
+                                    currentValue = u.getCurrentCharacter().getVariables().statisticsManager.oresMined.get(ore.getLevel());
+                                    u.getCurrentCharacter().getVariables().statisticsManager.oresMined.remove(ore.getLevel());
+                                }
+
+                                u.getCurrentCharacter().getVariables().statisticsManager.oresMined.put(ore.getLevel(),currentValue+1);
+
                                 CustomItem drop = null;
                                 int tries = 0;
 

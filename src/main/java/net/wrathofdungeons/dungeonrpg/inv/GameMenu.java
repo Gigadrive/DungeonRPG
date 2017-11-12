@@ -7,6 +7,7 @@ import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.party.PartyMember;
+import net.wrathofdungeons.dungeonrpg.professions.OreLevel;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import org.bukkit.ChatColor;
@@ -33,6 +34,9 @@ public class GameMenu {
         int mobsKilled = 0;
         for(int id : u.getCurrentCharacter().getVariables().statisticsManager.mobsKilled.keySet()) mobsKilled += u.getCurrentCharacter().getVariables().statisticsManager.mobsKilled.get(id);
 
+        int oresMined = 0;
+        for(OreLevel level : u.getCurrentCharacter().getVariables().statisticsManager.oresMined.keySet()) mobsKilled += u.getCurrentCharacter().getVariables().statisticsManager.oresMined.get(level);
+
         ItemStack cashShop = ItemUtil.namedItem(Material.GOLD_INGOT, ChatColor.GOLD + "Cash Shop",null);
         ItemStack quests = ItemUtil.namedItem(Material.BOOK, ChatColor.GOLD + "Quest Diary",null);
         ItemStack skills = ItemUtil.namedItem(Material.ARROW, ChatColor.GOLD + "Skills",null);
@@ -47,7 +51,8 @@ public class GameMenu {
                 ChatColor.GRAY + "Mobs killed: " + ChatColor.WHITE + mobsKilled,
                 ChatColor.GRAY + "Items awakened: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.itemsAwakened,
                 ChatColor.GRAY + "Chests looted: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.chestsLooted,
-                ChatColor.GRAY + "Blocks walked: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.blocksWalked
+                ChatColor.GRAY + "Blocks walked: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.blocksWalked,
+                ChatColor.GRAY + "Ores mined: " + ChatColor.WHITE + oresMined
         },2);
 
         ArrayList<String> statsLore = new ArrayList<String>();
