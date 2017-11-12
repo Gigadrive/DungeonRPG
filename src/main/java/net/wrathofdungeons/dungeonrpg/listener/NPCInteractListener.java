@@ -9,6 +9,7 @@ import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
 import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
 import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
 import net.wrathofdungeons.dungeonrpg.inv.GuildMasterMenu;
+import net.wrathofdungeons.dungeonrpg.inv.ProfessionMasterMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -46,7 +47,7 @@ public class NPCInteractListener implements Listener {
             } else if(npc.getNpcType() == CustomNPCType.GUILD_BANK_MANAGER){
                 // TODO: Add Guild bank
             } else if(npc.getNpcType() == CustomNPCType.PROFESSION_MASTER){
-                // TODO: Add Professions
+                ProfessionMasterMenu.openFor(p);
             } else if(npc.getNpcType() == CustomNPCType.DUNGEON_KEY_MASTER){
                 if(npc.getKeyMasterItem() != null && npc.getKeyMasterItem().getAmount() > 0 && npc.getKeyMasterLocation() != null){
                     if(u.hasInInventory(npc.getKeyMasterItem().getData(),npc.getKeyMasterItem().getAmount())){

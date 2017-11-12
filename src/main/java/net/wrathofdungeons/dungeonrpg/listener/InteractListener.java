@@ -4,6 +4,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCPushEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
+import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
@@ -20,6 +21,9 @@ import net.wrathofdungeons.dungeonrpg.items.ItemRarity;
 import net.wrathofdungeons.dungeonrpg.lootchests.LootChest;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
+import net.wrathofdungeons.dungeonrpg.professions.Ore;
+import net.wrathofdungeons.dungeonrpg.professions.OreLevel;
+import net.wrathofdungeons.dungeonrpg.professions.Profession;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
@@ -144,7 +148,54 @@ public class InteractListener implements Listener {
                                 p.sendMessage(ChatColor.RED + "Unknown region.");
                             }
                         } else {
-                            p.sendMessage(ChatColor.RED + "No region loaded.");
+                            if(dis.equals("Ore Setter")){
+                                OreLevel level = OreLevel.fromBlock(e.getClickedBlock().getType());
+
+                                if(level != null){
+                                    if(Ore.getOre(e.getClickedBlock().getLocation()) == null){
+                                        Material oldType = e.getClickedBlock().getType();
+                                        e.getClickedBlock().setType(Material.BEDROCK);
+
+                                        DungeonAPI.async(() -> {
+                                            try {
+                                                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `ores` (`location.world`,`location.x`,`location.y`,`location.z`,`level`,`addedBy`) VALUES(?,?,?,?,?,?);",Statement.RETURN_GENERATED_KEYS);
+                                                ps.setString(1,e.getClickedBlock().getLocation().getWorld().getName());
+                                                ps.setInt(2,e.getClickedBlock().getLocation().getBlockX());
+                                                ps.setInt(3,e.getClickedBlock().getLocation().getBlockY());
+                                                ps.setInt(4,e.getClickedBlock().getLocation().getBlockZ());
+                                                ps.setInt(5,level.getID());
+                                                ps.setString(6,p.getUniqueId().toString());
+                                                ps.executeUpdate();
+
+                                                ResultSet rs = ps.getGeneratedKeys();
+                                                int oreID = -1;
+                                                if(rs.first()) oreID = rs.getInt(1);
+
+                                                MySQLManager.getInstance().closeResources(rs,ps);
+
+                                                if(oreID > 1){
+                                                    Ore ore = new Ore(oreID);
+
+                                                    p.sendMessage(ChatColor.GREEN + "Ore created! ID: #" + ore.getId());
+                                                } else {
+                                                    p.sendMessage(ChatColor.RED + "An error occurred.");
+                                                    e.getClickedBlock().setType(oldType);
+                                                }
+                                            } catch(Exception e1){
+                                                e1.printStackTrace();
+                                                p.sendMessage(ChatColor.RED + "An error occurred.");
+                                                e.getClickedBlock().setType(oldType);
+                                            }
+                                        });
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + "That block is already an ore.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Invalid block.");
+                                }
+                            } else {
+                                p.sendMessage(ChatColor.RED + "No region loaded.");
+                            }
                         }
 
                         return;
@@ -251,27 +302,43 @@ public class InteractListener implements Listener {
 
                             if(item.getData().getFoodRegeneration() > 0 && item.getData().getFoodDelayInTicks() >= 0){
                                 if(u.getCurrentCharacter().getLevel() >= item.getData().getNeededLevel()){
-                                    if(!u.isInFoodCooldown()){
-                                        if(u.getHP() < u.getMaxHP()){
-                                            u.consumeCurrentItem(1);
-                                            u.addHP(item.getData().getFoodRegeneration());
+                                    if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() >= item.getData().getNeededBlacksmithingLevel()){
+                                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() >= item.getData().getNeededCraftingLevel()){
+                                            if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() >= item.getData().getNeededPotionMakingLevel()){
+                                                if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() >= item.getData().getNeededMiningLevel()){
+                                                    if(!u.isInFoodCooldown()){
+                                                        if(u.getHP() < u.getMaxHP()){
+                                                            u.consumeCurrentItem(1);
+                                                            u.addHP(item.getData().getFoodRegeneration());
 
-                                            p.playSound(p.getEyeLocation(),Sound.EAT,1f,1f);
-                                            ParticleEffect.HEART.display(0.005f,0.005f,0.005f,0.005f,30,p.getEyeLocation(),600);
+                                                            p.playSound(p.getEyeLocation(),Sound.EAT,1f,1f);
+                                                            ParticleEffect.HEART.display(0.005f,0.005f,0.005f,0.005f,30,p.getEyeLocation(),600);
 
-                                            if(item.getData().getFoodDelayInTicks() > 0){
-                                                u.setFoodCooldown(true);
+                                                            if(item.getData().getFoodDelayInTicks() > 0){
+                                                                u.setFoodCooldown(true);
 
-                                                new BukkitRunnable(){
-                                                    @Override
-                                                    public void run() {
-                                                        u.setFoodCooldown(false);
+                                                                new BukkitRunnable(){
+                                                                    @Override
+                                                                    public void run() {
+                                                                        u.setFoodCooldown(false);
+                                                                    }
+                                                                }.runTaskLater(DungeonRPG.getInstance(),item.getData().getFoodDelayInTicks());
+                                                            }
+                                                        }
+                                                    } else {
+                                                        p.sendMessage(ChatColor.RED + "Please wait a little while before using that item again.");
                                                     }
-                                                }.runTaskLater(DungeonRPG.getInstance(),item.getData().getFoodDelayInTicks());
+                                                } else {
+                                                    p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
+                                                }
+                                            } else {
+                                                p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
                                             }
+                                        } else {
+                                            p.sendMessage(ChatColor.DARK_RED + "This item is for Crafting level " + item.getData().getNeededCraftingLevel() + "+ only.");
                                         }
                                     } else {
-                                        p.sendMessage(ChatColor.RED + "Please wait a little while before using that item again.");
+                                        p.sendMessage(ChatColor.DARK_RED + "This item is for Blacksmithing level " + item.getData().getNeededBlacksmithingLevel() + "+ only.");
                                     }
                                 } else {
                                     p.sendMessage(ChatColor.DARK_RED + "This item is for level " + item.getData().getNeededLevel() + "+ only.");
@@ -292,6 +359,30 @@ public class InteractListener implements Listener {
                             e.setCancelled(true);
                             return;
                         }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() < item.getData().getNeededBlacksmithingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Blacksmithing level " + item.getData().getNeededBlacksmithingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() < item.getData().getNeededCraftingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Crafting level " + item.getData().getNeededCraftingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() < item.getData().getNeededPotionMakingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() < item.getData().getNeededMiningLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
                     } else if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS){
                         if(u.getCurrentCharacter().getRpgClass() != RPGClass.ASSASSIN && u.getCurrentCharacter().getRpgClass() != RPGClass.NINJA && u.getCurrentCharacter().getRpgClass() != RPGClass.BLADEMASTER){
                             p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
@@ -301,6 +392,30 @@ public class InteractListener implements Listener {
 
                         if(u.getCurrentCharacter().getLevel() < item.getData().getNeededLevel()){
                             p.sendMessage(ChatColor.DARK_RED + "This weapon is for level " + item.getData().getNeededLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() < item.getData().getNeededBlacksmithingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Blacksmithing level " + item.getData().getNeededBlacksmithingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() < item.getData().getNeededCraftingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Crafting level " + item.getData().getNeededCraftingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() < item.getData().getNeededPotionMakingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() < item.getData().getNeededMiningLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
                             e.setCancelled(true);
                             return;
                         }
@@ -316,6 +431,30 @@ public class InteractListener implements Listener {
                             e.setCancelled(true);
                             return;
                         }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() < item.getData().getNeededBlacksmithingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Blacksmithing level " + item.getData().getNeededBlacksmithingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() < item.getData().getNeededCraftingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Crafting level " + item.getData().getNeededCraftingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() < item.getData().getNeededPotionMakingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() < item.getData().getNeededMiningLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
                     } else if(item.getData().getCategory() == ItemCategory.WEAPON_AXE){
                         if(u.getCurrentCharacter().getRpgClass() != RPGClass.MERCENARY && u.getCurrentCharacter().getRpgClass() != RPGClass.SOLDIER && u.getCurrentCharacter().getRpgClass() != RPGClass.KNIGHT){
                             p.sendMessage(ChatColor.DARK_RED + "This weapon is for a different class.");
@@ -325,6 +464,60 @@ public class InteractListener implements Listener {
 
                         if(u.getCurrentCharacter().getLevel() < item.getData().getNeededLevel()){
                             p.sendMessage(ChatColor.DARK_RED + "This weapon is for level " + item.getData().getNeededLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() < item.getData().getNeededBlacksmithingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Blacksmithing level " + item.getData().getNeededBlacksmithingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() < item.getData().getNeededCraftingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Crafting level " + item.getData().getNeededCraftingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() < item.getData().getNeededPotionMakingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() < item.getData().getNeededMiningLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+                    } else if(item.getData().getCategory() == ItemCategory.PICKAXE){
+                        if(u.getCurrentCharacter().getLevel() < item.getData().getNeededLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This weapon is for level " + item.getData().getNeededLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() < item.getData().getNeededBlacksmithingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Blacksmithing level " + item.getData().getNeededBlacksmithingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() < item.getData().getNeededCraftingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Crafting level " + item.getData().getNeededCraftingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() < item.getData().getNeededPotionMakingLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() < item.getData().getNeededMiningLevel()){
+                            p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
                             e.setCancelled(true);
                             return;
                         }

@@ -111,6 +111,7 @@ public class InventoryClickListener implements Listener {
                                                         }
 
                                                         e.setCurrentItem(item.build(p));
+                                                        u.updateHandSpeed();
                                                     } else {
                                                         p.sendMessage(ChatColor.RED + "That item has already been upgraded to +10!");
                                                     }

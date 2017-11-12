@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.util;
 
 import net.wrathofdungeons.dungeonrpg.mobs.MobClass;
+import net.wrathofdungeons.dungeonrpg.professions.Profession;
 
 public class FormularUtils {
     // http://people.rit.edu/sms6462/mc/exp
@@ -62,6 +63,20 @@ public class FormularUtils {
             return getMobEXP(MobClass.MID,level)*2.1; // 210%
         } else {
             return getMobEXP(MobClass.MID,level);
+        }
+    }
+
+    public static double getNeededProfessionEXP(Profession profession, int level){
+        if(profession == Profession.BLACKSMITHING){
+            return 4*Math.pow(level,2.25)*level+64;
+        } else if(profession == Profession.CRAFTING){
+            return getNeededProfessionEXP(Profession.BLACKSMITHING,level);
+        } else if(profession == Profession.POTION_MAKING){
+            return getNeededProfessionEXP(Profession.BLACKSMITHING,level);
+        } else if(profession == Profession.MINING){
+            return getNeededProfessionEXP(Profession.BLACKSMITHING,level);
+        } else {
+            return getNeededProfessionEXP(Profession.BLACKSMITHING,level);
         }
     }
 

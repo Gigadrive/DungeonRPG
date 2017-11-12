@@ -114,11 +114,21 @@ public class ReloadCommand extends Command {
                 } else {
                     p.sendMessage(ChatColor.RED + "There is unsaved data left over. Use /savequests to save your unsaved data before reloading.");
                 }
+            } else if(mode.equalsIgnoreCase("ores")){
+                DungeonAPI.async(() -> {
+                    p.sendMessage(ChatColor.GREEN + "Reloading ores..");
+
+                    p.sendMessage(ChatColor.GREEN + "Loading ores from database..");
+
+                    Quest.init();
+
+                    p.sendMessage(ChatColor.GREEN + "Done!");
+                });
             } else {
-                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests>");
+                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests|ores>");
             }
         } else {
-            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests>");
+            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests|ores>");
         }
     }
 }

@@ -12,6 +12,8 @@ import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
+import net.wrathofdungeons.dungeonrpg.professions.Profession;
+import net.wrathofdungeons.dungeonrpg.user.Character;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import net.wrathofdungeons.dungeonrpg.util.NBTTypeID;
@@ -212,6 +214,13 @@ public class CustomItem {
         return (base+(base*p));
     }
 
+    public double getModifiedPickaxeStrength(){
+        double base = getData().getPickaxeStrength();
+        double p = ((double)getUpgradeValue())/DungeonRPG.UPGRADING_STONE_DIVIDING_VALUE;
+
+        return (base+(base*p));
+    }
+
     public boolean mayUse(Player p){
         GameUser u = GameUser.getUser(p);
 
@@ -225,6 +234,14 @@ public class CustomItem {
             } else if(getData().getCategory() == ItemCategory.WEAPON_STICK && !u.getCurrentCharacter().getRpgClass().matches(RPGClass.MAGICIAN)){
                 return false;
             } else if(getData().getNeededLevel() > u.getCurrentCharacter().getLevel()){
+                return false;
+            } else if(getData().getNeededBlacksmithingLevel() > u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel()){
+                return false;
+            } else if(getData().getNeededCraftingLevel() > u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel()){
+                return false;
+            } else if(getData().getNeededPotionMakingLevel() > u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel()){
+                return false;
+            } else if(getData().getNeededMiningLevel() > u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel()){
                 return false;
             } else {
                 return true;
@@ -287,8 +304,14 @@ public class CustomItem {
     public int getSellprice(){
         int sellprice = 0;
 
-        if(getData().getCategory() == ItemCategory.WEAPON_BOW || getData().getCategory() == ItemCategory.WEAPON_SHEARS || getData().getCategory() == ItemCategory.WEAPON_STICK || getData().getCategory() == ItemCategory.WEAPON_AXE || getData().getCategory() == ItemCategory.ARMOR){
-            sellprice += getData().getNeededLevel()*1.5;
+        if(getData().getCategory() == ItemCategory.WEAPON_BOW || getData().getCategory() == ItemCategory.WEAPON_SHEARS || getData().getCategory() == ItemCategory.WEAPON_STICK || getData().getCategory() == ItemCategory.WEAPON_AXE || getData().getCategory() == ItemCategory.ARMOR || getData().getCategory() == ItemCategory.PICKAXE){
+            if(getData().getNeededLevel() > 0) sellprice += getData().getNeededLevel()*1.5;
+            if(getData().getNeededBlacksmithingLevel() > 0) sellprice += getData().getNeededBlacksmithingLevel()*1.5;
+            if(getData().getNeededCraftingLevel() > 0) sellprice += getData().getNeededCraftingLevel()*1.5;
+            if(getData().getNeededPotionMakingLevel() > 0) sellprice += getData().getNeededPotionMakingLevel()*1.5;
+            if(getData().getNeededMiningLevel() > 0) sellprice += getData().getNeededMiningLevel()*1.5;
+
+            if(sellprice < 1) sellprice = 1;
 
             if(getData().getRarity() == ItemRarity.COMMON){
                 sellprice *= 1;
@@ -362,6 +385,8 @@ public class CustomItem {
     public ItemStack build(Player p){
         if(p != null){
             GameUser u = GameUser.getUser(p);
+            Character character = u.getCurrentCharacter();
+            if(character == null) character = u.getCharacters().get(0);
 
             if(getData() == null){
                 return new ItemStack(Material.AIR);
@@ -403,17 +428,55 @@ public class CustomItem {
                         }
                     }
                     iL.add(" ");
-                    if(u.getCurrentCharacter().getLevel() >= getData().getNeededLevel()){
+                    if(character.getLevel() >= getData().getNeededLevel()){
                         iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
                     } else {
                         iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
                     }
 
                     if(getData().getNeededClass() != RPGClass.NONE){
-                        if(u.getCurrentCharacter().getRpgClass().matches(getData().getNeededClass())){
+                        if(character.getRpgClass().matches(getData().getNeededClass())){
                             iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
                         } else {
                             iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        }
+                    }
+
+                    int b = 0;
+
+                    b = getData().getNeededBlacksmithingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Blacksmithing Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Blacksmithing Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededCraftingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Crafting Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Crafting Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededPotionMakingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Potion Making Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Potion Making Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededMiningLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.MINING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Mining Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Mining Level: " + b);
                         }
                     }
 
@@ -483,17 +546,55 @@ public class CustomItem {
                         }
                     }
                     iL.add(" ");
-                    if(u.getCurrentCharacter().getLevel() >= getData().getNeededLevel()){
+                    if(character.getLevel() >= getData().getNeededLevel()){
                         iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
                     } else {
                         iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
                     }
 
                     if(getData().getNeededClass() != RPGClass.NONE){
-                        if(u.getCurrentCharacter().getRpgClass().matches(getData().getNeededClass())){
+                        if(character.getRpgClass().matches(getData().getNeededClass())){
                             iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
                         } else {
                             iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        }
+                    }
+
+                    int b = 0;
+
+                    b = getData().getNeededBlacksmithingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Blacksmithing Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Blacksmithing Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededCraftingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Crafting Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Crafting Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededPotionMakingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Potion Making Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Potion Making Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededMiningLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.MINING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Mining Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Mining Level: " + b);
                         }
                     }
 
@@ -535,21 +636,179 @@ public class CustomItem {
                     iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
 
                     if(getData().getDescription() != null) iL.add(" ");
-                } else if(getData().getCategory() == ItemCategory.FOOD){
+                } else if(getData().getCategory() == ItemCategory.PICKAXE){
                     iL.add(" ");
-                    iL.add(ChatColor.GOLD + "Regeneration: " + getData().getFoodRegeneration());
+                    iL.add(ChatColor.YELLOW + "Pickaxe Strength: " + (int)getModifiedPickaxeStrength());
+                    if(getModifiedAtkMin() > 0 && getModifiedAtkMax() > 0) iL.add(ChatColor.YELLOW + "Damage: " + (int)getModifiedAtkMin() + "-" + (int)getModifiedAtkMax());
+                    for(Awakening a : getData().getAdditionalStats()){
+                        if(a.value > 0){
+                            // IS POSITIVE
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                            }
+                        } else if(a.value == 0){
+                            // IS NEUTRAL (shouldn't really happen)
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                            }
+                        } else {
+                            // IS NEGATIVE
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                            }
+                        }
+                    }
                     iL.add(" ");
-                    if(u.getCurrentCharacter().getLevel() >= getData().getNeededLevel()){
+                    if(character.getLevel() >= getData().getNeededLevel()){
                         iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
                     } else {
                         iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
                     }
 
                     if(getData().getNeededClass() != RPGClass.NONE){
-                        if(u.getCurrentCharacter().getRpgClass().matches(getData().getNeededClass())){
+                        if(character.getRpgClass().matches(getData().getNeededClass())){
                             iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
                         } else {
                             iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        }
+                    }
+
+                    int b = 0;
+
+                    b = getData().getNeededBlacksmithingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Blacksmithing Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Blacksmithing Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededCraftingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Crafting Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Crafting Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededPotionMakingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Potion Making Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Potion Making Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededMiningLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.MINING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Mining Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Mining Level: " + b);
+                        }
+                    }
+
+                    iL.add(" ");
+
+                    if(canHoldAwakenings()){
+                        if(hasAwakenings()){
+                            for(Awakening a : getAwakenings()){
+                                if(a.value > 0){
+                                    // IS POSITIVE
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                                    }
+                                } else if(a.value == 0){
+                                    // IS NEUTRAL (shouldn't really happen)
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                                    }
+                                } else {
+                                    // IS NEGATIVE
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                                    }
+                                }
+                            }
+                        } else {
+                            iL.add(ChatColor.AQUA + "Awakening available!");
+                        }
+
+                        iL.add(" ");
+                    }
+
+                    // TODO: Add crystal info
+                    iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
+
+                    if(getData().getDescription() != null) iL.add(" ");
+                } else if(getData().getCategory() == ItemCategory.FOOD){
+                    iL.add(" ");
+                    iL.add(ChatColor.GOLD + "Regeneration: " + getData().getFoodRegeneration());
+                    iL.add(" ");
+                    if(character.getLevel() >= getData().getNeededLevel()){
+                        iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
+                    } else {
+                        iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
+                    }
+
+                    if(getData().getNeededClass() != RPGClass.NONE){
+                        if(character.getRpgClass().matches(getData().getNeededClass())){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        }
+                    }
+
+                    int b = 0;
+
+                    b = getData().getNeededBlacksmithingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Blacksmithing Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Blacksmithing Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededCraftingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Crafting Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Crafting Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededPotionMakingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Potion Making Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Potion Making Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededMiningLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.MINING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Mining Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Mining Level: " + b);
                         }
                     }
 
@@ -559,7 +818,7 @@ public class CustomItem {
                 } else if(getData().getCategory() == ItemCategory.COLLECTIBLE){
                     iL.add(ChatColor.GOLD + "Collectible");
                 } else if(getData().getCategory() == ItemCategory.QUEST){
-                    iL.add(ChatColor.RED + "Quest ITem");
+                    iL.add(ChatColor.RED + "Quest Item");
                 }
 
                 if(getData().getDescription() != null){

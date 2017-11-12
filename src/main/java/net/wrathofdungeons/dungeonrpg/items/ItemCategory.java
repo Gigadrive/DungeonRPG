@@ -11,5 +11,6 @@ public enum ItemCategory {
     FOOD,
     MATERIAL,
     COLLECTIBLE,
-    QUEST
+    QUEST,
+    PICKAXE
 }

@@ -52,6 +52,8 @@ public class ItemData {
     private int defMin;
     private int defMax;
 
+    private int pickaxeStrength;
+
     private int foodRegeneration;
     private int foodDelay;
 
@@ -59,6 +61,10 @@ public class ItemData {
 
     private int neededLevel;
     private RPGClass neededClass;
+    private int neededBlacksmithingLevel;
+    private int neededCraftingLevel;
+    private int neededPotionMakingLevel;
+    private int neededMiningLevel;
 
     private boolean untradeable;
 
@@ -95,6 +101,8 @@ public class ItemData {
                 this.defMin = rs.getInt("def.min");
                 this.defMax = rs.getInt("def.max");
 
+                this.pickaxeStrength = rs.getInt("pickaxe.strength");
+
                 if(rs.getString("additionalStats") != null){
                     this.additionalStats = gson.fromJson(rs.getString("additionalStats"),new TypeToken<ArrayList<Awakening>>(){}.getType());
                 } else {
@@ -106,6 +114,10 @@ public class ItemData {
 
                 this.neededLevel = rs.getInt("neededLevel");
                 this.neededClass = RPGClass.valueOf(rs.getString("neededClass"));
+                this.neededBlacksmithingLevel = rs.getInt("neededBlacksmithingLevel");
+                this.neededCraftingLevel = rs.getInt("neededCraftingLevel");
+                this.neededPotionMakingLevel = rs.getInt("neededPotionMakingLevel");
+                this.neededMiningLevel = rs.getInt("neededMiningLevel");
 
                 this.untradeable = rs.getBoolean("untradeable");
             }
@@ -168,6 +180,10 @@ public class ItemData {
         return defMax;
     }
 
+    public int getPickaxeStrength() {
+        return pickaxeStrength;
+    }
+
     public ArrayList<Awakening> getAdditionalStats() {
         return additionalStats;
     }
@@ -216,6 +232,22 @@ public class ItemData {
 
     public RPGClass getNeededClass() {
         return neededClass;
+    }
+
+    public int getNeededBlacksmithingLevel() {
+        return neededBlacksmithingLevel;
+    }
+
+    public int getNeededCraftingLevel() {
+        return neededCraftingLevel;
+    }
+
+    public int getNeededPotionMakingLevel() {
+        return neededPotionMakingLevel;
+    }
+
+    public int getNeededMiningLevel() {
+        return neededMiningLevel;
     }
 
     public boolean isUntradeable() {

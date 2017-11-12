@@ -37,10 +37,12 @@ public class PlayerPickupListener implements Listener {
                             if(assignedPlayer.equalsIgnoreCase(p.getName())){
                                 e.getItem().remove();
                                 p.getInventory().addItem(item.build(p));
+                                u.playItemPickupSound();
                             } else {
                                 if(now-dropTime >= 30*1000 && !item.isUntradeable()){
                                     e.getItem().remove();
                                     p.getInventory().addItem(item.build(p));
+                                    u.playItemPickupSound();
                                 }
                             }
                         }

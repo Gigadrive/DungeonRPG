@@ -26,16 +26,18 @@ import static net.citizensnpcs.api.npc.NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADA
 import static net.citizensnpcs.api.npc.NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA;
 
 public class WorldUtilities {
-    public static void dropItem(Location loc, CustomItem item){
-        dropItem(loc,item,null);
+    public static Item dropItem(Location loc, CustomItem item){
+        return dropItem(loc,item,null);
     }
 
-    public static void dropItem(Location loc, CustomItem item, Player p){
+    public static Item dropItem(Location loc, CustomItem item, Player p){
         Item i = loc.getWorld().dropItem(loc,item.build(p));
 
         if(p != null){
             addAssignmentData(i,p);
         }
+
+        return i;
     }
 
     public static void addAssignmentData(Item i, Player p){

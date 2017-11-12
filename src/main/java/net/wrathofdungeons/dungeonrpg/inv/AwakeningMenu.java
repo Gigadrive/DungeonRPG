@@ -4,6 +4,7 @@ import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningCategory;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
@@ -71,7 +72,7 @@ public class AwakeningMenu implements Listener {
                                         if(u.removeMoneyFromInventory(awakeningPrice,toAwaken.size())){
                                             for(CustomItem item : toAwaken){
                                                 ArrayList<AwakeningType> types = new ArrayList<AwakeningType>();
-                                                for(AwakeningType t : AwakeningType.values()){
+                                                for(AwakeningType t : AwakeningType.getAwakenings(AwakeningCategory.WEAPON_ARMOR)){
                                                     if(!item.hasAwakening(t)) types.add(t);
                                                 }
                                                 Collections.shuffle(types);

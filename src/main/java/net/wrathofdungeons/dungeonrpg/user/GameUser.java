@@ -4,6 +4,7 @@ import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.lib.network.ChannelUser;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import net.citizensnpcs.api.CitizensAPI;
+import net.minecraft.server.v1_8_R3.GenericAttributes;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.user.Rank;
@@ -19,6 +20,7 @@ import net.wrathofdungeons.dungeonrpg.guilds.Guild;
 import net.wrathofdungeons.dungeonrpg.guilds.GuildCreationStatus;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
@@ -40,6 +42,8 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.NameTagVisibility;
@@ -127,6 +131,8 @@ public class GameUser extends User {
     public GuildCreationStatus guildCreationStatus = null;
     public String guildCreationName = null;
     public String guildCreationTag = null;
+
+    public int barTimer = 0;
 
     public GameUser(Player p){
         super(p);
@@ -569,6 +575,57 @@ public class GameUser extends User {
         }
     }
 
+    public void playItemPickupSound(){
+        // TODO
+    }
+
+    public void updateHandSpeed(){
+        updateHandSpeed(CustomItem.fromItemStack(p.getItemInHand()));
+    }
+
+    public void updateHandSpeed(CustomItem item){
+        if(p.hasPotionEffect(PotionEffectType.SLOW_DIGGING)) p.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+        if(p.hasPotionEffect(PotionEffectType.FAST_DIGGING)) p.removePotionEffect(PotionEffectType.FAST_DIGGING);
+
+        if(item != null){
+            if(item.getData().getCategory() == ItemCategory.WEAPON_STICK || item.getData().getCategory() == ItemCategory.WEAPON_SHEARS || item.getData().getCategory() == ItemCategory.WEAPON_AXE || item.getData().getCategory() == ItemCategory.WEAPON_BOW){
+
+            } else if(item.getData().getCategory() == ItemCategory.PICKAXE) {
+                int miningSpeed = getCurrentCharacter().getTotalValue(AwakeningType.MINING_SPEED);
+                if(miningSpeed < -6) miningSpeed = -5;
+                if(miningSpeed > 6) miningSpeed = 5;
+
+                if(miningSpeed == -6){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING,Integer.MAX_VALUE,5,true,true));
+                } else if(miningSpeed == -5){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING,Integer.MAX_VALUE,4,true,true));
+                } else if(miningSpeed == -4){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING,Integer.MAX_VALUE,3,true,true));
+                } else if(miningSpeed == -3){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING,Integer.MAX_VALUE,2,true,true));
+                } else if(miningSpeed == -2){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING,Integer.MAX_VALUE,1,true,true));
+                } else if(miningSpeed == -1){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING,Integer.MAX_VALUE,0,true,true));
+                } else if(miningSpeed == 0){
+                    // normal speed
+                } else if(miningSpeed == 1){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING,Integer.MAX_VALUE,0,true,true));
+                } else if(miningSpeed == 2){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING,Integer.MAX_VALUE,1,true,true));
+                } else if(miningSpeed == 3){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING,Integer.MAX_VALUE,2,true,true));
+                } else if(miningSpeed == 4){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING,Integer.MAX_VALUE,3,true,true));
+                } else if(miningSpeed == 5){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING,Integer.MAX_VALUE,4,true,true));
+                } else if(miningSpeed == 6){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING,Integer.MAX_VALUE,5,true,true));
+                }
+            }
+        }
+    }
+
     public void playCharacter(Character c){
         if(getCurrentCharacter() == null && c != null && c.getPlayer().getUniqueId().toString().equals(p.getUniqueId().toString())){
             p.closeInventory();
@@ -883,6 +940,7 @@ public class GameUser extends User {
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Spawn Setter",null));
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Activation Setter (1)",null));
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Activation Setter (2)",null));
+            p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Ore Setter",null));
         } else {
             lootChestLevel = 0;
             lootChestTier = 0;

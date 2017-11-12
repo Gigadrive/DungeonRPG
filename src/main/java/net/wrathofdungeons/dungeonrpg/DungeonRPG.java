@@ -9,6 +9,7 @@ import net.minecraft.server.v1_8_R3.EntitySheep;
 import net.minecraft.server.v1_8_R3.EntityZombie;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
+import net.wrathofdungeons.dungeonapi.util.BarUtil;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
@@ -32,6 +33,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.nms.EntityManager;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkillStorage;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
+import net.wrathofdungeons.dungeonrpg.professions.Ore;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.quests.Quest;
@@ -138,6 +140,7 @@ public class DungeonRPG extends JavaPlugin {
         Region.init();
         CustomNPC.init();
         LootChest.init();
+        Ore.init();
         reloadBroadcastLines();
         Quest.init();
 
@@ -761,6 +764,65 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(DungeonRPG.getInstance(),0,20);
 
+        // ORES RESET
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Ore ore : Ore.STORAGE.values()){
+                    if(!ore.isAvailable()){
+                        if(ore.timer > 0){
+                            ore.timer--;
+                        } else {
+                            ore.setAvailable(true);
+                            ore.timer = 0;
+                            ore.getLocation().getBlock().setType(ore.getLevel().getBlock());
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(DungeonRPG.getInstance(),20,20);
+
+        // ORES PARTICLES
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Ore ore : Ore.STORAGE.values()){
+                    if(ore.isAvailable()){
+                        ParticleEffect.VILLAGER_HAPPY.display(0.5f,0.5f,0.5f,1f,50,ore.getLocation(),600);
+                    }
+                }
+            }
+        }.runTaskTimer(DungeonRPG.getInstance(),2*20,2*20);
+
+        // BAR RESET
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Player p : Bukkit.getOnlinePlayers()){
+                    if(GameUser.isLoaded(p)){
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null){
+                            if(u.barTimer > 1){
+                                u.barTimer--;
+                            } else if(u.barTimer == 1){
+                                u.barTimer = 0;
+                                BarUtil.removeBar(p);
+                            }
+                        } else {
+                            if(u.barTimer >= 1){
+                                u.barTimer = 0;
+                                BarUtil.removeBar(p);
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(DungeonRPG.getInstance(),20,20);
+
         Bukkit.getServer().clearRecipes();
         EntityManager.registerEntities();
     }
@@ -924,6 +986,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ProjectileHitListener(),this);
         Bukkit.getPluginManager().registerEvents(new ShootBowListener(),this);
         Bukkit.getPluginManager().registerEvents(new SplitListener(),this);
+        Bukkit.getPluginManager().registerEvents(new SwitchItemListener(),this);
         Bukkit.getPluginManager().registerEvents(new TargetListener(),this);
         Bukkit.getPluginManager().registerEvents(new WeatherChangeListener(),this);
 
