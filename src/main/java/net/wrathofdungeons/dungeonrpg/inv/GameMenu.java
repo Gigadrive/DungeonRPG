@@ -35,7 +35,7 @@ public class GameMenu {
         for(int id : u.getCurrentCharacter().getVariables().statisticsManager.mobsKilled.keySet()) mobsKilled += u.getCurrentCharacter().getVariables().statisticsManager.mobsKilled.get(id);
 
         int oresMined = 0;
-        for(OreLevel level : u.getCurrentCharacter().getVariables().statisticsManager.oresMined.keySet()) mobsKilled += u.getCurrentCharacter().getVariables().statisticsManager.oresMined.get(level);
+        for(OreLevel level : u.getCurrentCharacter().getVariables().statisticsManager.oresMined.keySet()) oresMined += u.getCurrentCharacter().getVariables().statisticsManager.oresMined.get(level);
 
         ItemStack cashShop = ItemUtil.namedItem(Material.GOLD_INGOT, ChatColor.GOLD + "Cash Shop",null);
         ItemStack quests = ItemUtil.namedItem(Material.BOOK, ChatColor.GOLD + "Quest Diary",null);
