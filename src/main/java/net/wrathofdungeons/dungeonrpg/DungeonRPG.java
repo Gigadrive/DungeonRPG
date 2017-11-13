@@ -810,12 +810,13 @@ public class DungeonRPG extends JavaPlugin {
                                 u.barTimer--;
                             } else if(u.barTimer == 1){
                                 u.barTimer = 0;
-                                BarUtil.removeBar(p);
+                                u.updateLevelBar();
                             }
                         } else {
                             if(u.barTimer >= 1){
                                 u.barTimer = 0;
-                                BarUtil.removeBar(p);
+                                p.setExp(0f);
+                                p.setLevel(0);
                             }
                         }
                     }

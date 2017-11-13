@@ -67,15 +67,11 @@ public class ProfessionProgress {
             u.barTimer = 5;
             double neededExp = FormularUtils.getNeededProfessionEXP(getProfession(),getLevel()+1);
             int xp = ((Double)((getExp()/neededExp*100))).intValue();
-            String text = ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + getProfession().getName() + ": " + ChatColor.YELLOW + xp + "%";
+            //String text = ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + getProfession().getName() + ": " + ChatColor.YELLOW + xp + "%";
             float percent = (float)((double)(getExp()/neededExp));
 
-            if(BarUtil.hasBar(p)){
-                BarUtil.updateHealth(p,percent);
-                BarUtil.updateText(p,text);
-            } else {
-                BarUtil.setBar(p,text,percent);
-            }
+            p.setExp(percent);
+            p.setLevel(getLevel());
         }
     }
 
