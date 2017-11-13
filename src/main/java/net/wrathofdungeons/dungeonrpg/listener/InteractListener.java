@@ -304,35 +304,31 @@ public class InteractListener implements Listener {
                                 if(u.getCurrentCharacter().getLevel() >= item.getData().getNeededLevel()){
                                     if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() >= item.getData().getNeededBlacksmithingLevel()){
                                         if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() >= item.getData().getNeededCraftingLevel()){
-                                            if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() >= item.getData().getNeededPotionMakingLevel()){
-                                                if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() >= item.getData().getNeededMiningLevel()){
-                                                    if(!u.isInFoodCooldown()){
-                                                        if(u.getHP() < u.getMaxHP()){
-                                                            u.consumeCurrentItem(1);
-                                                            u.addHP(item.getData().getFoodRegeneration());
+                                            if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() >= item.getData().getNeededMiningLevel()){
+                                                if(!u.isInFoodCooldown()){
+                                                    if(u.getHP() < u.getMaxHP()){
+                                                        u.consumeCurrentItem(1);
+                                                        u.addHP(item.getData().getFoodRegeneration());
 
-                                                            p.playSound(p.getEyeLocation(),Sound.EAT,1f,1f);
-                                                            ParticleEffect.HEART.display(0.005f,0.005f,0.005f,0.005f,30,p.getEyeLocation(),600);
+                                                        p.playSound(p.getEyeLocation(),Sound.EAT,1f,1f);
+                                                        ParticleEffect.HEART.display(0.005f,0.005f,0.005f,0.005f,30,p.getEyeLocation(),600);
 
-                                                            if(item.getData().getFoodDelayInTicks() > 0){
-                                                                u.setFoodCooldown(true);
+                                                        if(item.getData().getFoodDelayInTicks() > 0){
+                                                            u.setFoodCooldown(true);
 
-                                                                new BukkitRunnable(){
-                                                                    @Override
-                                                                    public void run() {
-                                                                        u.setFoodCooldown(false);
-                                                                    }
-                                                                }.runTaskLater(DungeonRPG.getInstance(),item.getData().getFoodDelayInTicks());
-                                                            }
+                                                            new BukkitRunnable(){
+                                                                @Override
+                                                                public void run() {
+                                                                    u.setFoodCooldown(false);
+                                                                }
+                                                            }.runTaskLater(DungeonRPG.getInstance(),item.getData().getFoodDelayInTicks());
                                                         }
-                                                    } else {
-                                                        p.sendMessage(ChatColor.RED + "Please wait a little while before using that item again.");
                                                     }
                                                 } else {
-                                                    p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
+                                                    p.sendMessage(ChatColor.RED + "Please wait a little while before using that item again.");
                                                 }
                                             } else {
-                                                p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
+                                                p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
                                             }
                                         } else {
                                             p.sendMessage(ChatColor.DARK_RED + "This item is for Crafting level " + item.getData().getNeededCraftingLevel() + "+ only.");
@@ -372,12 +368,6 @@ public class InteractListener implements Listener {
                             return;
                         }
 
-                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() < item.getData().getNeededPotionMakingLevel()){
-                            p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
-                            e.setCancelled(true);
-                            return;
-                        }
-
                         if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() < item.getData().getNeededMiningLevel()){
                             p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
                             e.setCancelled(true);
@@ -404,12 +394,6 @@ public class InteractListener implements Listener {
 
                         if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() < item.getData().getNeededCraftingLevel()){
                             p.sendMessage(ChatColor.DARK_RED + "This item is for Crafting level " + item.getData().getNeededCraftingLevel() + "+ only.");
-                            e.setCancelled(true);
-                            return;
-                        }
-
-                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() < item.getData().getNeededPotionMakingLevel()){
-                            p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
                             e.setCancelled(true);
                             return;
                         }
@@ -444,12 +428,6 @@ public class InteractListener implements Listener {
                             return;
                         }
 
-                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() < item.getData().getNeededPotionMakingLevel()){
-                            p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
-                            e.setCancelled(true);
-                            return;
-                        }
-
                         if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() < item.getData().getNeededMiningLevel()){
                             p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
                             e.setCancelled(true);
@@ -480,12 +458,6 @@ public class InteractListener implements Listener {
                             return;
                         }
 
-                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() < item.getData().getNeededPotionMakingLevel()){
-                            p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
-                            e.setCancelled(true);
-                            return;
-                        }
-
                         if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() < item.getData().getNeededMiningLevel()){
                             p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
                             e.setCancelled(true);
@@ -506,12 +478,6 @@ public class InteractListener implements Listener {
 
                         if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() < item.getData().getNeededCraftingLevel()){
                             p.sendMessage(ChatColor.DARK_RED + "This item is for Crafting level " + item.getData().getNeededCraftingLevel() + "+ only.");
-                            e.setCancelled(true);
-                            return;
-                        }
-
-                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() < item.getData().getNeededPotionMakingLevel()){
-                            p.sendMessage(ChatColor.DARK_RED + "This item is for Potion Making level " + item.getData().getNeededPotionMakingLevel() + "+ only.");
                             e.setCancelled(true);
                             return;
                         }

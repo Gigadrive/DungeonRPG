@@ -47,7 +47,7 @@ public class Guild {
     public Guild(int id){
         if(STORAGE.containsKey(id)) return;
 
-        Gson gson = new Gson();
+        Gson gson = DungeonAPI.GSON;
         this.id = id;
         this.invitedPlayers = new ArrayList<Player>();
 
@@ -188,7 +188,7 @@ public class Guild {
 
     public void reloadMembers(){
         try {
-            Gson gson = new Gson();
+            Gson gson = DungeonAPI.GSON;
 
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `guilds` WHERE `id` = ?");
             ps.setInt(1,getId());
@@ -222,7 +222,7 @@ public class Guild {
 
     public void saveMembers(){
         try {
-            Gson gson = new Gson();
+            Gson gson = DungeonAPI.GSON;
 
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `guilds` SET `members` = ? WHERE `id` = ?");
             ps.setString(1,gson.toJson(getMembers()));

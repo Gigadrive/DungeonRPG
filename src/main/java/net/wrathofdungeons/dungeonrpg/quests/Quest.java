@@ -85,7 +85,7 @@ public class Quest {
 
     public Quest(int id){
         this.id = id;
-        Gson gson = new Gson();
+        Gson gson = DungeonAPI.GSON;
 
         try {
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `quests` WHERE `id` = ?");
@@ -226,7 +226,7 @@ public class Quest {
             DungeonAPI.async(() -> saveData(false));
         } else {
             try {
-                Gson gson = new Gson();
+                Gson gson = DungeonAPI.GSON;
 
                 PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `quests` SET `name` = ?, `requiredLevel` = ?, `requiredQuests` = ?, `stages` = ?, `rewards.goldenNuggets` = ?, `rewards.exp` = ?, `rewards.items` = ?, `giverNpc` = ? WHERE `id` = ?");
                 ps.setString(1,getName());

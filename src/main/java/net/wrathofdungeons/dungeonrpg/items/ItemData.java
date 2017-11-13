@@ -63,7 +63,6 @@ public class ItemData {
     private RPGClass neededClass;
     private int neededBlacksmithingLevel;
     private int neededCraftingLevel;
-    private int neededPotionMakingLevel;
     private int neededMiningLevel;
 
     private boolean untradeable;
@@ -77,7 +76,7 @@ public class ItemData {
     }
 
     public ItemData(int id){
-        Gson gson = new Gson();
+        Gson gson = DungeonAPI.GSON;
 
         try {
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `items` WHERE `id` = ?");
@@ -116,7 +115,6 @@ public class ItemData {
                 this.neededClass = RPGClass.valueOf(rs.getString("neededClass"));
                 this.neededBlacksmithingLevel = rs.getInt("neededBlacksmithingLevel");
                 this.neededCraftingLevel = rs.getInt("neededCraftingLevel");
-                this.neededPotionMakingLevel = rs.getInt("neededPotionMakingLevel");
                 this.neededMiningLevel = rs.getInt("neededMiningLevel");
 
                 this.untradeable = rs.getBoolean("untradeable");
@@ -240,10 +238,6 @@ public class ItemData {
 
     public int getNeededCraftingLevel() {
         return neededCraftingLevel;
-    }
-
-    public int getNeededPotionMakingLevel() {
-        return neededPotionMakingLevel;
     }
 
     public int getNeededMiningLevel() {

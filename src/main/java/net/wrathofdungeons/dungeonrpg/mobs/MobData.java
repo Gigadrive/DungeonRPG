@@ -89,7 +89,7 @@ public class MobData {
 
     public MobData(int id){
         this.id = id;
-        Gson gson = new Gson();
+        Gson gson = DungeonAPI.GSON;
 
         try {
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `mobs` WHERE `id` = ?");

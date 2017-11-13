@@ -6,6 +6,7 @@ import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import net.minecraft.server.v1_8_R3.NBTTagInt;
 import net.minecraft.server.v1_8_R3.NBTTagList;
 import net.minecraft.server.v1_8_R3.NBTTagString;
+import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ChatIcons;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
@@ -239,8 +240,6 @@ public class CustomItem {
                 return false;
             } else if(getData().getNeededCraftingLevel() > u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel()){
                 return false;
-            } else if(getData().getNeededPotionMakingLevel() > u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel()){
-                return false;
             } else if(getData().getNeededMiningLevel() > u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel()){
                 return false;
             } else {
@@ -308,7 +307,6 @@ public class CustomItem {
             if(getData().getNeededLevel() > 0) sellprice += getData().getNeededLevel()*1.5;
             if(getData().getNeededBlacksmithingLevel() > 0) sellprice += getData().getNeededBlacksmithingLevel()*1.5;
             if(getData().getNeededCraftingLevel() > 0) sellprice += getData().getNeededCraftingLevel()*1.5;
-            if(getData().getNeededPotionMakingLevel() > 0) sellprice += getData().getNeededPotionMakingLevel()*1.5;
             if(getData().getNeededMiningLevel() > 0) sellprice += getData().getNeededMiningLevel()*1.5;
 
             if(sellprice < 1) sellprice = 1;
@@ -462,15 +460,6 @@ public class CustomItem {
                         }
                     }
 
-                    b = getData().getNeededPotionMakingLevel();
-                    if(b > 0){
-                        if(character.getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() >= b){
-                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Potion Making Level: " + b);
-                        } else {
-                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Potion Making Level: " + b);
-                        }
-                    }
-
                     b = getData().getNeededMiningLevel();
                     if(b > 0){
                         if(character.getVariables().getProfessionProgress(Profession.MINING).getLevel() >= b){
@@ -577,15 +566,6 @@ public class CustomItem {
                             iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Crafting Level: " + b);
                         } else {
                             iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Crafting Level: " + b);
-                        }
-                    }
-
-                    b = getData().getNeededPotionMakingLevel();
-                    if(b > 0){
-                        if(character.getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() >= b){
-                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Potion Making Level: " + b);
-                        } else {
-                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Potion Making Level: " + b);
                         }
                     }
 
@@ -699,15 +679,6 @@ public class CustomItem {
                         }
                     }
 
-                    b = getData().getNeededPotionMakingLevel();
-                    if(b > 0){
-                        if(character.getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() >= b){
-                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Potion Making Level: " + b);
-                        } else {
-                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Potion Making Level: " + b);
-                        }
-                    }
-
                     b = getData().getNeededMiningLevel();
                     if(b > 0){
                         if(character.getVariables().getProfessionProgress(Profession.MINING).getLevel() >= b){
@@ -791,15 +762,6 @@ public class CustomItem {
                             iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Crafting Level: " + b);
                         } else {
                             iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Crafting Level: " + b);
-                        }
-                    }
-
-                    b = getData().getNeededPotionMakingLevel();
-                    if(b > 0){
-                        if(character.getVariables().getProfessionProgress(Profession.POTION_MAKING).getLevel() >= b){
-                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Potion Making Level: " + b);
-                        } else {
-                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Potion Making Level: " + b);
                         }
                     }
 
@@ -913,7 +875,7 @@ public class CustomItem {
     }
 
     public static CustomItem fromString(String s){
-        Gson gson = new Gson();
+        Gson gson = DungeonAPI.GSON;
         CustomItem i = gson.fromJson(s,CustomItem.class);
         return i;
     }
@@ -923,7 +885,7 @@ public class CustomItem {
     }
 
     public String toString(){
-        Gson gson = new Gson();
+        Gson gson = DungeonAPI.GSON;
         return gson.toJson(this);
     }
 }

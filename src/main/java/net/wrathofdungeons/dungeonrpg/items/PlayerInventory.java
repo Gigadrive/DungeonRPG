@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.items;
 
 import com.google.gson.Gson;
+import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonrpg.user.Character;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
@@ -115,7 +116,7 @@ public class PlayerInventory {
     }
 
     public static PlayerInventory fromString(String s){
-        Gson gson = new Gson();
+        Gson gson = DungeonAPI.GSON;
         PlayerInventory inv = gson.fromJson(s,PlayerInventory.class);
         return inv;
     }
@@ -176,7 +177,7 @@ public class PlayerInventory {
     }
 
     public String toString(){
-        Gson gson = new Gson();
+        Gson gson = DungeonAPI.GSON;
         return gson.toJson(this);
     }
 }

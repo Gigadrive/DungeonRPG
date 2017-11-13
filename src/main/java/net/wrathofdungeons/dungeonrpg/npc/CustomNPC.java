@@ -136,7 +136,7 @@ public class CustomNPC {
                 this.villagerProfession = Villager.Profession.valueOf(rs.getString("villager.profession"));
                 this.skinID = rs.getInt("player.skin");
                 String offerString = rs.getString("merchant.offers");
-                Gson gson = new Gson();
+                Gson gson = DungeonAPI.GSON;
                 if(offerString != null){
                     this.offers = gson.fromJson(offerString, new TypeToken<ArrayList<MerchantOffer>>(){}.getType());
                 } else {
@@ -580,7 +580,7 @@ public class CustomNPC {
             DungeonAPI.async(() -> saveData(false));
         } else {
             setHasUnsavedData(false);
-            Gson gson = new Gson();
+            Gson gson = DungeonAPI.GSON;
 
             String keyMasterItemString = null;
             String keyMasterLocationString = null;

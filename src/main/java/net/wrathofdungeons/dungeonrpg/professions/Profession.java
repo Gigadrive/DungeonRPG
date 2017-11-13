@@ -3,7 +3,6 @@ package net.wrathofdungeons.dungeonrpg.professions;
 public enum Profession {
     BLACKSMITHING("Blacksmithing",145,0,5,4*64,10),
     CRAFTING("Crafting",58,0,6,6*64,10),
-    POTION_MAKING("Potion Making",373,0,7,8*64,10),
     MINING("Mining",257,0,8,10*64,10);
 
     private String name;

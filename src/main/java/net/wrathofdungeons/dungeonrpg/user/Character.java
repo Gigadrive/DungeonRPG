@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import eu.the5zig.mod.server.api.Stat;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
@@ -52,7 +53,7 @@ public class Character {
 
     public Character(int id, Player p){
         this.id = id;
-        Gson gson = new Gson();
+        Gson gson = DungeonAPI.GSON;
 
         try {
             PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `characters` WHERE `id` = ?");
@@ -488,7 +489,7 @@ public class Character {
             try {
                 this.storedLocation = p.getLocation();
                 this.storedInventory = getConvertedInventory(p);
-                Gson gson = new Gson();
+                Gson gson = DungeonAPI.GSON;
 
                 playtime = getPlaytime();
                 lastPlaytimeSave = new Timestamp(System.currentTimeMillis());

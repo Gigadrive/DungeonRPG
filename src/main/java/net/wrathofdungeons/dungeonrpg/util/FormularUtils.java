@@ -71,8 +71,6 @@ public class FormularUtils {
             return 4*Math.pow(level,2.25)*level+64;
         } else if(profession == Profession.CRAFTING){
             return getNeededProfessionEXP(Profession.BLACKSMITHING,level);
-        } else if(profession == Profession.POTION_MAKING){
-            return getNeededProfessionEXP(Profession.BLACKSMITHING,level);
         } else if(profession == Profession.MINING){
             return getNeededProfessionEXP(Profession.BLACKSMITHING,level);
         } else {

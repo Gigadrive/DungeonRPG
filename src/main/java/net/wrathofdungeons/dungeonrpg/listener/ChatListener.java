@@ -108,7 +108,7 @@ public class ChatListener implements Listener {
 
                                             if(u.getTotalMoneyInInventory() >= 4096*3){
                                                 try {
-                                                    Gson gson = new Gson();
+                                                    Gson gson = DungeonAPI.GSON;
                                                     ArrayList<GuildMember> members = new ArrayList<GuildMember>();
                                                     GuildMember m = new GuildMember();
                                                     m.setUUID(p.getUniqueId());

@@ -71,7 +71,7 @@ public class Region {
                 this.mobLimit = rs.getInt("mobLimit");
                 String locationString = rs.getString("locations");
                 this.active = rs.getBoolean("active");
-                Gson gson = new Gson();
+                Gson gson = DungeonAPI.GSON;
                 if(locationString != null){
                     this.locations = gson.fromJson(locationString, new TypeToken<ArrayList<RegionLocation>>(){}.getType());
                 } else {
