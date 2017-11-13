@@ -3,6 +3,8 @@ package net.wrathofdungeons.dungeonrpg.listener;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
+import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -85,6 +87,8 @@ public class DamageListener implements Listener {
                         }
 
                         CustomEntity cd = CustomEntity.fromEntity((LivingEntity)((Projectile) e.getDamager()).getShooter());
+                        DungeonProjectile data = DungeonRPG.SHOT_PROJECTILE_DATA.containsKey(e.getDamager().getUniqueId().toString()) ? DungeonRPG.SHOT_PROJECTILE_DATA.get(e.getDamager().getUniqueId().toString()) : null;
+                        Skill skill = data != null ? data.getSkill() : null;
 
                         if(cd != null){
                             e.setCancelled(true);
@@ -100,7 +104,7 @@ public class DamageListener implements Listener {
                                     if(u.getCurrentCharacter() != null){
                                         e.setCancelled(true);
                                         e.getDamager().remove();
-                                        DungeonRPG.callPlayerToMobDamage(p,c,true);
+                                        DungeonRPG.callPlayerToMobDamage(p,c,true,skill);
                                     }
                                 }
                             }

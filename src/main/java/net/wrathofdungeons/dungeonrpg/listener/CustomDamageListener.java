@@ -79,16 +79,19 @@ public class CustomDamageListener implements Listener {
                     return;
                 }
 
-                DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,null);
+                DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,e.getSkill());
                 double damage = damageData.getDamage();
-                int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
-                if(hpLeech > 0){
-                    u.addHP(damage*(hpLeech*0.01));
-                }
 
-                int mpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.MP_LEECH);
-                if(mpLeech > 0){
-                    u.addMP(damage*(mpLeech*0.01));
+                if(e.getSkill() == null){
+                    int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
+                    if(hpLeech > 0){
+                        u.addHP(damage*(hpLeech*0.01));
+                    }
+
+                    int mpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.MP_LEECH);
+                    if(mpLeech > 0){
+                        u.addMP(damage*(mpLeech*0.01));
+                    }
                 }
 
                 DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());

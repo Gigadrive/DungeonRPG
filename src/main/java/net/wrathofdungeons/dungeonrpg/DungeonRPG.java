@@ -40,6 +40,7 @@ import net.wrathofdungeons.dungeonrpg.quests.Quest;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
+import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.skill.archer.DartRain;
 import net.wrathofdungeons.dungeonrpg.skill.archer.ExplosionArrow;
@@ -923,12 +924,16 @@ public class DungeonRPG extends JavaPlugin {
     }
 
     public static void callPlayerToMobDamage(Player p, CustomEntity mob, boolean isProjectile){
-        CustomDamageEvent event = new CustomDamageEvent(p,mob,true,isProjectile);
+        callPlayerToMobDamage(p,mob,isProjectile,null);
+    }
+
+    public static void callPlayerToMobDamage(Player p, CustomEntity mob, boolean isProjectile, Skill skill){
+        CustomDamageEvent event = new CustomDamageEvent(p,mob,true,isProjectile,skill);
         Bukkit.getPluginManager().callEvent(event);
     }
 
     public static void callMobToPlayerDamage(CustomEntity mob, Player p, boolean isProjectile){
-        CustomDamageEvent event = new CustomDamageEvent(p,mob,false,isProjectile);
+        CustomDamageEvent event = new CustomDamageEvent(p,mob,false,isProjectile,null);
         Bukkit.getPluginManager().callEvent(event);
     }
 

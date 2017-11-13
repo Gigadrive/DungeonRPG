@@ -50,7 +50,7 @@ public class DartRain implements Skill {
             final int arrowAmount = 6;
 
             values.dartRainArrows = arrowAmount;
-            Skill skill = this;
+            DartRain skill = this;
 
             if(values.dartRainTask == null){
                 values.dartRainTask = new BukkitRunnable(){
