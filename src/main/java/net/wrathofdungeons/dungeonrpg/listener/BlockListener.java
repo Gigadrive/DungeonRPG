@@ -96,7 +96,7 @@ public class BlockListener implements Listener {
                             if(item.getModifiedPickaxeStrength() >= ore.getLevel().getRequiredPickaxeStrength()){
                                 e.getBlock().setType(Material.COBBLESTONE);
                                 ore.setAvailable(false);
-                                ore.timer += Util.randomInteger(5,7)*60;
+                                ore.timer += Util.randomInteger(12,24)*60;
 
                                 int currentValue = 0;
                                 if(u.getCurrentCharacter().getVariables().statisticsManager.oresMined.containsKey(ore.getLevel())){
