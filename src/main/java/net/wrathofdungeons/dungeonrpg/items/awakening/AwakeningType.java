@@ -23,7 +23,7 @@ public enum AwakeningType {
     DODGING(17,"Dodging","DODGE",false,true,-14,+19,AwakeningCategory.WEAPON_ARMOR),
     FORTUNE(18,"Fortune","FOR",false,true,-3,+5,AwakeningCategory.WEAPON_ARMOR),
     ADOCH(19,"Critical Damage","ADOCH",false,true,-24,+34,AwakeningCategory.WEAPON_ARMOR),
-    MINING_SPEED(19,"Mining Speed","MSPEED",true,false,-6,+6,AwakeningCategory.PICKAXE);
+    MINING_SPEED(20,"Mining Speed","MSPEED",true,false,-6,+6,AwakeningCategory.PICKAXE);
 
     private int id;
     private String displayName;
