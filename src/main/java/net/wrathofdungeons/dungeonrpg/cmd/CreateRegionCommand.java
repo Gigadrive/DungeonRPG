@@ -25,6 +25,11 @@ public class CreateRegionCommand extends Command {
     public void execute(Player p, String label, String[] args) {
         GameUser u = GameUser.getUser(p);
 
+        if(!DungeonRPG.isTestServer()){
+            p.sendMessage(ChatColor.RED + "That command is not available on this server.");
+            return;
+        }
+
         if(u.isInSetupMode()){
             if(args.length == 2){
                 if(Util.isValidInteger(args[0]) && Util.isValidInteger(args[1])){

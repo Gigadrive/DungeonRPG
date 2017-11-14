@@ -4,6 +4,7 @@ import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPCType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
@@ -22,6 +23,11 @@ public class CreateNPCCommand extends Command {
     @Override
     public void execute(Player p, String label, String[] args) {
         GameUser u = GameUser.getUser(p);
+
+        if(!DungeonRPG.isTestServer()){
+            p.sendMessage(ChatColor.RED + "That command is not available on this server.");
+            return;
+        }
 
         if(u.isInSetupMode()){
             if(args.length == 1){
