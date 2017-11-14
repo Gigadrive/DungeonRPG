@@ -56,6 +56,7 @@ public class GameMenu {
         },2);
 
         ArrayList<String> statsLore = new ArrayList<String>();
+        boolean b = false;
         for(AwakeningType a : AwakeningType.values()){
             int value = u.getCurrentCharacter().getTotalValue(a);
 
@@ -63,18 +64,24 @@ public class GameMenu {
                 if(value > 0){
                     if(a.mayBePercentage()){
                         statsLore.add(ChatColor.GRAY + a.getDisplayName() + ": " + ChatColor.GREEN + "+" + value + "%");
+                        b = true;
                     } else {
                         statsLore.add(ChatColor.GRAY + a.getDisplayName() + ": " + ChatColor.GREEN + "+" + value);
+                        b = true;
                     }
                 } else {
                     if(a.mayBePercentage()){
                         statsLore.add(ChatColor.GRAY + a.getDisplayName() + ": " + ChatColor.RED + value + "%");
+                        b = true;
                     } else {
                         statsLore.add(ChatColor.GRAY + a.getDisplayName() + ": " + ChatColor.RED + value);
+                        b = true;
                     }
                 }
             }
         }
+
+        if(!b) statsLore.add(ChatColor.GRAY + "(You currently don't have any stat additions)");
 
         ItemMeta sM = statsInfo.getItemMeta();
         sM.setLore(statsLore);
