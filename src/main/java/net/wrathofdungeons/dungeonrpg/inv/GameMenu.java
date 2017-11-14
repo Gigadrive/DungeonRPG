@@ -164,8 +164,8 @@ public class GameMenu {
                     }
                 }
 
-                u.getCurrentCharacter().addStatpoint(type);
-                u.getCurrentCharacter().reduceStatpointsLeft(1);
+                u.getCurrentCharacter().addStatpoints(type,toAdd);
+                u.getCurrentCharacter().reduceStatpointsLeft(toAdd);
                 p.closeInventory();
                 openFor(p);
                 p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP,1f,2f);
