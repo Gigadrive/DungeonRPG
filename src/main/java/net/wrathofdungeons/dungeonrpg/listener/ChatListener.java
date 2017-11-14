@@ -67,7 +67,7 @@ public class ChatListener implements Listener {
                                             u.guildCreationName = name;
 
                                             try {
-                                                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `reservedGuildNames` (`name`,`uuid`) VALUES(?,?);");
+                                                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `wrathofdungeons`.`reservedGuildNames` (`name`,`uuid`) VALUES(?,?);");
                                                 ps.setString(1,name);
                                                 ps.setString(2,p.getUniqueId().toString());
                                                 ps.executeUpdate();
@@ -117,7 +117,7 @@ public class ChatListener implements Listener {
                                                     members.add(m);
                                                     String membersSerialized = gson.toJson(members);
 
-                                                    PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `guilds` (`name`,`tag`,`creator`,`members`) VALUES(?,?,?,?);", Statement.RETURN_GENERATED_KEYS);
+                                                    PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `wrathofdungeons`.`guilds` (`name`,`tag`,`creator`,`members`) VALUES(?,?,?,?);", Statement.RETURN_GENERATED_KEYS);
                                                     ps.setString(1,name);
                                                     ps.setString(2,tag);
                                                     ps.setString(3,p.getUniqueId().toString());

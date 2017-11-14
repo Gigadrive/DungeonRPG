@@ -53,7 +53,7 @@ public class Guild {
 
         DungeonAPI.async(() -> {
             try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `guilds` WHERE `id` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `wrathofdungeons`.`guilds` WHERE `id` = ?");
                 ps.setInt(1,id);
 
                 ResultSet rs = ps.executeQuery();
@@ -190,7 +190,7 @@ public class Guild {
         try {
             Gson gson = DungeonAPI.GSON;
 
-            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `guilds` WHERE `id` = ?");
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `wrathofdungeons`.`guilds` WHERE `id` = ?");
             ps.setInt(1,getId());
             ResultSet rs = ps.executeQuery();
 
@@ -224,7 +224,7 @@ public class Guild {
         try {
             Gson gson = DungeonAPI.GSON;
 
-            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `guilds` SET `members` = ? WHERE `id` = ?");
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `wrathofdungeons`.`guilds` SET `members` = ? WHERE `id` = ?");
             ps.setString(1,gson.toJson(getMembers()));
             ps.setInt(2,getId());
             ps.executeUpdate();

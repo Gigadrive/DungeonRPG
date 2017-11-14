@@ -22,7 +22,7 @@ public class GuildUtil {
         boolean b = true;
 
         try {
-            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `guilds` WHERE `name` = ?");
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `wrathofdungeons`.`guilds` WHERE `name` = ?");
             ps.setString(1,name);
             ResultSet rs = ps.executeQuery();
 
@@ -40,7 +40,7 @@ public class GuildUtil {
         boolean b = true;
 
         try {
-            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `reservedGuildNames` WHERE `name` = ?");
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `wrathofdungeons`.`reservedGuildNames` WHERE `name` = ?");
             ps.setString(1,name);
             ResultSet rs = ps.executeQuery();
 
@@ -68,7 +68,7 @@ public class GuildUtil {
         boolean b = true;
 
         try {
-            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `guilds` WHERE `tag` = ?");
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `wrathofdungeons`.`guilds` WHERE `tag` = ?");
             ps.setString(1,tag);
             ResultSet rs = ps.executeQuery();
 
@@ -89,7 +89,7 @@ public class GuildUtil {
     public static void releaseReservedName(String name){
         DungeonAPI.async(() -> {
             try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("DELETE FROM `reservedGuildNames` WHERE `name` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("DELETE FROM `wrathofdungeons`.`reservedGuildNames` WHERE `name` = ?");
                 ps.setString(1,name);
                 ps.executeUpdate();
                 ps.close();
@@ -124,7 +124,7 @@ public class GuildUtil {
             Guild g = null;
 
             try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `users` WHERE `uuid` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `wrathofdungeons`.`users` WHERE `uuid` = ?");
                 ps.setString(1,p.getUniqueId().toString());
 
                 ResultSet rs = ps.executeQuery();

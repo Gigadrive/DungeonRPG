@@ -63,7 +63,7 @@ public class GameUser extends User {
     public static HashMap<Player,GameUser> TEMP = new HashMap<Player,GameUser>();
 
     public static GameUser getUser(Player p){
-        if(User.isLoaded(p)){
+        if(isLoaded(p)){
             return ((GameUser)User.STORAGE.get(p));
         } else {
             return null;
@@ -76,7 +76,7 @@ public class GameUser extends User {
             return;
         }
 
-        if(!User.isLoaded(p)){
+        if(!isLoaded(p)){
             new GameUser(p);
         }
     }
