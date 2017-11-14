@@ -973,7 +973,7 @@ public class CustomEntity {
             if(npc != null){
                 npc.destroy();
             } else {
-                if(!DungeonRPG.ALLOW_MOB_DEATH_ANIMATION) bukkitEntity.remove();
+                bukkitEntity.remove();
                 bukkitEntity = null;
             }
         }
