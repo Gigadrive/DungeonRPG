@@ -438,7 +438,7 @@ public class Character {
         if(p.getInventory().getLeggings() != null && CustomItem.fromItemStack(p.getInventory().getLeggings()) != null && CustomItem.fromItemStack(p.getInventory().getLeggings()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getLeggings()));
         if(p.getInventory().getBoots() != null && CustomItem.fromItemStack(p.getInventory().getBoots()) != null && CustomItem.fromItemStack(p.getInventory().getBoots()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getBoots()));
 
-        if(CustomItem.fromItemStack(p.getItemInHand()) != null && CustomItem.fromItemStack(p.getItemInHand()).getData().getId() == 5){
+        if(CustomItem.fromItemStack(p.getItemInHand()) != null && !CustomItem.fromItemStack(p.getItemInHand()).isMatchingWeapon(getRpgClass())){
             for(int i = 0; i < 8; i++){
                 CustomItem item = CustomItem.fromItemStack(p.getInventory().getItem(i));
 
