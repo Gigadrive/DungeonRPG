@@ -101,11 +101,11 @@ public class GameMenu {
         profile.setItemMeta(m);
 
         inv.withItem(22,profile);
-        inv.withItem(29, b(u,StatPointType.STRENGTH,"Increases all damage dealt."),((player, action, item) -> c(p,StatPointType.STRENGTH)), ClickType.LEFT);
-        inv.withItem(30,b(u,StatPointType.STAMINA,"Increases total health."),((player, action, item) -> c(p,StatPointType.STAMINA)), ClickType.LEFT);
-        inv.withItem(31,b(u,StatPointType.INTELLIGENCE,"Increases mana regeneration."),((player, action, item) -> c(p,StatPointType.INTELLIGENCE)), ClickType.LEFT);
-        inv.withItem(32,b(u,StatPointType.DEXTERITY,"Increases the chance to do critical hits."),((player, action, item) -> c(p,StatPointType.DEXTERITY)), ClickType.LEFT);
-        inv.withItem(33,b(u,StatPointType.AGILITY,"Increases the chance to dodge enemy attacks."),((player, action, item) -> c(p,StatPointType.AGILITY)), ClickType.LEFT);
+        inv.withItem(29, b(u,StatPointType.STRENGTH,"Increases all damage dealt."),((player, action, item) -> c(p,StatPointType.STRENGTH,action)), ClickType.LEFT, ClickType.RIGHT);
+        inv.withItem(30,b(u,StatPointType.STAMINA,"Increases total health."),((player, action, item) -> c(p,StatPointType.STAMINA,action)), ClickType.LEFT, ClickType.RIGHT);
+        inv.withItem(31,b(u,StatPointType.INTELLIGENCE,"Increases mana regeneration."),((player, action, item) -> c(p,StatPointType.INTELLIGENCE,action)), ClickType.LEFT, ClickType.RIGHT);
+        inv.withItem(32,b(u,StatPointType.DEXTERITY,"Increases the chance to do critical hits."),((player, action, item) -> c(p,StatPointType.DEXTERITY,action)), ClickType.LEFT, ClickType.RIGHT);
+        inv.withItem(33,b(u,StatPointType.AGILITY,"Increases the chance to dodge enemy attacks."),((player, action, item) -> c(p,StatPointType.AGILITY,action)), ClickType.LEFT, ClickType.RIGHT);
 
         inv.withItem(2,ItemUtil.hideFlags(cashShop),((player, action, item) -> {
             // TODO
@@ -150,11 +150,20 @@ public class GameMenu {
         inv.show(p);
     }
 
-    private static void c(Player p, StatPointType type){
+    private static void c(Player p, StatPointType type, ClickType action){
         GameUser u = GameUser.getUser(p);
 
         if(u.getCurrentCharacter().getStatpointsLeft() > 0){
             if(u.getCurrentCharacter().getStatpointsPure(type) < DungeonRPG.STATPOINTS_LIMIT){
+                int toAdd = 1;
+                if(action == ClickType.RIGHT){
+                    if(u.getCurrentCharacter().getStatpointsLeft() >= 5){
+                        toAdd = 5;
+                    } else {
+                        toAdd = u.getCurrentCharacter().getStatpointsLeft();
+                    }
+                }
+
                 u.getCurrentCharacter().addStatpoint(type);
                 u.getCurrentCharacter().reduceStatpointsLeft(1);
                 p.closeInventory();
@@ -198,6 +207,21 @@ public class GameMenu {
         strengthLore.add(ChatColor.GRAY + "Pure value: " + ChatColor.WHITE + u.getCurrentCharacter().getStatpointsPure(type));
         strengthLore.add(ChatColor.GRAY + "Additional value: " + ChatColor.WHITE + u.getCurrentCharacter().getStatpointsArtificial(type));
         strengthLore.add(ChatColor.GREEN + "Total value: " + ChatColor.YELLOW.toString() + ChatColor.BOLD + u.getCurrentCharacter().getStatpointsTotal(type));
+
+        if(u.getCurrentCharacter().getStatpointsLeft() > 0){
+            strengthLore.add(" ");
+
+            strengthLore.add(ChatColor.DARK_GRAY + "Left-click to add 1 stat point");
+
+            if(u.getCurrentCharacter().getStatpointsLeft() > 1){
+                if(u.getCurrentCharacter().getStatpointsLeft() >= 5){
+                    strengthLore.add(ChatColor.DARK_GRAY + "Right-click to add 5 stat points");
+                } else {
+                    strengthLore.add(ChatColor.DARK_GRAY + "Right-click to add " + u.getCurrentCharacter().getStatpointsLeft() + " stat points");
+                }
+            }
+        }
+
         strengthMeta.setLore(strengthLore);
         strength.setItemMeta(strengthMeta);
         strength = ItemUtil.hideFlags(strength);
