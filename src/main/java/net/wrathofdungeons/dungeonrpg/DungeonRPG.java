@@ -947,6 +947,10 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().callEvent(event);
     }
 
+    public static boolean isTestServer(){
+        return DungeonAPI.getServerName().startsWith("Test-");
+    }
+
     public static String convertComboString(String s){
         switch(s){
             case "LLL": return "Left - Left - Left";

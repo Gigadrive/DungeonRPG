@@ -25,6 +25,11 @@ public class LoadRegionCommand extends Command {
     public void execute(Player p, String label, String[] args) {
         GameUser u = GameUser.getUser(p);
 
+        if(!DungeonRPG.isTestServer()){
+            p.sendMessage(ChatColor.RED + "That command is not available on this server.");
+            return;
+        }
+
         if(u.isInSetupMode()){
             if(DungeonRPG.SETUP_REGION == 0){
                 if(args.length == 1){

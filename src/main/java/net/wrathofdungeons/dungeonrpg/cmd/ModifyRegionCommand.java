@@ -4,6 +4,7 @@ import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.util.Util;
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
@@ -29,6 +30,11 @@ public class ModifyRegionCommand extends Command {
     @Override
     public void execute(Player p, String label, String[] args) {
         GameUser u = GameUser.getUser(p);
+
+        if(!DungeonRPG.isTestServer()){
+            p.sendMessage(ChatColor.RED + "That command is not available on this server.");
+            return;
+        }
 
         if(u.isInSetupMode()){
             if(args.length == 1){
