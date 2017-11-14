@@ -75,7 +75,7 @@ public class DungeonRPG extends JavaPlugin {
     public static final boolean ENABLE_BOWDRAWBACK = true;
     public static final boolean SHOW_HP_IN_ACTION_BAR = false;
     public static final int PLAYER_MOB_LEVEL_DIFFERENCE = 7;
-    public static final int STATPOINTS_LIMIT = 64;
+    public static final int STATPOINTS_LIMIT = 100;
     public static final double PARTY_EXP_RANGE = 50;
     public static final boolean ENABLE_QUESTS = true;
     public static final int QUEST_NPC_TEXT_LINE_DELAY = 4;
