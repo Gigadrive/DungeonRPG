@@ -108,7 +108,7 @@ public class SyncCommand extends Command {
 
                     DungeonAPI.async(() -> {
                         try {
-                            for(Player a : Bukkit.getOnlinePlayers()) a.sendMessage(ChatColor.GRAY + "** " + ChatColor.YELLOW + p.getName() + " started a sync action (" + ChatColor.GREEN + "MAP" + ChatColor.YELLOW + ") " + ChatColor.GRAY + "**");
+                            for(Player a : Bukkit.getOnlinePlayers()) a.sendMessage(ChatColor.GRAY + "** " + ChatColor.YELLOW + p.getName() + " started a sync action (" + ChatColor.GREEN + "PLUGIN" + ChatColor.YELLOW + ") " + ChatColor.GRAY + "**");
 
                             syncFile(p,"/home/wod/wrapper/local/templates/Test/default/plugins/","/home/wod/wrapper/local/templates/Game/default/plugins/");
 
