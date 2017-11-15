@@ -102,6 +102,8 @@ public class SyncCommand extends Command {
                 syncTable(p,"mobs");
             } else if(args[0].equalsIgnoreCase("ores")){
                 syncTable(p,"ores");
+            } else if(args[0].equalsIgnoreCase("npcs")){
+                syncTable(p,"npcs");
             } else if(args[0].equalsIgnoreCase("plugin")){
                 if(!sync){
                     sync = true;
@@ -124,10 +126,10 @@ public class SyncCommand extends Command {
                     p.sendMessage(ChatColor.RED + "There is already a sync running right now.");
                 }
             } else {
-                p.sendMessage(ChatColor.RED + "/" + label + " <map|items|regions|quests|lootchests|mobs|ores|plugin>");
+                p.sendMessage(ChatColor.RED + "/" + label + " <map|items|regions|quests|lootchests|mobs|ores|plugin|npcs>");
             }
         } else {
-            p.sendMessage(ChatColor.RED + "/" + label + " <map|items|regions|quests|lootchests|mobs|ores|plugin>");
+            p.sendMessage(ChatColor.RED + "/" + label + " <map|items|regions|quests|lootchests|mobs|ores|plugin|npcs>");
         }
     }
 }

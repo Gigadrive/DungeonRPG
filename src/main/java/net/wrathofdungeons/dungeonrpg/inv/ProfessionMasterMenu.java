@@ -53,20 +53,19 @@ public class ProfessionMasterMenu {
                     ProfessionProgress progress = u.getCurrentCharacter().getVariables().getProfessionProgress(profession);
                     ItemStack i = new ItemStack(profession.getIcon(),progress.getLevel(),(short)profession.getIconDurability());
                     ItemMeta iM = i.getItemMeta();
-                    iM.setDisplayName(ChatColor.YELLOW + profession.getName());
+                    iM.setDisplayName(ChatColor.GOLD + profession.getName());
                     ArrayList<String> iL = new ArrayList<String>();
                     if(progress.isStarted()){
                         if(profession.getDescription() != null && !profession.getDescription().isEmpty()){
                             for(String s : Util.getWordWrapLore(profession.getDescription())){
-                                iL.add(ChatColor.GRAY + s);
+                                iL.add(ChatColor.YELLOW + s);
                             }
 
                             iL.add(" ");
                         }
 
                         iL.add(ChatColor.GRAY + "Current Level: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getLevel());
-                        iL.add(ChatColor.GRAY + "EXP: ");
-                        iL.add(expBar(u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getExp(), FormularUtils.getNeededProfessionEXP(profession,u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getLevel()+1)) + " " + ChatColor.WHITE + Util.round((u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getExp()/FormularUtils.getNeededProfessionEXP(profession,u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getLevel()+1))*100,2));
+                        iL.add(ChatColor.GRAY + "EXP: " + expBar(u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getExp(), FormularUtils.getNeededProfessionEXP(profession,u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getLevel()+1)) + " " + ChatColor.WHITE + Util.round((u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getExp()/FormularUtils.getNeededProfessionEXP(profession,u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getLevel()+1))*100,2)+ "%");
                     } else {
                         for(String s : Util.getWordWrapLore("You haven't started this profession.")) iL.add(ChatColor.RED + s);
 
