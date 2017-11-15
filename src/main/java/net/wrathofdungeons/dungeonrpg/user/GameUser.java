@@ -1067,6 +1067,10 @@ public class GameUser extends User {
                     p.sendMessage(" ");
                     p.sendMessage(ChatColor.YELLOW + "+2 Stat Points" + ChatColor.GRAY + " [Use them from the Game Menu]");
 
+                    if(getCurrentCharacter().getLevel() == 10 || getCurrentCharacter().getLevel() == 20 || getCurrentCharacter().getLevel() == 30 || getCurrentCharacter().getLevel() == 40 || getCurrentCharacter().getLevel() == 50){
+                        p.sendMessage(ChatColor.YELLOW + "+1 Bank Row" + ChatColor.GRAY + " [" + getCurrentCharacter().getBankRows() + " total]");
+                    }
+
                     for(Quest q : Quest.STORAGE.values()) if(q.getRequiredLevel() == getCurrentCharacter().getLevel()){
                         p.sendMessage(ChatColor.YELLOW + "+ New Quests available!");
                         break;
