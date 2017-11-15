@@ -6,6 +6,7 @@ import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.professions.Profession;
 import net.wrathofdungeons.dungeonrpg.professions.ProfessionProgress;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,6 +20,25 @@ import org.inventivetalent.menubuilder.inventory.InventoryMenuBuilder;
 import java.util.ArrayList;
 
 public class ProfessionMasterMenu {
+    private static String expBar(double xp, double needed){
+        int div = ((Double)((xp/needed)*10)).intValue();
+
+        String text = "";
+        if(div == 10) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "||||||||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 9) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "|||||||||" + ChatColor.DARK_GRAY + "|" + ChatColor.DARK_GREEN + "]";
+        if(div == 8) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "||||||||" + ChatColor.DARK_GRAY + "||" + ChatColor.DARK_GREEN + "]";
+        if(div == 7) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "|||||||" + ChatColor.DARK_GRAY + "|||" + ChatColor.DARK_GREEN + "]";
+        if(div == 6) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "||||||" + ChatColor.DARK_GRAY + "||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 5) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "|||||" + ChatColor.DARK_GRAY + "|||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 4) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "||||" + ChatColor.DARK_GRAY + "||||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 3) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "|||" + ChatColor.DARK_GRAY + "|||||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 2) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "||" + ChatColor.DARK_GRAY + "||||||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 1) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "|" + ChatColor.DARK_GRAY + "|||||||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 0) text = ChatColor.DARK_GREEN + "[" + ChatColor.DARK_GRAY + "||||||||||" + ChatColor.DARK_GREEN + "]";
+
+        return text;
+    }
+
     public static void openFor(Player p){
         if(GameUser.isLoaded(p)){
             GameUser u = GameUser.getUser(p);
@@ -36,7 +56,17 @@ public class ProfessionMasterMenu {
                     iM.setDisplayName(ChatColor.YELLOW + profession.getName());
                     ArrayList<String> iL = new ArrayList<String>();
                     if(progress.isStarted()){
+                        if(profession.getDescription() != null && !profession.getDescription().isEmpty()){
+                            for(String s : Util.getWordWrapLore(profession.getDescription())){
+                                iL.add(ChatColor.GRAY + s);
+                            }
 
+                            iL.add(" ");
+                        }
+
+                        iL.add(ChatColor.GRAY + "Current Level: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getLevel());
+                        iL.add(ChatColor.GRAY + "EXP: ");
+                        iL.add(expBar(u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getExp(), FormularUtils.getNeededProfessionEXP(profession,u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getLevel()+1)) + " " + ChatColor.WHITE + Util.round((u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getExp()/FormularUtils.getNeededProfessionEXP(profession,u.getCurrentCharacter().getVariables().getProfessionProgress(profession).getLevel()+1))*100,2));
                     } else {
                         for(String s : Util.getWordWrapLore("You haven't started this profession.")) iL.add(ChatColor.RED + s);
 
