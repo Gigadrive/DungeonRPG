@@ -12,5 +12,6 @@ public enum ItemCategory {
     MATERIAL,
     COLLECTIBLE,
     QUEST,
-    PICKAXE
+    PICKAXE,
+    MOUNT
 }

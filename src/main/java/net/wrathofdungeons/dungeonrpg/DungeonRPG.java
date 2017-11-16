@@ -79,6 +79,7 @@ public class DungeonRPG extends JavaPlugin {
     public static final double PARTY_EXP_RANGE = 50;
     public static final boolean ENABLE_QUESTS = true;
     public static final int QUEST_NPC_TEXT_LINE_DELAY = 4;
+    public static final boolean STORE_NBT_JSON = true;
 
     public static final int[] CRYSTAL_IDS = new int[]{11,12,13};
     public static final int UPGRADING_STONE = 645;

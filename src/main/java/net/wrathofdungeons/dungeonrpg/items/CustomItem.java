@@ -37,6 +37,7 @@ public class CustomItem {
     private boolean untradeable = false;
     private ArrayList<Awakening> awakenings;
     private int upgradeValue = 0;
+    private MountData mountData = null;
 
     public CustomItem(int data){
         this.dataID = data;
@@ -77,6 +78,20 @@ public class CustomItem {
         this.untradeable = untradeable;
         this.awakenings = new ArrayList<Awakening>();
         this.upgradeValue = upgradeValue;
+
+        if(awakenings != null && awakenings.length > 0){
+            this.awakenings = new ArrayList<Awakening>();
+            this.awakenings.addAll(Arrays.asList(awakenings));
+        }
+    }
+
+    public CustomItem(int data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue, MountData mountData){
+        this.dataID = data;
+        this.amount = amount;
+        this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+        this.upgradeValue = upgradeValue;
+        this.mountData = mountData;
 
         if(awakenings != null && awakenings.length > 0){
             this.awakenings = new ArrayList<Awakening>();
@@ -128,6 +143,19 @@ public class CustomItem {
         }
     }
 
+    public CustomItem(ItemData data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue, MountData mountData){
+        this.dataID = data.getId();
+        this.amount = amount;
+        this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+        this.upgradeValue = upgradeValue;
+        this.mountData = mountData;
+
+        if(awakenings != null && awakenings.length > 0){
+            this.awakenings.addAll(Arrays.asList(awakenings));
+        }
+    }
+
     public ItemData getData() {
         return ItemData.getData(dataID);
     }
@@ -140,29 +168,35 @@ public class CustomItem {
             if(nmsItem != null && nmsItem.hasTag()){
                 NBTTagCompound tag = nmsItem.getTag();
 
-                if(tag.hasKey("dataID")){
-                    int id = tag.getInt("dataID");
-                    boolean untradeable = ItemData.getData(id).isUntradeable();
-                    int upgradeValue = 0;
+                if(DungeonRPG.STORE_NBT_JSON){
+                    if(tag.hasKey("wodItemData")){
+                        return fromString(tag.getString("wodItemData"));
+                    }
+                } else {
+                    if(tag.hasKey("dataID")){
+                        int id = tag.getInt("dataID");
+                        boolean untradeable = ItemData.getData(id).isUntradeable();
+                        int upgradeValue = 0;
 
-                    if(tag.hasKey("untradeable")) untradeable = Util.convertIntegerToBoolean(tag.getInt("untradeable"));
+                        if(tag.hasKey("untradeable")) untradeable = Util.convertIntegerToBoolean(tag.getInt("untradeable"));
 
-                    if(tag.hasKey("upgradeValue")) upgradeValue = tag.getInt("upgradeValue");
+                        if(tag.hasKey("upgradeValue")) upgradeValue = tag.getInt("upgradeValue");
 
-                    if(tag.hasKey("awakenings")){
-                        NBTTagList list = tag.getList("awakenings", NBTTypeID.STRING);
+                        if(tag.hasKey("awakenings")){
+                            NBTTagList list = tag.getList("awakenings", NBTTypeID.STRING);
 
-                        ArrayList<Awakening> awakenings = new ArrayList<Awakening>();
+                            ArrayList<Awakening> awakenings = new ArrayList<Awakening>();
 
-                        for(int j = 0; j < list.size(); j++){
-                            String s = list.getString(j);
+                            for(int j = 0; j < list.size(); j++){
+                                String s = list.getString(j);
 
-                            awakenings.add(Awakening.fromString(s));
+                                awakenings.add(Awakening.fromString(s));
+                            }
+
+                            return new CustomItem(id,i.getAmount(),untradeable,awakenings.toArray(new Awakening[]{}),upgradeValue);
+                        } else {
+                            return new CustomItem(id,i.getAmount(),untradeable,null,upgradeValue);
                         }
-
-                        return new CustomItem(id,i.getAmount(),untradeable,awakenings.toArray(new Awakening[]{}),upgradeValue);
-                    } else {
-                        return new CustomItem(id,i.getAmount(),untradeable,null,upgradeValue);
                     }
                 }
             }
@@ -825,20 +859,25 @@ public class CustomItem {
     public ItemStack assignNBTData(ItemStack i){
         net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(i);
         NBTTagCompound tag = nmsItem.hasTag() ? nmsItem.getTag() : new NBTTagCompound();
-        if(!tag.hasKey("dataID")) tag.set("dataID",new NBTTagInt(getData().getId()));
 
-        if(!tag.hasKey("untradeable")) tag.set("untradeable",new NBTTagInt(Util.convertBooleanToInteger(isUntradeable())));
+        if(DungeonRPG.STORE_NBT_JSON){
+            if(!tag.hasKey("wodItemData")) tag.set("wodItemData",new NBTTagString(toString()));
+        } else {
+            if(!tag.hasKey("dataID")) tag.set("dataID",new NBTTagInt(getData().getId()));
 
-        if(!tag.hasKey("upgradeValue")) tag.set("upgradeValue",new NBTTagInt(getUpgradeValue()));
+            if(!tag.hasKey("untradeable")) tag.set("untradeable",new NBTTagInt(Util.convertBooleanToInteger(isUntradeable())));
 
-        if(hasAwakenings()){
-            if(!tag.hasKey("awakenings")){
-                NBTTagList list = new NBTTagList();
-                for(Awakening a : getAwakenings()){
-                    list.add(new NBTTagString(a.toString()));
+            if(!tag.hasKey("upgradeValue")) tag.set("upgradeValue",new NBTTagInt(getUpgradeValue()));
+
+            if(hasAwakenings()){
+                if(!tag.hasKey("awakenings")){
+                    NBTTagList list = new NBTTagList();
+                    for(Awakening a : getAwakenings()){
+                        list.add(new NBTTagString(a.toString()));
+                    }
+
+                    tag.set("awakenings",list);
                 }
-
-                tag.set("awakenings",list);
             }
         }
 

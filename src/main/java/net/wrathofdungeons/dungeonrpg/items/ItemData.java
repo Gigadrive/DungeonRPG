@@ -53,6 +53,8 @@ public class ItemData {
     private int defMax;
 
     private int pickaxeStrength;
+    private int mountSpeed;
+    private int mountJumpStrength;
 
     private int foodRegeneration;
     private int foodDelay;
@@ -101,6 +103,8 @@ public class ItemData {
                 this.defMax = rs.getInt("def.max");
 
                 this.pickaxeStrength = rs.getInt("pickaxe.strength");
+                this.mountSpeed = rs.getInt("mount.speed");
+                this.mountJumpStrength = rs.getInt("mount.jumpStrength");
 
                 if(rs.getString("additionalStats") != null){
                     this.additionalStats = gson.fromJson(rs.getString("additionalStats"),new TypeToken<ArrayList<Awakening>>(){}.getType());
@@ -180,6 +184,14 @@ public class ItemData {
 
     public int getPickaxeStrength() {
         return pickaxeStrength;
+    }
+
+    public int getMountSpeed() {
+        return mountSpeed;
+    }
+
+    public int getMountJumpStrength() {
+        return mountJumpStrength;
     }
 
     public ArrayList<Awakening> getAdditionalStats() {
