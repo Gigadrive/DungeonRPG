@@ -4,6 +4,7 @@ import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.util.NBTTypeID;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -26,7 +27,37 @@ public class ItemInfoCommand extends Command {
                     NBTTagCompound tag = nmsItem.getTag();
 
                     p.sendMessage(ChatColor.GREEN + "NBT Data:");
-                    for(String s : tag.c()) p.sendMessage(s);
+                    for(String s : tag.c()){
+                        switch(tag.b(s)){
+                            case NBTTypeID.BYTE:
+                                p.sendMessage(ChatColor.GRAY + s + ": " + ChatColor.WHITE + tag.getByte(s));
+                                break;
+                            case NBTTypeID.SHORT:
+                                p.sendMessage(ChatColor.GRAY + s + ": " + ChatColor.WHITE + tag.getShort(s));
+                                break;
+                            case NBTTypeID.INTEGER:
+                                p.sendMessage(ChatColor.GRAY + s + ": " + ChatColor.WHITE + tag.getInt(s));
+                                break;
+                            case NBTTypeID.LONG:
+                                p.sendMessage(ChatColor.GRAY + s + ": " + ChatColor.WHITE + tag.getLong(s));
+                                break;
+                            case NBTTypeID.FLOAT:
+                                p.sendMessage(ChatColor.GRAY + s + ": " + ChatColor.WHITE + tag.getFloat(s));
+                                break;
+                            case NBTTypeID.DOUBLE:
+                                p.sendMessage(ChatColor.GRAY + s + ": " + ChatColor.WHITE + tag.getDouble(s));
+                                break;
+                            case NBTTypeID.BYTE_ARRAY:
+                                p.sendMessage(ChatColor.GRAY + s + ": " + ChatColor.WHITE + tag.getByteArray(s));
+                                break;
+                            case NBTTypeID.STRING:
+                                p.sendMessage(ChatColor.GRAY + s + ": " + ChatColor.WHITE + tag.getString(s));
+                                break;
+                            case NBTTypeID.INTEGER_ARRAY:
+                                p.sendMessage(ChatColor.GRAY + s + ": " + ChatColor.WHITE + tag.getIntArray(s));
+                                break;
+                        }
+                    }
                 }
             } else {
                 p.sendMessage(ChatColor.RED + "Unknown item.");

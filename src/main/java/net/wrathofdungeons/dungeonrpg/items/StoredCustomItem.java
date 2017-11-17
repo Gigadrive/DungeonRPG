@@ -19,7 +19,7 @@ public class StoredCustomItem extends CustomItem {
 
     @Override
     public String toString(){
-        return DungeonAPI.GSON.toJson((CustomItem)this);
+        return DungeonAPI.GSON.toJson((CustomItem)this).replace("\"amount\":" + amount + ",","");
     }
 
     public void update(){

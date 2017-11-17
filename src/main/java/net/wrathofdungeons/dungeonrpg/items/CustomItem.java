@@ -1065,6 +1065,6 @@ public class CustomItem {
 
     public String toString(){
         Gson gson = DungeonAPI.GSON;
-        return gson.toJson(this);
+        return gson.toJson(this).replace("\"amount\":" + amount + ",","");
     }
 }
