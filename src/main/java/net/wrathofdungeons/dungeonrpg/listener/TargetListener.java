@@ -64,9 +64,21 @@ public class TargetListener implements Listener {
                     if(CustomNPC.fromEntity(target) != null){
                         e.setCancelled(true);
                     } else {
-                        if((c.getData().getMobType() == MobType.SUPPORTING || c.getData().getMobType() == MobType.PASSIVE) && target instanceof Player){
-                            e.setCancelled(true);
-                        } else if(m == MobType.NEUTRAL && !c.getDamagers().contains(target)){
+                        if(target instanceof Player){
+                            if(GameUser.isLoaded((Player)target)){
+                                if(GameUser.getUser((Player)target).getCurrentCharacter() == null){
+                                    e.setCancelled(true);
+                                } else {
+                                    if((c.getData().getMobType() == MobType.SUPPORTING || c.getData().getMobType() == MobType.PASSIVE)){
+                                        e.setCancelled(true);
+                                    } else if(m == MobType.NEUTRAL && !c.getDamagers().contains(target)){
+                                        e.setCancelled(true);
+                                    }
+                                }
+                            } else {
+                                e.setCancelled(true);
+                            }
+                        } else {
                             e.setCancelled(true);
                         }
                     }
@@ -86,18 +98,6 @@ public class TargetListener implements Listener {
 
                 if(!e.isCancelled() && !c.getData().getAiSettings().mayDoRandomStroll()){
                     c.setCancelMovement(false);
-                }
-            } else {
-                if(entity instanceof Player){
-                    if(GameUser.isLoaded((Player)entity)){
-                        if(GameUser.getUser((Player)entity).getCurrentCharacter() == null){
-                            e.setCancelled(true);
-                        }
-                    } else {
-                        e.setCancelled(true);
-                    }
-                } else {
-                    e.setCancelled(true);
                 }
             }
         }

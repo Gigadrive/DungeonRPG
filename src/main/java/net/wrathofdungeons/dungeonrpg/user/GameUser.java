@@ -163,7 +163,6 @@ public class GameUser extends User {
         if(currentMountEntity != null || currentMountItemSlot != -1) resetMount();
 
         currentMountEntity = (Horse)p.getWorld().spawnEntity(p.getLocation(),EntityType.HORSE);
-        double divide = 25;
 
         currentMountEntity.setAdult();
         currentMountEntity.setMaxHealth(10);
@@ -172,9 +171,9 @@ public class GameUser extends User {
         currentMountEntity.setVariant(item.getMountData().getHorseVariant());
         currentMountEntity.setStyle(item.getMountData().getHorseStyle());
         currentMountEntity.setColor(item.getMountData().getHorseColor());
-        currentMountEntity.setJumpStrength(item.getData().getMountJumpStrength()/divide);
+        currentMountEntity.setJumpStrength(item.getData().getMountJumpStrength()*0.075);
         currentMountEntity.getInventory().setSaddle(new ItemStack(Material.SADDLE));
-        WorldUtilities.setEntitySpeed(currentMountEntity,item.getData().getMountSpeed()/divide);
+        WorldUtilities.setEntitySpeed(currentMountEntity,item.getData().getMountSpeed()*0.035);
 
         currentMountItemSlot = slot;
         currentMountEntity.setPassenger(p);

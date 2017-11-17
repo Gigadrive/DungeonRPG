@@ -150,6 +150,10 @@ public class Quest {
         return stages;
     }
 
+    public QuestLength getLength(){
+        return QuestLength.fromStageAmount(getStages().length);
+    }
+
     public int getRewardGoldenNuggets() {
         return rewardGoldenNuggets;
     }

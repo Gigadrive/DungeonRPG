@@ -101,7 +101,7 @@ public class GameMenu {
         profile.setItemMeta(m);
 
         inv.withItem(22,profile);
-        inv.withItem(29, b(u,StatPointType.STRENGTH,"Increases all damage dealt."),((player, action, item) -> c(p,StatPointType.STRENGTH,action)), ClickType.LEFT, ClickType.RIGHT);
+        inv.withItem(29,b(u,StatPointType.STRENGTH,"Increases all damage dealt."),((player, action, item) -> c(p,StatPointType.STRENGTH,action)), ClickType.LEFT, ClickType.RIGHT);
         inv.withItem(30,b(u,StatPointType.STAMINA,"Increases total health."),((player, action, item) -> c(p,StatPointType.STAMINA,action)), ClickType.LEFT, ClickType.RIGHT);
         inv.withItem(31,b(u,StatPointType.INTELLIGENCE,"Increases mana regeneration."),((player, action, item) -> c(p,StatPointType.INTELLIGENCE,action)), ClickType.LEFT, ClickType.RIGHT);
         inv.withItem(32,b(u,StatPointType.DEXTERITY,"Increases the chance to do critical hits."),((player, action, item) -> c(p,StatPointType.DEXTERITY,action)), ClickType.LEFT, ClickType.RIGHT);
@@ -112,7 +112,7 @@ public class GameMenu {
         }),ClickType.LEFT);
 
         inv.withItem(4,ItemUtil.hideFlags(quests),((player, action, item) -> {
-            // TODO
+            QuestDiary.openFor(p);
         }),ClickType.LEFT);
 
         inv.withItem(6,ItemUtil.hideFlags(skills),((player, action, item) -> {
