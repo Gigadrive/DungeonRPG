@@ -58,7 +58,8 @@ public class PlayerInventory {
 
         if(inventory != null){
             for(int slot : inventory.keySet()){
-                CustomItem item = inventory.get(slot);
+                StoredCustomItem item = inventory.get(slot);
+                item.update();
 
                 if(slot == 103){
                     p.getInventory().setHelmet(item.build(p));
@@ -76,7 +77,8 @@ public class PlayerInventory {
 
         if(bank != null){
             for(int slot : bank.keySet()){
-                CustomItem item = bank.get(slot);
+                StoredCustomItem item = bank.get(slot);
+                item.update();
 
                 c.getBank().setItem(slot,item.build(p));
             }

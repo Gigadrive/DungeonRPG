@@ -22,5 +22,9 @@ public class StoredCustomItem extends CustomItem {
         return DungeonAPI.GSON.toJson((CustomItem)this);
     }
 
+    public void update(){
+        super.setAmount(amount);
+    }
+
     public int amount;
 }
