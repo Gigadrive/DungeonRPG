@@ -193,6 +193,7 @@ public class Quest {
 
     public void setRewardExp(int rewardExp) {
         this.rewardExp = rewardExp;
+        setHasUnsavedData(true);
     }
 
     public void setRewardItems(StoredCustomItem[] rewardItems) {

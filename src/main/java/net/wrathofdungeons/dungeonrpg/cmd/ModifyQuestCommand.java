@@ -127,8 +127,8 @@ public class ModifyQuestCommand extends Command {
                             p.sendMessage(ChatColor.YELLOW + "      EXP: " + ChatColor.GREEN + quest.getRewardExp());
                             p.sendMessage(ChatColor.YELLOW + "      Items: " + ChatColor.GREEN + quest.getRewardItems().length);
                             if(quest.getRewardItems().length > 0){
-                                for(CustomItem reward : quest.getRewardItems()){
-                                    p.sendMessage(ChatColor.YELLOW + "          " + ChatColor.stripColor(reward.getData().getName()) + ": " + ChatColor.GREEN + reward.getAmount() + "x");
+                                for(StoredCustomItem reward : quest.getRewardItems()){
+                                    p.sendMessage(ChatColor.YELLOW + "          " + ChatColor.stripColor(reward.getData().getName()) + ": " + ChatColor.GREEN + reward.amount + "x");
                                 }
                             }
                         } else if(args[1].equalsIgnoreCase("addstage")){
