@@ -253,7 +253,7 @@ public class InteractListener implements Listener {
                     }
                 }
 
-                if(p.getGameMode() == GameMode.SURVIVAL && e.getAction() == Action.RIGHT_CLICK_BLOCK){
+                if(p.getGameMode() == GameMode.SURVIVAL && e.getAction() == Action.LEFT_CLICK_BLOCK){
                     if(e.getClickedBlock() != null && e.getBlockFace() != null && e.getClickedBlock().getRelative(e.getBlockFace()) != null){
                         if(e.getClickedBlock().getRelative(e.getBlockFace()).getType() == Material.FIRE){
                             e.setCancelled(true);
@@ -339,6 +339,39 @@ public class InteractListener implements Listener {
                                 } else {
                                     p.sendMessage(ChatColor.DARK_RED + "This item is for level " + item.getData().getNeededLevel() + "+ only.");
                                 }
+                            }
+                        } else if(item.getData().getCategory() == ItemCategory.MOUNT){
+                            e.setCancelled(true);
+                            e.setUseInteractedBlock(Event.Result.DENY);
+                            e.setUseItemInHand(Event.Result.DENY);
+
+                            if(item.getMountData() == null) return;
+
+                            if(u.getCurrentCharacter().getLevel() >= item.getData().getNeededLevel()){
+                                if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() >= item.getData().getNeededBlacksmithingLevel()){
+                                    if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() >= item.getData().getNeededCraftingLevel()){
+                                        if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() >= item.getData().getNeededMiningLevel()){
+                                            if(u.currentMountItemSlot > -1 && u.currentMountEntity != null){
+                                                if(p.getInventory().getHeldItemSlot() == u.currentMountItemSlot){
+                                                    u.resetMount();
+                                                } else {
+                                                    u.resetMount();
+                                                    u.spawnMount(item,p.getInventory().getHeldItemSlot());
+                                                }
+                                            } else {
+                                                u.spawnMount(item,p.getInventory().getHeldItemSlot());
+                                            }
+                                        } else {
+                                            p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
+                                        }
+                                    } else {
+                                        p.sendMessage(ChatColor.DARK_RED + "This item is for Crafting level " + item.getData().getNeededCraftingLevel() + "+ only.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.DARK_RED + "This item is for Blacksmithing level " + item.getData().getNeededBlacksmithingLevel() + "+ only.");
+                                }
+                            } else {
+                                p.sendMessage(ChatColor.DARK_RED + "This item is for level " + item.getData().getNeededLevel() + "+ only.");
                             }
                         }
                     }

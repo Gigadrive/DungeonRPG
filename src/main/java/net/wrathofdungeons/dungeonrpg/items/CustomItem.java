@@ -44,6 +44,8 @@ public class CustomItem {
         this.amount = 1;
         this.untradeable = getData().isUntradeable();
         this.awakenings = new ArrayList<Awakening>();
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public CustomItem(int data, int amount){
@@ -51,6 +53,8 @@ public class CustomItem {
         this.amount = amount;
         this.untradeable = getData().isUntradeable();
         this.awakenings = new ArrayList<Awakening>();
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public CustomItem(int data, int amount, boolean untradeable){
@@ -58,6 +62,8 @@ public class CustomItem {
         this.amount = amount;
         this.untradeable = untradeable;
         this.awakenings = new ArrayList<Awakening>();
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public CustomItem(int data, int amount, boolean untradeable, Awakening[] awakenings){
@@ -70,6 +76,8 @@ public class CustomItem {
             this.awakenings = new ArrayList<Awakening>();
             this.awakenings.addAll(Arrays.asList(awakenings));
         }
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public CustomItem(int data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue){
@@ -83,6 +91,8 @@ public class CustomItem {
             this.awakenings = new ArrayList<Awakening>();
             this.awakenings.addAll(Arrays.asList(awakenings));
         }
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public CustomItem(int data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue, MountData mountData){
@@ -97,6 +107,8 @@ public class CustomItem {
             this.awakenings = new ArrayList<Awakening>();
             this.awakenings.addAll(Arrays.asList(awakenings));
         }
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public CustomItem(ItemData data){
@@ -104,6 +116,8 @@ public class CustomItem {
         this.amount = 1;
         this.untradeable = getData().isUntradeable();
         this.awakenings = new ArrayList<Awakening>();
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public CustomItem(ItemData data, int amount){
@@ -111,6 +125,8 @@ public class CustomItem {
         this.amount = amount;
         this.untradeable = getData().isUntradeable();
         this.awakenings = new ArrayList<Awakening>();
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public CustomItem(ItemData data, int amount, boolean untradeable){
@@ -118,6 +134,8 @@ public class CustomItem {
         this.amount = amount;
         this.untradeable = untradeable;
         this.awakenings = new ArrayList<Awakening>();
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public CustomItem(ItemData data, int amount, boolean untradeable, Awakening[] awakenings){
@@ -129,6 +147,8 @@ public class CustomItem {
         if(awakenings != null && awakenings.length > 0){
             this.awakenings.addAll(Arrays.asList(awakenings));
         }
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public CustomItem(ItemData data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue){
@@ -141,6 +161,8 @@ public class CustomItem {
         if(awakenings != null && awakenings.length > 0){
             this.awakenings.addAll(Arrays.asList(awakenings));
         }
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public CustomItem(ItemData data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue, MountData mountData){
@@ -154,6 +176,8 @@ public class CustomItem {
         if(awakenings != null && awakenings.length > 0){
             this.awakenings.addAll(Arrays.asList(awakenings));
         }
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
 
     public ItemData getData() {
@@ -369,6 +393,10 @@ public class CustomItem {
         if(sellprice < 0) sellprice = 1;
 
         return sellprice;
+    }
+
+    public MountData getMountData() {
+        return mountData;
     }
 
     public int getAwakeningPrice(){
@@ -757,13 +785,12 @@ public class CustomItem {
                         iL.add(" ");
                     }
 
-                    // TODO: Add crystal info
                     iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
 
                     if(getData().getDescription() != null) iL.add(" ");
                 } else if(getData().getCategory() == ItemCategory.FOOD){
                     iL.add(" ");
-                    iL.add(ChatColor.GOLD + "Regeneration: " + getData().getFoodRegeneration());
+                    iL.add(ChatColor.YELLOW + "HP Regeneration: " + getData().getFoodRegeneration());
                     iL.add(" ");
                     if(character.getLevel() >= getData().getNeededLevel()){
                         iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
@@ -809,6 +836,112 @@ public class CustomItem {
                     }
 
                     if(getData().getDescription() != null) iL.add(" ");
+                } else if(getData().getCategory() == ItemCategory.MOUNT){
+                    iL.add(" ");
+                    iL.add(ChatColor.YELLOW + "Speed: " + getData().getMountSpeed());
+                    iL.add(ChatColor.YELLOW + "Jump Strength: " + getData().getMountJumpStrength());
+                    for(Awakening a : getData().getAdditionalStats()){
+                        if(a.value > 0){
+                            // IS POSITIVE
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                            }
+                        } else if(a.value == 0){
+                            // IS NEUTRAL (shouldn't really happen)
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                            }
+                        } else {
+                            // IS NEGATIVE
+                            if(a.isPercentage){
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                            } else {
+                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                            }
+                        }
+                    }
+                    iL.add(" ");
+                    if(getData().getNeededLevel() > 0){
+                        if(character.getLevel() >= getData().getNeededLevel()){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
+                        }
+                    }
+
+                    if(getData().getNeededClass() != RPGClass.NONE){
+                        if(character.getRpgClass().matches(getData().getNeededClass())){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Class: " + getData().getNeededClass().getName());
+                        }
+                    }
+
+                    int b = 0;
+
+                    b = getData().getNeededBlacksmithingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Blacksmithing Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Blacksmithing Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededCraftingLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Crafting Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Crafting Level: " + b);
+                        }
+                    }
+
+                    b = getData().getNeededMiningLevel();
+                    if(b > 0){
+                        if(character.getVariables().getProfessionProgress(Profession.MINING).getLevel() >= b){
+                            iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Mining Level: " + b);
+                        } else {
+                            iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Mining Level: " + b);
+                        }
+                    }
+
+                    if(canHoldAwakenings()){
+                        iL.add(" ");
+
+                        if(hasAwakenings()){
+                            for(Awakening a : getAwakenings()){
+                                if(a.value > 0){
+                                    // IS POSITIVE
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                                    }
+                                } else if(a.value == 0){
+                                    // IS NEUTRAL (shouldn't really happen)
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                                    }
+                                } else {
+                                    // IS NEGATIVE
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                                    }
+                                }
+                            }
+                        } else {
+                            iL.add(ChatColor.AQUA + "Awakening available!");
+                        }
+                    }
                 } else if(getData().getCategory() == ItemCategory.MATERIAL){
                     iL.add(ChatColor.BLUE + "Material");
                 } else if(getData().getCategory() == ItemCategory.COLLECTIBLE){

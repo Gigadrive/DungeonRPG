@@ -45,6 +45,8 @@ public class PlayerDropListener implements Listener {
 
                         if(!e.isCancelled() && e.getItemDrop() != null){
                             WorldUtilities.addAssignmentData(e.getItemDrop(),p);
+
+                            if(p.getInventory().getHeldItemSlot() == u.currentMountItemSlot) u.resetMount();
                         }
                     }
                 }

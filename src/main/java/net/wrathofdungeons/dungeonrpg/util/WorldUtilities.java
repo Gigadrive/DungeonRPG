@@ -4,15 +4,22 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
+import net.minecraft.server.v1_8_R3.AttributeInstance;
+import net.minecraft.server.v1_8_R3.AttributeModifier;
+import net.minecraft.server.v1_8_R3.EntityInsentient;
+import net.minecraft.server.v1_8_R3.GenericAttributes;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -88,6 +95,54 @@ public class WorldUtilities {
         if(blocks > 0) a.add(new CustomItem(9,blocks));
 
         return a.toArray(new CustomItem[]{});
+    }
+
+    public static void setEntitySpeed(LivingEntity livingEntity,double speed){
+        if(livingEntity != null){
+            if(livingEntity.getType() == EntityType.PLAYER){
+                ((Player)livingEntity).setWalkSpeed((float)speed);
+            } else {
+                EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)livingEntity).getHandle();
+
+                AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
+
+                double toAdd = speed-getEntitySpeed(livingEntity);
+
+                attributes.b(new AttributeModifier(CustomEntity.movementSpeedUID,"wod movement speed",toAdd, AttributeOperation.ADD));
+            }
+        }
+    }
+
+    public static boolean isMount(Entity entity){
+        for(Player p : Bukkit.getOnlinePlayers()){
+            if(GameUser.isLoaded(p)){
+                GameUser u = GameUser.getUser(p);
+
+                if(u.currentMountEntity == entity) return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static double getEntitySpeed(LivingEntity livingEntity){
+        if(livingEntity != null){
+            EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)livingEntity).getHandle();
+
+            if(nmsEntity != null){
+                AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
+
+                if(attributes != null){
+                    return attributes.getValue();
+                } else {
+                    return 0;
+                }
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
     }
 
     public static void applySkinToNPC(NPC npc, Skin skin){

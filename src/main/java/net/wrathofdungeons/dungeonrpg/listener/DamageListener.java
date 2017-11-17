@@ -6,6 +6,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +16,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public class DamageListener implements Listener {
     @EventHandler
     public void onDamage(EntityDamageEvent e){
+        if(WorldUtilities.isMount(e.getEntity())){
+            e.setCancelled(true);
+            return;
+        }
+
         //System.out.println(e.getCause().toString());
         if(e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK || e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) return;
 

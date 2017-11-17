@@ -4,6 +4,7 @@ import net.wrathofdungeons.dungeonrpg.event.EntityStopTargetEvent;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
+import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -85,6 +86,18 @@ public class TargetListener implements Listener {
 
                 if(!e.isCancelled() && !c.getData().getAiSettings().mayDoRandomStroll()){
                     c.setCancelMovement(false);
+                }
+            } else {
+                if(entity instanceof Player){
+                    if(GameUser.isLoaded((Player)entity)){
+                        if(GameUser.getUser((Player)entity).getCurrentCharacter() == null){
+                            e.setCancelled(true);
+                        }
+                    } else {
+                        e.setCancelled(true);
+                    }
+                } else {
+                    e.setCancelled(true);
                 }
             }
         }

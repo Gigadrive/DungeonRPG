@@ -999,6 +999,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SplitListener(),this);
         Bukkit.getPluginManager().registerEvents(new SwitchItemListener(),this);
         Bukkit.getPluginManager().registerEvents(new TargetListener(),this);
+        Bukkit.getPluginManager().registerEvents(new VehicleExitListener(),this);
         Bukkit.getPluginManager().registerEvents(new WeatherChangeListener(),this);
 
         Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

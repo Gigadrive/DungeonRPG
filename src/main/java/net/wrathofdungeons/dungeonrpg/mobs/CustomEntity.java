@@ -88,11 +88,11 @@ public class CustomEntity {
 
     private ArrayList<Entity> damagers;
 
-    private static final UUID maxHealthUID = UUID.fromString("f8b0a945-2d6a-4bdb-9a6f-59c285bf1e5d");
-    private static final UUID followRangeUID = UUID.fromString("1737400d-3c18-41ba-8314-49a158481e1e");
-    private static final UUID knockbackResistanceUID = UUID.fromString("8742c557-fcd5-4079-a462-b58db99b0f2c");
-    private static final UUID movementSpeedUID = UUID.fromString("206a89dc-ae78-4c4d-b42c-3b31db3f5a7c");
-    private static final UUID attackDamageUID = UUID.fromString("7bbe3bb1-079d-4150-ac6f-669e71550776");
+    public static final UUID maxHealthUID = UUID.fromString("f8b0a945-2d6a-4bdb-9a6f-59c285bf1e5d");
+    public static final UUID followRangeUID = UUID.fromString("1737400d-3c18-41ba-8314-49a158481e1e");
+    public static final UUID knockbackResistanceUID = UUID.fromString("8742c557-fcd5-4079-a462-b58db99b0f2c");
+    public static final UUID movementSpeedUID = UUID.fromString("206a89dc-ae78-4c4d-b42c-3b31db3f5a7c");
+    public static final UUID attackDamageUID = UUID.fromString("7bbe3bb1-079d-4150-ac6f-669e71550776");
 
     private AttributeModifier speedModifier;
     public boolean damaged = false;
@@ -521,23 +521,7 @@ public class CustomEntity {
     }
 
     public double getCurrentSpeedValue(){
-        if(bukkitEntity != null){
-            EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity)bukkitEntity).getHandle();
-
-            if(nmsEntity != null){
-                AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
-
-                if(attributes != null){
-                    return attributes.getValue();
-                } else {
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
-        } else {
-            return 0;
-        }
+        return WorldUtilities.getEntitySpeed(bukkitEntity);
     }
 
     @Deprecated

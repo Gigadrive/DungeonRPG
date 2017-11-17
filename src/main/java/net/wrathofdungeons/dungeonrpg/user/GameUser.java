@@ -25,6 +25,7 @@ import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.party.Party;
 import net.wrathofdungeons.dungeonrpg.party.PartyMember;
@@ -132,12 +133,52 @@ public class GameUser extends User {
     public String guildCreationName = null;
     public String guildCreationTag = null;
 
+    public Horse currentMountEntity = null;
+    public int currentMountItemSlot = -1;
+
     public int barTimer = 0;
 
     public GameUser(Player p){
         super(p);
 
         TEMP.put(p,this);
+    }
+
+    public void resetMount(){
+        resetMount(true);
+    }
+
+    public void resetMount(boolean eject){
+        if(currentMountEntity != null){
+            if(eject && currentMountEntity.getPassenger() != null) currentMountEntity.eject();
+            if(currentMountEntity != null) currentMountEntity.remove();
+        }
+
+        currentMountEntity = null;
+
+        currentMountItemSlot = -1;
+    }
+
+    public void spawnMount(CustomItem item,int slot){
+        if(currentMountEntity != null || currentMountItemSlot != -1) resetMount();
+
+        currentMountEntity = (Horse)p.getWorld().spawnEntity(p.getLocation(),EntityType.HORSE);
+        double divide = 25;
+
+        currentMountEntity.setAdult();
+        currentMountEntity.setMaxHealth(10);
+        currentMountEntity.setHealth(currentMountEntity.getMaxHealth());
+
+        currentMountEntity.setVariant(item.getMountData().getHorseVariant());
+        currentMountEntity.setStyle(item.getMountData().getHorseStyle());
+        currentMountEntity.setColor(item.getMountData().getHorseColor());
+        currentMountEntity.setJumpStrength(item.getData().getMountJumpStrength()/divide);
+        currentMountEntity.getInventory().setSaddle(new ItemStack(Material.SADDLE));
+        WorldUtilities.setEntitySpeed(currentMountEntity,item.getData().getMountSpeed()/divide);
+
+        currentMountItemSlot = slot;
+        currentMountEntity.setPassenger(p);
+        TargetHandler.clearGoals(currentMountEntity);
     }
 
     public boolean isDying() {

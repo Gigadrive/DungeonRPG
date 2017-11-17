@@ -26,6 +26,7 @@ public class PlayerQuitListener implements Listener {
             u.stopMPRegenTask();
             u.stopHPRegenTask();
             u.cancelAllTasks();
+            u.resetMount();
         }
     }
 }

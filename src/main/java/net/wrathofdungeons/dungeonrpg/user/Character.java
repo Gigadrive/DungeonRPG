@@ -525,6 +525,7 @@ public class Character {
                     GameUser.getUser(p).stopMPRegenTask();
                     GameUser.getUser(p).stopHPRegenTask();
                     GameUser.getUser(p).currentCombo = "";
+                    GameUser.getUser(p).resetMount();
                     p.teleport(DungeonRPG.getCharSelLocation());
                     DungeonRPG.updateVanishing();
 

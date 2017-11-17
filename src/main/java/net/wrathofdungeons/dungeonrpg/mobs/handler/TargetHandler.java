@@ -21,6 +21,27 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 public class TargetHandler {
+    public static void clearGoals(LivingEntity entity){
+        if(entity.getType() != EntityType.PLAYER) {
+            EntityInsentient c = (EntityInsentient) (((CraftEntity) entity).getHandle());
+            EntitySlime s = null;
+            if (c instanceof EntitySlime) s = (EntitySlime) c;
+
+            try {
+                Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
+                bField.setAccessible(true);
+                Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
+                cField.setAccessible(true);
+                if (s == null) bField.set(c.goalSelector, new UnsafeList<PathfinderGoalSelector>());
+                bField.set(c.targetSelector, new UnsafeList<PathfinderGoalSelector>());
+                if (s == null) cField.set(c.goalSelector, new UnsafeList<PathfinderGoalSelector>());
+                cField.set(c.targetSelector, new UnsafeList<PathfinderGoalSelector>());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void giveTargets(LivingEntity entity, CustomEntity customEntity){
         if(entity.getType() != EntityType.PLAYER){
             EntityInsentient c = (EntityInsentient) (((CraftEntity)entity).getHandle());
