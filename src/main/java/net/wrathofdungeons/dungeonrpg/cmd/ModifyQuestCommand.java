@@ -6,6 +6,7 @@ import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
+import net.wrathofdungeons.dungeonrpg.items.StoredCustomItem;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.quests.Quest;
@@ -242,16 +243,16 @@ public class ModifyQuestCommand extends Command {
                                 int index = Integer.parseInt(args[2]);
 
                                 if(index < quest.getRewardItems().length && index >= 0){
-                                    ArrayList<CustomItem> items = new ArrayList<CustomItem>();
+                                    ArrayList<StoredCustomItem> items = new ArrayList<StoredCustomItem>();
 
                                     int i = 0;
-                                    for(CustomItem item : quest.getRewardItems()){
+                                    for(StoredCustomItem item : quest.getRewardItems()){
                                         if(i == index) continue;
 
                                         items.add(item);
                                     }
 
-                                    quest.setRewardItems(items.toArray(new CustomItem[]{}));
+                                    quest.setRewardItems(items.toArray(new StoredCustomItem[]{}));
 
                                     p.sendMessage(ChatColor.GREEN + "Updated reward items.");
                                 } else {

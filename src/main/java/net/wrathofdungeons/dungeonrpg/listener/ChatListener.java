@@ -9,6 +9,7 @@ import net.wrathofdungeons.dungeonrpg.guilds.*;
 import net.wrathofdungeons.dungeonrpg.inv.MerchantSetupMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
+import net.wrathofdungeons.dungeonrpg.items.StoredCustomItem;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
@@ -655,10 +656,10 @@ public class ChatListener implements Listener {
                                 }
 
                                 if(ItemData.getData(Integer.parseInt(s[0])) != null){
-                                    ArrayList<CustomItem> items = new ArrayList<CustomItem>();
-                                    if(u.questModifying.getRewardItems() != null) for(CustomItem item : u.questModifying.getRewardItems()) items.add(item);
-                                    items.add(new CustomItem(Integer.parseInt(s[0]),amount));
-                                    u.questModifying.setRewardItems(items.toArray(new CustomItem[]{}));
+                                    ArrayList<StoredCustomItem> items = new ArrayList<StoredCustomItem>();
+                                    if(u.questModifying.getRewardItems() != null) for(StoredCustomItem item : u.questModifying.getRewardItems()) items.add(item);
+                                    items.add(new StoredCustomItem(new CustomItem(Integer.parseInt(s[0])),amount));
+                                    u.questModifying.setRewardItems(items.toArray(new StoredCustomItem[]{}));
 
                                     p.sendMessage(ChatColor.GREEN + "Reward items updated.");
                                 } else {

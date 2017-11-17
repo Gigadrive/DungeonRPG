@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
+import net.wrathofdungeons.dungeonrpg.items.StoredCustomItem;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 
@@ -79,7 +80,7 @@ public class Quest {
     private QuestStage[] stages = new QuestStage[]{};
     private int rewardGoldenNuggets;
     private int rewardExp;
-    private CustomItem[] rewardItems = new CustomItem[]{};
+    private StoredCustomItem[] rewardItems = new StoredCustomItem[]{};
 
     private boolean hasUnsavedData = false;
 
@@ -101,7 +102,7 @@ public class Quest {
                 if(rs.getString("stages") != null && !rs.getString("stages").isEmpty()) this.stages = gson.fromJson(rs.getString("stages"),QuestStage[].class);
                 this.rewardGoldenNuggets = rs.getInt("rewards.goldenNuggets");
                 this.rewardExp = rs.getInt("rewards.exp");
-                if(rs.getString("rewards.items") != null && !rs.getString("rewards.items").isEmpty()) this.rewardItems = gson.fromJson(rs.getString("rewards.items"),CustomItem[].class);
+                if(rs.getString("rewards.items") != null && !rs.getString("rewards.items").isEmpty()) this.rewardItems = gson.fromJson(rs.getString("rewards.items"),StoredCustomItem[].class);
 
                 STORAGE.put(id,this);
             }
@@ -162,7 +163,7 @@ public class Quest {
         return rewardExp;
     }
 
-    public CustomItem[] getRewardItems() {
+    public StoredCustomItem[] getRewardItems() {
         return rewardItems;
     }
 
@@ -194,7 +195,7 @@ public class Quest {
         this.rewardExp = rewardExp;
     }
 
-    public void setRewardItems(CustomItem[] rewardItems) {
+    public void setRewardItems(StoredCustomItem[] rewardItems) {
         this.rewardItems = rewardItems;
         setHasUnsavedData(true);
     }
