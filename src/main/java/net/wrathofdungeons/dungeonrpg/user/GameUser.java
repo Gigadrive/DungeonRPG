@@ -733,6 +733,8 @@ public class GameUser extends User {
                 } else {
                     if(CustomItem.fromItemStack(p.getInventory().getItem(17)) != null && CustomItem.fromItemStack(p.getInventory().getItem(17)).getData().getId() == 6) p.getInventory().setItem(17,new ItemStack(Material.AIR));
                 }
+
+                p.getInventory().setItem(8,new CustomItem(5).build(p));
             } else {
                 if(c.getRpgClass() == RPGClass.ARCHER || c.getRpgClass() == RPGClass.HUNTER || c.getRpgClass() == RPGClass.RANGER){
                     p.getInventory().addItem(new CustomItem(1,1,true).build(p));
