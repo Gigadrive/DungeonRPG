@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 public class CustomItem {
     private int dataID;
-    private int amount = 1;
+    private transient int amount = 1;
     private boolean untradeable = false;
     private ArrayList<Awakening> awakenings;
     private int upgradeValue = 0;
@@ -194,7 +194,10 @@ public class CustomItem {
 
                 if(DungeonRPG.STORE_NBT_JSON){
                     if(tag.hasKey("wodItemData")){
-                        return fromString(tag.getString("wodItemData"));
+                        CustomItem t = fromString(tag.getString("wodItemData"));
+                        t.setAmount(i.getAmount());
+
+                        return t;
                     }
                 } else {
                     if(tag.hasKey("dataID")){
@@ -440,6 +443,10 @@ public class CustomItem {
 
     public int getAmount() {
         return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public ItemStack build(Player p){

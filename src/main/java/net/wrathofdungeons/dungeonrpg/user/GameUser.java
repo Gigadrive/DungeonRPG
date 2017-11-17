@@ -180,6 +180,48 @@ public class GameUser extends User {
         TargetHandler.clearGoals(currentMountEntity);
     }
 
+    /*public boolean canAddToInventory(CustomItem item){
+        if(getEmptySlotsInInventory() == 0){
+            for(ItemStack i : p.getInventory().getContents()){
+                if(CustomItem.fromItemStack(i) != null){
+                    if(CustomItem.fromItemStack(i).isSameItem(item)){
+                        return item.getAmount()+CustomItem.fromItemStack(i).getAmount() <= item.getData().getStackLimit();
+                    }
+                }
+            }
+        } else {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void addItem(CustomItem item){
+        if(canAddToInventory(item)){
+            if(getAmountInInventory(item) > 0){
+                int slot = -1;
+
+                for(ItemStack i : p.getInventory().getContents()){
+                    if(CustomItem.fromItemStack(i) != null){
+                        if(item.isSameItem(CustomItem.fromItemStack(i))){
+                            if(item.getAmount()+CustomItem.fromItemStack(i).getAmount() <= item.getData().getStackLimit()){
+                                slot = WorldUtilities.getSlotFromItemStack(p.getInventory(),i);
+                            }
+                        }
+                    }
+                }
+
+                if(slot > -1){
+                    int newAmount = p.getInventory().getItem(slot).getAmount()+item.getAmount();
+                    p.getInventory().getItem(slot).setAmount(newAmount);
+                    CustomItem.fromItemStack(p.getInventory().getItem(slot)).setAmount(newAmount);
+                }
+            } else {
+                p.getInventory().addItem(item.build(p));
+            }
+        }
+    }*/
+
     public boolean isDying() {
         return dying;
     }
@@ -1159,6 +1201,22 @@ public class GameUser extends User {
 
             if(c != null){
                 if(c.getData().getId() == data.getId()){
+                    i += iStack.getAmount();
+                }
+            }
+        }
+
+        return i;
+    }
+
+    public int getAmountInInventory(CustomItem item){
+        int i = 0;
+
+        for(ItemStack iStack : p.getInventory().getContents()){
+            CustomItem c = CustomItem.fromItemStack(iStack);
+
+            if(c != null){
+                if(c.isSameItem(item)){
                     i += iStack.getAmount();
                 }
             }
