@@ -187,7 +187,7 @@ public class GameUser extends User {
             if(hasFameTitle()) neededLines++;
 
             ChatColor c = getGuild().getRank(p) == GuildRank.LEADER ? ChatColor.YELLOW : ChatColor.WHITE;
-            String guildText = c + getGuild().getName();
+            String guildText = c + getGuild().getName() + ChatColor.GRAY + " [" + getGuild().getTag() + "]";
             String titleText = "";
 
             if(h.size() != neededLines){
