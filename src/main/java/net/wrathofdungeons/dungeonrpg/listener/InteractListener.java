@@ -533,7 +533,7 @@ public class InteractListener implements Listener {
                         e.setCancelled(true);
                         e.setUseInteractedBlock(Event.Result.DENY);
                         e.setUseItemInHand(Event.Result.DENY);
-                        if(e.getClickedBlock().getType() != Material.CHEST && e.getClickedBlock().getType() != Material.ENDER_CHEST) return;
+                        if(e.getClickedBlock().getType() != Material.CHEST && e.getClickedBlock().getType() != Material.ENDER_CHEST && e.getClickedBlock().getType() != Material.WORKBENCH) return;
                     }
 
                     if(e.getClickedBlock().getType() == Material.CHEST){

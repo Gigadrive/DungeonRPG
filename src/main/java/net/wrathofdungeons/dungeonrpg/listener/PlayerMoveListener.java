@@ -28,6 +28,8 @@ public class PlayerMoveListener implements Listener {
             GameUser u = GameUser.getUser(p);
 
             if(u.getCurrentCharacter() != null){
+                u.updateHoloPlate();
+
                 Location from = e.getFrom();
                 Location to = e.getTo();
                 double x = Math.floor(from.getX());

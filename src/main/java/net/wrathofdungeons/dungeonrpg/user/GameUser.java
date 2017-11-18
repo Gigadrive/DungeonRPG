@@ -1,5 +1,8 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.lib.network.ChannelUser;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
@@ -18,6 +21,7 @@ import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.guilds.Guild;
 import net.wrathofdungeons.dungeonrpg.guilds.GuildCreationStatus;
+import net.wrathofdungeons.dungeonrpg.guilds.GuildRank;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
@@ -138,6 +142,10 @@ public class GameUser extends User {
 
     public int barTimer = 0;
 
+    private Hologram plateHologram;
+    private TextLine guildPlate;
+    private TextLine titlePlate;
+
     public GameUser(Player p){
         super(p);
 
@@ -157,6 +165,80 @@ public class GameUser extends User {
         currentMountEntity = null;
 
         currentMountItemSlot = -1;
+    }
+
+    public boolean hasFameTitle(){
+        return false;
+    }
+
+    public void updateHoloPlate(){
+        DungeonAPI.sync(() -> {
+            if(!isInGuild() && !hasFameTitle() || getCurrentCharacter() == null){
+                removeHoloPlate();
+                return;
+            }
+
+            Hologram h = null;
+            if(plateHologram != null) h = plateHologram;
+            if(h == null) h = HologramsAPI.createHologram(DungeonRPG.getInstance(),getSupposedHoloPlateLocation());
+
+            int neededLines = 0;
+            if(isInGuild()) neededLines++;
+            if(hasFameTitle()) neededLines++;
+
+            ChatColor c = getGuild().getRank(p) == GuildRank.LEADER ? ChatColor.YELLOW : ChatColor.WHITE;
+            String guildText = c + getGuild().getName();
+            String titleText = "";
+
+            if(h.size() != neededLines){
+                h.clearLines();
+
+                if(isInGuild()){
+                    guildPlate = h.appendTextLine(guildText);
+                }
+
+                if(hasFameTitle()){
+                    titlePlate = h.appendTextLine(titleText); // TODO: Add fame title plate
+                }
+            } else {
+                if(guildPlate != null){
+                    if(isInGuild()){
+                        guildPlate.setText(guildText);
+                    }
+                }
+
+                if(titlePlate != null){
+                    if(hasFameTitle()){
+                        titlePlate.setText(titleText);
+                    }
+                }
+            }
+
+            h.getVisibilityManager().setVisibleByDefault(true);
+            h.getVisibilityManager().hideTo(p);
+
+            h.teleport(getSupposedHoloPlateLocation());
+
+            plateHologram = h;
+        });
+    }
+
+    public void removeHoloPlate(){
+        if(plateHologram != null){
+            if(!plateHologram.isDeleted()) plateHologram.delete();
+
+            plateHologram = null;
+            guildPlate = null;
+            titlePlate = null;
+        }
+    }
+
+    public Location getSupposedHoloPlateLocation(){
+        if(hasFameTitle() && isInGuild()){
+            return p.getLocation().clone().add(0,2.57,0);
+        } else {
+            return p.getLocation().clone().add(0,2.55,0);
+        }
     }
 
     public void spawnMount(CustomItem item,int slot){

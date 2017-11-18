@@ -884,7 +884,12 @@ public class DungeonRPG extends JavaPlugin {
 
     public static void updateNames(){
         for(Player all : Bukkit.getOnlinePlayers()){
-            if(GameUser.isLoaded(all)) GameUser.getUser(all).updateName();
+            if(GameUser.isLoaded(all)){
+                GameUser u = GameUser.getUser(all);
+
+                u.updateName();
+                u.updateHoloPlate();
+            }
         }
     }
 

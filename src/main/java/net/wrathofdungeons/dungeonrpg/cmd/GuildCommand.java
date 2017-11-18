@@ -250,7 +250,7 @@ public class GuildCommand extends Command {
                                             guild.sendMessage(ChatColor.LIGHT_PURPLE + p.getName() + " has joined the guild.");
                                         });
                                     } else {
-                                        p.sendMessage(ChatColor.RED + "That guild doesn't exist.");
+                                        p.sendMessage(ChatColor.RED + "That guild hasn't invited you.");
                                     }
                                 } else {
                                     p.sendMessage(ChatColor.RED + "That guild doesn't exist.");

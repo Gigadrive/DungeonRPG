@@ -27,6 +27,7 @@ public class PlayerQuitListener implements Listener {
             u.stopHPRegenTask();
             u.cancelAllTasks();
             u.resetMount();
+            u.removeHoloPlate();
         }
     }
 }
