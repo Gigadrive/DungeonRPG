@@ -104,7 +104,8 @@ public class InteractListener implements Listener {
                         String dis = p.getItemInHand().getItemMeta().getDisplayName();
 
                         if(DungeonRPG.SETUP_REGION > 0){
-                            Location loc = e.getClickedBlock().getLocation().clone().add(0,1,0);
+                            Location loc = e.getClickedBlock().getLocation();
+                            if(!p.isSneaking()) loc = e.getClickedBlock().getLocation().clone().add(0,1,0);
 
                             if(e.getClickedBlock() != null && e.getClickedBlock().getType() != null && DungeonRPG.SETUP_ADD_NO_Y.contains(e.getClickedBlock().getType())){
                                 loc = e.getClickedBlock().getLocation();
