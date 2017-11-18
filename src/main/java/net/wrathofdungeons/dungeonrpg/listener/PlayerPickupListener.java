@@ -62,6 +62,20 @@ public class PlayerPickupListener implements Listener {
                                     e.getItem().remove();
                                     p.getInventory().addItem(item.build(p));
                                     u.playItemPickupSound();
+
+                                    for(Quest q : Quest.STORAGE.values()){
+                                        if(u.getCurrentCharacter().getStatus(q) == QuestProgressStatus.STARTED){
+                                            QuestStage stage = q.getStages()[u.getCurrentCharacter().getCurrentStage(q)];
+
+                                            if(stage != null){
+                                                for(QuestObjective o : stage.objectives){
+                                                    if(o.itemToFind == item.getData().getId()){
+                                                        p.sendMessage(ChatColor.GRAY + "[Find " + ChatColor.stripColor(item.getData().getName()) + " " + ChatColor.WHITE + "(" + u.getAmountInInventory(item.getData()) + "/" + o.itemToFindAmount + ")" + ChatColor.GRAY + "]");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
