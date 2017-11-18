@@ -10,7 +10,8 @@ public enum  CustomNPCType {
     DUNGEON_KEY_MASTER(ChatColor.LIGHT_PURPLE,"Dungeon Key Master"),
     GUILD_MASTER(ChatColor.LIGHT_PURPLE,"Guild Master"),
     GUILD_BANK_MANAGER(ChatColor.LIGHT_PURPLE,"Guild Bank Manager"),
-    PROFESSION_MASTER(ChatColor.LIGHT_PURPLE,"Profession Master");
+    PROFESSION_MASTER(ChatColor.LIGHT_PURPLE,"Profession Master"),
+    PET_TAMER(ChatColor.LIGHT_PURPLE,"Pet Tamer");
 
     private ChatColor color;
     private String defaultName;

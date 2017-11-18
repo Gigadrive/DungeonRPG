@@ -39,6 +39,8 @@ public class SaveRegionCommand extends Command {
                         location.getBlock().setType(Material.AIR);
                     }
 
+                    DungeonRPG.initCraftingStations();
+
                     DungeonRPG.SETUP_REGION = 0;
                     p.sendMessage(ChatColor.RED + "Region saved & unloaded.");
                 } else {

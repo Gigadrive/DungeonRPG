@@ -201,6 +201,7 @@ public class Region {
     }
 
     public RegionLocationType getType(Location loc){
+        loc = loc.getBlock().getLocation();
         RegionLocationType type = null;
 
         for(RegionLocation l : getLocations()){
@@ -259,5 +260,11 @@ public class Region {
     public void reload(){
         STORAGE.remove(this);
         new Region(1);
+    }
+
+    public static RegionLocationType getOverallType(Location loc){
+        for(Region r : STORAGE) if(r.getType(loc) != null) return r.getType(loc);
+
+        return null;
     }
 }

@@ -60,6 +60,9 @@ public class LoadRegionCommand extends Command {
                                     case MOB_ACTIVATION_2:
                                         b.setData((byte)13);
                                         break;
+                                    case CRAFTING_STATION:
+                                        b.setData((byte)11);
+                                        break;
                                 }
 
                                 i++;

@@ -1025,6 +1025,7 @@ public class GameUser extends User {
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Activation Setter (1)",null));
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Activation Setter (2)",null));
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Ore Setter",null));
+            p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Crafting Station Setter",null));
         } else {
             lootChestLevel = 0;
             lootChestTier = 0;

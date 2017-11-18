@@ -138,9 +138,13 @@ public class InteractListener implements Listener {
                                         rl.type = MOB_ACTIVATION_2;
                                         region.getLocations().add(rl);
                                         p.sendMessage(ChatColor.GREEN + "Location added!");
+                                    } else if(dis.equals("Crafting Station Setter")){
+                                        rl.type = CRAFTING_STATION;
+                                        region.getLocations().add(rl);
+                                        p.sendMessage(ChatColor.GREEN + "Location added!");
                                     }
 
-                                    DungeonRPG.setLocationIndicator(loc,rl.type);
+                                    if(rl.type != null) DungeonRPG.setLocationIndicator(loc,rl.type);
                                 } else {
                                     p.sendMessage(ChatColor.RED + "That block already holds a location.");
                                 }
@@ -604,6 +608,19 @@ public class InteractListener implements Listener {
                     } else if(e.getClickedBlock().getType() == Material.ENDER_CHEST){
                         if(u.getCurrentCharacter().getBank() != null) p.openInventory(u.getCurrentCharacter().getBank());
                         return;
+                    } else if(e.getClickedBlock().getType() == Material.WORKBENCH){
+                        if(Region.getOverallType(e.getClickedBlock().getLocation()) == CRAFTING_STATION){
+                            if(CustomNPC.READING.contains(p.getName())){
+                                e.setCancelled(true);
+                                return;
+                            }
+
+                            if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).isStarted()){
+                                // TODO: Open crafting menu
+                            } else {
+                                p.sendMessage(ChatColor.DARK_RED + "This crafting station is for Crafting level 1+ only.");
+                            }
+                        }
                     }
                 }
 

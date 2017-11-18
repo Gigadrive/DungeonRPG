@@ -118,6 +118,14 @@ public class DungeonRPG extends JavaPlugin {
         }
     }
 
+    public static void initCraftingStations(){
+        for(Region region : Region.STORAGE){
+            for(RegionLocation l : region.getLocations(RegionLocationType.CRAFTING_STATION)){
+                l.toBukkitLocation().getBlock().setType(Material.WORKBENCH);
+            }
+        }
+    }
+
     public void onEnable(){
         mineskinClient = new MineskinClient();
         instance = this;
@@ -145,6 +153,8 @@ public class DungeonRPG extends JavaPlugin {
         Ore.init();
         reloadBroadcastLines();
         Quest.init();
+
+        initCraftingStations();
 
         SkillStorage s = new SkillStorage();
 
@@ -1061,6 +1071,10 @@ public class DungeonRPG extends JavaPlugin {
             case MOB_ACTIVATION_2:
                 loc.getBlock().setType(Material.WOOL);
                 loc.getBlock().setData((byte)13);
+                break;
+            case CRAFTING_STATION:
+                loc.getBlock().setType(Material.WOOL);
+                loc.getBlock().setData((byte)11);
                 break;
         }
     }
