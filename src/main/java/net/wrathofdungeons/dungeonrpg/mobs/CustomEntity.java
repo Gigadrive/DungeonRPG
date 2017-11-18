@@ -313,7 +313,11 @@ public class CustomEntity {
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL) p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
 
                     final Hologram holo = HologramsAPI.createHologram(DungeonRPG.getInstance(), bukkitEntity.getLocation().clone().add(0,2,0));
+
                     holo.appendTextLine(ChatColor.GOLD + "+" + ((Double)xp).intValue() + " EXP");
+
+                    holo.getVisibilityManager().setVisibleByDefault(false);
+                    holo.getVisibilityManager().showTo(p);
 
                     new BukkitRunnable(){
                         @Override
