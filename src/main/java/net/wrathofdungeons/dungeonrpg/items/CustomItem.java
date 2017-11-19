@@ -1029,6 +1029,10 @@ public class CustomItem {
         return i;
     }
 
+    public CustomItem cloneWithAmount(int amount){
+        return new CustomItem(getData(),amount,isUntradeable(),getAwakenings().toArray(new Awakening[]{}),getUpgradeValue(),getMountData());
+    }
+
     public boolean isSameItem(CustomItem item){
         if(item == this){
             return true;

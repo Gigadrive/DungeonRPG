@@ -125,9 +125,17 @@ public class WorldUtilities {
         return false;
     }
 
-    public static int getSlotFromItemStack(Inventory inventory, org.bukkit.inventory.ItemStack stack){
+    public static int getSlotFromItem(Inventory inventory, org.bukkit.inventory.ItemStack stack){
         for(int i = 0; i < inventory.getSize(); i++){
             if(inventory.getItem(i) == stack) return i;
+        }
+
+        return -1;
+    }
+
+    public static int getSlotFromItem(Inventory inventory, CustomItem item){
+        for(int i = 0; i < inventory.getSize(); i++){
+            if(inventory.getItem(i) != null && CustomItem.fromItemStack(inventory.getItem(i)) != null && CustomItem.fromItemStack(inventory.getItem(i)).isSameItem(item)) return i;
         }
 
         return -1;

@@ -206,7 +206,7 @@ public class InventoryClickListener implements Listener {
                                 // player inventory
 
                                 CustomItem item = CustomItem.fromItemStack(e.getCurrentItem());
-                                if(e.getCurrentItem() != null && e.getClick() == ClickType.RIGHT) item = new CustomItem(CustomItem.fromItemStack(e.getCurrentItem()).getData(),1);
+                                if(e.getCurrentItem() != null && e.getClick() == ClickType.RIGHT) item = CustomItem.fromItemStack(e.getCurrentItem()).cloneWithAmount(1);
 
                                 if(item != null){
                                     int currentOffers = t.isPlayer1(p) ? t.getOffers1().size() : t.getOffers2().size();
