@@ -25,7 +25,7 @@ public class GiveItemCommand extends Command {
                 if(ItemData.getData(id) != null){
                     ItemData data = ItemData.getData(id);
 
-                    if(GameUser.isLoaded(p) && GameUser.getUser(p).getCurrentCharacter() != null){
+                    if(GameUser.isLoaded(p)){
                         p.getInventory().addItem(new CustomItem(data).build(p));
                         p.sendMessage(ChatColor.GREEN + "Success.");
                     } else {
@@ -46,7 +46,7 @@ public class GiveItemCommand extends Command {
                     ItemData data = ItemData.getData(id);
 
                     if(p2 != null){
-                        if(GameUser.isLoaded(p2) && GameUser.getUser(p2).getCurrentCharacter() != null){
+                        if(GameUser.isLoaded(p2)){
                             p2.getInventory().addItem(new CustomItem(data).build(p2));
                             p.sendMessage(ChatColor.GREEN + "Success.");
                         } else {

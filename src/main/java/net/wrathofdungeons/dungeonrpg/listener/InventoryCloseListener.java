@@ -3,8 +3,10 @@ package net.wrathofdungeons.dungeonrpg.listener;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.Trade;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
+import net.wrathofdungeons.dungeonrpg.inv.CraftingMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.lootchests.LootChest;
+import net.wrathofdungeons.dungeonrpg.professions.CraftingRecipe;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.entity.Player;
@@ -52,9 +54,21 @@ public class InventoryCloseListener implements Listener {
                             }
                         }
                     }
-                }
+                } else if(inv.getName().equals("Crafting")){
+                    int[] i = CraftingMenu.CRAFTING_SLOTS;
 
-                if(inv.getName().equals("Trading")){
+                    for(int ii : i){
+                        if(inv.getItem(ii) != null){
+                            if(CustomItem.fromItemStack(inv.getItem(ii)) != null){
+                                if(u.getEmptySlotsInInventory() > 0){
+                                    p.getInventory().addItem(CustomItem.fromItemStack(inv.getItem(ii)).build(p));
+                                } else {
+                                    WorldUtilities.dropItem(p.getLocation(),CustomItem.fromItemStack(inv.getItem(ii)),p);
+                                }
+                            }
+                        }
+                    }
+                } else if(inv.getName().equals("Trading")){
                     if(Trade.getTrade(p) != null){
                         Trade.getTrade(p).cancelTrade();
                     }

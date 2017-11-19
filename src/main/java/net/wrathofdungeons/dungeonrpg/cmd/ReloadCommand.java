@@ -8,6 +8,7 @@ import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
+import net.wrathofdungeons.dungeonrpg.professions.CraftingRecipe;
 import net.wrathofdungeons.dungeonrpg.quests.Quest;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
@@ -124,11 +125,21 @@ public class ReloadCommand extends Command {
 
                     p.sendMessage(ChatColor.GREEN + "Done!");
                 });
+            } else if(mode.equalsIgnoreCase("recipes")){
+                DungeonAPI.async(() -> {
+                    p.sendMessage(ChatColor.GREEN + "Reloading crafting recipes..");
+
+                    p.sendMessage(ChatColor.GREEN + "Loading crafting recipes from database..");
+
+                    CraftingRecipe.init();
+
+                    p.sendMessage(ChatColor.GREEN + "Done!");
+                });
             } else {
-                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests|ores>");
+                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests|ores|recipes>");
             }
         } else {
-            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests|ores>");
+            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests|ores|recipes>");
         }
     }
 }

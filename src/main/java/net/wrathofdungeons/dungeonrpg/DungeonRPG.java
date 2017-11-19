@@ -1,5 +1,7 @@
 package net.wrathofdungeons.dungeonrpg;
 
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.ai.Navigator;
@@ -19,6 +21,7 @@ import net.wrathofdungeons.dungeonrpg.event.CustomDamagePlayerToPlayerEvent;
 import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
 import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
 import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
+import net.wrathofdungeons.dungeonrpg.inv.CraftingMenu;
 import net.wrathofdungeons.dungeonrpg.inv.MerchantSetupMenu;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
@@ -33,6 +36,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.nms.EntityManager;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkillStorage;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
+import net.wrathofdungeons.dungeonrpg.professions.CraftingRecipe;
 import net.wrathofdungeons.dungeonrpg.professions.Ore;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
@@ -118,10 +122,21 @@ public class DungeonRPG extends JavaPlugin {
         }
     }
 
+    private static ArrayList<Hologram> craftingStationHolos = new ArrayList<Hologram>();
+
     public static void initCraftingStations(){
+        for(Hologram h : craftingStationHolos) if(!h.isDeleted()) h.delete();
+        craftingStationHolos.clear();
+
         for(Region region : Region.STORAGE){
             for(RegionLocation l : region.getLocations(RegionLocationType.CRAFTING_STATION)){
                 l.toBukkitLocation().getBlock().setType(Material.WORKBENCH);
+
+                Hologram h = HologramsAPI.createHologram(DungeonRPG.getInstance(),DungeonAPI.getBlockCenter(l.toBukkitLocation()).clone().add(0,2.5,0));
+                h.appendTextLine(ChatColor.AQUA + "Crafting Station");
+                h.appendTextLine(ChatColor.RED + "Requires Crafting Profession");
+
+                craftingStationHolos.add(h);
             }
         }
     }
@@ -153,6 +168,7 @@ public class DungeonRPG extends JavaPlugin {
         Ore.init();
         reloadBroadcastLines();
         Quest.init();
+        CraftingRecipe.init();
 
         initCraftingStations();
 
@@ -990,6 +1006,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ChatListener(),this);
         Bukkit.getPluginManager().registerEvents(new ChunkListener(),this);
         Bukkit.getPluginManager().registerEvents(new CombustListener(),this);
+        Bukkit.getPluginManager().registerEvents(new CraftingMenu(),this);
         Bukkit.getPluginManager().registerEvents(new CraftListener(),this);
         Bukkit.getPluginManager().registerEvents(new CreatureListener(),this);
         Bukkit.getPluginManager().registerEvents(new CustomDamageListener(),this);
@@ -1040,11 +1057,13 @@ public class DungeonRPG extends JavaPlugin {
         new LoadRegionCommand();
         new ModifyNPCCommand();
         new ModifyQuestCommand();
+        new ModifyRecipeCommand();
         new ModifyRegionCommand();
         new PartyCommand();
         new PingCommand();
         new ReloadCommand();
         new SaveNPCsCommand();
+        new SaveRecipesCommand();
         new SaveRegionCommand();
         new SaveQuestsCommand();
         new SetLocationCommand();

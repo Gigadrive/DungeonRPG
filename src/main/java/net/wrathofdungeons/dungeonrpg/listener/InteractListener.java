@@ -12,6 +12,7 @@ import net.wrathofdungeons.dungeonapi.util.PlayerUtilities;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
+import net.wrathofdungeons.dungeonrpg.inv.CraftingMenu;
 import net.wrathofdungeons.dungeonrpg.inv.GameMenu;
 import net.wrathofdungeons.dungeonrpg.inv.InteractionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
@@ -617,7 +618,7 @@ public class InteractListener implements Listener {
                             }
 
                             if(u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).isStarted()){
-                                // TODO: Open crafting menu
+                                CraftingMenu.openFor(p);
                             } else {
                                 p.sendMessage(ChatColor.DARK_RED + "This crafting station is for Crafting level 1+ only.");
                             }

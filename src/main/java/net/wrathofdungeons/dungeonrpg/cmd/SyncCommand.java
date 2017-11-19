@@ -104,6 +104,8 @@ public class SyncCommand extends Command {
                 syncTable(p,"ores");
             } else if(args[0].equalsIgnoreCase("npcs")){
                 syncTable(p,"npcs");
+            } else if(args[0].equalsIgnoreCase("craftingRecipes")){
+                syncTable(p,"craftingRecipes");
             } else if(args[0].equalsIgnoreCase("plugin")){
                 if(!sync){
                     sync = true;
