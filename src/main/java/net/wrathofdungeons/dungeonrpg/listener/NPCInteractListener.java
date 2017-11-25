@@ -12,6 +12,7 @@ import net.wrathofdungeons.dungeonrpg.inv.GuildMasterMenu;
 import net.wrathofdungeons.dungeonrpg.inv.ProfessionMasterMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
+import net.wrathofdungeons.dungeonrpg.items.StoredCustomItem;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPCType;
@@ -167,8 +168,9 @@ public class NPCInteractListener implements Listener {
                                                         }
 
                                                         if(q.getRewardItems().length > 0){
-                                                            for(CustomItem item : q.getRewardItems()){
-                                                                p.sendMessage(ChatColor.GRAY + "+" + item.getAmount() + " " + item.getData().getName());
+                                                            for(StoredCustomItem item : q.getRewardItems()){
+                                                                item.update();
+                                                                p.sendMessage(ChatColor.GRAY + "+" + item.amount + " " + item.getData().getName());
 
                                                                 p.getInventory().addItem(item.build(p));
                                                             }

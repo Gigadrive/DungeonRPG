@@ -14,6 +14,10 @@ import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.items.PlayerInventory;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.quests.*;
+import net.wrathofdungeons.dungeonrpg.skill.ClickComboType;
+import net.wrathofdungeons.dungeonrpg.skill.Skill;
+import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
+import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -74,8 +78,16 @@ public class Character {
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
                 if(rs.getString("variables") != null){
                     this.variables = gson.fromJson(rs.getString("variables"),UserVariables.class);
+
+                    if(this.variables.leftSkillPoints == -1){
+                        this.variables.leftSkillPoints = FormularUtils.calculateSkillPointsForLevel(level);
+                        initSkills();
+                    }
                 } else {
                     this.variables = new UserVariables();
+                    this.variables.leftSkillPoints = 0;
+
+                    initSkills();
                 }
 
                 if(rs.getString("questProgress") != null){
@@ -96,6 +108,25 @@ public class Character {
             MySQLManager.getInstance().closeResources(rs,ps);
         } catch(Exception e){
             e.printStackTrace();
+        }
+    }
+
+    private void initSkills(){
+        Skill firstSkill = null;
+
+        if(getRpgClass().matches(RPGClass.ARCHER)){
+            firstSkill = SkillStorage.getInstance().getSkill("DartRain");
+        } else if(getRpgClass().matches(RPGClass.ASSASSIN)){
+            firstSkill = SkillStorage.getInstance().getSkill("StabbingStorm");
+        } else if(getRpgClass().matches(RPGClass.MAGICIAN)){
+            firstSkill = SkillStorage.getInstance().getSkill("FlameBurst");
+        } else if(getRpgClass().matches(RPGClass.MERCENARY)){
+            firstSkill = SkillStorage.getInstance().getSkill("AxeBlast");
+        }
+
+        if(firstSkill != null){
+            this.variables.setSkillForCombo(ClickComboType.COMBO_1,firstSkill);
+            this.variables.setInvestedSkillPoints(firstSkill,1);
         }
     }
 

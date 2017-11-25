@@ -1211,14 +1211,14 @@ public class GameUser extends User {
     }
 
     public void levelUp(int times){
-        if(getCurrentCharacter() != null){
-            int statpointsGained = 0;
+        final int[] newBankRow = new int[]{10,20,30,40,50};
+        final int[] newSkillPoints = new int[]{5,10,15,20,25,30,35,40,45,50,55,60};
 
+        if(getCurrentCharacter() != null){
             for (int i = 0; i < times; i++) {
                 if(getCurrentCharacter().mayGetEXP()){
                     getCurrentCharacter().setLevel(getCurrentCharacter().getLevel()+1);
                     getCurrentCharacter().addStatpointsLeft(2);
-                    statpointsGained += 2;
 
                     if(getParty() != null){
                         for(PartyMember member : getParty().getMembers()){
@@ -1234,8 +1234,14 @@ public class GameUser extends User {
                     p.sendMessage(" ");
                     p.sendMessage(ChatColor.YELLOW + "+2 Stat Points" + ChatColor.GRAY + " [Use them from the Game Menu]");
 
-                    if(getCurrentCharacter().getLevel() == 10 || getCurrentCharacter().getLevel() == 20 || getCurrentCharacter().getLevel() == 30 || getCurrentCharacter().getLevel() == 40 || getCurrentCharacter().getLevel() == 50){
-                        p.sendMessage(ChatColor.YELLOW + "+1 Bank Row" + ChatColor.GRAY + " [" + getCurrentCharacter().getBankRows() + " total]");
+                    for(int b : newBankRow) if(getCurrentCharacter().getLevel() == b) p.sendMessage(ChatColor.YELLOW + "+1 Bank Row" + ChatColor.GRAY + " [" + getCurrentCharacter().getBankRows() + " total]");
+
+                    for(int b : newSkillPoints) if(getCurrentCharacter().getLevel() == b){
+                        int toAdd = 3;
+                        String d = toAdd == 1 ? "" : "s";
+
+                        p.sendMessage(ChatColor.YELLOW + "+" + toAdd + " Skill Point" + d + ChatColor.GRAY + " [Use it from the Game Menu]");
+                        getCurrentCharacter().getVariables().leftSkillPoints += toAdd;
                     }
 
                     for(Quest q : Quest.STORAGE.values()) if(q.getRequiredLevel() == getCurrentCharacter().getLevel()){
@@ -1244,9 +1250,8 @@ public class GameUser extends User {
                     }
 
                     for(Skill skill : SkillStorage.getInstance().getSkills()){
-                        if(skill.getRPGClass() == getCurrentCharacter().getRpgClass() && skill.getType().getMinLevel() == getCurrentCharacter().getLevel()){
+                        if(skill.getRPGClass() == getCurrentCharacter().getRpgClass() && skill.getMinLevel() == getCurrentCharacter().getLevel()){
                             p.sendMessage(ChatColor.DARK_GREEN + "[New Skill available! " + ChatColor.GREEN + skill.getName() + ChatColor.DARK_GREEN + "]");
-                            p.sendMessage(ChatColor.WHITE + "   Click Combo: " + ChatColor.GRAY + DungeonRPG.convertComboString(skill.getCombo()));
                         }
                     }
 

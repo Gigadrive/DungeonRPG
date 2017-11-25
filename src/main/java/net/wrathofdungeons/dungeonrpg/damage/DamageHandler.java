@@ -15,6 +15,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.archer.DartRain;
 import net.wrathofdungeons.dungeonrpg.skill.archer.ExplosionArrow;
+import net.wrathofdungeons.dungeonrpg.skill.magician.ChargedExplosion;
 import net.wrathofdungeons.dungeonrpg.skill.magician.FlameBurst;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.AxeBlast;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.Shockwave;
@@ -97,7 +98,7 @@ public class DamageHandler {
                     damage.setDamage(damage.getDamage()*3.5);
                 } else if(skill instanceof Stomper){
                     damage.setDamage(damage.getDamage()*3);
-                } else if(skill instanceof LightningStrike){
+                } else if(skill instanceof ChargedExplosion){
                     damage.setDamage(damage.getDamage()*2.5);
                 } else if(skill instanceof Shockwave){
                     damage.setDamage(damage.getDamage()*3.5);
@@ -150,7 +151,7 @@ public class DamageHandler {
                     damage.setDamage(damage.getDamage()*3.5);
                 } else if(skill instanceof Stomper){
                     damage.setDamage(damage.getDamage()*3);
-                } else if(skill instanceof LightningStrike){
+                } else if(skill instanceof ChargedExplosion){
                     damage.setDamage(damage.getDamage()*2.5);
                 } else if(skill instanceof Shockwave){
                     damage.setDamage(damage.getDamage()*3.5);

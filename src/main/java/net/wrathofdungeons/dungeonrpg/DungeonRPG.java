@@ -6,12 +6,8 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_8_R3.EntityMagmaCube;
-import net.minecraft.server.v1_8_R3.EntitySheep;
-import net.minecraft.server.v1_8_R3.EntityZombie;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
-import net.wrathofdungeons.dungeonapi.util.BarUtil;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
@@ -29,11 +25,7 @@ import net.wrathofdungeons.dungeonrpg.lootchests.LootChest;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
-import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
-import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonSheep;
-import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.EntityManager;
-import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkillStorage;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.professions.CraftingRecipe;
@@ -54,7 +46,7 @@ import net.wrathofdungeons.dungeonrpg.skill.assassin.DashAttack;
 import net.wrathofdungeons.dungeonrpg.skill.assassin.StabbingStorm;
 import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
 import net.wrathofdungeons.dungeonrpg.skill.magician.FlameBurst;
-import net.wrathofdungeons.dungeonrpg.skill.magician.LightningStrike;
+import net.wrathofdungeons.dungeonrpg.skill.magician.ChargedExplosion;
 import net.wrathofdungeons.dungeonrpg.skill.magician.MagicCure;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.AxeBlast;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.BlazingAxe;
@@ -187,7 +179,7 @@ public class DungeonRPG extends JavaPlugin {
         // MAGICIAN
         s.addSkill(new FlameBurst());
         s.addSkill(new Blinkpool());
-        s.addSkill(new LightningStrike());
+        s.addSkill(new ChargedExplosion());
         s.addSkill(new MagicCure());
 
         // MERCENARY
@@ -431,7 +423,20 @@ public class DungeonRPG extends JavaPlugin {
                         DungeonProjectileType type = proj.getType();
 
                         if(type == DungeonProjectileType.EXPLOSION_ARROW){
-                            ParticleEffect.VILLAGER_HAPPY.display(0f,0f,0f,0.005f,1,proj.getEntity().getLocation(),600);
+                            if(proj.getRange() == 4){
+                                ParticleEffect.VILLAGER_HAPPY.display(0f,0f,0f,0.005f,5,proj.getEntity().getLocation(),600);
+                            } else if(proj.getRange() == 6){
+                                ParticleEffect.VILLAGER_HAPPY.display(0f,0f,0f,0.005f,5,proj.getEntity().getLocation(),600);
+                            } else if(proj.getRange() == 8){
+                                ParticleEffect.VILLAGER_HAPPY.display(0f,0f,0f,0.005f,5,proj.getEntity().getLocation(),600);
+                                ParticleEffect.FIREWORKS_SPARK.display(0f,0f,0f,0.005f,5,proj.getEntity().getLocation(),600);
+                            } else if(proj.getRange() == 10){
+                                ParticleEffect.VILLAGER_HAPPY.display(0f,0f,0f,0.005f,5,proj.getEntity().getLocation(),600);
+                                ParticleEffect.FIREWORKS_SPARK.display(0f,0f,0f,0.005f,5,proj.getEntity().getLocation(),600);
+                            } else if(proj.getRange() == 12){
+                                ParticleEffect.VILLAGER_HAPPY.display(0f,0f,0f,0.005f,5,proj.getEntity().getLocation(),600);
+                                ParticleEffect.FIREWORKS_SPARK.display(0f,0f,0f,0.005f,5,proj.getEntity().getLocation(),600);
+                            }
                         } else if(type == DungeonProjectileType.MOB_FIREBALL){
                             ParticleEffect.FLAME.display(0.05f,0.05f,0.05f,0.005f,15,proj.getEntity().getLocation(),600);
                             ParticleEffect.SMOKE_NORMAL.display(0.05f,0.05f,0.05f,0.005f,4,proj.getEntity().getLocation(),600);

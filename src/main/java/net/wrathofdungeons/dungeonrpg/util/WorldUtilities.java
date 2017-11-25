@@ -23,6 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.mineskin.data.Skin;
 
 import java.lang.reflect.Method;
@@ -111,6 +112,15 @@ public class WorldUtilities {
                 attributes.b(new AttributeModifier(CustomEntity.movementSpeedUID,"wod movement speed",toAdd, AttributeOperation.ADD));
             }
         }
+    }
+
+    public static Vector rotateVector(Vector vector, double whatAngle) {
+        double sin = Math.sin(whatAngle);
+        double cos = Math.cos(whatAngle);
+        double x = vector.getX() * cos + vector.getZ() * sin;
+        double z = vector.getX() * -sin + vector.getZ() * cos;
+
+        return vector.setX(x).setZ(z);
     }
 
     public static boolean isMount(Entity entity){

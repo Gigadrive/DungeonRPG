@@ -13,7 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,6 +100,21 @@ public class PlayerMoveListener implements Listener {
                 x += .5;
                 z += .5;
                 e.getPlayer().teleport(new Location(from.getWorld(),x,from.getY(),z,from.getYaw(),from.getPitch()));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onSneak(PlayerToggleSneakEvent e){
+        Player p = e.getPlayer();
+
+        if(GameUser.isLoaded(p)){
+            GameUser u = GameUser.getUser(p);
+
+            if(u.getCurrentCharacter() != null){
+                if(e.isSneaking() && u.getSkillValues().stomperActive){
+                    p.setVelocity(new Vector(0,-2.5,0));
+                }
             }
         }
     }

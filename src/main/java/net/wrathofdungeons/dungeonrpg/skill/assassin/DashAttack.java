@@ -1,9 +1,10 @@
 package net.wrathofdungeons.dungeonrpg.skill.assassin;
 
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
-import net.wrathofdungeons.dungeonrpg.skill.SkillType;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
 
 public class DashAttack implements Skill {
     @Override
@@ -12,18 +13,45 @@ public class DashAttack implements Skill {
     }
 
     @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, String> getEffects(int investedSkillPoints) {
+        HashMap<String,String> effects = new HashMap<String, String>();
+
+        return effects;
+    }
+
+    @Override
+    public int getIcon() {
+        return 288;
+    }
+
+    @Override
+    public int getIconDurability() {
+        return 0;
+    }
+
+    @Override
     public RPGClass getRPGClass() {
         return RPGClass.ASSASSIN;
     }
 
     @Override
-    public SkillType getType() {
-        return SkillType.ESCAPING_MOVE;
+    public int getMinLevel() {
+        return 15;
     }
 
     @Override
-    public String getCombo() {
-        return "RRR";
+    public int getMaxInvestingPoints() {
+        return 5;
+    }
+
+    @Override
+    public int getBaseMPCost() {
+        return 2;
     }
 
     @Override

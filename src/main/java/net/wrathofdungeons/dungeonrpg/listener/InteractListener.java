@@ -29,6 +29,7 @@ import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
+import net.wrathofdungeons.dungeonrpg.skill.ClickComboType;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
@@ -866,30 +867,44 @@ public class InteractListener implements Listener {
                             if(u.currentCombo.length() == 3){
                                 Skill toCast = null;
 
-                                for(Skill s : SkillStorage.getInstance().getSkills()){
+                                ClickComboType combo = null;
+
+                                if(u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER)){
+                                    combo = ClickComboType.fromAlternateComboString(u.currentCombo);
+                                } else {
+                                    combo = ClickComboType.fromComboString(u.currentCombo);
+                                }
+
+                                if(combo != null) toCast = u.getCurrentCharacter().getVariables().getSkillFromCombo(combo);
+
+                                /*for(Skill s : SkillStorage.getInstance().getSkills()){
                                     if(s.getRPGClass().matches(u.getCurrentCharacter().getRpgClass())){
                                         if(s.getCombo().equals(u.currentCombo)){
                                             toCast = s;
                                             break;
                                         }
                                     }
-                                }
+                                }*/
 
                                 if(toCast != null){
-                                    if(toCast.getType().getMinLevel() <= u.getCurrentCharacter().getLevel()){
-                                        if(toCast.getType().getManaCost() <= u.getMP()){
+                                    int investedSkillPoints = u.getCurrentCharacter().getVariables().getInvestedSkillPoints(toCast);
+                                    int manaCost = toCast.getBaseMPCost()-Util.randomInteger(0,investedSkillPoints/2);
+                                    if(manaCost < 1) manaCost = 1;
+
+                                    if(toCast.getMinLevel() <= u.getCurrentCharacter().getLevel()){
+                                        if(manaCost <= u.getMP()){
                                             u.ignoreDamageCheck = true;
                                             boolean playAfter = toCast instanceof Blinkpool;
 
                                             if(!playAfter) p.playSound(p.getEyeLocation(),Sound.SUCCESSFUL_HIT,1f,0.5f);
-                                            u.setMP(u.getMP()-toCast.getType().getManaCost());
+                                            u.setMP(u.getMP()-manaCost);
                                             toCast.execute(p);
 
-                                            if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) BountifulAPI.sendActionBar(p,ChatColor.GREEN + toCast.getName() + " " + ChatColor.GRAY + "[-" + toCast.getType().getManaCost() + " MP]");
+                                            if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) BountifulAPI.sendActionBar(p,ChatColor.GREEN + toCast.getName() + " " + ChatColor.GRAY + "[-" + manaCost + " MP]");
 
                                             if(playAfter) p.playSound(p.getEyeLocation(),Sound.SUCCESSFUL_HIT,1f,0.5f);
 
-                                            if(toCast.getType().getMinLevel() == 1){
+                                            if(toCast.getMinLevel() == 1){
                                                 if(!u.getCurrentCharacter().getVariables().hasDoneFirstSkill){
                                                     p.sendMessage(ChatColor.DARK_GREEN + "Great! Remember: You can unlock new skills and upgrade your current ones by leveling up.");
                                                     u.getCurrentCharacter().getVariables().hasDoneFirstSkill = true;
@@ -909,7 +924,13 @@ public class InteractListener implements Listener {
                                         p.sendMessage(ChatColor.RED + "You haven't unlocked that skill yet.");
                                     }
                                 } else {
-                                    p.sendMessage(ChatColor.RED + "That skill could not be found."); // shouldn't happen but print message if something goes wrong
+                                    p.sendMessage(ChatColor.RED + "That skill could not be found.");
+
+                                    if(!u.getCurrentCharacter().getVariables().hasSeenBindSkillInfo){
+                                        p.sendMessage(ChatColor.DARK_RED + "Manage your skills from your Game Menu to bind your skills to specific click combinations.");
+
+                                        u.getCurrentCharacter().getVariables().hasSeenBindSkillInfo = true;
+                                    }
                                 }
 
                                 u.currentCombo = "";

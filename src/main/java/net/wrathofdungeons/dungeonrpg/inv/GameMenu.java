@@ -116,7 +116,7 @@ public class GameMenu {
         }),ClickType.LEFT);
 
         inv.withItem(6,ItemUtil.hideFlags(skills),((player, action, item) -> {
-            // TODO
+            SkillsMenu.openFor(p);
         }),ClickType.LEFT);
 
         inv.withItem(17,ItemUtil.hideFlags(horse),((player, action, item) -> {

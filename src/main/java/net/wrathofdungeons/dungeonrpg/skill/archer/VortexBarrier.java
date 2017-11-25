@@ -7,7 +7,6 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
-import net.wrathofdungeons.dungeonrpg.skill.SkillType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
@@ -20,10 +19,47 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.HashMap;
+
 public class VortexBarrier implements Skill {
     @Override
     public String getName() {
         return "Vortex Barrier";
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, String> getEffects(int investedSkillPoints) {
+        HashMap<String,String> effects = new HashMap<String, String>();
+
+        if(investedSkillPoints == 1){
+            effects.put("Range",String.valueOf(7));
+        } else if(investedSkillPoints == 2){
+            effects.put("Range",String.valueOf(7));
+            effects.put("Buff","Speed I");
+        } else if(investedSkillPoints == 3){
+            effects.put("Range",String.valueOf(8));
+            effects.put("Buff","Speed II");
+        } else if(investedSkillPoints == 4){
+            effects.put("Range",String.valueOf(8));
+            effects.put("Buff","Speed III");
+        }
+
+        return effects;
+    }
+
+    @Override
+    public int getIcon() {
+        return 30;
+    }
+
+    @Override
+    public int getIconDurability() {
+        return 0;
     }
 
     @Override
@@ -32,19 +68,43 @@ public class VortexBarrier implements Skill {
     }
 
     @Override
-    public SkillType getType() {
-        return SkillType.SUPPORTING_SKILL;
+    public int getMinLevel() {
+        return 45;
     }
 
     @Override
-    public String getCombo() {
-        return "LRR";
+    public int getMaxInvestingPoints() {
+        return 4;
+    }
+
+    @Override
+    public int getBaseMPCost() {
+        return 4;
     }
 
     @Override
     public void execute(Player p) {
         GameUser u = GameUser.getUser(p);
         CustomItem weapon = CustomItem.fromItemStack(p.getItemInHand());
+
+        int investedSkillPoints = u.getCurrentCharacter().getVariables().getInvestedSkillPoints(this);
+
+        int range = 7;
+        PotionEffect speed = null;
+        int buffTime = 3*60*20;
+
+        if(investedSkillPoints == 1){
+            range = 7;
+        } else if(investedSkillPoints == 2){
+            range = 7;
+            speed = new PotionEffect(PotionEffectType.SPEED,buffTime,0,true,true);
+        } else if(investedSkillPoints == 3){
+            range = 8;
+            speed = new PotionEffect(PotionEffectType.SPEED,buffTime,1,true,true);
+        } else if(investedSkillPoints == 4){
+            range = 8;
+            speed = new PotionEffect(PotionEffectType.SPEED,buffTime,2,true,true);
+        }
 
         if(weapon != null){
             if(u.getSkillValues().vortexBarrierTask != null){
@@ -53,11 +113,8 @@ public class VortexBarrier implements Skill {
             }
 
             final Location loc = p.getLocation().clone();
-            int range = 7;
 
-            PotionEffect speed = new PotionEffect(PotionEffectType.SPEED,3*60*20,1,true,true);
-
-            if(!p.hasPotionEffect(PotionEffectType.SPEED)){
+            if(speed != null && !p.hasPotionEffect(PotionEffectType.SPEED)){
                 p.addPotionEffect(speed);
                 p.sendMessage(ChatColor.GREEN + p.getName() + " has given you speed.");
             }
@@ -82,7 +139,7 @@ public class VortexBarrier implements Skill {
                                     GameUser u2 = GameUser.getUser(p2);
 
                                     if(u2.getCurrentCharacter() != null){
-                                        if(!p2.hasPotionEffect(PotionEffectType.SPEED)){
+                                        if(speed != null && !p2.hasPotionEffect(PotionEffectType.SPEED)){
                                             p2.addPotionEffect(speed);
                                             p2.sendMessage(ChatColor.GREEN + p.getName() + " has given you speed.");
                                         }

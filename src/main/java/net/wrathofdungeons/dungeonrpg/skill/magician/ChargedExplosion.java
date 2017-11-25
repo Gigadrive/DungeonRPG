@@ -1,20 +1,18 @@
 package net.wrathofdungeons.dungeonrpg.skill.magician;
 
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
-import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
-import net.wrathofdungeons.dungeonrpg.skill.SkillType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -24,11 +22,54 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class LightningStrike implements Skill {
+public class ChargedExplosion implements Skill {
     @Override
     public String getName() {
-        return "Lightning Strike";
+        return "Charged Explosion";
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, String> getEffects(int investedSkillPoints) {
+        HashMap<String,String> effects = new HashMap<String, String>();
+
+        int range = 12;
+        int explosionRange = 1;
+
+        if(investedSkillPoints == 2){
+            range = 14;
+            explosionRange = 2;
+        } else if(investedSkillPoints == 3){
+            range = 16;
+            explosionRange = 2;
+        } else if(investedSkillPoints == 4){
+            range = 18;
+            explosionRange = 3;
+        } else if(investedSkillPoints == 5){
+            range = 20;
+            explosionRange = 4;
+        }
+
+        effects.put("Range",String.valueOf(range));
+        effects.put("Explosion Range",String.valueOf(explosionRange));
+
+        return effects;
+    }
+
+    @Override
+    public int getIcon() {
+        return 46;
+    }
+
+    @Override
+    public int getIconDurability() {
+        return 0;
     }
 
     @Override
@@ -37,21 +78,31 @@ public class LightningStrike implements Skill {
     }
 
     @Override
-    public SkillType getType() {
-        return SkillType.AOE_ATTACK;
+    public int getMinLevel() {
+        return 30;
     }
 
     @Override
-    public String getCombo() {
-        return "RRL";
+    public int getMaxInvestingPoints() {
+        return 5;
+    }
+
+    @Override
+    public int getBaseMPCost() {
+        return 7;
     }
 
     @Override
     public void execute(Player p) {
         GameUser u = GameUser.getUser(p);
+        int investedSkillPoints = u.getCurrentCharacter().getVariables().getInvestedSkillPoints(this);
+
+        final int range = Integer.parseInt(getEffects(investedSkillPoints).get("Range"));
+        final int explosionRange = Integer.parseInt(getEffects(investedSkillPoints).get("Explosion Range"));
+
         Location loc = p.getEyeLocation();
         try {
-            BlockIterator bi = new BlockIterator(loc, 0.0, 15);
+            BlockIterator bi = new BlockIterator(loc, 0.0, range);
 
             Location lastLoc = null;
             while(bi.hasNext()){
@@ -86,25 +137,37 @@ public class LightningStrike implements Skill {
             }
 
             final Location lastLocL = lastLoc;
-            final LightningStrike lightningStrike = this;
+            final ChargedExplosion chargedExplosion = this;
 
             final BukkitRunnable f = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if(lastLocL != null) lastLocL.getWorld().strikeLightningEffect(lastLocL);
-                    ParticleEffect.EXPLOSION_LARGE.display(0f,0f,0f,0.005f,3,lastLocL,600);
+                    //if(lastLocL != null) lastLocL.getWorld().strikeLightningEffect(lastLocL);
+                    if(investedSkillPoints == 1){
+                        ParticleEffect.EXPLOSION_LARGE.display(0f,0f,0f,0.005f,3,lastLocL,600);
+                    } else if(investedSkillPoints == 2){
+                        ParticleEffect.EXPLOSION_LARGE.display(0.05f,0.05f,0.05f,0.005f,7,lastLocL,600);
+                    } else if(investedSkillPoints == 3){
+                        ParticleEffect.EXPLOSION_LARGE.display(0.05f,0.05f,0.05f,0.005f,7,lastLocL,600);
+                    } else if(investedSkillPoints == 4){
+                        ParticleEffect.EXPLOSION_LARGE.display(0.05f,0.05f,0.05f,0.005f,9,lastLocL,600);
+                    } else if(investedSkillPoints == 5){
+                        ParticleEffect.EXPLOSION_HUGE.display(0.05f,0.05f,0.05f,0.005f,12,lastLocL,600);
+                    }
+
+                    lastLocL.getWorld().playSound(lastLocL, Sound.EXPLODE,1f,1f);
 
                     u.ignoreDamageCheck = true;
                     u.ignoreFistCheck = true;
 
-                    for(Entity entity : lastLocL.getWorld().getNearbyEntities(lastLocL,5,5,5)){
+                    for(Entity entity : lastLocL.getWorld().getNearbyEntities(lastLocL,explosionRange,explosionRange,explosionRange)){
                         if(entity instanceof LivingEntity){
                             CustomEntity c = CustomEntity.fromEntity((LivingEntity)entity);
 
                             if(c != null){
                                 DungeonRPG.showBloodEffect(c.getBukkitEntity().getLocation());
                                 c.getData().playSound(c.getBukkitEntity().getLocation());
-                                DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,lightningStrike);
+                                DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,chargedExplosion);
                                 DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
                                 c.damage(damageData.getDamage(),p);
                             } else {
@@ -114,7 +177,7 @@ public class LightningStrike implements Skill {
                                     if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
                                         GameUser u2 = GameUser.getUser(p2);
                                         DungeonRPG.showBloodEffect(entity.getLocation());
-                                        DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,lightningStrike);
+                                        DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,chargedExplosion);
                                         DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
                                         u2.damage(damageData.getDamage(),p);
                                     }

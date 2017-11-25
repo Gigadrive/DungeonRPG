@@ -78,6 +78,10 @@ public class FormularUtils {
         }
     }
 
+    public static int calculateSkillPointsForLevel(int level){
+        return level;
+    }
+
     public static double getMobRegen(MobClass mobClass, int level){
         return level; // TODO: Add proper calculation
     }

@@ -666,6 +666,8 @@ public class CustomEntity {
                         mcWorld.addEntity(zombieArcher, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
                         bukkitEntity = (Zombie)zombieArcher.getBukkitEntity();
+                    } else {
+                        bukkitEntity = (LivingEntity)loc.getWorld().spawnEntity(loc,getData().getEntityType());
                     }
                 }
 

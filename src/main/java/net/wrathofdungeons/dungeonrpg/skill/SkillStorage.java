@@ -19,6 +19,14 @@ public class SkillStorage {
         return storage;
     }
 
+    public Skill getSkill(String s){
+        for(Skill skill : getSkills()){
+            if(skill.getClass().getSimpleName().equalsIgnoreCase(s)) return skill;
+        }
+
+        return null;
+    }
+
     public void addSkill(Skill s){
         getSkills().add(s);
     }

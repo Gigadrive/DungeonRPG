@@ -1,9 +1,9 @@
 package net.wrathofdungeons.dungeonrpg.professions;
 
 public enum Profession {
-    MINING("Mining","Mine ores with your pickaxe to retrieve materials that may be used to craft new weapons, armor and other items.",257,0,0,32,10),
-    CRAFTING("Crafting","",58,0,4,2*64,10),
-    BLACKSMITHING("Blacksmithing","",145,0,11,7*64,10);
+    MINING("Mining","Mine ores with your pickaxe to retrieve materials that may be used to craft new weapons, armor and other items.",257,0,0,32,10,true),
+    CRAFTING("Crafting","",58,0,4,2*64,10,true),
+    BLACKSMITHING("Blacksmithing","",145,0,11,7*64,10,false);
 
     private String name;
     private String description;
@@ -12,8 +12,9 @@ public enum Profession {
     private int minLevel;
     private int goldCost;
     private int maxLevel;
+    private boolean enabled;
 
-    Profession(String name, String description, int icon, int iconDurability, int minLevel, int goldCost, int maxLevel){
+    Profession(String name, String description, int icon, int iconDurability, int minLevel, int goldCost, int maxLevel, boolean enabled){
         this.name = name;
         this.description = description;
         this.icon = icon;
@@ -21,6 +22,7 @@ public enum Profession {
         this.minLevel = minLevel;
         this.goldCost = goldCost;
         this.maxLevel = maxLevel;
+        this.enabled = enabled;
     }
 
     public String getName() {
@@ -49,5 +51,9 @@ public enum Profession {
 
     public int getMaxLevel() {
         return maxLevel;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 }

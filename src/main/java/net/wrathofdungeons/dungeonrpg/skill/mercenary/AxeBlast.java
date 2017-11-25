@@ -7,7 +7,6 @@ import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
-import net.wrathofdungeons.dungeonrpg.skill.SkillType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
@@ -23,6 +22,7 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AxeBlast implements Skill {
     @Override
@@ -31,29 +31,80 @@ public class AxeBlast implements Skill {
     }
 
     @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, String> getEffects(int investedSkillPoints) {
+        HashMap<String,String> effects = new HashMap<String, String>();
+
+        int range = 3;
+        int bashes = 1;
+
+        if(investedSkillPoints == 2){
+            range = 4;
+            bashes = 2;
+        } else if(investedSkillPoints == 3){
+            range = 4;
+            bashes = 3;
+        } else if(investedSkillPoints == 4){
+            range = 5;
+            bashes = 3;
+        } else if(investedSkillPoints == 5){
+            range = 5;
+            bashes = 4;
+        } else if(investedSkillPoints == 6){
+            range = 6;
+            bashes = 5;
+        }
+
+        effects.put("Bashes",String.valueOf(bashes));
+        effects.put("Range",String.valueOf(range));
+
+        return effects;
+    }
+
+    @Override
+    public int getIcon() {
+        return 258;
+    }
+
+    @Override
+    public int getIconDurability() {
+        return 0;
+    }
+
+    @Override
     public RPGClass getRPGClass() {
         return RPGClass.MERCENARY;
     }
 
     @Override
-    public SkillType getType() {
-        return SkillType.FAST_ATTACK;
+    public int getMinLevel() {
+        return 1;
     }
 
     @Override
-    public String getCombo() {
-        return "RLR";
+    public int getMaxInvestingPoints() {
+        return 6;
+    }
+
+    @Override
+    public int getBaseMPCost() {
+        return 3;
     }
 
     @Override
     public void execute(Player p) {
         GameUser u = GameUser.getUser(p);
+        int investedSkillPoints = u.getCurrentCharacter().getVariables().getInvestedSkillPoints(this);
         Location loc = p.getEyeLocation();
         AxeBlast axeBlast = this;
 
-        int bashes = 1;
+        int bashes = Integer.parseInt(getEffects(investedSkillPoints).get("Bashes"));
         int rangeDifference = 2;
-        final int explodingRange = 3;
+        final int explodingRange = Integer.parseInt(getEffects(investedSkillPoints).get("Range"));
         final int baseRangeDifference = 3;
 
         try {
@@ -103,7 +154,20 @@ public class AxeBlast implements Skill {
                         Location castLocation = locations.get(castNumber);
                         Location particleLocation = castLocation.clone().add(0,0.1,0);
 
-                        ParticleEffect.SMOKE_LARGE.display(0.05f,0.05f,0.05f,0.005f,60,particleLocation,600);
+                        if(investedSkillPoints == 1){
+                            ParticleEffect.SMOKE_LARGE.display(0.05f,0.05f,0.05f,0.005f,60,particleLocation,600);
+                        } else if(investedSkillPoints == 2){
+                            ParticleEffect.SMOKE_LARGE.display(0.5f,0.5f,0.5f,0.005f,60,particleLocation,600);
+                        } else if(investedSkillPoints == 3){
+                            ParticleEffect.SMOKE_NORMAL.display(0.5f,0.5f,0.5f,0.005f,60,particleLocation,600);
+                        } else if(investedSkillPoints == 4){
+                            ParticleEffect.SMOKE_NORMAL.display(0.5f,0.5f,0.5f,0.005f,60,particleLocation,600);
+                        } else if(investedSkillPoints == 5){
+                            ParticleEffect.SMOKE_NORMAL.display(0.5f,0.5f,0.5f,0.005f,60,particleLocation,600);
+                        } else if(investedSkillPoints == 6){
+                            ParticleEffect.SMOKE_NORMAL.display(0.25f,0.25f,0.25f,0.005f,60,particleLocation,600);
+                        }
+
                         particleLocation.getWorld().playSound(particleLocation,Sound.EXPLODE,1f,1f);
 
                         for(Entity entity : castLocation.getWorld().getNearbyEntities(castLocation,explodingRange,explodingRange,explodingRange)){
@@ -138,7 +202,7 @@ public class AxeBlast implements Skill {
                             }
                         }
                     }
-                }.runTaskLater(DungeonRPG.getInstance(),casts*10);
+                }.runTaskLater(DungeonRPG.getInstance(),casts*2);
             }
         } catch(Exception e){
             p.sendMessage(ChatColor.RED + "Skill failed! Are you standing too close to something?");

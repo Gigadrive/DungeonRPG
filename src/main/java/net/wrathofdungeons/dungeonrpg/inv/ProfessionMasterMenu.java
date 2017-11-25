@@ -50,6 +50,8 @@ public class ProfessionMasterMenu {
 
                 int slot = 0;
                 for(Profession profession : Profession.values()){
+                    if(!profession.isEnabled()) continue;
+
                     ProfessionProgress progress = u.getCurrentCharacter().getVariables().getProfessionProgress(profession);
                     ItemStack i = new ItemStack(profession.getIcon(),progress.getLevel(),(short)profession.getIconDurability());
                     ItemMeta iM = i.getItemMeta();

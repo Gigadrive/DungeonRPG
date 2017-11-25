@@ -1,9 +1,8 @@
 package net.wrathofdungeons.dungeonrpg.skill.magician;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Particle;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
-import net.wrathofdungeons.dungeonrpg.skill.SkillType;
+import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -14,10 +13,44 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
+
 public class Blinkpool implements Skill {
     @Override
     public String getName() {
         return "Blinkpool";
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, String> getEffects(int investedSkillPoints) {
+        HashMap<String,String> effects = new HashMap<String, String>();
+
+        int range = 15;
+
+        if(investedSkillPoints == 2){
+            range = 20;
+        } else if(investedSkillPoints == 3){
+            range = 25;
+        }
+
+        effects.put("Range",String.valueOf(range));
+
+        return effects;
+    }
+
+    @Override
+    public int getIcon() {
+        return 368;
+    }
+
+    @Override
+    public int getIconDurability() {
+        return 0;
     }
 
     @Override
@@ -26,20 +59,30 @@ public class Blinkpool implements Skill {
     }
 
     @Override
-    public SkillType getType() {
-        return SkillType.ESCAPING_MOVE;
+    public int getMinLevel() {
+        return 15;
     }
 
     @Override
-    public String getCombo() {
-        return "RRR";
+    public int getMaxInvestingPoints() {
+        return 3;
+    }
+
+    @Override
+    public int getBaseMPCost() {
+        return 2;
     }
 
     @Override
     public void execute(Player p) {
+        GameUser u = GameUser.getUser(p);
+        int investedSkillPoints = u.getCurrentCharacter().getVariables().getInvestedSkillPoints(this);
+
+        final int range = Integer.parseInt(getEffects(investedSkillPoints).get("Range"));
+
         Location loc = p.getEyeLocation();
         try {
-            BlockIterator bi = new BlockIterator(loc, 0.0, 15);
+            BlockIterator bi = new BlockIterator(loc, 0.0, range);
 
             Location lastLoc = null;
             while(bi.hasNext()){

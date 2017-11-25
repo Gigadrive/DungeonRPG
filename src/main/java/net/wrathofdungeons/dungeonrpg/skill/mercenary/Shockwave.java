@@ -7,7 +7,6 @@ import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
-import net.wrathofdungeons.dungeonrpg.skill.SkillType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
@@ -18,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Shockwave implements Skill {
     @Override
@@ -26,27 +26,59 @@ public class Shockwave implements Skill {
     }
 
     @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, String> getEffects(int investedSkillPoints) {
+        HashMap<String,String> effects = new HashMap<String, String>();
+
+        int range = investedSkillPoints+1;
+
+        effects.put("Range",String.valueOf(range));
+
+        return effects;
+    }
+
+    @Override
+    public int getIcon() {
+        return 351;
+    }
+
+    @Override
+    public int getIconDurability() {
+        return 15;
+    }
+
+    @Override
     public RPGClass getRPGClass() {
         return RPGClass.MERCENARY;
     }
 
     @Override
-    public SkillType getType() {
-        return SkillType.AOE_ATTACK;
+    public int getMinLevel() {
+        return 30;
     }
 
     @Override
-    public String getCombo() {
-        return "RRL";
+    public int getMaxInvestingPoints() {
+        return 4;
+    }
+
+    @Override
+    public int getBaseMPCost() {
+        return 7;
     }
 
     @Override
     public void execute(Player p) {
         GameUser u = GameUser.getUser(p);
+        int investedSkillPoints = u.getCurrentCharacter().getVariables().getInvestedSkillPoints(this);
 
         ArrayList<Entity> entities = new ArrayList<Entity>();
 
-        final int range = 4;
+        final int range = Integer.parseInt(getEffects(investedSkillPoints).get("Range"));
         final Shockwave shockwave = this;
         final Location startLocation = p.getLocation().clone();
 

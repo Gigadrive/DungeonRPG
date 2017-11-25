@@ -5,7 +5,6 @@ import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
-import net.wrathofdungeons.dungeonrpg.skill.SkillType;
 import net.wrathofdungeons.dungeonrpg.skill.SkillValues;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
@@ -17,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MagicCure implements Skill {
     @Override
@@ -25,25 +25,79 @@ public class MagicCure implements Skill {
     }
 
     @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, String> getEffects(int investedSkillPoints) {
+        HashMap<String,String> effects = new HashMap<String, String>();
+
+        double healStrength = 1.2;
+        int range = 4;
+
+        if(investedSkillPoints == 2){
+            healStrength = 1.3;
+            range = 5;
+        } else if(investedSkillPoints == 3){
+            healStrength = 1.3;
+            range = 6;
+        } else if(investedSkillPoints == 4){
+            healStrength = 1.35;
+            range = 7;
+        } else if(investedSkillPoints == 5){
+            healStrength = 1.4;
+            range = 7;
+        } else if(investedSkillPoints == 6){
+            healStrength = 1.6;
+            range = 8;
+        } else if(investedSkillPoints == 7){
+            healStrength = 1.8;
+            range = 9;
+        }
+
+        effects.put("Range",String.valueOf(range));
+        effects.put("Heal Strength",String.valueOf(healStrength));
+
+        return effects;
+    }
+
+    @Override
+    public int getIcon() {
+        return 38;
+    }
+
+    @Override
+    public int getIconDurability() {
+        return 0;
+    }
+
+    @Override
     public RPGClass getRPGClass() {
         return RPGClass.MAGICIAN;
     }
 
     @Override
-    public SkillType getType() {
-        return SkillType.SUPPORTING_SKILL;
+    public int getMinLevel() {
+        return 45;
     }
 
     @Override
-    public String getCombo() {
-        return "RLL";
+    public int getMaxInvestingPoints() {
+        return 6;
+    }
+
+    @Override
+    public int getBaseMPCost() {
+        return 4;
     }
 
     @Override
     public void execute(Player p) {
         GameUser u = GameUser.getUser(p);
+        int investedSkillPoints = u.getCurrentCharacter().getVariables().getInvestedSkillPoints(this);
         CustomItem weapon = CustomItem.fromItemStack(p.getItemInHand());
-        final int range = 8;
+        final int range = Integer.parseInt(getEffects(investedSkillPoints).get("Range"));
 
         if(weapon != null){
             SkillValues values = u.getSkillValues();
@@ -77,7 +131,7 @@ public class MagicCure implements Skill {
 
             // START ACTUAL HEALING
 
-            int toHeal = (int)(Util.randomInteger(weapon.getData().getAtkMin(),weapon.getData().getAtkMax())*1.5);
+            int toHeal = (int)(Util.randomInteger(weapon.getData().getAtkMin(),weapon.getData().getAtkMax())*Double.parseDouble(getEffects(investedSkillPoints).get("Heal Strength").replace("x","")));
 
             ArrayList<Player> players = new ArrayList<Player>();
             players.add(p);

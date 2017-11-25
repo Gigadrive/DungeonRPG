@@ -7,7 +7,6 @@ import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
-import net.wrathofdungeons.dungeonrpg.skill.SkillType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.Location;
@@ -20,6 +19,7 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FlameBurst implements Skill {
     @Override
@@ -28,25 +28,67 @@ public class FlameBurst implements Skill {
     }
 
     @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, String> getEffects(int investedSkillPoints) {
+        HashMap<String,String> effects = new HashMap<String, String>();
+
+        int range = 10;
+
+        if(investedSkillPoints == 2){
+            range = 12;
+        } else if(investedSkillPoints == 3){
+            range = 14;
+        } else if(investedSkillPoints == 4){
+            range = 16;
+        } else if(investedSkillPoints == 5){
+            range = 18;
+        }
+
+        effects.put("Range",String.valueOf(range));
+
+        return effects;
+    }
+
+    @Override
+    public int getIcon() {
+        return 377;
+    }
+
+    @Override
+    public int getIconDurability() {
+        return 0;
+    }
+
+    @Override
     public RPGClass getRPGClass() {
         return RPGClass.MAGICIAN;
     }
 
     @Override
-    public SkillType getType() {
-        return SkillType.FAST_ATTACK;
+    public int getMinLevel() {
+        return 1;
     }
 
     @Override
-    public String getCombo() {
-        return "RLR";
+    public int getMaxInvestingPoints() {
+        return 5;
+    }
+
+    @Override
+    public int getBaseMPCost() {
+        return 3;
     }
 
     @Override
     public void execute(Player p) {
         GameUser u = GameUser.getUser(p);
+        int investedSkillPoints = u.getCurrentCharacter().getVariables().getInvestedSkillPoints(this);
 
-        final int range = 16;
+        final int range = Integer.parseInt(getEffects(investedSkillPoints).get("Range"));
 
         ArrayList<Entity> entities = new ArrayList<Entity>();
         ArrayList<Location> locations = new ArrayList<Location>();
