@@ -530,6 +530,8 @@ public class GameUser extends User {
     }
 
     public void damage(double damage, LivingEntity source){
+        if(isDying()) return;
+
         this.hp -= damage;
 
         if(this.hp <= 0){

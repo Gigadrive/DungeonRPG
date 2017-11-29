@@ -51,13 +51,6 @@ public class DeathListener implements Listener {
 
                         p.teleport(DungeonRPG.getNearestTown(p));
                         p.sendMessage(ChatColor.RED + "You died!");
-
-                        new BukkitRunnable(){
-                            @Override
-                            public void run() {
-                                u.setDying(false);
-                            }
-                        }.runTaskLater(DungeonRPG.getInstance(),2*20);
                     } else {
                         Duel d = Duel.getDuel(p);
 
@@ -67,6 +60,13 @@ public class DeathListener implements Listener {
                             d.endGame(d.getPlayer1());
                         }
                     }
+
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            u.setDying(false);
+                        }
+                    }.runTaskLater(DungeonRPG.getInstance(),2*20);
                 }
             }
         }
