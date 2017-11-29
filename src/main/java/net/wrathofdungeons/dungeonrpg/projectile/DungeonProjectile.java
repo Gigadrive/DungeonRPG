@@ -1,5 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.projectile;
 
+import net.wrathofdungeons.dungeonrpg.damage.SkillData;
+import net.wrathofdungeons.dungeonrpg.skill.PoisonData;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -14,7 +16,19 @@ public class DungeonProjectile {
     private boolean isSkill;
     private double force;
     private Entity entity;
+    private PoisonData poisonData;
+    private SkillData skillData;
+
+    @Deprecated
     private Skill skill;
+
+    private static DungeonProjectile fakeProjectile;
+
+    public static DungeonProjectile getFakeProjectile(){
+        if(fakeProjectile == null) fakeProjectile = new DungeonProjectile(null,DungeonProjectileType.FAKE_PROJECTILE,null,0,0,false);
+
+        return fakeProjectile;
+    }
 
     public DungeonProjectile(Player p, DungeonProjectileType type, Location firedFrom, int range, double damage, boolean isSkill) {
         this.p = p;
@@ -72,11 +86,29 @@ public class DungeonProjectile {
         return entity;
     }
 
+    @Deprecated
     public Skill getSkill() {
         return skill;
     }
 
+    @Deprecated
     public void setSkill(Skill skill) {
         this.skill = skill;
+    }
+
+    public SkillData getSkillData() {
+        return skillData;
+    }
+
+    public void setSkillData(SkillData skillData) {
+        this.skillData = skillData;
+    }
+
+    public PoisonData getPoisonData() {
+        return poisonData;
+    }
+
+    public void setPoisonData(PoisonData poisonData) {
+        this.poisonData = poisonData;
     }
 }

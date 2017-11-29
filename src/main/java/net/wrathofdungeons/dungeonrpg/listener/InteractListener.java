@@ -684,12 +684,12 @@ public class InteractListener implements Listener {
                                                 //if(entity != null) target.damage(5,p);
                                                 //if(entity != null) entity.damage(DamageHandler.calculatePlayerToMobDamage(u,entity,null),p);
                                                 if(entity != null){
-                                                    DungeonRPG.callPlayerToMobDamage(p,entity,true);
+                                                    DungeonRPG.callPlayerToMobDamage(p,entity,null);
                                                 } else {
                                                     if(target instanceof Player){
                                                         Player p2 = (Player)target;
 
-                                                        DungeonRPG.callPlayerToPlayerDamage(p,p2,false);
+                                                        DungeonRPG.callPlayerToPlayerDamage(p,p2,null);
                                                     }
                                                 }
                                             }
@@ -737,12 +737,12 @@ public class InteractListener implements Listener {
 
                                     //if(entity != null) target.damage(5,p);
                                     if(entity != null){
-                                        DungeonRPG.callPlayerToMobDamage(p,entity,true);
+                                        DungeonRPG.callPlayerToMobDamage(p,entity,DungeonProjectile.getFakeProjectile());
                                     } else {
                                         if(target instanceof Player){
                                             Player p2 = (Player)target;
 
-                                            DungeonRPG.callPlayerToPlayerDamage(p,p2,false);
+                                            DungeonRPG.callPlayerToPlayerDamage(p,p2,DungeonProjectile.getFakeProjectile());
                                         }
                                     }
                                 }
@@ -888,7 +888,8 @@ public class InteractListener implements Listener {
 
                                 if(toCast != null){
                                     int investedSkillPoints = u.getCurrentCharacter().getVariables().getInvestedSkillPoints(toCast);
-                                    int manaCost = toCast.getBaseMPCost()-Util.randomInteger(0,investedSkillPoints/2);
+                                    int manaCost = toCast.getBaseMPCost();
+                                    if(investedSkillPoints >= toCast.getMaxInvestingPoints() && Util.getChanceBoolean(1,10)) manaCost -= Util.randomInteger(0,manaCost/2);
                                     if(manaCost < 1) manaCost = 1;
 
                                     if(toCast.getMinLevel() <= u.getCurrentCharacter().getLevel()){
@@ -949,13 +950,13 @@ public class InteractListener implements Listener {
                                 CustomEntity entity = CustomEntity.fromEntity(target);
 
                                 if(entity != null){
-                                    DungeonRPG.callPlayerToMobDamage(p,entity,false);
+                                    DungeonRPG.callPlayerToMobDamage(p,entity,null);
                                     break; // Only attack first entity when not using a weapon
                                 } else {
                                     if(target instanceof Player){
                                         Player p2 = (Player)target;
 
-                                        DungeonRPG.callPlayerToPlayerDamage(p,p2,false);
+                                        DungeonRPG.callPlayerToPlayerDamage(p,p2,null);
                                         break; // Only attack first entity when not using a weapon
                                     }
                                 }

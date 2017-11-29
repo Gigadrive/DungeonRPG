@@ -11,6 +11,7 @@ import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
+import net.wrathofdungeons.dungeonrpg.damage.SkillData;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageEvent;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageMobToMobEvent;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamagePlayerToPlayerEvent;
@@ -38,10 +39,7 @@ import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
-import net.wrathofdungeons.dungeonrpg.skill.archer.DartRain;
-import net.wrathofdungeons.dungeonrpg.skill.archer.ExplosionArrow;
-import net.wrathofdungeons.dungeonrpg.skill.archer.Leap;
-import net.wrathofdungeons.dungeonrpg.skill.archer.VortexBarrier;
+import net.wrathofdungeons.dungeonrpg.skill.archer.*;
 import net.wrathofdungeons.dungeonrpg.skill.assassin.DashAttack;
 import net.wrathofdungeons.dungeonrpg.skill.assassin.StabbingStorm;
 import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
@@ -168,6 +166,7 @@ public class DungeonRPG extends JavaPlugin {
 
         // ARCHER
         s.addSkill(new DartRain());
+        s.addSkill(new PoisonArrow());
         s.addSkill(new Leap());
         s.addSkill(new ExplosionArrow());
         s.addSkill(new VortexBarrier());
@@ -440,6 +439,8 @@ public class DungeonRPG extends JavaPlugin {
                         } else if(type == DungeonProjectileType.MOB_FIREBALL){
                             ParticleEffect.FLAME.display(0.05f,0.05f,0.05f,0.005f,15,proj.getEntity().getLocation(),600);
                             ParticleEffect.SMOKE_NORMAL.display(0.05f,0.05f,0.05f,0.005f,4,proj.getEntity().getLocation(),600);
+                        } else if(type == DungeonProjectileType.POISON_ARROW){
+                            ParticleEffect.REDSTONE.display(new ParticleEffect.OrdinaryColor(0,255,0),proj.getEntity().getLocation(),600);
                         }
                     }
                 }
@@ -633,14 +634,14 @@ public class DungeonRPG extends JavaPlugin {
                             Player p = (Player)entity.getTarget();
 
                             if(GameUser.isLoaded(p)){
-                                callMobToPlayerDamage(entity,(Player)entity.getTarget(),false);
+                                callMobToPlayerDamage(entity,(Player)entity.getTarget(),null);
                                 entity.attackDelay = 10;
                             }
                         } else {
                             CustomEntity mob = CustomEntity.fromEntity(entity.getTarget());
 
                             if(mob != null){
-                                callMobToMobDamage(entity,mob,false);
+                                callMobToMobDamage(entity,mob,null);
                                 entity.attackDelay = 10;
                             }
                         }
@@ -861,6 +862,28 @@ public class DungeonRPG extends JavaPlugin {
         EntityManager.registerEntities();
     }
 
+    public static boolean isInGame(String name){
+        return isInGame(Bukkit.getPlayer(name));
+    }
+
+    public static boolean isInGame(UUID uuid){
+        return isInGame(Bukkit.getPlayer(uuid));
+    }
+
+    public static boolean isInGame(Player p){
+        if(p != null){
+            if(p.isOnline()){
+                if(GameUser.isLoaded(p)){
+                    GameUser u = GameUser.getUser(p);
+
+                    return u.getCurrentCharacter() != null;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public void onDisable(){
         for(CustomNPC npc : CustomNPC.getUnsavedData()){
             npc.saveData(false);
@@ -960,27 +983,27 @@ public class DungeonRPG extends JavaPlugin {
         return ChatColor.values()[Util.randomInteger(0,ChatColor.values().length-1)];
     }
 
-    public static void callPlayerToMobDamage(Player p, CustomEntity mob, boolean isProjectile){
-        callPlayerToMobDamage(p,mob,isProjectile,null);
+    public static void callPlayerToMobDamage(Player p, CustomEntity mob, DungeonProjectile projectile){
+        callPlayerToMobDamage(p,mob,projectile,null);
     }
 
-    public static void callPlayerToMobDamage(Player p, CustomEntity mob, boolean isProjectile, Skill skill){
-        CustomDamageEvent event = new CustomDamageEvent(p,mob,true,isProjectile,skill);
+    public static void callPlayerToMobDamage(Player p, CustomEntity mob, DungeonProjectile projectile, Skill skill){
+        CustomDamageEvent event = new CustomDamageEvent(p,mob,true,projectile,skill);
         Bukkit.getPluginManager().callEvent(event);
     }
 
-    public static void callMobToPlayerDamage(CustomEntity mob, Player p, boolean isProjectile){
-        CustomDamageEvent event = new CustomDamageEvent(p,mob,false,isProjectile,null);
+    public static void callMobToPlayerDamage(CustomEntity mob, Player p, DungeonProjectile projectile){
+        CustomDamageEvent event = new CustomDamageEvent(p,mob,false,projectile,null);
         Bukkit.getPluginManager().callEvent(event);
     }
 
-    public static void callMobToMobDamage(CustomEntity mob, CustomEntity mob2, boolean isProjectile){
-        CustomDamageMobToMobEvent event = new CustomDamageMobToMobEvent(mob,mob2,isProjectile);
+    public static void callMobToMobDamage(CustomEntity mob, CustomEntity mob2, DungeonProjectile projectile){
+        CustomDamageMobToMobEvent event = new CustomDamageMobToMobEvent(mob,mob2,projectile);
         Bukkit.getPluginManager().callEvent(event);
     }
 
-    public static void callPlayerToPlayerDamage(Player p, Player p2, boolean isProjectile){
-        CustomDamagePlayerToPlayerEvent event = new CustomDamagePlayerToPlayerEvent(p,p2,isProjectile);
+    public static void callPlayerToPlayerDamage(Player p, Player p2, DungeonProjectile projectile){
+        CustomDamagePlayerToPlayerEvent event = new CustomDamagePlayerToPlayerEvent(p,p2,projectile);
         Bukkit.getPluginManager().callEvent(event);
     }
 

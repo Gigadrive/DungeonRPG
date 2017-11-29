@@ -45,6 +45,7 @@ public class DeathListener implements Listener {
                     u.setDying(true);
                     u.setHP(u.getMaxHP());
                     u.setMP(u.getMaxMP());
+                    u.setPoisonData(null);
 
                     if(!Duel.isDueling(p)){
                         for(PotionEffect pe : p.getActivePotionEffects()) p.removePotionEffect(pe.getType());

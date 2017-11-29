@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.event;
 
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.user.Character;
 import org.bukkit.entity.Player;
@@ -12,14 +13,14 @@ public class CustomDamageEvent extends Event {
     private CustomEntity entity;
     private Player p;
     private boolean isPlayerAttacking;
-    private boolean isProjectile;
+    private DungeonProjectile projectile;
     private Skill skill;
 
-    public CustomDamageEvent(Player p, CustomEntity entity, boolean isPlayerAttacking, boolean isProjectile, Skill skill){
+    public CustomDamageEvent(Player p, CustomEntity entity, boolean isPlayerAttacking, DungeonProjectile projectile, Skill skill){
         this.entity = entity;
         this.p = p;
         this.isPlayerAttacking = isPlayerAttacking;
-        this.isProjectile = isProjectile;
+        this.projectile = projectile;
         this.skill = skill;
     }
 
@@ -35,8 +36,12 @@ public class CustomDamageEvent extends Event {
         return isPlayerAttacking;
     }
 
+    public DungeonProjectile getProjectile() {
+        return projectile;
+    }
+
     public boolean isProjectile() {
-        return isProjectile;
+        return projectile != null;
     }
 
     public Skill getSkill() {

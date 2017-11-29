@@ -2,6 +2,7 @@ package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.damage.SkillData;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
@@ -93,13 +94,15 @@ public class DamageListener implements Listener {
                         }
 
                         CustomEntity cd = CustomEntity.fromEntity((LivingEntity)((Projectile) e.getDamager()).getShooter());
-                        DungeonProjectile data = DungeonRPG.SHOT_PROJECTILE_DATA.containsKey(e.getDamager().getUniqueId().toString()) ? DungeonRPG.SHOT_PROJECTILE_DATA.get(e.getDamager().getUniqueId().toString()) : null;
-                        Skill skill = data != null ? data.getSkill() : null;
+                        DungeonProjectile data = DungeonRPG.SHOT_PROJECTILE_DATA.getOrDefault(e.getDamager().getUniqueId().toString(),null);
+                        SkillData skillData = data != null && data.getSkillData() != null ? data.getSkillData() : null;
+                        Skill skill = null;
+                        if(data != null) skill = skillData != null ? skillData.skill : data.getSkill();
 
                         if(cd != null){
                             e.setCancelled(true);
                             e.getDamager().remove();
-                            DungeonRPG.callMobToMobDamage(cd,c,true);
+                            DungeonRPG.callMobToMobDamage(cd,c,data);
                         } else {
                             if(((Projectile) e.getDamager()).getShooter() instanceof Player){
                                 Player p = (Player)((Projectile) e.getDamager()).getShooter();
@@ -110,7 +113,7 @@ public class DamageListener implements Listener {
                                     if(u.getCurrentCharacter() != null){
                                         e.setCancelled(true);
                                         e.getDamager().remove();
-                                        DungeonRPG.callPlayerToMobDamage(p,c,true,skill);
+                                        DungeonRPG.callPlayerToMobDamage(p,c,data,skill);
                                     }
                                 }
                             }
@@ -123,7 +126,7 @@ public class DamageListener implements Listener {
 
                         if(cd != null){
                             e.setCancelled(true);
-                            if(!cd.requiresNewDamageHandler()) DungeonRPG.callMobToMobDamage(cd,c,false);
+                            if(!cd.requiresNewDamageHandler()) DungeonRPG.callMobToMobDamage(cd,c,null);
                         } else {
                             e.setCancelled(true);
                         }
@@ -150,12 +153,14 @@ public class DamageListener implements Listener {
                                     return;
                                 }
 
+                                DungeonProjectile projectile = DungeonRPG.SHOT_PROJECTILE_DATA.getOrDefault(e.getDamager().getUniqueId().toString(),DungeonProjectile.getFakeProjectile());
+
                                 CustomEntity cd = CustomEntity.fromEntity((LivingEntity) ((Projectile) e.getDamager()).getShooter());
 
                                 if(cd != null){
                                     e.setCancelled(true);
                                     e.getDamager().remove();
-                                    if(!cd.requiresNewDamageHandler()) DungeonRPG.callMobToPlayerDamage(cd,p,true);
+                                    if(!cd.requiresNewDamageHandler()) DungeonRPG.callMobToPlayerDamage(cd,p,projectile);
                                 } else {
                                     if(((Projectile) e.getDamager()).getShooter() instanceof Player){
                                         if(((Projectile) e.getDamager()).getShooter() == e.getEntity()){
@@ -171,7 +176,7 @@ public class DamageListener implements Listener {
                                             if(u2.getCurrentCharacter() != null){
                                                 e.setCancelled(true);
                                                 e.getDamager().remove();
-                                                if(Duel.isDuelingWith(p,p2)) DungeonRPG.callPlayerToPlayerDamage(p2,p,true);
+                                                if(Duel.isDuelingWith(p,p2)) DungeonRPG.callPlayerToPlayerDamage(p2,p,projectile);
                                             }
                                         }
                                     }
@@ -186,7 +191,7 @@ public class DamageListener implements Listener {
 
                                 if(c != null){
                                     e.setCancelled(true);
-                                    DungeonRPG.callMobToPlayerDamage(c,p,false);
+                                    DungeonRPG.callMobToPlayerDamage(c,p,null);
                                 } else {
                                     e.setCancelled(true);
                                 }

@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg;
 
+import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -107,6 +108,8 @@ public class Duel {
 
     public void endGame(Player winner){
         if(isInDuel(winner)){
+            GameUser.getUser(winner).getCurrentCharacter().getVariables().statisticsManager.duelsWon++;
+
             getPlayer1().sendMessage(ChatColor.YELLOW + winner.getName() + ChatColor.AQUA + " has won the duel!");
             getPlayer2().sendMessage(ChatColor.YELLOW + winner.getName() + ChatColor.AQUA + " has won the duel!");
 
@@ -131,7 +134,10 @@ public class Duel {
             Bukkit.getPlayer(from).sendMessage(ChatColor.AQUA + "The duel starts in " + ChatColor.YELLOW + "5 seconds" + ChatColor.AQUA + ".");
             Bukkit.getPlayer(to).sendMessage(ChatColor.AQUA + "The duel starts in " + ChatColor.YELLOW + "5 seconds" + ChatColor.AQUA + ".");
 
-            Request r = this;
+            final Request r = this;
+
+            GameUser.getUser(Bukkit.getPlayer(from)).getCurrentCharacter().getVariables().statisticsManager.duelsPlayed++;
+            GameUser.getUser(Bukkit.getPlayer(to)).getCurrentCharacter().getVariables().statisticsManager.duelsPlayed++;
 
             new BukkitRunnable(){
                 @Override
@@ -140,12 +146,10 @@ public class Duel {
 
                     Duel.removeRequest(r);
 
-                    if((Bukkit.getPlayer(from) == null || !Bukkit.getPlayer(from).isOnline()) && (Bukkit.getPlayer(to) != null && Bukkit.getPlayer(to).isOnline())){
+                    if(!DungeonRPG.isInGame(from)){
                         d.endGame(Bukkit.getPlayer(to));
                         return;
-                    }
-
-                    if((Bukkit.getPlayer(to) == null || !Bukkit.getPlayer(to).isOnline()) && (Bukkit.getPlayer(from) != null && Bukkit.getPlayer(from).isOnline())){
+                    } else if(!DungeonRPG.isInGame(to)){
                         d.endGame(Bukkit.getPlayer(from));
                         return;
                     }

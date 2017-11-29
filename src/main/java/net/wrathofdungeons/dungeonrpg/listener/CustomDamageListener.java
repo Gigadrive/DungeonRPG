@@ -11,6 +11,9 @@ import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.skill.PoisonData;
+import net.wrathofdungeons.dungeonrpg.skill.Skill;
+import net.wrathofdungeons.dungeonrpg.skill.archer.PoisonArrow;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
@@ -82,6 +85,8 @@ public class CustomDamageListener implements Listener {
                 DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,e.getSkill());
                 double damage = damageData.getDamage();
 
+                c.giveNormalKnockback(p.getLocation(),e.isProjectile());
+
                 if(e.getSkill() == null){
                     int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
                     if(hpLeech > 0){
@@ -92,11 +97,20 @@ public class CustomDamageListener implements Listener {
                     if(mpLeech > 0){
                         u.addMP(damage*(mpLeech*0.01));
                     }
+                } else {
+                    if(e.getSkill() instanceof PoisonArrow){
+                        if(e.getProjectile() != null && e.getProjectile().getPoisonData() != null){
+                            c.setPoisonData(e.getProjectile().getPoisonData());
+                            c.getPoisonData().targetEntity = c;
+                            c.getPoisonData().startTask();
+                            c.playDamageAnimation();
+                            return;
+                        }
+                    }
                 }
 
                 DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
                 c.damage(damage,p);
-                c.giveNormalKnockback(p.getLocation(),e.isProjectile());
             } else {
                 DamageData damageData = new DamageData();
                 damageData.setDamage(1);
@@ -212,7 +226,7 @@ public class CustomDamageListener implements Listener {
                     return;
                 }
 
-                DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,null);
+                DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,(Skill)null);
                 double damage = damageData.getDamage();
                 int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
                 if(hpLeech > 0){
@@ -224,10 +238,18 @@ public class CustomDamageListener implements Listener {
                     u.addMP(damage*(mpLeech*0.01));
                 }
 
-                u2.damage(damage,p);
                 p2.damage(0);
                 DungeonRPG.showBloodEffect(p2.getLocation());
                 u2.giveNormalKnockback(p.getLocation(),e.isProjectile());
+
+                if(e.getProjectile() != null && e.getProjectile().getPoisonData() != null){
+                    u2.setPoisonData(e.getProjectile().getPoisonData());
+                    u2.getPoisonData().targetPlayer = p2;
+                    u2.getPoisonData().startTask();
+                    return;
+                }
+
+                u2.damage(damage,p);
                 DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
             } else {
                 DamageData damageData = new DamageData();

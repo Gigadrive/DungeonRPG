@@ -15,6 +15,7 @@ import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.archer.DartRain;
 import net.wrathofdungeons.dungeonrpg.skill.archer.ExplosionArrow;
+import net.wrathofdungeons.dungeonrpg.skill.archer.PoisonArrow;
 import net.wrathofdungeons.dungeonrpg.skill.magician.ChargedExplosion;
 import net.wrathofdungeons.dungeonrpg.skill.magician.FlameBurst;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.AxeBlast;
@@ -72,10 +73,22 @@ public class DamageHandler {
     }
 
     public static DamageData calculatePlayerToMobDamage(GameUser u, CustomEntity c, Skill skill){
+        return calculatePlayerToMobDamage(u,c,skill != null ? new SkillData(skill,u.getCurrentCharacter().getVariables().getInvestedSkillPoints(skill)) : null);
+    }
+
+    public static DamageData calculatePlayerToMobDamage(GameUser u, CustomEntity c, SkillData skillData){
         Player p = u.getPlayer();
         LivingEntity e = c.getBukkitEntity();
         DamageData damage = new DamageData();
         damage.setDamage(1);
+
+        Skill skill = null;
+        int investedSkillPoints = 0;
+
+        if(skillData != null){
+            skill = skillData.skill;
+            investedSkillPoints = skillData.investedSkillPoints;
+        }
 
         if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null){ // Player has weapon in hand
             CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
@@ -125,10 +138,22 @@ public class DamageHandler {
     }
 
     public static DamageData calculatePlayerToPlayerDamage(GameUser u, GameUser u2, Skill skill){
+        return calculatePlayerToPlayerDamage(u,u2,skill != null ? new SkillData(skill,u.getCurrentCharacter().getVariables().getInvestedSkillPoints(skill)) : null);
+    }
+
+    public static DamageData calculatePlayerToPlayerDamage(GameUser u, GameUser u2, SkillData skillData){
         Player p = u.getPlayer();
         Player p2 = u2.getPlayer();
         DamageData damage = new DamageData();
         damage.setDamage(1);
+
+        Skill skill = null;
+        int investedSkillPoints = 0;
+
+        if(skillData != null){
+            skill = skillData.skill;
+            investedSkillPoints = skillData.investedSkillPoints;
+        }
 
         if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null){ // Player has weapon in hand
             CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
@@ -159,6 +184,10 @@ public class DamageHandler {
                     damage.setDamage(damage.getDamage()*1.5);
                 } else if(skill instanceof AxeBlast){
                     damage.setDamage(damage.getDamage()*2.5);
+                } else if(skill instanceof PoisonArrow){
+                    damage.setDamage(damage.getDamage()/2.5);
+
+                    damage.setDamage(damage.getDamage()*Double.parseDouble(skill.getEffects(investedSkillPoints).get("Damage").replace("x","")));
                 }
             }
 
@@ -201,12 +230,16 @@ public class DamageHandler {
     }
 
     public static void spawnDamageIndicator(Player p, DamageData damageData, Location loc){
+        spawnDamageIndicatorExact(p,damageData,loc.clone().add(Util.randomInteger(-1,1),Util.randomInteger(1,3),Util.randomInteger(-1,1)));
+    }
+
+    public static void spawnDamageIndicatorExact(Player p, DamageData damageData, Location loc){
         if(GameUser.isLoaded(p)){
             GameUser u = GameUser.getUser(p);
 
             if(u.getCurrentCharacter() != null){
                 if(u.getSettingsManager().mayShowDamageIndicators()){
-                    Hologram holo = HologramsAPI.createHologram(DungeonRPG.getInstance(),loc.clone().add(Util.randomInteger(-1,1),Util.randomInteger(1,3),Util.randomInteger(-1,1)));
+                    Hologram holo = HologramsAPI.createHologram(DungeonRPG.getInstance(),loc);
 
                     if(damageData.isDodged()){
                         holo.appendTextLine(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD.toString() + "MISSED!");

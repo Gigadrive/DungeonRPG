@@ -39,6 +39,7 @@ import net.wrathofdungeons.dungeonrpg.quests.QuestObjective;
 import net.wrathofdungeons.dungeonrpg.quests.QuestProgressStatus;
 import net.wrathofdungeons.dungeonrpg.quests.QuestStage;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
+import net.wrathofdungeons.dungeonrpg.skill.PoisonData;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
@@ -105,6 +106,7 @@ public class CustomEntity {
     private ArrayList<BukkitTask> tasks;
 
     public boolean executingSkill = false;
+    private PoisonData poisonData;
 
     public CustomEntity(MobData data){
         this.mobDataID = data.getId();
@@ -172,6 +174,20 @@ public class CustomEntity {
         }
 
         return false;
+    }
+
+    public PoisonData getPoisonData() {
+        return poisonData;
+    }
+
+    public boolean isPoisoned(){
+        return getPoisonData() != null;
+    }
+
+    public void setPoisonData(PoisonData poisonData){
+        if(this.poisonData != null) this.poisonData.cancelTasks();
+
+        this.poisonData = poisonData;
     }
 
     public void die(){
@@ -976,6 +992,7 @@ public class CustomEntity {
         if(tasks != null) for(BukkitTask t : tasks) t.cancel();
 
         stopRegenTask();
+        setPoisonData(null);
     }
 
     private String healthBarText(){

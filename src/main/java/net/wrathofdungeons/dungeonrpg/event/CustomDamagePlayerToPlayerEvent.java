@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.event;
 
+import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -8,12 +9,12 @@ public class CustomDamagePlayerToPlayerEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Player p;
     private Player p2;
-    private boolean isProjectile;
+    private DungeonProjectile projectile;
 
-    public CustomDamagePlayerToPlayerEvent(Player p, Player p2, boolean isProjectile){
+    public CustomDamagePlayerToPlayerEvent(Player p, Player p2, DungeonProjectile projectile){
         this.p = p;
         this.p2 = p2;
-        this.isProjectile = isProjectile;
+        this.projectile = projectile;
     }
 
     public Player getDamager() {
@@ -24,8 +25,12 @@ public class CustomDamagePlayerToPlayerEvent extends Event {
         return p2;
     }
 
+    public DungeonProjectile getProjectile() {
+        return projectile;
+    }
+
     public boolean isProjectile() {
-        return isProjectile;
+        return projectile != null;
     }
 
     public HandlerList getHandlers() {

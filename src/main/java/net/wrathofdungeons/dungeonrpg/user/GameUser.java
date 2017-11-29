@@ -37,6 +37,7 @@ import net.wrathofdungeons.dungeonrpg.professions.Profession;
 import net.wrathofdungeons.dungeonrpg.quests.Quest;
 import net.wrathofdungeons.dungeonrpg.quests.QuestObjective;
 import net.wrathofdungeons.dungeonrpg.quests.QuestStage;
+import net.wrathofdungeons.dungeonrpg.skill.PoisonData;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.skill.SkillValues;
@@ -150,6 +151,8 @@ public class GameUser extends User {
     private TextLine guildPlate;
     private TextLine titlePlate;
 
+    private PoisonData poisonData;
+
     public GameUser(Player p){
         super(p);
 
@@ -169,6 +172,20 @@ public class GameUser extends User {
         currentMountEntity = null;
 
         currentMountItemSlot = -1;
+    }
+
+    public PoisonData getPoisonData() {
+        return poisonData;
+    }
+
+    public boolean isPoisoned(){
+        return getPoisonData() != null;
+    }
+
+    public void setPoisonData(PoisonData poisonData){
+        if(this.poisonData != null) this.poisonData.cancelTasks();
+
+        this.poisonData = poisonData;
     }
 
     public boolean hasFameTitle(){
@@ -1096,6 +1113,7 @@ public class GameUser extends User {
         // GAME
         currentCombo = "";
         getSkillValues().reset();
+        setPoisonData(null);
         merchantAddItem = null;
         merchantAddItemHandle = null;
         merchantAddItemCosts = null;
