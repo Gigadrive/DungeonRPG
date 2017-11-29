@@ -136,7 +136,7 @@ public class GameMenu {
         }),ClickType.LEFT);
 
         inv.withItem(49,ItemUtil.hideFlags(friends),((player, action, item) -> {
-            // TODO
+            FriendsMenu.openFor(p);
         }),ClickType.LEFT);
 
         inv.withItem(47,ItemUtil.hideFlags(guild),((player, action, item) -> {

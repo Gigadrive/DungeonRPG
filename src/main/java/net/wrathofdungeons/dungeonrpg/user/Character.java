@@ -514,6 +514,8 @@ public class Character {
     }
 
     public void saveData(boolean continueCharsel, boolean async){
+        GameUser u = GameUser.getUser(p);
+        
         if(async){
             DungeonAPI.async(() -> saveData(continueCharsel,false));
         } else {
@@ -550,14 +552,14 @@ public class Character {
                 ps.close();
 
                 if(continueCharsel){
-                    GameUser.getUser(p).setCurrentCharacter(null);
-                    GameUser.getUser(p).bukkitReset();
-                    GameUser.getUser(p).getSkillValues().reset();
-                    GameUser.getUser(p).stopMPRegenTask();
-                    GameUser.getUser(p).stopHPRegenTask();
-                    GameUser.getUser(p).currentCombo = "";
-                    GameUser.getUser(p).resetMount();
-                    GameUser.getUser(p).removeHoloPlate();
+                    u.setCurrentCharacter(null);
+                    u.bukkitReset();
+                    u.getSkillValues().reset();
+                    u.stopMPRegenTask();
+                    u.stopHPRegenTask();
+                    u.resetTemporaryData();
+                    u.resetMount();
+                    u.removeHoloPlate();
                     p.teleport(DungeonRPG.getCharSelLocation());
                     DungeonRPG.updateVanishing();
 

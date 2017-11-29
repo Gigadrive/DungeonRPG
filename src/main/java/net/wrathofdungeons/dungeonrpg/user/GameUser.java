@@ -137,6 +137,10 @@ public class GameUser extends User {
     public String guildCreationName = null;
     public String guildCreationTag = null;
 
+    public String friendsMenuPlayerToMessage = null;
+    public boolean friendsMenuAddPlayer = false;
+    public boolean friendsMenuRemovePlayer = false;
+
     public Horse currentMountEntity = null;
     public int currentMountItemSlot = -1;
 
@@ -1082,24 +1086,50 @@ public class GameUser extends User {
         return setupMode;
     }
 
+    public void resetTemporaryData(){
+        resetTemporaryData(true);
+    }
+
+    public void resetTemporaryData(boolean withRegenTasks){
+        // GAME
+        currentCombo = "";
+        getSkillValues().reset();
+        merchantAddItem = null;
+        merchantAddItemHandle = null;
+        merchantAddItemCosts = null;
+        merchantAddMoneyCost = -1;
+        merchantAddItemSlot = -1;
+        npcAddTextLine = null;
+        friendsMenuPlayerToMessage = null;
+        friendsMenuAddPlayer = false;
+        friendsMenuRemovePlayer = false;
+
+        if(withRegenTasks){
+            stopMPRegenTask();
+            stopHPRegenTask();
+        }
+
+        // SETUP
+        merchantAddItem = null;
+        merchantAddItemHandle = null;
+        merchantAddItemCosts = null;
+        merchantAddMoneyCost = -1;
+        merchantAddItemSlot = -1;
+        npcAddTextLine = null;
+        lootChestLevel = 0;
+        lootChestTier = 0;
+    }
+
     public void setSetupMode(boolean setupMode) {
         this.setupMode = setupMode;
+
+        resetTemporaryData();
 
         if(this.setupMode){
             if(getCurrentCharacter() != null) getCurrentCharacter().saveData(false,false);
 
             setCurrentCharacter(null);
             bukkitReset();
-            getSkillValues().reset();
-            merchantAddItem = null;
-            merchantAddItemHandle = null;
-            merchantAddItemCosts = null;
-            merchantAddMoneyCost = -1;
-            merchantAddItemSlot = -1;
-            npcAddTextLine = null;
-            stopMPRegenTask();
-            stopHPRegenTask();
-            currentCombo = "";
             p.setGameMode(GameMode.CREATIVE);
             p.sendMessage(ChatColor.GREEN + "You are now in setup mode!");
 
@@ -1109,16 +1139,8 @@ public class GameUser extends User {
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Ore Setter",null));
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Crafting Station Setter",null));
         } else {
-            lootChestLevel = 0;
-            lootChestTier = 0;
             bukkitReset();
             setCurrentCharacter(null);
-            merchantAddItem = null;
-            merchantAddItemHandle = null;
-            merchantAddItemCosts = null;
-            merchantAddMoneyCost = -1;
-            merchantAddItemSlot = -1;
-            npcAddTextLine = null;
             p.teleport(DungeonRPG.getCharSelLocation());
             CharacterSelectionMenu.openSelection(p);
             p.sendMessage(ChatColor.RED + "You are no longer in setup mode!");

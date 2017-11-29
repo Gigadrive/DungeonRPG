@@ -185,6 +185,30 @@ public class ChatListener implements Listener {
                             u.guildCreationTag = null;
                         }
                     }
+                } else if(u.friendsMenuPlayerToMessage != null) {
+                    if(msg.equalsIgnoreCase("cancel")){
+                        p.sendMessage(ChatColor.RED + "The operation has been cancelled.");
+                    } else {
+                        DungeonAPI.executeBungeeCommand(p.getName(),"msg " + u.friendsMenuPlayerToMessage + " " + msg);
+                    }
+
+                    u.friendsMenuPlayerToMessage = null;
+                } else if(u.friendsMenuAddPlayer) {
+                    if(msg.equalsIgnoreCase("cancel")){
+                        p.sendMessage(ChatColor.RED + "The operation has been cancelled.");
+                    } else {
+                        DungeonAPI.executeBungeeCommand(p.getName(),"friend add " + msg);
+                    }
+
+                    u.friendsMenuAddPlayer = false;
+                } else if(u.friendsMenuRemovePlayer) {
+                    if(msg.equalsIgnoreCase("cancel")){
+                        p.sendMessage(ChatColor.RED + "The operation has been cancelled.");
+                    } else {
+                        DungeonAPI.executeBungeeCommand(p.getName(),"friend remove " + msg);
+                    }
+
+                    u.friendsMenuRemovePlayer = false;
                 } else {
                     String prefix = u.getRank().getChatPrefix() != null ? u.getRank().getChatPrefix() : "";
                     if(!prefix.isEmpty() && !prefix.endsWith(" ")) prefix += " ";
