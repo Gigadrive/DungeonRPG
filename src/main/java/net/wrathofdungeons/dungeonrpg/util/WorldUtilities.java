@@ -61,6 +61,10 @@ public class WorldUtilities {
         return getParticleCircle(center,radius,15);
     }
 
+    public static String getReadableLocation(Location loc){
+        return "[" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + "]";
+    }
+
     public static ArrayList<Location> getParticleCircle(Location center, double radius, int amount){
         World world = center.getWorld();
         double increment = (2 * Math.PI) / amount;
