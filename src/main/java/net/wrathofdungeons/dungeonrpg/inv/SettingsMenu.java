@@ -113,12 +113,12 @@ public class SettingsMenu {
         }
 
         if(u.getSettingsManager().playKillSound()){
-            inv.withItem(7, ItemUtil.hideFlags(ItemUtil.namedItem(Material.WOOD_SWORD, ChatColor.YELLOW + "Play Kill Sound",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"})),((player, action, item) -> {
+            inv.withItem(8, ItemUtil.hideFlags(ItemUtil.namedItem(Material.WOOD_SWORD, ChatColor.YELLOW + "Play Kill Sound",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"})),((player, action, item) -> {
                 u.getSettingsManager().setPlayKillSound(false);
                 SettingsMenu.openFor(p);
             }),ClickType.LEFT);
         } else {
-            inv.withItem(7, ItemUtil.hideFlags(ItemUtil.namedItem(Material.WOOD_SWORD, ChatColor.YELLOW + "Play Kill Sound",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"})),((player, action, item) -> {
+            inv.withItem(8, ItemUtil.hideFlags(ItemUtil.namedItem(Material.WOOD_SWORD, ChatColor.YELLOW + "Play Kill Sound",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"})),((player, action, item) -> {
                 u.getSettingsManager().setPlayKillSound(true);
                 SettingsMenu.openFor(p);
             }),ClickType.LEFT);
