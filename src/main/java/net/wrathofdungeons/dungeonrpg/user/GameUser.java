@@ -1281,14 +1281,14 @@ public class GameUser extends User {
                     for(int b : newSkillPoints) if(getCurrentCharacter().getLevel() == b){
                         int toAdd = 3;
                         String d = toAdd == 1 ? "" : "s";
+                        String f = toAdd == 1 ? "it" : "them";
 
-                        p.sendMessage(ChatColor.YELLOW + "+" + toAdd + " Skill Point" + d + ChatColor.GRAY + " [Use it from the Game Menu]");
+                        p.sendMessage(ChatColor.YELLOW + "+" + toAdd + " Skill Point" + d + ChatColor.GRAY + " [Use " + f + " from the Game Menu]");
                         getCurrentCharacter().getVariables().leftSkillPoints += toAdd;
                     }
 
                     for(Quest q : Quest.STORAGE.values()) if(q.getRequiredLevel() == getCurrentCharacter().getLevel()){
-                        p.sendMessage(ChatColor.YELLOW + "+ New Quests available!");
-                        break;
+                        p.sendMessage(ChatColor.YELLOW + "+ New Quest available! " + ChatColor.GRAY + "[" + q.getName() + "]");
                     }
 
                     for(Skill skill : SkillStorage.getInstance().getSkills()){
