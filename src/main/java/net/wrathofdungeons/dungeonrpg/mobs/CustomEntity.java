@@ -326,7 +326,7 @@ public class CustomEntity {
                         xp = u.giveEXP(xp);
                     }
 
-                    if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL) p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
+                    if(u.getSettingsManager().playKillSound() && (mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL)) p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
 
                     final Hologram holo = HologramsAPI.createHologram(DungeonRPG.getInstance(), bukkitEntity.getLocation().clone().add(0,2,0));
 
