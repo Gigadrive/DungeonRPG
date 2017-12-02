@@ -1098,6 +1098,7 @@ public class DungeonRPG extends JavaPlugin {
         new CharSelCommand();
         new DuelCommand();
         new ExpCommand();
+        new FlyCommand();
         new GiveItemCommand();
         new GuildCommand();
         new ItemInfoCommand();
