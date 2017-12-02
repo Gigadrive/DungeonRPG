@@ -227,7 +227,7 @@ public class GameMenu {
         strength.setItemMeta(strengthMeta);
         strength = ItemUtil.hideFlags(strength);
 
-        if(u.getCurrentCharacter().getStatpointsPure(type) >= DungeonRPG.STATPOINTS_LIMIT) strength = ItemUtil.addGlow(strength);
+        if(DungeonRPG.STATPOINTS_LIMIT != -1 && u.getCurrentCharacter().getStatpointsPure(type) >= DungeonRPG.STATPOINTS_LIMIT) strength = ItemUtil.addGlow(strength);
 
         return strength;
     }
