@@ -826,14 +826,14 @@ public class InteractListener implements Listener {
                             if((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && (u.getCurrentCharacter().getRpgClass().matches(RPGClass.MERCENARY) || u.getCurrentCharacter().getRpgClass().matches(RPGClass.MAGICIAN) || u.getCurrentCharacter().getRpgClass().matches(RPGClass.ASSASSIN))){
                                 u.currentCombo += "R";
                                 u.comboDelay = 1;
-                                u.updateClickComboBar();
+                                if(u.currentCombo.length() != 3) u.updateClickComboBar();
                                 p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
                                 u.startComboResetTask();
                                 return;
                             } else if((e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR) && (u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER))){
                                 u.currentCombo += "L";
                                 u.comboDelay = 1;
-                                u.updateClickComboBar();
+                                if(u.currentCombo.length() != 3) u.updateClickComboBar();
                                 p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
                                 if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
                                 return;
@@ -844,7 +844,7 @@ public class InteractListener implements Listener {
                             if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
                                 u.currentCombo = u.currentCombo + "R";
                                 u.comboDelay = 1;
-                                u.updateClickComboBar();
+                                if(u.currentCombo.length() != 3) u.updateClickComboBar();
                                 p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
                                 if(u.currentCombo.length() != 3){
                                     if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
@@ -855,7 +855,7 @@ public class InteractListener implements Listener {
                             } else if(e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR){
                                 u.currentCombo = u.currentCombo + "L";
                                 u.comboDelay = 1;
-                                u.updateClickComboBar();
+                                if(u.currentCombo.length() != 3) u.updateClickComboBar();
                                 p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
                                 if(u.currentCombo.length() != 3){
                                     if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
@@ -868,7 +868,7 @@ public class InteractListener implements Listener {
                             if(u.currentCombo.length() == 3){
                                 Skill toCast = null;
 
-                                ClickComboType combo = null;
+                                ClickComboType combo;
 
                                 if(u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER)){
                                     combo = ClickComboType.fromAlternateComboString(u.currentCombo);
@@ -933,6 +933,7 @@ public class InteractListener implements Listener {
                                         p.sendMessage(ChatColor.RED + "You haven't unlocked that skill yet.");
                                     }
                                 } else {
+                                    u.updateClickComboBar();
                                     p.sendMessage(ChatColor.RED + "That skill could not be found.");
 
                                     if(!u.getCurrentCharacter().getVariables().hasSeenBindSkillInfo){
@@ -944,7 +945,7 @@ public class InteractListener implements Listener {
 
                                 u.currentCombo = "";
                                 u.comboDelay = 0;
-                                u.updateClickComboBar();
+                                //u.updateClickComboBar();
                                 return;
                             }
                         }
