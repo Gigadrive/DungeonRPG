@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.inv;
 
+import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
@@ -154,7 +155,7 @@ public class GameMenu {
         GameUser u = GameUser.getUser(p);
 
         if(u.getCurrentCharacter().getStatpointsLeft() > 0){
-            if(u.getCurrentCharacter().getStatpointsPure(type) < DungeonRPG.STATPOINTS_LIMIT){
+            if((DungeonRPG.STATPOINTS_LIMIT == -1) || (u.getCurrentCharacter().getStatpointsPure(type) < DungeonRPG.STATPOINTS_LIMIT)){
                 int toAdd = 1;
                 if(action == ClickType.RIGHT){
                     if(u.getCurrentCharacter().getStatpointsLeft() >= 5){
