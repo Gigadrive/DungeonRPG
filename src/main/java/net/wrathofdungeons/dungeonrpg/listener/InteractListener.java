@@ -35,6 +35,7 @@ import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
+import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -834,7 +835,7 @@ public class InteractListener implements Listener {
                                 u.comboDelay = 1;
                                 u.updateClickComboBar();
                                 p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
-                                u.startComboResetTask();
+                                if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
                                 return;
                             }
                         }
@@ -846,22 +847,22 @@ public class InteractListener implements Listener {
                                 u.updateClickComboBar();
                                 p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
                                 if(u.currentCombo.length() != 3){
-                                    u.startComboResetTask();
+                                    if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
                                     return;
                                 }
 
-                                u.stopComboResetTask();
+                                if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.stopComboResetTask();
                             } else if(e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR){
                                 u.currentCombo = u.currentCombo + "L";
                                 u.comboDelay = 1;
                                 u.updateClickComboBar();
                                 p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
                                 if(u.currentCombo.length() != 3){
-                                    u.startComboResetTask();
+                                    if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
                                     return;
                                 }
 
-                                u.stopComboResetTask();
+                                if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.stopComboResetTask();
                             }
 
                             if(u.currentCombo.length() == 3){
@@ -901,7 +902,14 @@ public class InteractListener implements Listener {
                                             u.setMP(u.getMP()-manaCost);
                                             toCast.execute(p);
 
-                                            if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) BountifulAPI.sendActionBar(p,ChatColor.GREEN + toCast.getName() + " " + ChatColor.GRAY + "[-" + manaCost + " MP]");
+                                            String s = ChatColor.GREEN + toCast.getName() + " " + ChatColor.GRAY + "[-" + manaCost + " MP]";
+
+                                            if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR){
+                                                BountifulAPI.sendActionBar(p,s);
+                                            } else {
+                                                p.setItemInHand(WorldUtilities.updateDisplayName(p.getItemInHand(),DungeonRPG.getSkillIndicatorPrefix() + s));
+                                                u.startClickComboClearTask();
+                                            }
 
                                             if(playAfter) p.playSound(p.getEyeLocation(),Sound.SUCCESSFUL_HIT,1f,0.5f);
 

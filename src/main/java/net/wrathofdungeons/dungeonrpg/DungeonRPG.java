@@ -67,7 +67,7 @@ import java.util.*;
 public class DungeonRPG extends JavaPlugin {
     private static DungeonRPG instance;
     public static final boolean ENABLE_BOWDRAWBACK = true;
-    public static final boolean SHOW_HP_IN_ACTION_BAR = false;
+    public static final boolean SHOW_HP_IN_ACTION_BAR = true;
     public static final int PLAYER_MOB_LEVEL_DIFFERENCE = 7;
     public static final int STATPOINTS_LIMIT = -1;
     public static final double PARTY_EXP_RANGE = 50;
@@ -110,6 +110,25 @@ public class DungeonRPG extends JavaPlugin {
         } catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    private static String skillIndicatorPrefix;
+
+    public static String getSkillIndicatorPrefix(){
+        if(skillIndicatorPrefix == null){
+            skillIndicatorPrefix = "";
+
+            ArrayList<ChatColor> colors = new ArrayList<ChatColor>();
+            for(ChatColor c : ChatColor.values()) colors.add(c);
+
+            for(int i = 0; i < Util.randomInteger(3,7); i++){
+                Collections.shuffle(colors);
+
+                skillIndicatorPrefix += colors.toString();
+            }
+        }
+
+        return skillIndicatorPrefix;
     }
 
     private static ArrayList<Hologram> craftingStationHolos = new ArrayList<Hologram>();

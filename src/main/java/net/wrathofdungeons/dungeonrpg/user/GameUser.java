@@ -596,58 +596,61 @@ public class GameUser extends User {
     }
 
     public void updateClickComboBar(){
-        if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR){
-            if(!currentCombo.equals("") && currentCombo.length() > 0){
-                String left = ChatColor.GREEN + "Left";
-                String middle = ChatColor.GREEN + "Middle";
-                String right = ChatColor.GREEN + "Right";
-                String unknown = ChatColor.GRAY + "???";
-                String unknownPrime = ChatColor.GRAY.toString() + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "???" + ChatColor.RESET;
-                String seperator = " " + ChatColor.DARK_GRAY + "-" + ChatColor.RESET + " ";
+        String left = ChatColor.GREEN + "Left";
+        String middle = ChatColor.GREEN + "Middle";
+        String right = ChatColor.GREEN + "Right";
+        String unknown = ChatColor.GRAY + "???";
+        String unknownPrime = ChatColor.GRAY.toString() + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "???" + ChatColor.RESET;
+        String seperator = " " + ChatColor.DARK_GRAY + "-" + ChatColor.RESET + " ";
 
-                String toSend = "";
+        String toSend = "";
 
-                if(currentCombo.equals("L")) toSend = left + seperator + unknownPrime + seperator + unknown;
-                if(currentCombo.equals("LR")) toSend = left + seperator + right + seperator + unknownPrime;
-                if(currentCombo.equals("LRL")) toSend = left + seperator + right + seperator + left;
-                if(currentCombo.equals("LRM")) toSend = left + seperator + right + seperator + middle;
-                if(currentCombo.equals("LRR")) toSend = left + seperator + right + seperator + right;
-                if(currentCombo.equals("LM")) toSend = left + seperator + middle + seperator + unknownPrime;
-                if(currentCombo.equals("LML")) toSend = left + seperator + middle + seperator + left;
-                if(currentCombo.equals("LMM")) toSend = left + seperator + middle + seperator + middle;
-                if(currentCombo.equals("LMR")) toSend = left + seperator + middle + seperator + right;
-                if(currentCombo.equals("LL")) toSend = left + seperator + left + seperator + unknownPrime;
-                if(currentCombo.equals("LLL")) toSend = left + seperator + left + seperator + left;
-                if(currentCombo.equals("LLM")) toSend = left + seperator + left + seperator + middle;
-                if(currentCombo.equals("LLR")) toSend = left + seperator + left + seperator + right;
-                if(currentCombo.equals("R")) toSend = right + seperator + unknownPrime + seperator + unknown;
-                if(currentCombo.equals("RR")) toSend = right + seperator + right + seperator + unknownPrime;
-                if(currentCombo.equals("RRL")) toSend = right + seperator + right + seperator + left;
-                if(currentCombo.equals("RRM")) toSend = right + seperator + right + seperator + middle;
-                if(currentCombo.equals("RRR")) toSend = right + seperator + right + seperator + right;
-                if(currentCombo.equals("RM")) toSend = right + seperator + middle + seperator + unknownPrime;
-                if(currentCombo.equals("RML")) toSend = right + seperator + middle + seperator + left;
-                if(currentCombo.equals("RMM")) toSend = right + seperator + middle + seperator + middle;
-                if(currentCombo.equals("RMR")) toSend = right + seperator + middle + seperator + right;
-                if(currentCombo.equals("RL")) toSend = right + seperator + left + seperator + unknownPrime;
-                if(currentCombo.equals("RLL")) toSend = right + seperator + left + seperator + left;
-                if(currentCombo.equals("RLM")) toSend = right + seperator + left + seperator + middle;
-                if(currentCombo.equals("RLR")) toSend = right + seperator + left + seperator + right;
-                if(currentCombo.equals("M")) toSend = middle + seperator + unknownPrime + seperator + unknown;
-                if(currentCombo.equals("MR")) toSend = middle + seperator + right + seperator + unknown;
-                if(currentCombo.equals("MRL")) toSend = middle + seperator + right + seperator + left;
-                if(currentCombo.equals("MRM")) toSend = middle + seperator + right + seperator + middle;
-                if(currentCombo.equals("MRR")) toSend = middle + seperator + right + seperator + right;
-                if(currentCombo.equals("MM")) toSend = middle + seperator + middle + seperator + unknownPrime;
-                if(currentCombo.equals("MML")) toSend = middle + seperator + middle + seperator + left;
-                if(currentCombo.equals("MMM")) toSend = middle + seperator + middle + seperator + middle;
-                if(currentCombo.equals("MMR")) toSend = middle + seperator + middle + seperator + right;
-                if(currentCombo.equals("ML")) toSend = middle + seperator + left + seperator + unknownPrime;
-                if(currentCombo.equals("MLL")) toSend = middle + seperator + left + seperator + left;
-                if(currentCombo.equals("MLM")) toSend = middle + seperator + left + seperator + middle;
-                if(currentCombo.equals("MLR")) toSend = middle + seperator + left + seperator + right;
+        if(currentCombo.equals("L")) toSend = left + seperator + unknownPrime + seperator + unknown;
+        if(currentCombo.equals("LR")) toSend = left + seperator + right + seperator + unknownPrime;
+        if(currentCombo.equals("LRL")) toSend = left + seperator + right + seperator + left;
+        if(currentCombo.equals("LRM")) toSend = left + seperator + right + seperator + middle;
+        if(currentCombo.equals("LRR")) toSend = left + seperator + right + seperator + right;
+        if(currentCombo.equals("LM")) toSend = left + seperator + middle + seperator + unknownPrime;
+        if(currentCombo.equals("LML")) toSend = left + seperator + middle + seperator + left;
+        if(currentCombo.equals("LMM")) toSend = left + seperator + middle + seperator + middle;
+        if(currentCombo.equals("LMR")) toSend = left + seperator + middle + seperator + right;
+        if(currentCombo.equals("LL")) toSend = left + seperator + left + seperator + unknownPrime;
+        if(currentCombo.equals("LLL")) toSend = left + seperator + left + seperator + left;
+        if(currentCombo.equals("LLM")) toSend = left + seperator + left + seperator + middle;
+        if(currentCombo.equals("LLR")) toSend = left + seperator + left + seperator + right;
+        if(currentCombo.equals("R")) toSend = right + seperator + unknownPrime + seperator + unknown;
+        if(currentCombo.equals("RR")) toSend = right + seperator + right + seperator + unknownPrime;
+        if(currentCombo.equals("RRL")) toSend = right + seperator + right + seperator + left;
+        if(currentCombo.equals("RRM")) toSend = right + seperator + right + seperator + middle;
+        if(currentCombo.equals("RRR")) toSend = right + seperator + right + seperator + right;
+        if(currentCombo.equals("RM")) toSend = right + seperator + middle + seperator + unknownPrime;
+        if(currentCombo.equals("RML")) toSend = right + seperator + middle + seperator + left;
+        if(currentCombo.equals("RMM")) toSend = right + seperator + middle + seperator + middle;
+        if(currentCombo.equals("RMR")) toSend = right + seperator + middle + seperator + right;
+        if(currentCombo.equals("RL")) toSend = right + seperator + left + seperator + unknownPrime;
+        if(currentCombo.equals("RLL")) toSend = right + seperator + left + seperator + left;
+        if(currentCombo.equals("RLM")) toSend = right + seperator + left + seperator + middle;
+        if(currentCombo.equals("RLR")) toSend = right + seperator + left + seperator + right;
+        if(currentCombo.equals("M")) toSend = middle + seperator + unknownPrime + seperator + unknown;
+        if(currentCombo.equals("MR")) toSend = middle + seperator + right + seperator + unknown;
+        if(currentCombo.equals("MRL")) toSend = middle + seperator + right + seperator + left;
+        if(currentCombo.equals("MRM")) toSend = middle + seperator + right + seperator + middle;
+        if(currentCombo.equals("MRR")) toSend = middle + seperator + right + seperator + right;
+        if(currentCombo.equals("MM")) toSend = middle + seperator + middle + seperator + unknownPrime;
+        if(currentCombo.equals("MML")) toSend = middle + seperator + middle + seperator + left;
+        if(currentCombo.equals("MMM")) toSend = middle + seperator + middle + seperator + middle;
+        if(currentCombo.equals("MMR")) toSend = middle + seperator + middle + seperator + right;
+        if(currentCombo.equals("ML")) toSend = middle + seperator + left + seperator + unknownPrime;
+        if(currentCombo.equals("MLL")) toSend = middle + seperator + left + seperator + left;
+        if(currentCombo.equals("MLM")) toSend = middle + seperator + left + seperator + middle;
+        if(currentCombo.equals("MLR")) toSend = middle + seperator + left + seperator + right;
 
+        if(!currentCombo.equals("") && currentCombo.length() > 0){
+            if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR){
                 BountifulAPI.sendActionBar(p, toSend);
+            } else {
+                p.setItemInHand(WorldUtilities.updateDisplayName(p.getItemInHand(),DungeonRPG.getSkillIndicatorPrefix() + toSend));
+                startClickComboClearTask();
             }
         }
     }
@@ -1245,6 +1248,29 @@ public class GameUser extends User {
             }
 
             updateLevelBar();
+        }
+    }
+
+    private BukkitTask clearClickCombo;
+
+    public void startClickComboClearTask(){
+        if(DungeonRPG.SHOW_HP_IN_ACTION_BAR){
+            if(clearClickCombo != null){
+                clearClickCombo.cancel();
+                clearClickCombo = null;
+            }
+
+            clearClickCombo = new BukkitRunnable(){
+                @Override
+                public void run() {
+                    CustomItem i = CustomItem.fromItemStack(p.getItemInHand());
+                    i.setAmount(p.getItemInHand().getAmount());
+
+                    p.setItemInHand(i.build(p));
+
+                    currentCombo = "";
+                }
+            }.runTaskLater(DungeonRPG.getInstance(),3*20);
         }
     }
 

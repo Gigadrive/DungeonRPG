@@ -65,6 +65,13 @@ public class InventoryClickListener implements Listener {
                     }*/
 
                     if(e.getCurrentItem() != null){
+                        if(e.getCurrentItem().hasItemMeta() && e.getCurrentItem().getItemMeta().hasDisplayName()){
+                            if(e.getCurrentItem().getItemMeta().getDisplayName().startsWith(DungeonRPG.getSkillIndicatorPrefix())){
+                                e.setCancelled(true);
+                                return;
+                            }
+                        }
+
                         CustomItem item = CustomItem.fromItemStack(e.getCurrentItem());
 
                         if(item != null){
