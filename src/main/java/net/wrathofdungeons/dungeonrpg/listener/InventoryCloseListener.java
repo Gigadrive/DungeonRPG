@@ -72,6 +72,8 @@ public class InventoryCloseListener implements Listener {
                     if(Trade.getTrade(p) != null){
                         Trade.getTrade(p).cancelTrade();
                     }
+                } else if(inv.getName().equals("Settings")){
+                    u.saveData();
                 }
 
                 LootChest c = LootChest.getChest(p);
