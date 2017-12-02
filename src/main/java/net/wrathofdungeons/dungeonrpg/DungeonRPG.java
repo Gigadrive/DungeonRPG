@@ -116,16 +116,16 @@ public class DungeonRPG extends JavaPlugin {
 
     public static String getSkillIndicatorPrefix(){
         if(skillIndicatorPrefix == null){
-            skillIndicatorPrefix = "";
+            skillIndicatorPrefix = ChatColor.AQUA.toString() + ChatColor.GRAY.toString();
 
-            ArrayList<ChatColor> colors = new ArrayList<ChatColor>();
+            /*ArrayList<ChatColor> colors = new ArrayList<ChatColor>();
             for(ChatColor c : ChatColor.values()) colors.add(c);
 
             for(int i = 0; i < Util.randomInteger(3,7); i++){
                 Collections.shuffle(colors);
 
                 skillIndicatorPrefix += colors.toString();
-            }
+            }*/
         }
 
         return skillIndicatorPrefix;

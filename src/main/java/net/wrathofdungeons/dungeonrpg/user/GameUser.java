@@ -1127,6 +1127,7 @@ public class GameUser extends User {
         friendsMenuPlayerToMessage = null;
         friendsMenuAddPlayer = false;
         friendsMenuRemovePlayer = false;
+        if(comboResetTask != null) comboResetTask.cancel();
 
         if(withRegenTasks){
             stopMPRegenTask();
@@ -1255,6 +1256,8 @@ public class GameUser extends User {
     private BukkitTask clearClickCombo;
 
     public void startClickComboClearTask(){
+        if(getCurrentCharacter() == null) return;
+
         if(DungeonRPG.SHOW_HP_IN_ACTION_BAR){
             if(clearClickCombo != null){
                 clearClickCombo.cancel();
@@ -1264,14 +1267,27 @@ public class GameUser extends User {
             clearClickCombo = new BukkitRunnable(){
                 @Override
                 public void run() {
-                    CustomItem i = CustomItem.fromItemStack(p.getItemInHand());
-                    i.setAmount(p.getItemInHand().getAmount());
-
-                    p.setItemInHand(i.build(p));
-
-                    currentCombo = "";
+                    resetComboDisplay(p.getInventory().getHeldItemSlot());
                 }
             }.runTaskLater(DungeonRPG.getInstance(),3*20);
+        }
+    }
+
+    public void resetComboDisplay(int slot){
+        if(getCurrentCharacter() == null) return;
+
+        if(DungeonRPG.SHOW_HP_IN_ACTION_BAR){
+            if(clearClickCombo != null){
+                clearClickCombo.cancel();
+                clearClickCombo = null;
+            }
+
+            CustomItem i = CustomItem.fromItemStack(p.getInventory().getItem(slot));
+            i.setAmount(p.getInventory().getItem(slot).getAmount());
+
+            p.setItemInHand(i.build(p));
+
+            currentCombo = "";
         }
     }
 

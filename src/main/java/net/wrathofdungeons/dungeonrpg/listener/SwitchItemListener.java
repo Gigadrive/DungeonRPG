@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
@@ -18,6 +19,10 @@ public class SwitchItemListener implements Listener {
             GameUser u = GameUser.getUser(p);
 
             if(u.getCurrentCharacter() != null){
+                if(DungeonRPG.SHOW_HP_IN_ACTION_BAR && !u.currentCombo.equals("")){
+                    u.resetComboDisplay(e.getPreviousSlot());
+                }
+
                 CustomItem item = CustomItem.fromItemStack(p.getInventory().getItem(e.getNewSlot()));
                 u.updateHandSpeed(item);
 
