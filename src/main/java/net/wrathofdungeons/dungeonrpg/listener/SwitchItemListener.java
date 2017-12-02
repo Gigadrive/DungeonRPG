@@ -19,7 +19,7 @@ public class SwitchItemListener implements Listener {
             GameUser u = GameUser.getUser(p);
 
             if(u.getCurrentCharacter() != null){
-                if(DungeonRPG.SHOW_HP_IN_ACTION_BAR && !u.currentCombo.equals("")){
+                if(DungeonRPG.SHOW_HP_IN_ACTION_BAR && (!u.currentCombo.equals("") || u.clearClickCombo != null)){
                     u.resetComboDisplay(e.getPreviousSlot());
                 }
 

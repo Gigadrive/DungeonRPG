@@ -1253,7 +1253,7 @@ public class GameUser extends User {
         }
     }
 
-    private BukkitTask clearClickCombo;
+    public BukkitTask clearClickCombo;
 
     public void startClickComboClearTask(){
         if(getCurrentCharacter() == null) return;
@@ -1283,9 +1283,11 @@ public class GameUser extends User {
             }
 
             CustomItem i = CustomItem.fromItemStack(p.getInventory().getItem(slot));
-            i.setAmount(p.getInventory().getItem(slot).getAmount());
+            if(i != null && p.getInventory().getItem(slot) != null){
+                i.setAmount(p.getInventory().getItem(slot).getAmount());
 
-            p.setItemInHand(i.build(p));
+                p.setItemInHand(i.build(p));
+            }
 
             currentCombo = "";
         }
