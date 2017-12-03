@@ -25,6 +25,8 @@ public class ModifyRegionCommand extends Command {
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> teleport");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> mob <Level>");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> moblimit <Stage Index>");
+        p.sendMessage(ChatColor.RED + "/" + label + " <ID> cooldown <seconds>");
+        p.sendMessage(ChatColor.RED + "/" + label + " <ID> spawnChance <Value>");
     }
 
     @Override
@@ -73,6 +75,8 @@ public class ModifyRegionCommand extends Command {
                             if(region.getMobData() != null){
                                 p.sendMessage(ChatColor.YELLOW + "Mob Data: " + ChatColor.GREEN + region.getMobData().getName());
                                 p.sendMessage(ChatColor.YELLOW + "Mob Spawn Limit: " + ChatColor.GREEN + region.getLocations().size());
+                                p.sendMessage(ChatColor.YELLOW + "Cooldown: " + ChatColor.GREEN + region.getCooldown() + " seconds");
+                                p.sendMessage(ChatColor.YELLOW + "Spawn Chance: " + ChatColor.GREEN + region.getSpawnChance());
                             }
                         } else if(args[1].equalsIgnoreCase("toggle")){
                             if(region.isActive()){
@@ -136,6 +140,36 @@ public class ModifyRegionCommand extends Command {
                                 }
                             } else {
                                 p.sendMessage(ChatColor.RED + "Please enter a valid mob limit (must be at least 0).");
+                            }
+                        } else if(args[1].equalsIgnoreCase("cooldown")){
+                            if(Util.isValidInteger(args[2])){
+                                int cooldown = Integer.parseInt(args[2]);
+
+                                if(cooldown >= 0){
+                                    region.setCooldown(cooldown);
+                                    p.sendMessage(ChatColor.GREEN + "Cooldown set to: " + cooldown);
+
+                                    DungeonAPI.async(() -> region.saveData());
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Please enter a valid cooldown (must be at least 0).");
+                                }
+                            } else {
+                                p.sendMessage(ChatColor.RED + "Please enter a valid cooldown (must be at least 0).");
+                            }
+                        } else if(args[1].equalsIgnoreCase("spawnChance")){
+                            if(Util.isValidInteger(args[2])){
+                                int spawnChance = Integer.parseInt(args[2]);
+
+                                if(spawnChance >= 0){
+                                    region.setSpawnChance(spawnChance);
+                                    p.sendMessage(ChatColor.GREEN + "Spawn chance set to: " + spawnChance);
+
+                                    DungeonAPI.async(() -> region.saveData());
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Please enter a valid spawn chance (must be at least 0).");
+                                }
+                            } else {
+                                p.sendMessage(ChatColor.RED + "Please enter a valid spawn chance (must be at least 0).");
                             }
                         } else {
                             sendUsage(p,label);

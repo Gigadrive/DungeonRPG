@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
+import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
@@ -49,6 +50,9 @@ public class PlayerMoveListener implements Listener {
                             if(region.getMobData() != null && region.getMobLimit() > 0 && region.mayActivateMobs() && region.isActive()){
                                 if(region.isInRegion(p.getLocation())){
                                     region.startMobActivationTimer();
+
+                                    if(region.getSpawnChance() > 0 && !Util.getChanceBoolean(1,region.getSpawnChance()))
+                                        return;
 
                                     ArrayList<RegionLocation> a = region.getLocations(RegionLocationType.MOB_LOCATION,region.getMobLimit());
                                     Collections.shuffle(a);
