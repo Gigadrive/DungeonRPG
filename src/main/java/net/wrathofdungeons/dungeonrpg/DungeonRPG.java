@@ -877,6 +877,21 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(DungeonRPG.getInstance(),20,20);
 
+        // UPDATE TAB
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Player p : Bukkit.getOnlinePlayers()){
+                    if(GameUser.isLoaded(p)){
+                        GameUser u = GameUser.getUser(p);
+
+                        if(u.getCurrentCharacter() != null) u.updateTabList();
+                    }
+                }
+            }
+        }.runTaskTimer(DungeonRPG.getInstance(),10*20,10*20);
+
         Bukkit.getServer().clearRecipes();
         EntityManager.registerEntities();
     }

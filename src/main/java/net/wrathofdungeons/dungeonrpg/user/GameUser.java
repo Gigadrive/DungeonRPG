@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
+import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
@@ -12,10 +13,7 @@ import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.user.User;
-import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
-import net.wrathofdungeons.dungeonapi.util.ChatIcons;
-import net.wrathofdungeons.dungeonapi.util.ItemUtil;
-import net.wrathofdungeons.dungeonapi.util.Util;
+import net.wrathofdungeons.dungeonapi.util.*;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
@@ -58,6 +56,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
+import org.mcsg.double0negative.tabapi.TabAPI;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -65,6 +64,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class GameUser extends User {
     public static HashMap<Player,GameUser> TEMP = new HashMap<Player,GameUser>();
@@ -596,6 +596,35 @@ public class GameUser extends User {
         }
     }
 
+    public void updateWalkSpeed(){
+        double speed = 0.2;
+
+        if(getCurrentCharacter() != null){
+            speed *= getCurrentCharacter().getTotalValue(AwakeningType.WALK_SPEED)*0.01;
+        }
+
+        p.setWalkSpeed((float)speed);
+    }
+
+    public void updateTabList(){
+        super.updateTabList();
+
+        if(getCurrentCharacter() == null) return;
+
+        //TabAPI.clearTab(p);
+
+        /*int ping = 5;
+        WrappedGameProfile profile = WrappedGameProfile.fromHandle(GameProfileBuilder.getProfile(UUID.randomUUID(),Util.randomString(5),"http://textures.minecraft.net/texture/a6aa6e936534ea2f120418c9aa3f91828e23a9f0f73ca4d3486e961e6f0fa"));
+
+        for(int width = 0; width < TabAPI.getHorizSize()-1; width++){
+            for(int height = -1; height < TabAPI.getVertSize()-1; height++){
+                TabAPI.setTabString(DungeonRPG.getInstance(),p,width,height,ChatColor.WHITE.toString() + width + " - " + height,ping,profile);
+            }
+        }
+
+        TabAPI.updatePlayer(p);*/
+    }
+
     public void updateClickComboBar(){
         String left = ChatColor.GREEN + "Left";
         String middle = ChatColor.GREEN + "Middle";
@@ -829,6 +858,8 @@ public class GameUser extends User {
             p.teleport(c.getStoredLocation());
             p.setGameMode(DungeonRPG.PLAYER_DEFAULT_GAMEMODE);
             updateLevelBar();
+            updateTabList();
+            updateWalkSpeed();
 
             getGuild(); // load guild
             for(Profession p : Profession.values()) c.getVariables().getProfessionProgress(p); // load professions
@@ -985,6 +1016,8 @@ public class GameUser extends User {
     }
 
     public void checkRequirements(){
+        updateWalkSpeed();
+
         if(getCurrentCharacter() != null){
             DungeonAPI.sync(() -> {
                 CustomItem helmet = null;

@@ -560,6 +560,7 @@ public class Character {
                     u.resetTemporaryData();
                     u.resetMount();
                     u.removeHoloPlate();
+                    u.updateWalkSpeed();
                     p.teleport(DungeonRPG.getCharSelLocation());
                     DungeonRPG.updateVanishing();
 

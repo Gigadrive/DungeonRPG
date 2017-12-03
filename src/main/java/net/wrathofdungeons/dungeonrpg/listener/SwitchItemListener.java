@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class SwitchItemListener implements Listener {
     @EventHandler
@@ -25,6 +26,14 @@ public class SwitchItemListener implements Listener {
 
                 CustomItem item = CustomItem.fromItemStack(p.getInventory().getItem(e.getNewSlot()));
                 u.updateHandSpeed(item);
+                u.updateHPBar();
+
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        u.updateWalkSpeed();
+                    }
+                }.runTaskLater(DungeonRPG.getInstance(),5);
 
                 if(item != null){
                     if(p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE){
@@ -34,6 +43,8 @@ public class SwitchItemListener implements Listener {
                             p.setGameMode(GameMode.SURVIVAL);
                         }
                     }
+                } else {
+                    if(p.getGameMode() == GameMode.SURVIVAL) p.setGameMode(GameMode.ADVENTURE);
                 }
             }
         }
