@@ -254,12 +254,28 @@ public class DamageHandler {
                     holo.getVisibilityManager().setVisibleByDefault(false);
                     holo.getVisibilityManager().showTo(p);
 
-                    new BukkitRunnable(){
+                    /*new BukkitRunnable(){
                         @Override
                         public void run() {
                             if(!holo.isDeleted()) holo.delete();
                         }
-                    }.runTaskLater(DungeonRPG.getInstance(),20);
+                    }.runTaskLater(DungeonRPG.getInstance(),20);*/
+
+                    final int max = 25;
+                    for(int i = 0; i <= max; i++){
+                        final int ii = i;
+
+                        new BukkitRunnable(){
+                            @Override
+                            public void run() {
+                                if(ii == max){
+                                    if(!holo.isDeleted()) holo.delete();
+                                } else if(ii < max){
+                                    if(!holo.isDeleted()) holo.teleport(holo.getLocation().clone().add(0,0.1,0));
+                                }
+                            }
+                        }.runTaskLater(DungeonRPG.getInstance(),i);
+                    }
                 }
             }
         }
