@@ -879,6 +879,8 @@ public class GameUser extends User {
             p.sendMessage(ChatColor.GREEN + "Please note that you are playing an alpha version of the game. Bugs and glitches may occur..");
             p.sendMessage(ChatColor.BLUE + "Current Level: " + c.getLevel());
             if(c.getRpgClass() != null && c.getRpgClass() != RPGClass.NONE) p.sendMessage(ChatColor.BLUE + "Current Class: " + c.getRpgClass().getName());
+
+            DungeonAPI.executeBungeeCommand("BungeeConsole","callgloballogin " + p.getName() + " " + c.getLevel() + " " + c.getRpgClass().getName());
         }
     }
 
