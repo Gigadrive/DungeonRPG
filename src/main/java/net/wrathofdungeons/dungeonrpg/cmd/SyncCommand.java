@@ -78,6 +78,7 @@ public class SyncCommand extends Command {
                             for(Player a : Bukkit.getOnlinePlayers()) a.sendMessage(ChatColor.GRAY + "** " + ChatColor.YELLOW + p.getName() + " started a sync action (" + ChatColor.GREEN + "MAP" + ChatColor.YELLOW + ") " + ChatColor.GRAY + "**");
 
                             syncFile(p,"/home/wod/wrapper/local/templates/Test/default/wod/","/home/wod/wrapper/local/templates/Game/default/wod/");
+                            syncFile(p,"/home/wod/wrapper/local/templates/Test/default/Dungeons/","/home/wod/wrapper/local/templates/Game/default/Dungeons/");
 
                             sync = false;
                             for(Player a : Bukkit.getOnlinePlayers()) a.sendMessage(ChatColor.GRAY + "** " + ChatColor.GREEN + p.getName() + "'s sync action finished! " + ChatColor.GRAY + "**");

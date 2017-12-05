@@ -600,8 +600,10 @@ public class GameUser extends User {
         double speed = 0.2;
 
         if(getCurrentCharacter() != null){
-            speed *= getCurrentCharacter().getTotalValue(AwakeningType.WALK_SPEED)*0.01;
+            speed += speed*(getCurrentCharacter().getTotalValue(AwakeningType.WALK_SPEED)*0.01);
         }
+
+        if(speed > 1) speed = 1;
 
         p.setWalkSpeed((float)speed);
     }
