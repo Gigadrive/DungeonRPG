@@ -1360,8 +1360,9 @@ public class GameUser extends User {
 
                     for(int b : newBankRow) if(getCurrentCharacter().getLevel() == b) p.sendMessage(ChatColor.YELLOW + "+1 Bank Row" + ChatColor.GRAY + " [" + getCurrentCharacter().getBankRows() + " total]");
 
-                    for(int b : newSkillPoints) if(getCurrentCharacter().getLevel() == b){
-                        int toAdd = 3;
+                    //for(int b : newSkillPoints) if(getCurrentCharacter().getLevel() == b){
+                    if(true){
+                        int toAdd = 1;
                         String d = toAdd == 1 ? "" : "s";
                         String f = toAdd == 1 ? "it" : "them";
 

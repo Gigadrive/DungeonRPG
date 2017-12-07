@@ -83,6 +83,6 @@ public class FormularUtils {
     }
 
     public static double getMobRegen(MobClass mobClass, int level){
-        return level; // TODO: Add proper calculation
+        return level-1; // TODO: Add proper calculation
     }
 }

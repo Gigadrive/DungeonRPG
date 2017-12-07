@@ -13,9 +13,11 @@ import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
+import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.skill.archer.DartRain;
 import net.wrathofdungeons.dungeonrpg.skill.archer.ExplosionArrow;
 import net.wrathofdungeons.dungeonrpg.skill.archer.PoisonArrow;
+import net.wrathofdungeons.dungeonrpg.skill.assassin.StabbingStorm;
 import net.wrathofdungeons.dungeonrpg.skill.magician.ChargedExplosion;
 import net.wrathofdungeons.dungeonrpg.skill.magician.FlameBurst;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.AxeBlast;
@@ -184,10 +186,10 @@ public class DamageHandler {
                     damage.setDamage(damage.getDamage()*1.5);
                 } else if(skill instanceof AxeBlast){
                     damage.setDamage(damage.getDamage()*2.5);
+                } else if(skill instanceof StabbingStorm){
+                    damage.setDamage((damage.getDamage()*2.75)*Double.parseDouble(skill.getEffects(investedSkillPoints).get("Damage").replace("x","")));
                 } else if(skill instanceof PoisonArrow){
-                    damage.setDamage(damage.getDamage()/2.5);
-
-                    damage.setDamage(damage.getDamage()*Double.parseDouble(skill.getEffects(investedSkillPoints).get("Damage").replace("x","")));
+                    damage.setDamage((damage.getDamage()/2.5)*Double.parseDouble(skill.getEffects(investedSkillPoints).get("Damage").replace("x","")));
                 }
             }
 
