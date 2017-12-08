@@ -6,6 +6,7 @@ import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.mobs.MobType;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
@@ -15,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -120,12 +122,14 @@ public class VortexBarrier implements Skill {
             }
 
             for(Entity e : p.getNearbyEntities(range,range,range)){
+                boolean launch = false;
+
                 if(e instanceof LivingEntity){
                     LivingEntity ent = (LivingEntity)e;
                     CustomEntity c = CustomEntity.fromEntity(ent);
 
                     if(c != null){
-                        ent.setVelocity(ent.getLocation().toVector().subtract(loc.toVector()).normalize().multiply(0.75).setY(1.25));
+                        launch = true;
                     } else {
                         if(ent instanceof Player){
                             Player p2 = (Player)ent;
@@ -133,7 +137,7 @@ public class VortexBarrier implements Skill {
                             if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
                                 GameUser u2 = GameUser.getUser(p2);
 
-                                if(u2.getCurrentCharacter() != null) ent.setVelocity(ent.getLocation().toVector().subtract(loc.toVector()).normalize().multiply(0.75).setY(1.25));
+                                if(u2.getCurrentCharacter() != null) launch = true;
                             } else {
                                 if(GameUser.isLoaded(p2)){
                                     GameUser u2 = GameUser.getUser(p2);
@@ -148,7 +152,33 @@ public class VortexBarrier implements Skill {
                             }
                         }
                     }
+                } else if(e instanceof Projectile){
+                    Projectile pr = (Projectile)e;
+
+                    if(pr.getShooter() instanceof Player){
+                        Player p2 = (Player)pr.getShooter();
+
+                        if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
+                            GameUser u2 = GameUser.getUser(p2);
+
+                            if(u2.getCurrentCharacter() != null) launch = true;
+                        } else if(CustomEntity.fromEntity(p2) != null){
+                            CustomEntity c = CustomEntity.fromEntity(p2);
+
+                            if(c.getData().getMobType() == MobType.AGGRO || c.getData().getMobType() == MobType.NEUTRAL) launch = true;
+                        }
+                    } else if(pr.getShooter() instanceof LivingEntity){
+                        LivingEntity ent = (LivingEntity)pr.getShooter();
+
+                        if(CustomEntity.fromEntity(ent) != null){
+                            CustomEntity c = CustomEntity.fromEntity(ent);
+
+                            if(c.getData().getMobType() == MobType.AGGRO || c.getData().getMobType() == MobType.NEUTRAL) launch = true;
+                        }
+                    }
                 }
+
+                if(launch) e.setVelocity(e.getLocation().toVector().subtract(loc.toVector()).normalize().multiply(0.75).setY(1.25));
             }
 
             for(int i = 0; i < 5; i++){
