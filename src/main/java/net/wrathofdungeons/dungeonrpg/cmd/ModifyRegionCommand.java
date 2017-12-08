@@ -27,6 +27,8 @@ public class ModifyRegionCommand extends Command {
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> moblimit <Stage Index>");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> cooldown <seconds>");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> spawnChance <Value>");
+        p.sendMessage(ChatColor.RED + "/" + label + " <ID> entranceTitleTop [Title]");
+        p.sendMessage(ChatColor.RED + "/" + label + " <ID> entranceTitleBottom [Title]");
     }
 
     @Override
@@ -97,6 +99,16 @@ public class ModifyRegionCommand extends Command {
                             } else {
                                 p.sendMessage(ChatColor.RED + "That region doesn't have any location to teleport to.");
                             }
+                        } else if(args[1].equalsIgnoreCase("entranceTitleTop")){
+                            region.setEntranceTitleTop(null);
+                            DungeonAPI.async(() -> region.saveData());
+
+                            p.sendMessage(ChatColor.GREEN + "Top of entrance title has been reset.");
+                        } else if(args[1].equalsIgnoreCase("entranceTitleBottom")){
+                            region.setEntranceTitleBottom(null);
+                            DungeonAPI.async(() -> region.saveData());
+
+                            p.sendMessage(ChatColor.GREEN + "Bottom of entrance title has been reset.");
                         } else {
                             sendUsage(p,label);
                         }
@@ -171,6 +183,64 @@ public class ModifyRegionCommand extends Command {
                             } else {
                                 p.sendMessage(ChatColor.RED + "Please enter a valid spawn chance (must be at least 0).");
                             }
+                        } else if(args[1].equalsIgnoreCase("entranceTitleTop")){
+                            StringBuilder sb = new StringBuilder();
+                            for (int i = 2; i < args.length; i++) {
+                                sb.append(args[i]).append(" ");
+                            }
+                            String message = sb.toString().trim();
+
+                            region.setEntranceTitleTop(message);
+                            DungeonAPI.async(() -> region.saveData());
+
+                            p.sendMessage(ChatColor.GREEN + "Top of entrance title has been set to " + message + ".");
+                        } else if(args[1].equalsIgnoreCase("entranceTitleBottom")){
+                            StringBuilder sb = new StringBuilder();
+                            for (int i = 2; i < args.length; i++) {
+                                sb.append(args[i]).append(" ");
+                            }
+                            String message = sb.toString().trim();
+
+                            region.setEntranceTitleBottom(message);
+                            DungeonAPI.async(() -> region.saveData());
+
+                            p.sendMessage(ChatColor.GREEN + "Bottom of entrance title has been set to " + message + ".");
+                        } else {
+                            sendUsage(p,label);
+                        }
+                    } else {
+                        p.sendMessage(ChatColor.RED + "Please enter a valid region ID.");
+                    }
+                } else {
+                    p.sendMessage(ChatColor.RED + "Please enter a valid region ID.");
+                }
+            } else if(args.length > 3) {
+                if(Util.isValidInteger(args[0])){
+                    Region region = Region.getRegion(Integer.parseInt(args[0]));
+
+                    if(region != null){
+                        if(args[1].equalsIgnoreCase("entranceTitleTop")){
+                            StringBuilder sb = new StringBuilder();
+                            for (int i = 2; i < args.length; i++) {
+                                sb.append(args[i]).append(" ");
+                            }
+                            String message = sb.toString().trim();
+
+                            region.setEntranceTitleTop(message);
+                            DungeonAPI.async(() -> region.saveData());
+
+                            p.sendMessage(ChatColor.GREEN + "Top of entrance title has been set to " + message + ".");
+                        } else if(args[1].equalsIgnoreCase("entranceTitleBottom")){
+                            StringBuilder sb = new StringBuilder();
+                            for (int i = 2; i < args.length; i++) {
+                                sb.append(args[i]).append(" ");
+                            }
+                            String message = sb.toString().trim();
+
+                            region.setEntranceTitleBottom(message);
+                            DungeonAPI.async(() -> region.saveData());
+
+                            p.sendMessage(ChatColor.GREEN + "Bottom of entrance title has been set to " + message + ".");
                         } else {
                             sendUsage(p,label);
                         }

@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
+import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -8,6 +9,7 @@ import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -44,11 +46,17 @@ public class PlayerMoveListener implements Listener {
 
                 if(((Entity)p).isOnGround()) u.getSkillValues().leapIsInAir = false;
 
-                if(u.mayActivateMobs){
-                    if(newBlock){
-                        for(Region region : Region.STORAGE){
-                            if(region.getMobData() != null && region.getMobLimit() > 0 && region.mayActivateMobs() && region.isActive()){
-                                if(region.isInRegion(p.getLocation())){
+                if(newBlock){
+                    for(Region region : Region.STORAGE){
+                        if(region.isInRegion(e.getTo())){
+                            if(!region.isInRegion(e.getFrom())){
+                                if((region.getEntranceTitleTop() != null && !region.getEntranceTitleTop().isEmpty()) || (region.getEntranceTitleBottom() != null && !region.getEntranceTitleBottom().isEmpty())){
+                                    BountifulAPI.sendTitle(p,10,3*20,10, region.getEntranceTitleTop() != null ? ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + region.getEntranceTitleTop() : "",region.getEntranceTitleBottom() != null ? ChatColor.DARK_AQUA + region.getEntranceTitleBottom() : "");
+                                }
+                            }
+
+                            if(u.mayActivateMobs){
+                                if(region.getMobData() != null && region.getMobLimit() > 0 && region.mayActivateMobs() && region.isActive()){
                                     region.startMobActivationTimer();
 
                                     if(region.getSpawnChance() > 0 && !Util.getChanceBoolean(1,region.getSpawnChance()))
@@ -76,16 +84,16 @@ public class PlayerMoveListener implements Listener {
                                 }
                             }
                         }
-
-                        u.mayActivateMobs = false;
-
-                        new BukkitRunnable(){
-                            @Override
-                            public void run() {
-                                u.mayActivateMobs = true;
-                            }
-                        }.runTaskLater(DungeonRPG.getInstance(),2*20);
                     }
+
+                    u.mayActivateMobs = false;
+
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            u.mayActivateMobs = true;
+                        }
+                    }.runTaskLater(DungeonRPG.getInstance(),2*20);
                 }
             } else {
                 if(!u.isInSetupMode()) freeze = true;

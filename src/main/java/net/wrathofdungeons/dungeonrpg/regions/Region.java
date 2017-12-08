@@ -54,6 +54,8 @@ public class Region {
     private int mobDataID;
     private int mobLimit;
     private ArrayList<RegionLocation> locations;
+    private String entranceTitleTop;
+    private String entranceTitleBottom;
     private int cooldown;
     private int spawnChance;
     private boolean active;
@@ -71,6 +73,8 @@ public class Region {
                 this.id = rs.getInt("id");
                 this.mobDataID = rs.getInt("mobDataID");
                 this.mobLimit = rs.getInt("mobLimit");
+                this.entranceTitleTop = rs.getString("entranceTitle.top");
+                this.entranceTitleBottom = rs.getString("entranceTitle.bottom");
                 this.cooldown = rs.getInt("cooldown");
                 this.spawnChance = rs.getInt("spawnChance");
                 String locationString = rs.getString("locations");
@@ -113,6 +117,22 @@ public class Region {
 
     public int getMobLimit(){
         return mobLimit;
+    }
+
+    public void setEntranceTitleTop(String entranceTitleTop) {
+        this.entranceTitleTop = entranceTitleTop;
+    }
+
+    public String getEntranceTitleTop() {
+        return entranceTitleTop;
+    }
+
+    public void setEntranceTitleBottom(String entranceTitleBottom) {
+        this.entranceTitleBottom = entranceTitleBottom;
+    }
+
+    public String getEntranceTitleBottom() {
+        return entranceTitleBottom;
     }
 
     public boolean isActive() {
@@ -264,14 +284,16 @@ public class Region {
 
     public void saveData(){
         try {
-            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `regions` SET `locations` = ?, `active` = ?, `mobDataID` = ?, `mobLimit` = ?, `cooldown` = ?, `spawnChance` = ? WHERE `id` = ?");
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `regions` SET `locations` = ?, `active` = ?, `mobDataID` = ?, `mobLimit` = ?, `entranceTitle.top` = ?, `entranceTitle.bottom` = ?, `cooldown` = ?, `spawnChance` = ? WHERE `id` = ?");
             ps.setString(1,new Gson().toJson(getLocations()));
             ps.setBoolean(2,active);
             ps.setInt(3,mobDataID);
             ps.setInt(4,mobLimit);
-            ps.setInt(5,cooldown);
-            ps.setInt(6,spawnChance);
-            ps.setInt(7,getID());
+            ps.setString(5,entranceTitleTop);
+            ps.setString(6,entranceTitleBottom);
+            ps.setInt(7,cooldown);
+            ps.setInt(8,spawnChance);
+            ps.setInt(9,getID());
             ps.executeUpdate();
             ps.close();
         } catch(Exception e){
