@@ -113,7 +113,7 @@ public class FlameBurst implements Skill {
 
         int i = 0;
         for(Location t : locations){
-            new BukkitRunnable(){
+            u.getSkillValues().skillTasks.add(new BukkitRunnable(){
                 @Override
                 public void run() {
                     u.ignoreDamageCheck = true;
@@ -169,7 +169,7 @@ public class FlameBurst implements Skill {
                         }
                     }.runTaskLater(DungeonRPG.getInstance(),1);
                 }
-            }.runTaskLater(DungeonRPG.getInstance(),i*2);
+            }.runTaskLater(DungeonRPG.getInstance(),i*2));
 
             i++;
         }

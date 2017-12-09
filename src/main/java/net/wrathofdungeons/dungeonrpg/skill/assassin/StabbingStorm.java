@@ -161,7 +161,7 @@ public class StabbingStorm implements Skill {
 
             for(int casts = 0; casts < totalAttacks; casts++){
                 final int castNumber = casts;
-                new BukkitRunnable(){
+                u.getSkillValues().skillTasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
                         Location castLocation = locations.get(castNumber);
@@ -211,7 +211,7 @@ public class StabbingStorm implements Skill {
                             }
                         }
                     }
-                }.runTaskLater(DungeonRPG.getInstance(),casts*2);
+                }.runTaskLater(DungeonRPG.getInstance(),casts*2));
             }
         } catch(Exception e){
             p.sendMessage(ChatColor.RED + "Skill failed! Are you standing too close to something?");

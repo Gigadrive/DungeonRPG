@@ -42,6 +42,7 @@ import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.skill.archer.*;
 import net.wrathofdungeons.dungeonrpg.skill.assassin.DashAttack;
 import net.wrathofdungeons.dungeonrpg.skill.assassin.StabbingStorm;
+import net.wrathofdungeons.dungeonrpg.skill.assassin.WhirlingBlade;
 import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
 import net.wrathofdungeons.dungeonrpg.skill.magician.FlameBurst;
 import net.wrathofdungeons.dungeonrpg.skill.magician.ChargedExplosion;
@@ -193,6 +194,7 @@ public class DungeonRPG extends JavaPlugin {
         // ASSASSIN
         s.addSkill(new StabbingStorm());
         s.addSkill(new DashAttack());
+        s.addSkill(new WhirlingBlade());
 
         // MAGICIAN
         s.addSkill(new FlameBurst());

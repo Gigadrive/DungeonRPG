@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
+
 public class SkillValues {
     public int dartRainArrows;
     public BukkitTask dartRainTask;
@@ -18,6 +20,8 @@ public class SkillValues {
     public Stomper stomperSkill;
     public BukkitTask lightningStrikeTask;
     public int lightningStrikeCount;
+
+    public ArrayList<BukkitTask> skillTasks;
 
     public SkillValues(){
         reset();
@@ -49,6 +53,14 @@ public class SkillValues {
         if(lightningStrikeTask != null){
             lightningStrikeTask.cancel();
             lightningStrikeTask = null;
+        }
+
+        if(skillTasks != null){
+            for(BukkitTask t : skillTasks) t.cancel();
+
+            skillTasks.clear();
+        } else {
+            skillTasks = new ArrayList<BukkitTask>();
         }
     }
 }

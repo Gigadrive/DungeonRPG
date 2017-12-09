@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 public class SwitchItemListener implements Listener {
     @EventHandler
@@ -34,6 +35,12 @@ public class SwitchItemListener implements Listener {
                         u.updateWalkSpeed();
                     }
                 }.runTaskLater(DungeonRPG.getInstance(),5);
+
+                if(u.getSkillValues().skillTasks != null && u.getSkillValues().skillTasks.size() > 0){
+                    for(BukkitTask t : u.getSkillValues().skillTasks) t.cancel();
+
+                    u.getSkillValues().skillTasks.clear();
+                }
 
                 if(item != null){
                     if(p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE){
