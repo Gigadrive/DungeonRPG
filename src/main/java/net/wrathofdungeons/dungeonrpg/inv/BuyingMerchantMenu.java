@@ -67,7 +67,7 @@ public class BuyingMerchantMenu implements Listener {
 
                                     inv.clear();
                                     p.closeInventory();
-                                    p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
+                                    p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
                                     if(toSell.size() == 1){
                                         if(sellprice == 1){
                                             p.sendMessage(ChatColor.GREEN + "You sold " + ChatColor.YELLOW + toSell.size() + " " + ChatColor.GREEN + "item for " + ChatColor.YELLOW + sellprice + ChatColor.GREEN + " golden nugget.");

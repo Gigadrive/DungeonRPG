@@ -54,7 +54,7 @@ import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -485,7 +485,7 @@ public class DungeonRPG extends JavaPlugin {
                                 EntityTarget entityTarget = n.getEntityTarget();
 
                                 if(entityTarget != null){
-                                    LivingEntity target = entityTarget.getTarget();
+                                    LivingEntity target = entityTarget.getTarget() != null && entityTarget.getTarget() instanceof LivingEntity ? (LivingEntity)entityTarget.getTarget() : null;
 
                                     if(target != null){
                                         CustomEntity ct = CustomEntity.fromEntity(target);
@@ -537,12 +537,12 @@ public class DungeonRPG extends JavaPlugin {
             @Override
             public void run() {
                 for(Player p : Bukkit.getOnlinePlayers()){
-                    ((CraftPlayer)p).getHandle().getDataWatcher().watch(9, (byte) 0);
+                    ((CraftPlayer)p).getHandle().k(0);
                 }
 
                 for(NPC npc : CitizensAPI.getNPCRegistry().sorted()){
                     if(npc.getEntity() != null && npc.getEntity() instanceof Player){
-                        ((CraftPlayer)npc.getEntity()).getHandle().getDataWatcher().watch(9, (byte) 0);
+                        ((CraftPlayer)npc.getEntity()).getHandle().k(0);
                     }
                 }
             }
@@ -974,7 +974,7 @@ public class DungeonRPG extends JavaPlugin {
     }
 
     public static void showBloodEffect(Location loc){
-        loc.getWorld().playSound(loc, Sound.HURT_FLESH, 1F, 1F);
+        loc.getWorld().playSound(loc, Sound.ENTITY_PLAYER_HURT, 1F, 1F);
         for(Player p : loc.getWorld().getPlayers()){
             if(GameUser.isLoaded(p)){
                 GameUser u = GameUser.getUser(p);

@@ -8,7 +8,7 @@ import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.lib.network.ChannelUser;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import net.citizensnpcs.api.CitizensAPI;
-import net.minecraft.server.v1_8_R3.GenericAttributes;
+import net.minecraft.server.v1_9_R2.GenericAttributes;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.user.Rank;
@@ -43,6 +43,7 @@ import net.wrathofdungeons.dungeonrpg.skill.SkillValues;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
@@ -1398,7 +1399,7 @@ public class GameUser extends User {
             getCurrentCharacter().updateBankSize();
             updateInventory();
 
-            p.playSound(p.getEyeLocation(),Sound.LEVEL_UP,1f,1f);
+            p.playSound(p.getEyeLocation(),Sound.ENTITY_PLAYER_LEVELUP,1f,1f);
 
             BountifulAPI.sendTitle(p,5,3*20,5,ChatColor.DARK_AQUA.toString() + ChatColor.BOLD.toString() + "Level Up!",ChatColor.AQUA.toString() + "New stat points are available!");
         }
@@ -1438,6 +1439,17 @@ public class GameUser extends User {
         }
 
         return i;
+    }
+
+    public void resetVanillaAttackSpeed(){
+        p.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(16);
+    }
+
+    @Override
+    public void bukkitReset() {
+        super.bukkitReset();
+
+        resetVanillaAttackSpeed();
     }
 
     public boolean hasInInventory(ItemData data, int amount){

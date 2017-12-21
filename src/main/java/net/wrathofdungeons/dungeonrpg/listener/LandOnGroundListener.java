@@ -42,7 +42,7 @@ public class LandOnGroundListener implements Listener {
                     for(Location l : WorldUtilities.getParticleCircle(p.getLocation(),range/2,((int)(range*0.5))))
                         ParticleEffect.EXPLOSION_HUGE.display(0f,0f,0f,0.005f,3,l,600);
 
-                    p.getWorld().playSound(p.getLocation(), Sound.EXPLODE,1f,1f);
+                    p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE,1f,1f);
 
                     ArrayList<FallingBlock> blocks = new ArrayList<FallingBlock>();
 

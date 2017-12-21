@@ -318,7 +318,7 @@ public class InteractListener implements Listener {
                                                         u.consumeCurrentItem(1);
                                                         u.addHP(item.getData().getFoodRegeneration());
 
-                                                        p.playSound(p.getEyeLocation(),Sound.EAT,1f,1f);
+                                                        p.playSound(p.getEyeLocation(),Sound.ENTITY_PLAYER_BURP,1f,1f);
                                                         ParticleEffect.HEART.display(0.005f,0.005f,0.005f,0.005f,30,p.getEyeLocation(),600);
 
                                                         if(item.getData().getFoodDelayInTicks() > 0){
@@ -551,7 +551,7 @@ public class InteractListener implements Listener {
                                 if(!c.isClaimed()){
                                     u.getCurrentCharacter().getVariables().statisticsManager.chestsLooted++;
                                     c.claim(p);
-                                    c.getLocation().getWorld().playSound(c.getLocation(), Sound.CHEST_OPEN, 1f, 1f);
+                                    c.getLocation().getWorld().playSound(c.getLocation(), Sound.BLOCK_CHEST_OPEN, 1f, 1f);
                                     Inventory inv = Bukkit.createInventory(null,Util.INVENTORY_3ROWS,"[" + c.getTier().getDisplay() + "] Loot Chest");
 
                                     ArrayList<CustomItem> toAdd = new ArrayList<CustomItem>();
@@ -789,7 +789,7 @@ public class InteractListener implements Listener {
                                         if(damage < 1) damage = 1;*/
 
                                                 Arrow projectile = p.launchProjectile(Arrow.class);
-                                                p.getWorld().playSound(p.getEyeLocation(), Sound.SHOOT_ARROW, 1F, 1F);
+                                                p.getWorld().playSound(p.getEyeLocation(), Sound.ENTITY_ARROW_SHOOT, 1F, 1F);
                                                 projectile.setVelocity(p.getLocation().getDirection().multiply(2.0D));
                                                 DungeonProjectile data = new DungeonProjectile(p, DungeonProjectileType.ARCHER_ARROW, projectile.getLocation(), 0, damage, false);
                                                 data.setEntity(projectile);
@@ -827,14 +827,14 @@ public class InteractListener implements Listener {
                                 u.currentCombo += "R";
                                 u.comboDelay = 1;
                                 if(u.currentCombo.length() != 3) u.updateClickComboBar();
-                                p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
+                                p.playSound(p.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
                                 u.startComboResetTask();
                                 return;
                             } else if((e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR) && (u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER))){
                                 u.currentCombo += "L";
                                 u.comboDelay = 1;
                                 if(u.currentCombo.length() != 3) u.updateClickComboBar();
-                                p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
+                                p.playSound(p.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
                                 if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
                                 return;
                             }
@@ -845,7 +845,7 @@ public class InteractListener implements Listener {
                                 u.currentCombo = u.currentCombo + "R";
                                 u.comboDelay = 1;
                                 if(u.currentCombo.length() != 3) u.updateClickComboBar();
-                                p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
+                                p.playSound(p.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
                                 if(u.currentCombo.length() != 3){
                                     if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
                                     return;
@@ -856,7 +856,7 @@ public class InteractListener implements Listener {
                                 u.currentCombo = u.currentCombo + "L";
                                 u.comboDelay = 1;
                                 if(u.currentCombo.length() != 3) u.updateClickComboBar();
-                                p.playSound(p.getEyeLocation(), Sound.CLICK, 1F, 1F);
+                                p.playSound(p.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
                                 if(u.currentCombo.length() != 3){
                                     if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
                                     return;
@@ -898,7 +898,7 @@ public class InteractListener implements Listener {
                                             u.ignoreDamageCheck = true;
                                             boolean playAfter = toCast instanceof Blinkpool;
 
-                                            if(!playAfter) p.playSound(p.getEyeLocation(),Sound.SUCCESSFUL_HIT,1f,0.5f);
+                                            if(!playAfter) p.playSound(p.getEyeLocation(),Sound.ENTITY_ARROW_HIT_PLAYER,1f,0.5f);
                                             u.setMP(u.getMP()-manaCost);
                                             toCast.execute(p);
 
@@ -911,7 +911,7 @@ public class InteractListener implements Listener {
                                                 u.startClickComboClearTask();
                                             }
 
-                                            if(playAfter) p.playSound(p.getEyeLocation(),Sound.SUCCESSFUL_HIT,1f,0.5f);
+                                            if(playAfter) p.playSound(p.getEyeLocation(),Sound.ENTITY_ARROW_HIT_PLAYER,1f,0.5f);
 
                                             if(toCast.getMinLevel() == 1){
                                                 if(!u.getCurrentCharacter().getVariables().hasDoneFirstSkill){

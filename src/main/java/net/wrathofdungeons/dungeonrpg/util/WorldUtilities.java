@@ -4,10 +4,10 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
-import net.minecraft.server.v1_8_R3.AttributeInstance;
-import net.minecraft.server.v1_8_R3.AttributeModifier;
-import net.minecraft.server.v1_8_R3.EntityInsentient;
-import net.minecraft.server.v1_8_R3.GenericAttributes;
+import net.minecraft.server.v1_9_R2.AttributeInstance;
+import net.minecraft.server.v1_9_R2.AttributeModifier;
+import net.minecraft.server.v1_9_R2.EntityInsentient;
+import net.minecraft.server.v1_9_R2.GenericAttributes;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
@@ -18,7 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -238,12 +238,12 @@ public class WorldUtilities {
                     Method met = clazz.getDeclaredMethod("setData", GameProfile.class);
 
                     met.setAccessible(true);
-                    met.invoke(net.citizensnpcs.npc.skin.Skin.get(skinName),profile);
+                    met.invoke(net.citizensnpcs.npc.skin.Skin.get(skinName,false),profile);
                 } catch(Exception e){
                     e.printStackTrace();
                 }
 
-                skinnable.getSkinTracker().notifySkinChange();
+                skinnable.getSkinTracker().notifySkinChange(false);
             } else {
                 //System.out.println("SKINNABLE IS NULL");
             }

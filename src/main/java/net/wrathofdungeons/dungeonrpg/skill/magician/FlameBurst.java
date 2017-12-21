@@ -121,7 +121,7 @@ public class FlameBurst implements Skill {
 
                     ParticleEffect.FLAME.display(0.5f,0.5f,0.5f,0.05f,15,t,600);
                     ParticleEffect.SMOKE_NORMAL.display(0.5f,0.5f,0.05f,0.05f,4,t,600);
-                    t.getWorld().playSound(t, Sound.FIRE,1f,1f);
+                    t.getWorld().playSound(t, Sound.BLOCK_FIRE_AMBIENT,1f,1f);
 
                     for(Entity entity : t.getWorld().getNearbyEntities(t,1,1,1)){
                         if(!entities.contains(entity)){

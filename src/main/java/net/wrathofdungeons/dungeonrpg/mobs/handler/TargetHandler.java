@@ -4,26 +4,49 @@ import com.google.common.collect.Sets;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.goals.TargetNearbyEntityGoal;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R2.*;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobAIType;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_9_R2.util.UnsafeList;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class TargetHandler {
     public static void clearGoals(LivingEntity entity){
         if(entity.getType() != EntityType.PLAYER) {
-            EntityInsentient c = (EntityInsentient) (((CraftEntity) entity).getHandle());
+            if(((EntityInsentient)((CraftEntity)entity).getHandle()) instanceof EntityCreature){
+                EntityCreature c = (EntityCreature)((EntityInsentient)((CraftEntity)entity).getHandle());
+                try {
+                    Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
+                    bField.setAccessible(true);
+                    Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
+                    cField.setAccessible(true);
+
+                    Field modifiersField = Field.class.getDeclaredField("modifiers");
+                    modifiersField.setAccessible(true);
+                    modifiersField.setInt(bField, bField.getModifiers() & ~Modifier.FINAL);
+                    modifiersField.setInt(cField, cField.getModifiers() & ~Modifier.FINAL);
+
+                    bField.set(c.goalSelector, Sets.newLinkedHashSet());
+                    bField.set(c.targetSelector, Sets.newLinkedHashSet());
+                    cField.set(c.goalSelector, Sets.newLinkedHashSet());
+                    cField.set(c.targetSelector, Sets.newLinkedHashSet());
+                } catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            /*EntityInsentient c = (EntityInsentient) (((CraftEntity) entity).getHandle());
             EntitySlime s = null;
             if (c instanceof EntitySlime) s = (EntitySlime) c;
 
@@ -39,6 +62,19 @@ public class TargetHandler {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            try {
+                Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
+                bField.setAccessible(true);
+                Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
+                cField.setAccessible(true);
+                bField.set(c.goalSelector, Sets.newLinkedHashSet());
+                bField.set(c.targetSelector, Sets.newLinkedHashSet());
+                cField.set(c.goalSelector, Sets.newLinkedHashSet());
+                cField.set(c.targetSelector, Sets.newLinkedHashSet());
+            } catch(Exception e){
+                e.printStackTrace();
+            }*/
         }
     }
 
@@ -49,14 +85,7 @@ public class TargetHandler {
             if(c instanceof EntitySlime) s = (EntitySlime)c;
 
             try {
-                Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
-                bField.setAccessible(true);
-                Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
-                cField.setAccessible(true);
-                if(s == null) bField.set(c.goalSelector, new UnsafeList<PathfinderGoalSelector>());
-                bField.set(c.targetSelector, new UnsafeList<PathfinderGoalSelector>());
-                if(s == null) cField.set(c.goalSelector, new UnsafeList<PathfinderGoalSelector>());
-                cField.set(c.targetSelector, new UnsafeList<PathfinderGoalSelector>());
+                clearGoals(entity);
 
                 c.goalSelector.a(0, new PathfinderGoalFloat(c));
                 if(c instanceof EntityCreature) c.goalSelector.a(5, new PathfinderGoalMoveTowardsRestriction((EntityCreature)c, 1.0D));
@@ -74,7 +103,7 @@ public class TargetHandler {
                     a.add(EntityVillager.class);
 
                     for(Class<? extends Entity> cl : a){
-                        if(c instanceof EntityCreature) if(customEntity.getData().getAiSettings().getType() == MobAIType.MELEE) c.goalSelector.a(2, new PathfinderGoalMeleeAttack((EntityCreature)c, cl, 1.0D, false));
+                        if(c instanceof EntityCreature) if(customEntity.getData().getAiSettings().getType() == MobAIType.MELEE) c.goalSelector.a(2, new PathfinderGoalMeleeAttack((EntityCreature)c, 1.0D, false));
                         if(c instanceof EntityCreature) c.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget((EntityCreature)c, cl, false));
                     }
                 }

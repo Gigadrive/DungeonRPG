@@ -2,10 +2,10 @@ package net.wrathofdungeons.dungeonrpg.items;
 
 import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.NBTTagInt;
-import net.minecraft.server.v1_8_R3.NBTTagList;
-import net.minecraft.server.v1_8_R3.NBTTagString;
+import net.minecraft.server.v1_9_R2.NBTTagCompound;
+import net.minecraft.server.v1_9_R2.NBTTagInt;
+import net.minecraft.server.v1_9_R2.NBTTagList;
+import net.minecraft.server.v1_9_R2.NBTTagString;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ChatIcons;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
@@ -21,7 +21,7 @@ import net.wrathofdungeons.dungeonrpg.util.NBTTypeID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -188,7 +188,7 @@ public class CustomItem {
         if(i == null){
             return null;
         } else {
-            net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(i);
+            net.minecraft.server.v1_9_R2.ItemStack nmsItem = CraftItemStack.asNMSCopy(i);
             if(nmsItem != null && nmsItem.hasTag()){
                 NBTTagCompound tag = nmsItem.getTag();
 
@@ -997,7 +997,7 @@ public class CustomItem {
     }
 
     public ItemStack assignNBTData(ItemStack i){
-        net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(i);
+        net.minecraft.server.v1_9_R2.ItemStack nmsItem = CraftItemStack.asNMSCopy(i);
         NBTTagCompound tag = nmsItem.hasTag() ? nmsItem.getTag() : new NBTTagCompound();
 
         if(DungeonRPG.STORE_NBT_JSON){

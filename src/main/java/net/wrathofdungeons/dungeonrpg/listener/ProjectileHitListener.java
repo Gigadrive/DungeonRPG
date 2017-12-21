@@ -36,19 +36,19 @@ public class ProjectileHitListener implements Listener {
                         if(data.getType() == DungeonProjectileType.EXPLOSION_ARROW){
                             if(data.getRange() == 4){
                                 ParticleEffect.EXPLOSION_NORMAL.display(0.005f,0.005f,0.005f,0.005f,3,e.getEntity().getLocation(),600);
-                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.EXPLODE,1f,1f);
+                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE,1f,1f);
                             } else if(data.getRange() == 6){
                                 ParticleEffect.EXPLOSION_NORMAL.display(0.05f,0.05f,0.05f,0.005f,8,e.getEntity().getLocation(),600);
-                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.EXPLODE,1f,1f);
+                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE,1f,1f);
                             } else if(data.getRange() == 8){
                                 ParticleEffect.EXPLOSION_LARGE.display(0.005f,0.005f,0.005f,0.005f,3,e.getEntity().getLocation(),600);
-                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.EXPLODE,1f,1f);
+                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE,1f,1f);
                             } else if(data.getRange() == 10){
                                 ParticleEffect.EXPLOSION_LARGE.display(0.05f,0.05f,0.05f,0.005f,8,e.getEntity().getLocation(),600);
-                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.EXPLODE,1f,1f);
+                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE,1f,1f);
                             } else if(data.getRange() == 12){
                                 ParticleEffect.EXPLOSION_HUGE.display(0.05f,0.05f,0.05f,0.005f,12,e.getEntity().getLocation(),600);
-                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.EXPLODE,1f,1f);
+                                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE,1f,1f);
                             }
 
                             for(Entity ent : e.getEntity().getNearbyEntities(data.getRange(),data.getRange(),data.getRange())){

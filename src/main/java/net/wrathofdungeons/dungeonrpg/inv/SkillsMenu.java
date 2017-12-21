@@ -90,7 +90,7 @@ public class SkillsMenu {
                         if(u.getCurrentCharacter().getVariables().leftSkillPoints > 0){
                             u.getCurrentCharacter().getVariables().addInvestedSkillPoints(skill,1);
                             u.getCurrentCharacter().getVariables().leftSkillPoints--;
-                            p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+                            p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
                             openFor(p,page);
                         } else {
                             p.sendMessage(ChatColor.RED + "You don't have enough skill points to unlock this skill.");
@@ -160,7 +160,7 @@ public class SkillsMenu {
                             if(u.getCurrentCharacter().getVariables().leftSkillPoints > 0){
                                 u.getCurrentCharacter().getVariables().addInvestedSkillPoints(skill,1);
                                 u.getCurrentCharacter().getVariables().leftSkillPoints--;
-                                p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+                                p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
                                 openFor(p,page);
                             } else {
                                 p.sendMessage(ChatColor.RED + "You don't have enough skill points to upgrade this skill.");
@@ -255,7 +255,7 @@ public class SkillsMenu {
 
         if(u.getCurrentCharacter().getVariables().getComboFromSkill(skill) != null) inv.withItem(6,noCombo,((player, action, item) -> {
             u.getCurrentCharacter().getVariables().setSkillForCombo(u.getCurrentCharacter().getVariables().getComboFromSkill(skill),null);
-            p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+            p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
             openFor(p,returnPage);
         }),ClickType.LEFT);
 
@@ -279,7 +279,7 @@ public class SkillsMenu {
                     ChatColor.YELLOW + "Click to bind " + skill.getName() + " to this combo!"
             }, currentSkill == skill ? 2 : 10),((player, action, item) -> {
                 u.getCurrentCharacter().getVariables().setSkillForCombo(comboType,skill);
-                p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+                p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
                 openFor(p,returnPage);
             }),ClickType.LEFT);
         } else {
@@ -288,7 +288,7 @@ public class SkillsMenu {
                     ChatColor.YELLOW + "Click to bind " + skill.getName() + " to this combo!"
             }, 8),((player, action, item) -> {
                 u.getCurrentCharacter().getVariables().setSkillForCombo(comboType,skill);
-                p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+                p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
                 openFor(p,returnPage);
             }),ClickType.LEFT);
         }

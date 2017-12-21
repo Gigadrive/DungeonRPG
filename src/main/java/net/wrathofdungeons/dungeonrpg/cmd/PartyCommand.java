@@ -29,7 +29,7 @@ public class PartyCommand extends Command {
                 if(cmd.equalsIgnoreCase("create")){
                     if(party == null){
                         party = new Party(p);
-                        p.playSound(p.getEyeLocation(), Sound.LEVEL_UP, 1F, 2F);
+                        p.playSound(p.getEyeLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 2F);
                         p.sendMessage(ChatColor.GREEN + "The party has been created!");
                     } else {
                         p.sendMessage(ChatColor.RED + "You are already in a party.");

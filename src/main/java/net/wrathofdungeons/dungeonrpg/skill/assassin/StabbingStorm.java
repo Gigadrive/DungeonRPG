@@ -169,14 +169,14 @@ public class StabbingStorm implements Skill {
 
                         if(investedSkillPoints == 1 || investedSkillPoints == 1 || investedSkillPoints == 3){
                             ParticleEffect.BLOCK_CRACK.display(new ParticleEffect.BlockData(Material.GOLD_BLOCK, (byte)0), 0f, 0f, 0f, 0f, 10, particleLocation, 600);
-                            particleLocation.getWorld().playSound(particleLocation,Sound.GLASS,1f,1f);
+                            particleLocation.getWorld().playSound(particleLocation,Sound.BLOCK_GLASS_BREAK,1f,1f);
                         } else if(investedSkillPoints == 4){
                             ParticleEffect.BLOCK_CRACK.display(new ParticleEffect.BlockData(Material.GOLD_BLOCK, (byte)0), 0.05f, 0.05f, 0.05f, 0f, 20, particleLocation, 600);
-                            particleLocation.getWorld().playSound(particleLocation,Sound.GLASS,1f,1f);
+                            particleLocation.getWorld().playSound(particleLocation,Sound.BLOCK_GLASS_BREAK,1f,1f);
                         } else if(investedSkillPoints == 5){
                             ParticleEffect.BLOCK_CRACK.display(new ParticleEffect.BlockData(Material.GOLD_BLOCK, (byte)0), 0.05f, 0.05f, 0.05f, 0f, 20, particleLocation, 600);
                             ParticleEffect.BLOCK_CRACK.display(new ParticleEffect.BlockData(Material.IRON_BLOCK, (byte)0), 0.05f, 0.05f, 0.05f, 0f, 20, particleLocation, 600);
-                            particleLocation.getWorld().playSound(particleLocation,Sound.GLASS,1f,1f);
+                            particleLocation.getWorld().playSound(particleLocation,Sound.BLOCK_GLASS_BREAK,1f,1f);
                         }
 
                         for(Entity entity : castLocation.getWorld().getNearbyEntities(castLocation,explodingRange,explodingRange,explodingRange)){

@@ -106,7 +106,7 @@ public class PoisonArrow implements Skill {
 
         Arrow arrow = p.launchProjectile(Arrow.class);
         arrow.setVelocity(p.getLocation().getDirection().multiply(4.5));
-        p.getWorld().playSound(p.getEyeLocation(), Sound.SHOOT_ARROW, 1F, 1F);
+        p.getWorld().playSound(p.getEyeLocation(), Sound.ENTITY_ARROW_SHOOT, 1F, 1F);
 
         DungeonProjectile projectile = new DungeonProjectile(p, DungeonProjectileType.POISON_ARROW, p.getLocation(), 0, 0, true);
         projectile.setSkillData(new SkillData(this,investedSkillPoints));

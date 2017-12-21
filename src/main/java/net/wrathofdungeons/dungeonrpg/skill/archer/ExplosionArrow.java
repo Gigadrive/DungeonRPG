@@ -92,8 +92,8 @@ public class ExplosionArrow implements Skill {
 
         if(weapon != null){
             Arrow a = p.launchProjectile(Arrow.class);
-            p.getWorld().playSound(p.getEyeLocation(), Sound.SHOOT_ARROW, 1F, 1F);
-            p.getWorld().playSound(p.getEyeLocation(), Sound.FIREWORK_LAUNCH, 1F, 1F);
+            p.getWorld().playSound(p.getEyeLocation(), Sound.ENTITY_ARROW_SHOOT, 1F, 1F);
+            p.getWorld().playSound(p.getEyeLocation(), Sound.ENTITY_FIREWORK_LAUNCH, 1F, 1F);
             a.setVelocity(p.getLocation().getDirection().multiply(shotStrength+2));
 
             double damage = 0;

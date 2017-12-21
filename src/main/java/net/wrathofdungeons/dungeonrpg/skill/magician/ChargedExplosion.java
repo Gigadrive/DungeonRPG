@@ -155,7 +155,7 @@ public class ChargedExplosion implements Skill {
                         ParticleEffect.EXPLOSION_HUGE.display(0.05f,0.05f,0.05f,0.005f,12,lastLocL,600);
                     }
 
-                    lastLocL.getWorld().playSound(lastLocL, Sound.EXPLODE,1f,1f);
+                    lastLocL.getWorld().playSound(lastLocL, Sound.ENTITY_GENERIC_EXPLODE,1f,1f);
 
                     u.ignoreDamageCheck = true;
                     u.ignoreFistCheck = true;

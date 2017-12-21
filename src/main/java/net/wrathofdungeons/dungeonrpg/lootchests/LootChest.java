@@ -174,7 +174,7 @@ public class LootChest {
             }
 
             getLocation().getBlock().setType(Material.AIR);
-            getLocation().getWorld().playSound(getLocation(), Sound.ZOMBIE_WOODBREAK, 0.8f, 1f);
+            getLocation().getWorld().playSound(getLocation(), Sound.BLOCK_WOOD_BREAK, 0.8f, 1f);
             ParticleEffect.FLAME.display(1F, 1F, 1F, 0.1F, 40, getLocation(), 150);
             ParticleEffect.FLAME.display(1F, 1F, 1F, 0.1F, 40, getLocation(), 150);
 

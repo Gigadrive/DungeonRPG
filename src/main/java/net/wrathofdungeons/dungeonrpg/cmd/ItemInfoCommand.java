@@ -1,12 +1,12 @@
 package net.wrathofdungeons.dungeonrpg.cmd;
 
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import net.minecraft.server.v1_9_R2.NBTTagCompound;
 import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.util.NBTTypeID;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 public class ItemInfoCommand extends Command {
@@ -22,13 +22,13 @@ public class ItemInfoCommand extends Command {
             if(item != null){
                 p.sendMessage(ChatColor.GREEN + "Data ID: " + item.getData().getId());
                 p.sendMessage(ChatColor.GREEN + "JSON Data:" + ChatColor.GRAY + item.toString());
-                net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(p.getItemInHand());
+                net.minecraft.server.v1_9_R2.ItemStack nmsItem = CraftItemStack.asNMSCopy(p.getItemInHand());
                 if(nmsItem != null && nmsItem.hasTag()){
                     NBTTagCompound tag = nmsItem.getTag();
 
                     p.sendMessage(ChatColor.GREEN + "NBT Data:");
                     for(String s : tag.c()){
-                        switch(tag.b(s)){
+                        switch(tag.d(s)){
                             case NBTTypeID.BYTE:
                                 p.sendMessage(ChatColor.GRAY + s + ": " + ChatColor.WHITE + tag.getByte(s));
                                 break;

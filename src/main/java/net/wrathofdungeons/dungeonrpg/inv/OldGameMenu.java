@@ -44,7 +44,7 @@ public class OldGameMenu {
                 u.getCurrentCharacter().reduceStatpointsLeft(1);
                 p.closeInventory();
                 openFor(p);
-                p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP,1f,2f);
+                p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,2f);
             } else {
                 p.sendMessage(ChatColor.RED + "You have reached the limit for that statpoint.");
             }

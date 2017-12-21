@@ -20,8 +20,8 @@ import net.citizensnpcs.npc.CitizensNPC;
 import net.citizensnpcs.npc.entity.EntityHumanNPC;
 import net.citizensnpcs.npc.skin.Skin;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
-import net.minecraft.server.v1_8_R3.*;
-import net.minecraft.server.v1_8_R3.World;
+import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_9_R2.World;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
@@ -30,7 +30,6 @@ import net.wrathofdungeons.dungeonrpg.items.*;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonHorse;
-import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonSheep;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.DungeonZombie;
 import net.wrathofdungeons.dungeonrpg.mobs.nms.ZombieArcher;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
@@ -45,10 +44,10 @@ import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -143,7 +142,7 @@ public class CustomEntity {
         if(bukkitEntity != null){
             bukkitEntity.damage(0);
             DungeonRPG.showBloodEffect(bukkitEntity.getLocation());
-            bukkitEntity.getWorld().playSound(bukkitEntity.getEyeLocation(), Sound.HURT_FLESH,1f,1f);
+            bukkitEntity.getWorld().playSound(bukkitEntity.getEyeLocation(), Sound.ENTITY_PLAYER_HURT,1f,1f);
             getData().playSound(bukkitEntity.getLocation());
         }
     }
@@ -326,7 +325,7 @@ public class CustomEntity {
                         xp = u.giveEXP(xp);
                     }
 
-                    if(u.getSettingsManager().playKillSound() && (mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL)) p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
+                    if(u.getSettingsManager().playKillSound() && (mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL)) p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 
                     final Hologram holo = HologramsAPI.createHologram(DungeonRPG.getInstance(), bukkitEntity.getLocation().clone().add(0,2,0));
 
@@ -657,13 +656,6 @@ public class CustomEntity {
                         mcWorld.addEntity(dungeonZombie, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
                         bukkitEntity = (Zombie)dungeonZombie.getBukkitEntity();
-                    } else if(getData().getEntityType() == EntityType.SHEEP){
-                        World mcWorld = ((CraftWorld)loc.getWorld()).getHandle();
-                        DungeonSheep dungeonSheep = new DungeonSheep(mcWorld);
-                        dungeonSheep.setPosition(loc.getX(),loc.getY(),loc.getZ());
-                        mcWorld.addEntity(dungeonSheep, CreatureSpawnEvent.SpawnReason.CUSTOM);
-
-                        bukkitEntity = (Sheep)dungeonSheep.getBukkitEntity();
                     } else if(getData().getEntityType() == EntityType.HORSE){
                         World mcWorld = ((CraftWorld)loc.getWorld()).getHandle();
                         DungeonHorse dungeonHorse = new DungeonHorse(mcWorld);

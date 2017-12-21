@@ -113,7 +113,7 @@ public class AwakeningMenu implements Listener {
 
                                             inv.clear();
                                             p.closeInventory();
-                                            p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP, 1F, 1F);
+                                            p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
 
                                             u.getCurrentCharacter().getVariables().statisticsManager.itemsAwakened += toAwaken.size();
 

@@ -36,7 +36,7 @@
         <dependency>
             <groupId>eu.thechest</groupId>
             <artifactId>citizens</artifactId>
-            <version>LATEST</version>
+            <version>1.9.4</version>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.wrathofdungeons</groupId>
             <artifactId>builtSpigot</artifactId>
-            <version>1.8.8</version>
+            <version>1.9.4</version>
         </dependency>
         <dependency>
             <groupId>com.gmail.filoghost</groupId>

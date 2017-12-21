@@ -109,7 +109,7 @@ public class CustomDamageListener implements Listener {
                     }
                 }
 
-                DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
+                if(c != null && c.getBukkitEntity() != null) DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
                 c.damage(damage,p);
             } else {
                 DamageData damageData = new DamageData();

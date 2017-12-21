@@ -98,7 +98,7 @@ public class ProfessionMasterMenu {
                                 if(u.getCurrentCharacter().getLevel() >= profession.getMinLevel()){
                                     p.closeInventory();
                                     u.removeMoneyFromInventory(profession.getGoldCost());
-                                    p.playSound(p.getEyeLocation(), Sound.LEVEL_UP,1f,1f);
+                                    p.playSound(p.getEyeLocation(), Sound.ENTITY_PLAYER_LEVELUP,1f,1f);
                                     p.sendMessage(ChatColor.GREEN + "You sucessfully started " + ChatColor.YELLOW + profession.getName() + ChatColor.GREEN + "!");
                                     progress.setStarted(true);
                                     if(progress.getLevel() < 1){

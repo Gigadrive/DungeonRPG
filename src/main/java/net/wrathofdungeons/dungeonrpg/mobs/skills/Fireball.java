@@ -36,7 +36,7 @@ public class Fireball implements MobSkill {
                 public void run() {
                     entity.playAttackAnimation();
 
-                    entity.getBukkitEntity().getWorld().playSound(entity.getBukkitEntity().getLocation(), Sound.FIRE,1f,1f);
+                    entity.getBukkitEntity().getWorld().playSound(entity.getBukkitEntity().getLocation(), Sound.BLOCK_FIRE_AMBIENT,1f,1f);
 
                     org.bukkit.entity.Fireball fireball = entity.getBukkitEntity().launchProjectile(org.bukkit.entity.Fireball.class);
                     fireball.setYield(0f);

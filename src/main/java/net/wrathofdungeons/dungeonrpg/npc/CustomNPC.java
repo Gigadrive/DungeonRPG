@@ -473,7 +473,7 @@ public class CustomNPC {
                         }
 
                         p.getInventory().addItem(new CustomItem(offer.itemToBuy,offer.amount).build(p));
-                        p.playSound(p.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+                        p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
                     } else {
                         p.sendMessage(ChatColor.RED + "You can't afford that item.");
                     }

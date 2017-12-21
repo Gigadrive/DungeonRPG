@@ -109,7 +109,7 @@ public class InventoryClickListener implements Listener {
                                                     if(item.getUpgradeValue() < 10){
                                                         item.setUpgradeValue(item.getUpgradeValue()+1);
                                                         p.sendMessage(ChatColor.GREEN + "Your " + ChatColor.stripColor(item.getData().getName()) + " was upgraded to " + ChatColor.YELLOW + "+" + item.getUpgradeValue() + ChatColor.GREEN + "!");
-                                                        p.playSound(p.getEyeLocation(),Sound.DIG_STONE,2f,1f);
+                                                        p.playSound(p.getEyeLocation(),Sound.BLOCK_STONE_BREAK,2f,1f);
 
                                                         if(used.getAmount() > 1){
                                                             e.setCursor(new CustomItem(used.getData(),used.getAmount()-1).build(p));
@@ -154,8 +154,8 @@ public class InventoryClickListener implements Listener {
                                     if(t.isPlayer1(p)) t.setPlayer1Ready(true);
                                     if(t.isPlayer2(p)) t.setPlayer2Ready(true);
 
-                                    t.getPlayer1().playSound(t.getPlayer1().getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
-                                    t.getPlayer2().playSound(t.getPlayer2().getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+                                    t.getPlayer1().playSound(t.getPlayer1().getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
+                                    t.getPlayer2().playSound(t.getPlayer2().getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
 
                                     if(t.isPlayer1Ready() && t.isPlayer2Ready()){
                                         // finish trade

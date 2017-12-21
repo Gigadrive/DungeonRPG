@@ -168,7 +168,7 @@ public class AxeBlast implements Skill {
                             ParticleEffect.SMOKE_NORMAL.display(0.25f,0.25f,0.25f,0.005f,60,particleLocation,600);
                         }
 
-                        particleLocation.getWorld().playSound(particleLocation,Sound.EXPLODE,1f,1f);
+                        particleLocation.getWorld().playSound(particleLocation,Sound.ENTITY_GENERIC_EXPLODE,1f,1f);
 
                         for(Entity entity : castLocation.getWorld().getNearbyEntities(castLocation,explodingRange,explodingRange,explodingRange)){
                             if(entity instanceof LivingEntity){

@@ -50,7 +50,7 @@ public class ProfessionProgress {
             if(mayGetEXP()){
                 setLevel(p,getLevel()+times);
                 p.sendMessage(ChatColor.GREEN + "Your " + ChatColor.YELLOW + getProfession().getName() + ChatColor.GREEN + " profession leveled up to Level " + ChatColor.YELLOW + getLevel() + ChatColor.GREEN + "!");
-                p.playSound(p.getEyeLocation(), Sound.LEVEL_UP,1f,1f);
+                p.playSound(p.getEyeLocation(), Sound.ENTITY_PLAYER_LEVELUP,1f,1f);
             }
         }
 

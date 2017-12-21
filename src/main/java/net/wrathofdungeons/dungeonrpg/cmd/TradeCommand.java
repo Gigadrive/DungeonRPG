@@ -39,7 +39,7 @@ public class TradeCommand extends Command {
 
                                                             p.sendMessage(ChatColor.GREEN + "Trade request sent!");
 
-                                                            p2.playSound(p2.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+                                                            p2.playSound(p2.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
                                                             p2.sendMessage(ChatColor.YELLOW + p.getName() + " " + ChatColor.GREEN + "wants to trade with you. Use " + ChatColor.YELLOW + "/trade " + p.getName() + ChatColor.GREEN + " to accept their request.");
                                                         } else {
                                                             p.sendMessage(ChatColor.RED + "That player doesn't allow trade requests.");

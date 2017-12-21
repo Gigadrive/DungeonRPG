@@ -137,7 +137,7 @@ public class DartRain implements Skill {
                                 /*Arrow a = p.getWorld().spawnArrow(p.getLocation(),p.getLocation().getDirection().multiply(shotStrength+1),0.6f,12);
                                 a.setShooter(p);*/
                                 a.setVelocity(originalVector);
-                                p.getWorld().playSound(p.getEyeLocation(), Sound.SHOOT_ARROW,1f,1f);
+                                p.getWorld().playSound(p.getEyeLocation(), Sound.ENTITY_ARROW_SHOOT,1f,1f);
                                 DungeonProjectile data = new DungeonProjectile(p, DungeonProjectileType.DART_RAIN, p.getLocation(), 0, damage, true);
                                 data.setSkill(skill);
                                 DungeonRPG.SHOT_PROJECTILE_DATA.put(a.getUniqueId().toString(),data);
@@ -165,7 +165,7 @@ public class DartRain implements Skill {
                                 arrows.add(third);
                             }
 
-                            p.getWorld().playSound(p.getEyeLocation(), Sound.SHOOT_ARROW,1f,1f);
+                            p.getWorld().playSound(p.getEyeLocation(), Sound.ENTITY_ARROW_SHOOT,1f,1f);
 
                             for(Arrow a : arrows){
                                 DungeonProjectile data = new DungeonProjectile(p, DungeonProjectileType.DART_RAIN, p.getLocation(), 0, damage, true);

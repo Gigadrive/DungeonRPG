@@ -36,7 +36,7 @@ public class DuelCommand extends Command {
 
                                                 p.sendMessage(ChatColor.AQUA + "Duel request sent!");
 
-                                                p2.playSound(p2.getEyeLocation(), Sound.ORB_PICKUP,1f,1f);
+                                                p2.playSound(p2.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
                                                 p2.sendMessage(ChatColor.YELLOW + p.getName() + " " + ChatColor.AQUA + "[Level " + u.getCurrentCharacter().getLevel() + "] wants to duel with you. Use " + ChatColor.YELLOW + "/duel " + p.getName() + ChatColor.AQUA + " to accept their request.");
                                             } else {
                                                 p.sendMessage(ChatColor.RED + "That player doesn't allow duel requests.");

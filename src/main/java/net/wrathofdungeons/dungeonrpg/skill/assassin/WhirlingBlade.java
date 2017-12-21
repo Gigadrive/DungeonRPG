@@ -135,7 +135,7 @@ public class WhirlingBlade implements Skill {
                             ParticleEffect.CRIT.display(0f,0f,0f,0f,1,loc.clone().add(0,-1,0),600);
                         }
 
-                        loc.getWorld().playSound(loc,Sound.SHEEP_SHEAR,1f,1f);
+                        loc.getWorld().playSound(loc,Sound.ENTITY_SHEEP_SHEAR,1f,1f);
 
                         for(Entity entity : loc.getWorld().getNearbyEntities(loc,damageRange,damageRange,damageRange)){
                             if(!entities.contains(entity)){

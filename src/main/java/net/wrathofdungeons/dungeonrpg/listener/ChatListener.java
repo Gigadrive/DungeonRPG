@@ -142,7 +142,7 @@ public class ChatListener implements Listener {
 
                                                         u.removeMoneyFromInventory(4096*3);
                                                         p.sendMessage(ChatColor.GREEN + "Your guild has been created!");
-                                                        p.playSound(p.getEyeLocation(), Sound.LEVEL_UP,1f,1f);
+                                                        p.playSound(p.getEyeLocation(), Sound.ENTITY_PLAYER_LEVELUP,1f,1f);
                                                         DungeonRPG.updateNames();
                                                     } else {
                                                         p.sendMessage(ChatColor.RED + "An error occurred.");
