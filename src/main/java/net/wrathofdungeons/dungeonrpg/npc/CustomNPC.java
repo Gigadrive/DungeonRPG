@@ -9,6 +9,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.VillagerProfession;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
+import net.wrathofdungeons.dungeonapi.util.ChatIcons;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
@@ -433,14 +434,34 @@ public class CustomNPC {
             ArrayList<String> iL = new ArrayList<String>();
             if(iM.hasLore()) iL.addAll(iM.getLore());
 
-            ArrayList<CustomItem> offerItems = new ArrayList<CustomItem>();
+            /*ArrayList<CustomItem> offerItems = new ArrayList<CustomItem>();
             if(offer.moneyCost > 0) offerItems.addAll(Arrays.asList(WorldUtilities.convertNuggetAmount(offer.moneyCost)));
             for(MerchantOfferCost cost : offer.itemCost) offerItems.add(new CustomItem(cost.item,cost.amount));
 
             iL.add(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString() + Util.SCOREBOARD_LINE_SEPERATOR);
             iL.add(ChatColor.YELLOW + "Cost:");
 
-            for(CustomItem c : offerItems) iL.add(ChatColor.GRAY + "[" + c.getAmount() + "x " + ChatColor.stripColor(c.getData().getName()) + "]");
+            for(CustomItem c : offerItems) iL.add(ChatColor.GRAY + "[" + c.getAmount() + "x " + ChatColor.stripColor(c.getData().getName()) + "]");*/
+
+            iL.add(" ");
+            iL.add(ChatColor.GOLD + "Price:");
+            for(MerchantOfferCost cost : offer.itemCost){
+                CustomItem item = new CustomItem(cost.item,cost.amount);
+
+                if(u.getAmountInInventory(item.getData()) >= cost.amount){
+                    iL.add(ChatColor.GOLD + "- " + ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + " " + ChatColor.GREEN + item.getAmount() + "x " + ChatColor.stripColor(item.getData().getName()));
+                } else {
+                    iL.add(ChatColor.GOLD + "- " + ChatColor.DARK_RED + ChatIcons.X + " " + ChatColor.RED + item.getAmount() + "x " + ChatColor.stripColor(item.getData().getName()));
+                }
+            }
+
+            if(offer.moneyCost > 0){
+                if(u.getTotalMoneyInInventory() >= offer.moneyCost){
+                    iL.add(ChatColor.GOLD + "- " + ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + " " + ChatColor.WHITE + offer.moneyCost + " " + ChatColor.GRAY + "Golden Nuggets");
+                } else {
+                    iL.add(ChatColor.GOLD + "- " + ChatColor.DARK_RED + ChatIcons.X + " " + ChatColor.WHITE + offer.moneyCost + " " + ChatColor.GRAY + "Golden Nuggets");
+                }
+            }
 
             iM.setLore(iL);
             i.setItemMeta(iM);

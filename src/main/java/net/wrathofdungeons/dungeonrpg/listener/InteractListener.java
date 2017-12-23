@@ -826,14 +826,14 @@ public class InteractListener implements Listener {
                             if((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && (u.getCurrentCharacter().getRpgClass().matches(RPGClass.MERCENARY) || u.getCurrentCharacter().getRpgClass().matches(RPGClass.MAGICIAN) || u.getCurrentCharacter().getRpgClass().matches(RPGClass.ASSASSIN))){
                                 u.currentCombo += "R";
                                 u.comboDelay = 1;
-                                if(u.currentCombo.length() != 3) u.updateClickComboBar();
+                                if(u.currentCombo.length() != 3) u.updateActionBar();
                                 p.playSound(p.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
                                 u.startComboResetTask();
                                 return;
                             } else if((e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR) && (u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER))){
                                 u.currentCombo += "L";
                                 u.comboDelay = 1;
-                                if(u.currentCombo.length() != 3) u.updateClickComboBar();
+                                if(u.currentCombo.length() != 3) u.updateActionBar();
                                 p.playSound(p.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
                                 if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
                                 return;
@@ -844,7 +844,7 @@ public class InteractListener implements Listener {
                             if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
                                 u.currentCombo = u.currentCombo + "R";
                                 u.comboDelay = 1;
-                                if(u.currentCombo.length() != 3) u.updateClickComboBar();
+                                if(u.currentCombo.length() != 3) u.updateActionBar();
                                 p.playSound(p.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
                                 if(u.currentCombo.length() != 3){
                                     if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
@@ -855,7 +855,7 @@ public class InteractListener implements Listener {
                             } else if(e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR){
                                 u.currentCombo = u.currentCombo + "L";
                                 u.comboDelay = 1;
-                                if(u.currentCombo.length() != 3) u.updateClickComboBar();
+                                if(u.currentCombo.length() != 3) u.updateActionBar();
                                 p.playSound(p.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
                                 if(u.currentCombo.length() != 3){
                                     if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
@@ -902,14 +902,7 @@ public class InteractListener implements Listener {
                                             u.setMP(u.getMP()-manaCost);
                                             toCast.execute(p);
 
-                                            String s = ChatColor.GREEN + toCast.getName() + " " + ChatColor.GRAY + "[-" + manaCost + " MP]";
-
-                                            if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR){
-                                                BountifulAPI.sendActionBar(p,s);
-                                            } else {
-                                                p.setItemInHand(WorldUtilities.updateDisplayName(p.getItemInHand(),DungeonRPG.getSkillIndicatorPrefix() + s));
-                                                u.startClickComboClearTask();
-                                            }
+                                            u.updateClickComboBar(toCast,manaCost);
 
                                             if(playAfter) p.playSound(p.getEyeLocation(),Sound.ENTITY_ARROW_HIT_PLAYER,1f,0.5f);
 
@@ -933,7 +926,7 @@ public class InteractListener implements Listener {
                                         p.sendMessage(ChatColor.RED + "You haven't unlocked that skill yet.");
                                     }
                                 } else {
-                                    u.updateClickComboBar();
+                                    u.updateActionBar();
                                     p.sendMessage(ChatColor.RED + "That skill could not be found.");
 
                                     if(!u.getCurrentCharacter().getVariables().hasSeenBindSkillInfo){
