@@ -958,8 +958,10 @@ public class CustomItem {
                 }
 
                 if(getData().getDescription() != null){
-                    for(String s : Util.getWordWrapLore(getData().getDescription())){
-                        iL.add(ChatColor.GRAY + s);
+                    for(String ss : getData().getDescription().split("/BR")){
+                        for(String s : Util.getWordWrapLore(ss)){
+                            iL.add(ChatColor.GRAY + s);
+                        }
                     }
                 }
 

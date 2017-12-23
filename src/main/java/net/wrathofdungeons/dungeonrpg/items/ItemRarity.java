@@ -8,14 +8,22 @@ public enum ItemRarity {
     SPECIAL("Special",ChatColor.DARK_AQUA, new ItemSource[]{}, 2),
     RARE("Rare",ChatColor.BLUE, new ItemSource[]{ItemSource.MOB_DROP_LOWCLASS, ItemSource.MOB_DROP_MIDCLASS, ItemSource.MOB_DROP_HIGHCLASS, ItemSource.MOB_DROP_BOSS, ItemSource.LOOT_CHESTS}, 2),
     EPIC("Epic",ChatColor.DARK_PURPLE, new ItemSource[]{ItemSource.MOB_DROP_LOWCLASS, ItemSource.MOB_DROP_MIDCLASS, ItemSource.MOB_DROP_HIGHCLASS, ItemSource.MOB_DROP_BOSS, ItemSource.LOOT_CHESTS}, 4),
-    LEGENDARY("Legendary",ChatColor.GOLD, new ItemSource[]{ItemSource.MOB_DROP_LOWCLASS, ItemSource.MOB_DROP_MIDCLASS, ItemSource.MOB_DROP_HIGHCLASS, ItemSource.MOB_DROP_BOSS, ItemSource.LOOT_CHESTS}, 5);
+    LEGENDARY("Legendary",ChatColor.GOLD, new ItemSource[]{ItemSource.MOB_DROP_LOWCLASS, ItemSource.MOB_DROP_MIDCLASS, ItemSource.MOB_DROP_HIGHCLASS, ItemSource.MOB_DROP_BOSS, ItemSource.LOOT_CHESTS}, 5),
+    ULTIMATE("Ultimate",ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString(),new ItemSource[]{},7);
 
     private String name;
-    private ChatColor color;
+    private String color;
     private ItemSource[] sources;
     private int maxAwakenings;
 
     ItemRarity(String name, ChatColor color, ItemSource[] sources, int maxAwakenings){
+        this.name = name;
+        this.color = color.toString();
+        this.sources = sources;
+        this.maxAwakenings = maxAwakenings;
+    }
+
+    ItemRarity(String name, String color, ItemSource[] sources, int maxAwakenings){
         this.name = name;
         this.color = color;
         this.sources = sources;
@@ -26,7 +34,7 @@ public enum ItemRarity {
         return name;
     }
 
-    public ChatColor getColor() {
+    public String getColor() {
         return color;
     }
 

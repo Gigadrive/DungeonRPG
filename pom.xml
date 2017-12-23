@@ -14,6 +14,10 @@
             <url>http://repo.dytanic.de/content/repositories/cloudnet-repo/</url>
         </repository>
         <repository>
+            <id>cloudnet-repo</id>
+            <url>http://repo.dytanic.de/content/repositories/minecraft/</url>
+        </repository>
+        <repository>
             <id>viaversion</id>
             <url>https://repo.viaversion.com</url>
         </repository>
@@ -65,6 +69,11 @@
             <version>2.0.08</version>
             <scope>provided</scope>
         </dependency>
+        <!--<dependency>
+            <groupId>de.dytanic.cloudnet</groupId>
+            <artifactId>cloudnet-api-bukkitproxy</artifactId>
+            <version>1.0</version>
+        </dependency>-->
         <dependency>
             <groupId>com.wrathofdungeons</groupId>
             <artifactId>builtSpigot</artifactId>
