@@ -13,6 +13,7 @@ import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
+import net.wrathofdungeons.dungeonrpg.items.crystals.Crystal;
 import net.wrathofdungeons.dungeonrpg.professions.Profession;
 import net.wrathofdungeons.dungeonrpg.user.Character;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
@@ -38,12 +39,15 @@ public class CustomItem {
     private ArrayList<Awakening> awakenings;
     private int upgradeValue = 0;
     private MountData mountData = null;
+    private ArrayList<Crystal> crystals = null;
+    private int sockets;
 
     public CustomItem(int data){
         this.dataID = data;
         this.amount = 1;
         this.untradeable = getData().isUntradeable();
         this.awakenings = new ArrayList<Awakening>();
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
 
         if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
@@ -53,6 +57,7 @@ public class CustomItem {
         this.amount = amount;
         this.untradeable = getData().isUntradeable();
         this.awakenings = new ArrayList<Awakening>();
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
 
         if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
@@ -62,6 +67,7 @@ public class CustomItem {
         this.amount = amount;
         this.untradeable = untradeable;
         this.awakenings = new ArrayList<Awakening>();
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
 
         if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
@@ -71,6 +77,7 @@ public class CustomItem {
         this.amount = amount;
         this.untradeable = untradeable;
         this.awakenings = new ArrayList<Awakening>();
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
 
         if(awakenings != null && awakenings.length > 0){
             this.awakenings = new ArrayList<Awakening>();
@@ -86,6 +93,7 @@ public class CustomItem {
         this.untradeable = untradeable;
         this.awakenings = new ArrayList<Awakening>();
         this.upgradeValue = upgradeValue;
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
 
         if(awakenings != null && awakenings.length > 0){
             this.awakenings = new ArrayList<Awakening>();
@@ -102,6 +110,44 @@ public class CustomItem {
         this.awakenings = new ArrayList<Awakening>();
         this.upgradeValue = upgradeValue;
         this.mountData = mountData;
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
+
+        if(awakenings != null && awakenings.length > 0){
+            this.awakenings = new ArrayList<Awakening>();
+            this.awakenings.addAll(Arrays.asList(awakenings));
+        }
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
+    }
+
+    public CustomItem(int data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue, MountData mountData, ArrayList<Crystal> crystals){
+        this.dataID = data;
+        this.amount = amount;
+        this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+        this.upgradeValue = upgradeValue;
+        this.mountData = mountData;
+        this.crystals = crystals;
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
+
+        if(awakenings != null && awakenings.length > 0){
+            this.awakenings = new ArrayList<Awakening>();
+            this.awakenings.addAll(Arrays.asList(awakenings));
+        }
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
+    }
+
+    public CustomItem(int data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue, MountData mountData, ArrayList<Crystal> crystals, int sockets){
+        this.dataID = data;
+        this.amount = amount;
+        this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+        this.upgradeValue = upgradeValue;
+        this.mountData = mountData;
+        this.crystals = crystals;
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
+        this.sockets = sockets;
 
         if(awakenings != null && awakenings.length > 0){
             this.awakenings = new ArrayList<Awakening>();
@@ -116,6 +162,7 @@ public class CustomItem {
         this.amount = 1;
         this.untradeable = getData().isUntradeable();
         this.awakenings = new ArrayList<Awakening>();
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
 
         if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
@@ -125,6 +172,7 @@ public class CustomItem {
         this.amount = amount;
         this.untradeable = getData().isUntradeable();
         this.awakenings = new ArrayList<Awakening>();
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
 
         if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
@@ -134,6 +182,7 @@ public class CustomItem {
         this.amount = amount;
         this.untradeable = untradeable;
         this.awakenings = new ArrayList<Awakening>();
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
 
         if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
     }
@@ -143,6 +192,7 @@ public class CustomItem {
         this.amount = amount;
         this.untradeable = untradeable;
         this.awakenings = new ArrayList<Awakening>();
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
 
         if(awakenings != null && awakenings.length > 0){
             this.awakenings.addAll(Arrays.asList(awakenings));
@@ -157,6 +207,7 @@ public class CustomItem {
         this.untradeable = untradeable;
         this.awakenings = new ArrayList<Awakening>();
         this.upgradeValue = upgradeValue;
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
 
         if(awakenings != null && awakenings.length > 0){
             this.awakenings.addAll(Arrays.asList(awakenings));
@@ -172,6 +223,42 @@ public class CustomItem {
         this.awakenings = new ArrayList<Awakening>();
         this.upgradeValue = upgradeValue;
         this.mountData = mountData;
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
+
+        if(awakenings != null && awakenings.length > 0){
+            this.awakenings.addAll(Arrays.asList(awakenings));
+        }
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
+    }
+
+    public CustomItem(ItemData data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue, MountData mountData, ArrayList<Crystal> crystals){
+        this.dataID = data.getId();
+        this.amount = amount;
+        this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+        this.upgradeValue = upgradeValue;
+        this.mountData = mountData;
+        this.crystals = crystals;
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
+
+        if(awakenings != null && awakenings.length > 0){
+            this.awakenings.addAll(Arrays.asList(awakenings));
+        }
+
+        if(getData() != null && getData().getCategory() == ItemCategory.MOUNT && this.mountData == null) this.mountData = new MountData();
+    }
+
+    public CustomItem(ItemData data, int amount, boolean untradeable, Awakening[] awakenings, int upgradeValue, MountData mountData, ArrayList<Crystal> crystals, int sockets){
+        this.dataID = data.getId();
+        this.amount = amount;
+        this.untradeable = untradeable;
+        this.awakenings = new ArrayList<Awakening>();
+        this.upgradeValue = upgradeValue;
+        this.mountData = mountData;
+        this.crystals = crystals;
+        if(this.crystals == null) this.crystals = new ArrayList<Crystal>();
+        this.sockets = sockets;
 
         if(awakenings != null && awakenings.length > 0){
             this.awakenings.addAll(Arrays.asList(awakenings));
@@ -283,6 +370,14 @@ public class CustomItem {
         return (base+(base*p));
     }
 
+    public int getSockets() {
+        return sockets;
+    }
+
+    public void setSockets(int sockets) {
+        this.sockets = sockets;
+    }
+
     public boolean mayUse(Player p){
         GameUser u = GameUser.getUser(p);
 
@@ -341,6 +436,48 @@ public class CustomItem {
         }
 
         return 0;
+    }
+
+    public boolean hasCrystals(){
+        return crystals != null && crystals.size() > 0;
+    }
+
+    public boolean hasCrystalValue(AwakeningType type){
+        if(getCrystals() != null){
+            for(Crystal c : getCrystals()){
+                if(getData().getCategory() == ItemCategory.ARMOR){
+                    for(Awakening a : c.getType().getEffectsOnArmor()){
+                        if(a.type == type) return true;
+                    }
+                } else {
+                    for(Awakening a : c.getType().getEffectsOnWeapons()){
+                        if(a.type == type) return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public int getCrystalValue(AwakeningType type){
+        int i = 0;
+
+        if(getCrystals() != null){
+            for(Crystal c : getCrystals()){
+                if(getData().getCategory() == ItemCategory.ARMOR){
+                    for(Awakening a : c.getType().getEffectsOnArmor()){
+                        if(a.type == type) i += a.value;
+                    }
+                } else {
+                    for(Awakening a : c.getType().getEffectsOnWeapons()){
+                        if(a.type == type) i += a.value;
+                    }
+                }
+            }
+        }
+
+        return i;
     }
 
     public void addAwakening(Awakening a){
@@ -447,6 +584,12 @@ public class CustomItem {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public ArrayList<Crystal> getCrystals() {
+        if(crystals == null) crystals = new ArrayList<Crystal>();
+
+        return crystals;
     }
 
     public ItemStack build(Player p){
@@ -572,7 +715,71 @@ public class CustomItem {
                     }
 
                     iL.add(" ");
-                    // TODO: Add crystal info
+
+                    if(getSockets() > 0){
+                        iL.add(ChatColor.GRAY + "[" + getCrystals().size() + "/" + getSockets() + " Sockets]");
+
+                        if(hasCrystals()){
+                            for(AwakeningType type : AwakeningType.values()){
+                                int value = getCrystalValue(type);
+
+                                if(value != 0){
+                                    if(value > 0){
+                                        // IS POSITIVE
+                                        if(type.mayBePercentage()){
+                                            iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.GREEN + "+" + value + "%");
+                                        } else {
+                                            iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.GREEN + "+" + value);
+                                        }
+                                    } else if(value == 0){
+                                        // IS NEUTRAL (shouldn't really happen)
+                                        if(type.mayBePercentage()){
+                                            iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + value + "%");
+                                        } else {
+                                            iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + value);
+                                        }
+                                    } else {
+                                        // IS NEGATIVE
+                                        if(type.mayBePercentage()){
+                                            iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.RED + value + "%");
+                                        } else {
+                                            iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.RED + value);
+                                        }
+                                    }
+                                }
+                            }
+
+                            /*for(Crystal crystal : getCrystals()){
+                                for(Awakening a : crystal.getType().getEffectsOnWeapons()){
+                                    if(a.value > 0){
+                                        // IS POSITIVE
+                                        if(a.isPercentage){
+                                            iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                                        } else {
+                                            iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                                        }
+                                    } else if(a.value == 0){
+                                        // IS NEUTRAL (shouldn't really happen)
+                                        if(a.isPercentage){
+                                            iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                                        } else {
+                                            iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                                        }
+                                    } else {
+                                        // IS NEGATIVE
+                                        if(a.isPercentage){
+                                            iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                                        } else {
+                                            iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                                        }
+                                    }
+                                }
+                            }*/
+                        }
+
+                        iL.add(" ");
+                    }
+
                     iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
 
                     if(getData().getDescription() != null) iL.add(" ");
@@ -681,7 +888,69 @@ public class CustomItem {
                     }
 
                     iL.add(" ");
-                    // TODO: Add crystal info
+
+                    if(getSockets() > 0){
+                        iL.add(ChatColor.GRAY + "[" + getCrystals().size() + "/" + getSockets() + " Sockets]");
+
+                        for(AwakeningType type : AwakeningType.values()){
+                            int value = getCrystalValue(type);
+
+                            if(value != 0){
+                                if(value > 0){
+                                    // IS POSITIVE
+                                    if(type.mayBePercentage()){
+                                        iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.GREEN + "+" + value + "%");
+                                    } else {
+                                        iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.GREEN + "+" + value);
+                                    }
+                                } else if(value == 0){
+                                    // IS NEUTRAL (shouldn't really happen)
+                                    if(type.mayBePercentage()){
+                                        iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + value + "%");
+                                    } else {
+                                        iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + value);
+                                    }
+                                } else {
+                                    // IS NEGATIVE
+                                    if(type.mayBePercentage()){
+                                        iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.RED + value + "%");
+                                    } else {
+                                        iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.RED + value);
+                                    }
+                                }
+                            }
+                        }
+
+                        /*for(Crystal crystal : getCrystals()){
+                            for(Awakening a : crystal.getType().getEffectsOnWeapons()){
+                                if(a.value > 0){
+                                    // IS POSITIVE
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                                    }
+                                } else if(a.value == 0){
+                                    // IS NEUTRAL (shouldn't really happen)
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                                    }
+                                } else {
+                                    // IS NEGATIVE
+                                    if(a.isPercentage){
+                                        iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                                    } else {
+                                        iL.add(ChatColor.LIGHT_PURPLE + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                                    }
+                                }
+                            }
+                        }*/
+
+                        iL.add(" ");
+                    }
+
                     iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
 
                     if(getData().getDescription() != null) iL.add(" ");
@@ -955,6 +1224,60 @@ public class CustomItem {
                     iL.add(ChatColor.GOLD + "Collectible");
                 } else if(getData().getCategory() == ItemCategory.QUEST){
                     iL.add(ChatColor.RED + "Quest Item");
+                } else if(getData().getCategory() == ItemCategory.CRYSTAL){
+                    if(getData().getCrystalType().getEffectsOnWeapons() != null && getData().getCrystalType().getEffectsOnWeapons().length > 0){
+                        iL.add(ChatColor.WHITE + "Effect on Weapons:");
+
+                        for(Awakening a : getData().getCrystalType().getEffectsOnWeapons()){
+                            if(a.value > 0){
+                                if(a.isPercentage){
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                                } else {
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                                }
+                            } else if(a.value == 0){
+                                if(a.isPercentage){
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                                } else {
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                                }
+                            } else if(a.value < 0){
+                                if(a.isPercentage){
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                                } else {
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                                }
+                            }
+                        }
+
+                        if(getData().getCrystalType().getEffectsOnArmor() != null && getData().getCrystalType().getEffectsOnArmor().length > 0) iL.add(" ");
+                    }
+
+                    if(getData().getCrystalType().getEffectsOnArmor() != null && getData().getCrystalType().getEffectsOnArmor().length > 0){
+                        iL.add(ChatColor.WHITE + "Effect on Armor:");
+
+                        for(Awakening a : getData().getCrystalType().getEffectsOnArmor()){
+                            if(a.value > 0){
+                                if(a.isPercentage){
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
+                                } else {
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
+                                }
+                            } else if(a.value == 0){
+                                if(a.isPercentage){
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
+                                } else {
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
+                                }
+                            } else if(a.value < 0){
+                                if(a.isPercentage){
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
+                                } else {
+                                    iL.add(ChatColor.DARK_GRAY + "- " + ChatColor.GRAY + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
+                                }
+                            }
+                        }
+                    }
                 }
 
                 if(getData().getDescription() != null){
@@ -1048,6 +1371,16 @@ public class CustomItem {
                     }
                 } else {
                     return false;
+                }
+
+                if(getSockets() != item.getSockets()) return false;
+
+                if(getCrystals() == null && item.getCrystals() == null){
+
+                } else if(getCrystals().size() == item.getCrystals().size()){
+                    for(Crystal c : getCrystals()){
+                        // TODO: Check crystals
+                    }
                 }
 
                 if(isUntradeable() == item.isUntradeable()){

@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemMergeEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class PlayerPickupListener implements Listener {
@@ -24,6 +25,11 @@ public class PlayerPickupListener implements Listener {
             GameUser u = GameUser.getUser(p);
 
             if(CustomNPC.READING.contains(p.getName())){
+                e.setCancelled(true);
+                return;
+            }
+
+            if(!p.getOpenInventory().getTitle().equals("container.crafting")){
                 e.setCancelled(true);
                 return;
             }

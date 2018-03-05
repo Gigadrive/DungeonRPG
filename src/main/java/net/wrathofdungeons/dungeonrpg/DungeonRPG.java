@@ -16,10 +16,7 @@ import net.wrathofdungeons.dungeonrpg.event.CustomDamageEvent;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageMobToMobEvent;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamagePlayerToPlayerEvent;
 import net.wrathofdungeons.dungeonrpg.event.PlayerLandOnGroundEvent;
-import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
-import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
-import net.wrathofdungeons.dungeonrpg.inv.CraftingMenu;
-import net.wrathofdungeons.dungeonrpg.inv.MerchantSetupMenu;
+import net.wrathofdungeons.dungeonrpg.inv.*;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.listener.*;
 import net.wrathofdungeons.dungeonrpg.lootchests.LootChest;
@@ -76,8 +73,9 @@ public class DungeonRPG extends JavaPlugin {
     public static final int QUEST_NPC_TEXT_LINE_DELAY = 4;
     public static final boolean STORE_NBT_JSON = true;
 
-    public static final int[] CRYSTAL_IDS = new int[]{11,12,13};
+    public static final int[] CRYSTAL_IDS = new int[]{11,12,13,795,799,786,789,792,796,800};
     public static final int UPGRADING_STONE = 645;
+    public static final int ANCIENT_POWDER = 803;
     public static final GameMode PLAYER_DEFAULT_GAMEMODE = GameMode.ADVENTURE;
     public static final double UPGRADING_STONE_DIVIDING_VALUE = 25d;
 
@@ -1073,6 +1071,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CraftingMenu(),this);
         Bukkit.getPluginManager().registerEvents(new CraftListener(),this);
         Bukkit.getPluginManager().registerEvents(new CreatureListener(),this);
+        Bukkit.getPluginManager().registerEvents(new CrystalMenu(),this);
         Bukkit.getPluginManager().registerEvents(new CustomDamageListener(),this);
         Bukkit.getPluginManager().registerEvents(new DamageListener(),this);
         Bukkit.getPluginManager().registerEvents(new DeathListener(),this);
@@ -1132,6 +1131,7 @@ public class DungeonRPG extends JavaPlugin {
         new SaveRegionCommand();
         new SaveQuestsCommand();
         new SetLocationCommand();
+        new SetSocketsCommand();
         new SetupCommand();
         new SummonCommand();
         new SyncCommand();

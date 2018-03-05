@@ -4,6 +4,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.Trade;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.inv.CraftingMenu;
+import net.wrathofdungeons.dungeonrpg.inv.CrystalMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.lootchests.LootChest;
 import net.wrathofdungeons.dungeonrpg.professions.CraftingRecipe;
@@ -16,6 +17,9 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class InventoryCloseListener implements Listener {
     @EventHandler
@@ -71,6 +75,36 @@ public class InventoryCloseListener implements Listener {
                 } else if(inv.getName().equals("Trading")){
                     if(Trade.getTrade(p) != null){
                         Trade.getTrade(p).cancelTrade();
+                    }
+                } else if(inv.getName().equals("Add crystals")){
+                    ArrayList<Integer> i = new ArrayList<Integer>();
+                    i.add(0);
+                    for(int ii : CrystalMenu.ADD_SLOTS) i.add(ii);
+
+                    for(int ii : i){
+                        if(inv.getItem(ii) != null){
+                            if(CustomItem.fromItemStack(inv.getItem(ii)) != null){
+                                if(u.getEmptySlotsInInventory() > 0){
+                                    p.getInventory().addItem(CustomItem.fromItemStack(inv.getItem(ii)).build(p));
+                                } else {
+                                    WorldUtilities.dropItem(p.getLocation(),CustomItem.fromItemStack(inv.getItem(ii)),p);
+                                }
+                            }
+                        }
+                    }
+                } else if(inv.getName().equals("Add sockets")){
+                    int[] i = new int[]{CrystalMenu.ADDSOCKET_ITEM_SLOT,CrystalMenu.ADDSOCKET_POWDER_SLOT};
+
+                    for(int ii : i){
+                        if(inv.getItem(ii) != null){
+                            if(CustomItem.fromItemStack(inv.getItem(ii)) != null){
+                                if(u.getEmptySlotsInInventory() > 0){
+                                    p.getInventory().addItem(CustomItem.fromItemStack(inv.getItem(ii)).build(p));
+                                } else {
+                                    WorldUtilities.dropItem(p.getLocation(),CustomItem.fromItemStack(inv.getItem(ii)),p);
+                                }
+                            }
+                        }
                     }
                 } else if(inv.getName().equals("Settings")){
                     u.saveData();

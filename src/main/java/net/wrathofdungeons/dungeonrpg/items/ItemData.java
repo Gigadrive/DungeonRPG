@@ -7,6 +7,7 @@ import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
+import net.wrathofdungeons.dungeonrpg.items.crystals.CrystalType;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -44,6 +45,7 @@ public class ItemData {
     private ItemCategory category;
     private ItemRarity rarity;
     private int tpScrollRegion;
+    private CrystalType crystalType;
     private String description;
 
     private int atkMin;
@@ -94,6 +96,7 @@ public class ItemData {
                 this.category = ItemCategory.valueOf(rs.getString("category"));
                 this.rarity = ItemRarity.valueOf(rs.getString("rarity"));
                 this.tpScrollRegion = rs.getInt("tpScroll.regionID");
+                if(rs.getString("crystalName") != null) this.crystalType = CrystalType.valueOf(rs.getString("crystalName"));
                 if(rs.getString("description") != null) this.description = ChatColor.translateAlternateColorCodes('&',rs.getString("description"));
 
                 this.atkMin = rs.getInt("atk.min");
@@ -160,6 +163,10 @@ public class ItemData {
 
     public int getTpScrollRegion() {
         return tpScrollRegion;
+    }
+
+    public CrystalType getCrystalType() {
+        return crystalType;
     }
 
     public String getDescription() {

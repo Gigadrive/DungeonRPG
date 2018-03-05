@@ -253,6 +253,7 @@ public class Character {
         for(CustomItem item : getEquipment()){
             if(item.hasAwakening(type)) i += item.getAwakeningValue(type);
             if(item.getData().hasAdditionalStat(type)) i += item.getData().getAdditionalStatValue(type);
+            if(item.hasCrystalValue(type)) i += item.getCrystalValue(type);
         }
 
         return i;

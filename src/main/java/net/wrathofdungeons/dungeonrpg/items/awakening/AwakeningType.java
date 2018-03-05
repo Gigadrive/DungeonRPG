@@ -24,7 +24,10 @@ public enum AwakeningType {
     FORTUNE(18,"Fortune","FOR",false,true,-3,+5,AwakeningCategory.WEAPON_ARMOR),
     ADOCH(19,"Critical Damage","ADOCH",false,true,-24,+34,AwakeningCategory.WEAPON_ARMOR),
     MINING_SPEED(20,"Mining Speed","MSPEED",true,false,-6,+6,AwakeningCategory.PICKAXE),
-    WALK_SPEED(21,"Walk Speed","SPEED",false,true,-32,+39,AwakeningCategory.WEAPON_ARMOR);
+    WALK_SPEED(21,"Walk Speed","SPEED",false,true,-32,+39,AwakeningCategory.WEAPON_ARMOR),
+    ADDITIONAL_HP(22,"HP","HP",false,true,-76,+81,AwakeningCategory.WEAPON_ARMOR),
+    ADDITIONAL_MP(23,"MP","MP",false,true,-76,+81,AwakeningCategory.WEAPON_ARMOR),
+    CRIT_CHANCE(24,"Critical Chance","CRIT",false,true,-43,+51,AwakeningCategory.WEAPON_ARMOR);
 
     private int id;
     private String displayName;

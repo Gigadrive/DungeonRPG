@@ -835,7 +835,7 @@ public class InteractListener implements Listener {
                                 u.comboDelay = 1;
                                 if(u.currentCombo.length() != 3) u.updateActionBar();
                                 p.playSound(p.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
-                                if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
+                                u.startComboResetTask();
                                 return;
                             }
                         }
@@ -847,7 +847,7 @@ public class InteractListener implements Listener {
                                 if(u.currentCombo.length() != 3) u.updateActionBar();
                                 p.playSound(p.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
                                 if(u.currentCombo.length() != 3){
-                                    if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
+                                    u.startComboResetTask();
                                     return;
                                 }
 
@@ -858,7 +858,7 @@ public class InteractListener implements Listener {
                                 if(u.currentCombo.length() != 3) u.updateActionBar();
                                 p.playSound(p.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
                                 if(u.currentCombo.length() != 3){
-                                    if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR) u.startComboResetTask();
+                                    u.startComboResetTask();
                                     return;
                                 }
 

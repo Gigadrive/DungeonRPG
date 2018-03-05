@@ -13,5 +13,6 @@ public enum ItemCategory {
     COLLECTIBLE,
     QUEST,
     PICKAXE,
-    MOUNT
+    MOUNT,
+    CRYSTAL
 }

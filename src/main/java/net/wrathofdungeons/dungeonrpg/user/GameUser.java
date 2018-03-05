@@ -450,6 +450,7 @@ public class GameUser extends User {
             public void run() {
                 currentCombo = "";
                 comboResetTask = null;
+                updateActionBar();
             }
         }.runTaskLater(DungeonRPG.getInstance(),2*20);
     }
@@ -471,6 +472,7 @@ public class GameUser extends User {
 
     public void setMP(int mp){
         if(mp > getMaxMP()) mp = getMaxMP();
+        p.setFoodLevel(mp);
         updateHPBar();
     }
 
@@ -483,10 +485,6 @@ public class GameUser extends User {
     }
 
     public void addMP(int mp){
-        mp += getMP();
-
-        if(mp > getMaxMP()) mp = getMaxMP();
-
         setMP(mp);
     }
 
@@ -574,7 +572,6 @@ public class GameUser extends User {
             }
 
             p.setHealth(healthDis);
-            p.setFoodLevel(getMP());
         }
     }
 
@@ -1027,11 +1024,12 @@ public class GameUser extends User {
         //if(getCurrentCharacter() != null) p.getInventory().setItem(17,new CustomItem(6,64).build(p));
 
         if(DungeonRPG.ENABLE_BOWDRAWBACK){
-            if(isInAttackCooldown()){
+            p.getInventory().setItem(17,new CustomItem(6,64).build(p));
+            /*if(isInAttackCooldown()){
                 p.getInventory().setItem(17,new ItemStack(Material.AIR));
             } else {
                 p.getInventory().setItem(17,new CustomItem(6,64).build(p));
-            }
+            }*/
         }
     }
 
@@ -1313,6 +1311,8 @@ public class GameUser extends User {
     public void startClickComboClearTask(){
         if(getCurrentCharacter() == null) return;
 
+        startComboResetTask();
+
         if(DungeonRPG.SHOW_HP_IN_ACTION_BAR){
             if(clearClickCombo != null){
                 clearClickCombo.cancel();
@@ -1344,7 +1344,7 @@ public class GameUser extends User {
                 p.setItemInHand(i.build(p));
             }
 
-            currentCombo = "";
+            //currentCombo = "";
         }
     }
 

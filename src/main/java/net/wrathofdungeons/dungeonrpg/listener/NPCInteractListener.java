@@ -6,10 +6,7 @@ import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.CustomNPCInteractEvent;
-import net.wrathofdungeons.dungeonrpg.inv.AwakeningMenu;
-import net.wrathofdungeons.dungeonrpg.inv.BuyingMerchantMenu;
-import net.wrathofdungeons.dungeonrpg.inv.GuildMasterMenu;
-import net.wrathofdungeons.dungeonrpg.inv.ProfessionMasterMenu;
+import net.wrathofdungeons.dungeonrpg.inv.*;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.items.StoredCustomItem;
@@ -41,6 +38,8 @@ public class NPCInteractListener implements Listener {
                 BuyingMerchantMenu.openFor(p);
             } else if(npc.getNpcType() == CustomNPCType.AWAKENING_SPECIALIST){
                 AwakeningMenu.openFor(p);
+            } else if(npc.getNpcType() == CustomNPCType.CRYSTAL_SPECIALIST){
+                CrystalMenu.openFor(p);
             } else if(npc.getNpcType() == CustomNPCType.MERCHANT){
                 npc.openShop(p);
             } else if(npc.getNpcType() == CustomNPCType.GUILD_MASTER){

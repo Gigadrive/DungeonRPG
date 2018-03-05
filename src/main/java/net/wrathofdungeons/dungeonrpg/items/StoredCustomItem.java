@@ -7,13 +7,13 @@ import org.bukkit.inventory.ItemStack;
 
 public class StoredCustomItem extends CustomItem {
     public StoredCustomItem(CustomItem item){
-        super(item.getData(),1,item.isUntradeable(),item.getAwakenings().toArray(new Awakening[]{}),item.getUpgradeValue(),item.getMountData());
+        super(item.getData(),1,item.isUntradeable(),item.getAwakenings().toArray(new Awakening[]{}),item.getUpgradeValue(),item.getMountData(),item.getCrystals(),item.getSockets());
 
         this.amount = 1;
     }
 
     public StoredCustomItem(CustomItem item, int amount){
-        super(item.getData(),amount,item.isUntradeable(),item.getAwakenings().toArray(new Awakening[]{}),item.getUpgradeValue(),item.getMountData());
+        super(item.getData(),1,item.isUntradeable(),item.getAwakenings().toArray(new Awakening[]{}),item.getUpgradeValue(),item.getMountData(),item.getCrystals(),item.getSockets());
 
         this.amount = amount;
     }
