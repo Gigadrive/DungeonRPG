@@ -79,8 +79,8 @@ public class SyncCommand extends Command {
 
                             /*syncFile(p,"/home/wod/wrapper/local/templates/Test/default/wod/","/home/wod/wrapper/local/templates/Game/default/wod/");
                             syncFile(p,"/home/wod/wrapper/local/templates/Test/default/Dungeons/","/home/wod/wrapper/local/templates/Game/default/Dungeons/");*/
-                            syncFile(p,"/home/wod/CNS-1/database/templates/Test/global/wod/","/home/wod/CNS-1/database/templates/Game/global/wod/");
-                            syncFile(p,"/home/wod/CNS-1/database/templates/Test/global/Dungeons/","/home/wod/CNS-1/database/templates/Game/global/Dungeons/");
+                            syncFile(p,"/home/wod/wrapper/local/templates/Test/default/wod/","/home/wod/wrapper/local/templates/Game/default/wod/");
+                            syncFile(p,"/home/wod/wrapper/local/templates/Test/default/Dungeons/","/home/wod/wrapper/local/templates/Game/default/Dungeons/");
 
                             sync = false;
                             for(Player a : Bukkit.getOnlinePlayers()) a.sendMessage(ChatColor.GRAY + "** " + ChatColor.GREEN + p.getName() + "'s sync action finished! " + ChatColor.GRAY + "**");
@@ -118,7 +118,7 @@ public class SyncCommand extends Command {
                             for(Player a : Bukkit.getOnlinePlayers()) a.sendMessage(ChatColor.GRAY + "** " + ChatColor.YELLOW + p.getName() + " started a sync action (" + ChatColor.GREEN + "PLUGIN" + ChatColor.YELLOW + ") " + ChatColor.GRAY + "**");
 
                             //syncFile(p,"/home/wod/wrapper/local/templates/Test/default/plugins/","/home/wod/wrapper/local/templates/Game/default/plugins/");
-                            syncFile(p,"/home/wod/CNS-1/database/templates/Test/global/plugins/","/home/wod/CNS-1/database/templates/Game/global/plugins/");
+                            syncFile(p,"/home/wod/wrapper/local/templates/Test/default/plugins/","/home/wod/wrapper/local/templates/Game/default/plugins/");
 
                             sync = false;
                             for(Player a : Bukkit.getOnlinePlayers()) a.sendMessage(ChatColor.GRAY + "** " + ChatColor.GREEN + p.getName() + "'s sync action finished! " + ChatColor.GRAY + "**");
