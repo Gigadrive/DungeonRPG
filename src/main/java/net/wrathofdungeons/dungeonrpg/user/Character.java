@@ -78,14 +78,8 @@ public class Character {
                 this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
                 if(rs.getString("variables") != null){
                     this.variables = gson.fromJson(rs.getString("variables"),UserVariables.class);
-
-                    if(this.variables.leftSkillPoints == -1){
-                        this.variables.leftSkillPoints = FormularUtils.calculateSkillPointsForLevel(level);
-                        initSkills();
-                    }
                 } else {
                     this.variables = new UserVariables();
-                    this.variables.leftSkillPoints = 0;
 
                     initSkills();
                 }

@@ -5,6 +5,7 @@ import net.wrathofdungeons.dungeonrpg.professions.ProfessionProgress;
 import net.wrathofdungeons.dungeonrpg.skill.ClickComboType;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
+import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 
 import java.util.HashMap;
 
@@ -18,8 +19,36 @@ public class UserVariables {
     private HashMap<ClickComboType,String> comboDefinitions = new HashMap<ClickComboType,String>();
     private HashMap<String,Integer> skillPoints = new HashMap<String,Integer>();
     private HashMap<Profession,ProfessionProgress> professionProgress = new HashMap<Profession,ProfessionProgress>();
+    private HashMap<String,Integer> skillUses = new HashMap<String,Integer>();
 
-    public int leftSkillPoints = -1;
+    public int getSkillUses(Skill skill){
+        return skillUses.getOrDefault(skill.getClass().getSimpleName(),0);
+    }
+
+    public int getCurrentSkillUses(Skill skill){
+        int uses = getSkillUses(skill);
+
+        for(int i = 1; i <= getInvestedSkillPoints(skill); i++)
+            uses -= FormularUtils.getNeededSkillUsesForLevel(i);
+
+        if(uses < 0) uses = 0;
+        return uses;
+    }
+
+    public void setSkillUses(Skill skill, int uses){
+        if(uses < 0) uses = 0;
+        if(skillUses.containsKey(skill.getClass().getSimpleName())) skillUses.remove(skill.getClass().getSimpleName());
+
+        skillUses.put(skill.getClass().getSimpleName(),uses);
+    }
+
+    public void addSkillUses(Skill skill){
+        addSkillUses(skill,1);
+    }
+
+    public void addSkillUses(Skill skill, int uses){
+        setSkillUses(skill,getSkillUses(skill)+uses);
+    }
 
     public int getInvestedSkillPoints(Skill skill){
         return skillPoints.getOrDefault(skill.getClass().getSimpleName(),0);

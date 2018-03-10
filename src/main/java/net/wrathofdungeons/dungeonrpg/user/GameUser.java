@@ -1348,13 +1348,42 @@ public class GameUser extends User {
         }
     }
 
+    public void levelSkill(Skill skill){
+        levelSkill(skill,1);
+    }
+
+    public void levelSkill(Skill skill, int times){
+        getCurrentCharacter().getVariables().addInvestedSkillPoint(skill);
+        int lvl = getCurrentCharacter().getVariables().getInvestedSkillPoints(skill);
+
+        p.sendMessage(ChatColor.GOLD + "[Skill Level Up!] " + ChatColor.YELLOW + skill.getName() + " is now level " + lvl);
+        for(String effect : skill.getEffects(lvl).keySet()){
+            String value = skill.getEffects(lvl).get(effect);
+            String oldValue = skill.getEffects(lvl-1).getOrDefault(effect,null);
+
+            if(oldValue != null){
+                if(!oldValue.equals(value)){
+                    p.sendMessage(ChatColor.WHITE + "  " + effect + ": " + ChatColor.GRAY + " " + oldValue + ChatColor.DARK_GREEN + " => " + ChatColor.GREEN + value);
+                }
+            } else {
+                p.sendMessage(ChatColor.WHITE + "  " + effect + ": " + ChatColor.GREEN + value);
+            }
+        }
+    }
+
+    public void checkSkillLevelUp(Skill skill){
+        if(getCurrentCharacter() != null &&
+           getCurrentCharacter().getVariables().getInvestedSkillPoints(skill) < skill.getMaxInvestingPoints() &&
+           getCurrentCharacter().getVariables().getCurrentSkillUses(skill) >= FormularUtils.getNeededSkillUsesForLevel(getCurrentCharacter().getVariables().getInvestedSkillPoints(skill)+1))
+            levelSkill(skill);
+    }
+
     public void levelUp(){
         levelUp(1);
     }
 
     public void levelUp(int times){
         final int[] newBankRow = new int[]{10,20,30,40,50};
-        final int[] newSkillPoints = new int[]{5,10,15,20,25,30,35,40,45,50,55,60};
 
         if(getCurrentCharacter() != null){
             for (int i = 0; i < times; i++) {
@@ -1377,16 +1406,6 @@ public class GameUser extends User {
                     p.sendMessage(ChatColor.YELLOW + "+2 Stat Points" + ChatColor.GRAY + " [Use them from the Game Menu]");
 
                     for(int b : newBankRow) if(getCurrentCharacter().getLevel() == b) p.sendMessage(ChatColor.YELLOW + "+1 Bank Row" + ChatColor.GRAY + " [" + getCurrentCharacter().getBankRows() + " total]");
-
-                    //for(int b : newSkillPoints) if(getCurrentCharacter().getLevel() == b){
-                    if(true){
-                        int toAdd = 1;
-                        String d = toAdd == 1 ? "" : "s";
-                        String f = toAdd == 1 ? "it" : "them";
-
-                        p.sendMessage(ChatColor.YELLOW + "+" + toAdd + " Skill Point" + d + ChatColor.GRAY + " [Use " + f + " from the Game Menu]");
-                        getCurrentCharacter().getVariables().leftSkillPoints += toAdd;
-                    }
 
                     for(Quest q : Quest.STORAGE.values()) if(q.getRequiredLevel() == getCurrentCharacter().getLevel()){
                         p.sendMessage(ChatColor.YELLOW + "+ New Quest available! " + ChatColor.GRAY + "[" + q.getName() + "]");

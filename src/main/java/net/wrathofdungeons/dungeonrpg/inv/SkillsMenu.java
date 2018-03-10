@@ -8,6 +8,7 @@ import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
+import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -24,6 +25,25 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class SkillsMenu {
+    private static String expBar(double xp, double needed){
+        int div = ((Double)((xp/needed)*10)).intValue();
+
+        String text = "";
+        if(div == 10) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "||||||||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 9) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "|||||||||" + ChatColor.DARK_GRAY + "|" + ChatColor.DARK_GREEN + "]";
+        if(div == 8) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "||||||||" + ChatColor.DARK_GRAY + "||" + ChatColor.DARK_GREEN + "]";
+        if(div == 7) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "|||||||" + ChatColor.DARK_GRAY + "|||" + ChatColor.DARK_GREEN + "]";
+        if(div == 6) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "||||||" + ChatColor.DARK_GRAY + "||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 5) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "|||||" + ChatColor.DARK_GRAY + "|||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 4) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "||||" + ChatColor.DARK_GRAY + "||||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 3) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "|||" + ChatColor.DARK_GRAY + "|||||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 2) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "||" + ChatColor.DARK_GRAY + "||||||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 1) text = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "|" + ChatColor.DARK_GRAY + "|||||||||" + ChatColor.DARK_GREEN + "]";
+        if(div == 0) text = ChatColor.DARK_GREEN + "[" + ChatColor.DARK_GRAY + "||||||||||" + ChatColor.DARK_GREEN + "]";
+
+        return text;
+    }
+
     public static void openFor(Player p){
         openFor(p,1);
     }
@@ -55,13 +75,13 @@ public class SkillsMenu {
         if(maxPages <= 0) maxPages = 1;
 
         InventoryMenuBuilder inv = new InventoryMenuBuilder(Util.MAX_INVENTORY_SIZE);
-        inv.withTitle(u.getCurrentCharacter().getVariables().leftSkillPoints > 0 ? "[" + u.getCurrentCharacter().getVariables().leftSkillPoints + "] Skills (" + page + "/" + maxPages + ")" : "Skills (" + page + "/" + maxPages + ")");
+        inv.withTitle("Skills (" + page + "/" + maxPages + ")");
 
         int slot = 0;
         for(Skill skill : skills.stream().skip((page-1) * sizePerPage).limit(sizePerPage).collect(Collectors.toCollection(ArrayList::new))){
             int invested = u.getCurrentCharacter().getVariables().getInvestedSkillPoints(skill);
 
-            if(invested <= 0){
+            if(u.getCurrentCharacter().getLevel() < skill.getMinLevel()){
                 ItemStack i = new ItemStack(Material.BARRIER);
                 ItemMeta iM = i.getItemMeta();
                 iM.setDisplayName(ChatColor.DARK_RED + skill.getName());
@@ -75,30 +95,11 @@ public class SkillsMenu {
                     }
                 }
 
-                if(u.getCurrentCharacter().getLevel() >= skill.getMinLevel() && u.getCurrentCharacter().getVariables().leftSkillPoints > 0){
-                    iL.add(" ");
-                    for(String s : Util.getWordWrapLore("Click to unlock at the cost of 1 skill point!"))
-                        iL.add(ChatColor.YELLOW + s);
-                }
-
                 iM.setLore(iL);
                 i.setItemMeta(iM);
                 i = ItemUtil.setUnbreakable(i);
                 i = ItemUtil.hideFlags(i);
-                inv.withItem(slot,i,((player, action, item) -> {
-                    if(u.getCurrentCharacter().getLevel() >= skill.getMinLevel()){
-                        if(u.getCurrentCharacter().getVariables().leftSkillPoints > 0){
-                            u.getCurrentCharacter().getVariables().addInvestedSkillPoints(skill,1);
-                            u.getCurrentCharacter().getVariables().leftSkillPoints--;
-                            p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
-                            openFor(p,page);
-                        } else {
-                            p.sendMessage(ChatColor.RED + "You don't have enough skill points to unlock this skill.");
-                        }
-                    } else {
-                        p.sendMessage(ChatColor.RED + "You must be at least level " + skill.getMinLevel() + " to unlock this skill.");
-                    }
-                }),ClickType.LEFT);
+                inv.withItem(slot,i);
             } else {
                 ItemStack i = new ItemStack(skill.getIcon(),1,(short)skill.getIconDurability());
                 ItemMeta iM = i.getItemMeta();
@@ -139,13 +140,12 @@ public class SkillsMenu {
                 }
 
                 iL.add(" ");
-
-                if(invested < skill.getMaxInvestingPoints() && u.getCurrentCharacter().getVariables().leftSkillPoints > 0){
-                    for(String s : Util.getWordWrapLore("Left-Click to level this skill up at the cost of 1 skill point!"))
-                        iL.add(ChatColor.YELLOW + s);
+                if(invested < skill.getMaxInvestingPoints()){
+                    iL.add(expBar((double)u.getCurrentCharacter().getVariables().getCurrentSkillUses(skill), (double)FormularUtils.getNeededSkillUsesForLevel(invested+1)) + " " + ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + u.getCurrentCharacter().getVariables().getCurrentSkillUses(skill) + ChatColor.DARK_GRAY.toString() + "/" + ChatColor.GRAY.toString() + FormularUtils.getNeededSkillUsesForLevel(invested+1) + ChatColor.DARK_GRAY.toString() + "]");
+                    iL.add(" ");
                 }
 
-                for(String s : Util.getWordWrapLore("Right-Click to bind this skill to a click combination!"))
+                for(String s : Util.getWordWrapLore("Left-Click to bind this skill to a click combination!"))
                     iL.add(ChatColor.GREEN + s);
 
                 iM.setLore(iL);
@@ -153,26 +153,7 @@ public class SkillsMenu {
                 i = ItemUtil.setUnbreakable(i);
                 i = ItemUtil.hideFlags(i);
                 inv.withItem(slot,i,((player, action, item) -> {
-                    if(action == ClickType.LEFT){
-                        // upgrade
-
-                        if(invested < skill.getMaxInvestingPoints()){
-                            if(u.getCurrentCharacter().getVariables().leftSkillPoints > 0){
-                                u.getCurrentCharacter().getVariables().addInvestedSkillPoints(skill,1);
-                                u.getCurrentCharacter().getVariables().leftSkillPoints--;
-                                p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1f,1f);
-                                openFor(p,page);
-                            } else {
-                                p.sendMessage(ChatColor.RED + "You don't have enough skill points to upgrade this skill.");
-                            }
-                        } else {
-                            p.sendMessage(ChatColor.RED + "You have already reached the maximum level of this skill.");
-                        }
-                    } else {
-                        // bind
-
-                        openBindingMenu(p,skill,page);
-                    }
+                    openBindingMenu(p,skill,page);
                 }),ClickType.LEFT,ClickType.RIGHT);
             }
 

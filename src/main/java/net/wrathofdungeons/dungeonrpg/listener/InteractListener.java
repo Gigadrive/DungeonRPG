@@ -902,6 +902,8 @@ public class InteractListener implements Listener {
                                             u.setMP(u.getMP()-manaCost);
                                             toCast.execute(p);
 
+                                            u.getCurrentCharacter().getVariables().addSkillUses(toCast);
+                                            u.checkSkillLevelUp(toCast);
                                             u.updateClickComboBar(toCast,manaCost);
 
                                             if(playAfter) p.playSound(p.getEyeLocation(),Sound.ENTITY_ARROW_HIT_PLAYER,1f,0.5f);
