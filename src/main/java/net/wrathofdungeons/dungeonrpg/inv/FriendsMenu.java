@@ -1,7 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.inv;
 
-import de.dytanic.cloudnet.api.CloudAPI;
-import de.dytanic.cloudnet.lib.player.CloudPlayer;
+import de.dytanic.cloudnet.api.CloudNetAPI;
+import de.dytanic.cloudnet.player.PlayerWhereAmI;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.PlayerUtilities;
@@ -97,7 +97,7 @@ public class FriendsMenu {
             String name = PlayerUtilities.getNameFromUUID(uuid);
             if(name == null || name.isEmpty()) continue;
 
-            CloudPlayer cloudPlayer = CloudAPI.getInstance().getOnlinePlayer(uuid);
+            PlayerWhereAmI cloudPlayer = CloudNetAPI.getInstance().getOnlinePlayer(uuid);
             boolean online = cloudPlayer != null && cloudPlayer.getServer() != null && !cloudPlayer.getServer().isEmpty();
 
             if(status == FriendStatus.FRIENDS){

@@ -1,7 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
-import de.dytanic.cloudnet.api.CloudAPI;
-import de.dytanic.cloudnet.lib.player.CloudPlayer;
+import de.dytanic.cloudnet.api.CloudNetAPI;
+import de.dytanic.cloudnet.player.PlayerWhereAmI;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.PlayerUtilities;
 import net.wrathofdungeons.dungeonapi.util.Util;
@@ -111,7 +111,7 @@ public class PluginMessageListener implements Listener, org.bukkit.plugin.messag
                                         GameUser u = GameUser.getUser(p);
 
                                         if(u.getCurrentCharacter() != null){
-                                            CloudPlayer cp = CloudAPI.getInstance().getOnlinePlayer(uuid);
+                                            PlayerWhereAmI cp = CloudNetAPI.getInstance().getOnlinePlayer(uuid);
 
                                             if(cp != null){
                                                 String server = cp.getServer();

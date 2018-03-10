@@ -1,7 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
-import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
+import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
@@ -11,6 +11,7 @@ import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,6 +46,23 @@ public class PlayerMoveListener implements Listener {
                 if(newBlock) u.getCurrentCharacter().getVariables().statisticsManager.blocksWalked++;
 
                 if(((Entity)p).isOnGround()) u.getSkillValues().leapIsInAir = false;
+
+                if(u.hasElytraOnChestplate()){
+                    if(p.isGliding()){
+                        Vector velocity = p.getVelocity();
+
+                        if(p.isSneaking()){
+                            if(velocity.length() <= 1.0)
+                                p.setVelocity(velocity.normalize().multiply(1.1));
+                        } else {
+                            if(velocity.length() < 1.6)
+                                p.setVelocity(velocity.normalize().multiply(1.6));
+
+                            ParticleEffect.CLOUD.display(0.05f,0.05f,0.05f,0.05f,15,p.getLocation(),600);
+                            p.getWorld().playSound(p.getLocation(), Sound.ENTITY_FIREWORK_TWINKLE,0.05f,2.0f);
+                        }
+                    }
+                }
 
                 if(newBlock){
                     for(Region region : Region.STORAGE){

@@ -1,14 +1,9 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
-import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
-import de.dytanic.cloudnet.api.CloudAPI;
-import de.dytanic.cloudnet.lib.network.ChannelUser;
-import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import net.citizensnpcs.api.CitizensAPI;
-import net.minecraft.server.v1_9_R2.GenericAttributes;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.user.Rank;
@@ -1369,6 +1364,10 @@ public class GameUser extends User {
                 p.sendMessage(ChatColor.WHITE + "  " + effect + ": " + ChatColor.GREEN + value);
             }
         }
+    }
+
+    public boolean hasElytraOnChestplate(){
+        return p.getInventory() != null && p.getInventory().getChestplate() != null && p.getInventory().getChestplate().getType() != null && p.getInventory().getChestplate().getType() == Material.ELYTRA;
     }
 
     public void checkSkillLevelUp(Skill skill){

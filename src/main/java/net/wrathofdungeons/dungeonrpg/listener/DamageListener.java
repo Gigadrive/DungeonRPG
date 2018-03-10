@@ -22,6 +22,11 @@ public class DamageListener implements Listener {
             return;
         }
 
+        if(e.getCause() == EntityDamageEvent.DamageCause.FLY_INTO_WALL){
+            e.setCancelled(true);
+            return;
+        }
+
         //System.out.println(e.getCause().toString());
         if(e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK || e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) return;
 
