@@ -76,7 +76,7 @@ public class ModifyRegionCommand extends Command {
 
                             if(region.getMobData() != null){
                                 p.sendMessage(ChatColor.YELLOW + "Mob Data: " + ChatColor.GREEN + region.getMobData().getName());
-                                p.sendMessage(ChatColor.YELLOW + "Mob Spawn Limit: " + ChatColor.GREEN + region.getLocations().size());
+                                p.sendMessage(ChatColor.YELLOW + "Mob Spawn Limit: " + ChatColor.GREEN + region.getMobLimit());
                                 p.sendMessage(ChatColor.YELLOW + "Cooldown: " + ChatColor.GREEN + region.getCooldown() + " seconds");
                                 p.sendMessage(ChatColor.YELLOW + "Spawn Chance: " + ChatColor.GREEN + region.getSpawnChance());
                             }
