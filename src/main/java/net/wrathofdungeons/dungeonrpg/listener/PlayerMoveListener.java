@@ -51,7 +51,7 @@ public class PlayerMoveListener implements Listener {
                     if(p.isGliding()){
                         Vector velocity = p.getVelocity();
 
-                        if(p.isSneaking()){
+                        if(!p.isSprinting()){
                             if(velocity.length() <= 1.0)
                                 p.setVelocity(velocity.normalize().multiply(1.1));
                         } else {
