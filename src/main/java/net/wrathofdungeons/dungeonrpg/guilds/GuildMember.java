@@ -1,7 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.guilds;
 
-import de.dytanic.cloudnet.api.CloudNetAPI;
-import de.dytanic.cloudnet.player.PlayerWhereAmI;
+import de.dytanic.cloudnet.api.CloudAPI;
+import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -49,8 +49,8 @@ public class GuildMember {
         return toCloudPlayer() != null ? toCloudPlayer().getServer() : null;
     }
 
-    public PlayerWhereAmI toCloudPlayer(){
-        return CloudNetAPI.getInstance().getOnlinePlayer(uuid);
+    public CloudPlayer toCloudPlayer(){
+        return CloudAPI.getInstance().getOnlinePlayer(uuid);
     }
 
     public Player toBukkitPlayer(){

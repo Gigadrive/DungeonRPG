@@ -45,23 +45,7 @@ public class CustomDamageListener implements Listener {
                 CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
                 long itemCooldown = u.getCurrentCharacter().getAttackSpeedTicks();
 
-                boolean wrongClass = false;
-
-                if(item.getData().getCategory() == ItemCategory.WEAPON_BOW && !(u.getCurrentCharacter().getRpgClass() == RPGClass.ARCHER || u.getCurrentCharacter().getRpgClass() == RPGClass.RANGER || u.getCurrentCharacter().getRpgClass() == RPGClass.HUNTER)){
-                    wrongClass = true;
-                }
-
-                if(item.getData().getCategory() == ItemCategory.WEAPON_STICK && !(u.getCurrentCharacter().getRpgClass() == RPGClass.MAGICIAN || u.getCurrentCharacter().getRpgClass() == RPGClass.WIZARD || u.getCurrentCharacter().getRpgClass() == RPGClass.ALCHEMIST)){
-                    wrongClass = true;
-                }
-
-                if(item.getData().getCategory() == ItemCategory.WEAPON_AXE && !(u.getCurrentCharacter().getRpgClass() == RPGClass.MERCENARY || u.getCurrentCharacter().getRpgClass() == RPGClass.KNIGHT || u.getCurrentCharacter().getRpgClass() == RPGClass.SOLDIER)){
-                    wrongClass = true;
-                }
-
-                if(item.getData().getCategory() == ItemCategory.WEAPON_SHEARS && !(u.getCurrentCharacter().getRpgClass() == RPGClass.ASSASSIN || u.getCurrentCharacter().getRpgClass() == RPGClass.BLADEMASTER || u.getCurrentCharacter().getRpgClass() == RPGClass.NINJA)){
-                    wrongClass = true;
-                }
+                boolean wrongClass = item.getData().getCategory().wrongClass(u.getCurrentCharacter().getRpgClass());
 
                 if(item.getData().getNeededClass() != RPGClass.NONE){
                     if(item.getData().getNeededClass() == RPGClass.MERCENARY){

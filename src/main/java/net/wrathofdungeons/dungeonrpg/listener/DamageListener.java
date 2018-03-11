@@ -17,26 +17,12 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public class DamageListener implements Listener {
     @EventHandler
     public void onDamage(EntityDamageEvent e){
-        if(WorldUtilities.isMount(e.getEntity())){
+        if(WorldUtilities.isMount(e.getEntity()) || e.getCause() == EntityDamageEvent.DamageCause.FLY_INTO_WALL){
             e.setCancelled(true);
             return;
         }
 
-        if(e.getCause() == EntityDamageEvent.DamageCause.FLY_INTO_WALL){
-            e.setCancelled(true);
-            return;
-        }
-
-        //System.out.println(e.getCause().toString());
         if(e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK || e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) return;
-
-        /*if(e.getEntity().getType() == EntityType.ZOMBIE || e.getEntity().getType() == EntityType.SKELETON){
-            e.getEntity().setFireTicks(0);
-
-            if(e.getCause() == EntityDamageEvent.DamageCause.FIRE || e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK){
-                e.setCancelled(true);
-            }
-        }*/
 
         if(e.getEntity() instanceof LivingEntity){
             LivingEntity ent = (LivingEntity)e.getEntity();

@@ -1,20 +1,15 @@
 package net.wrathofdungeons.dungeonrpg.inv;
 
-import de.dytanic.cloudnet.api.CloudNetAPI;
-import de.dytanic.cloudnet.player.PlayerWhereAmI;
+import de.dytanic.cloudnet.api.CloudAPI;
+import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.PlayerUtilities;
 import net.wrathofdungeons.dungeonapi.util.Util;
-import net.wrathofdungeons.dungeonrpg.DungeonRPG;
-import net.wrathofdungeons.dungeonrpg.guilds.Guild;
-import net.wrathofdungeons.dungeonrpg.guilds.GuildUtil;
-import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +19,6 @@ import org.inventivetalent.menubuilder.inventory.InventoryMenuBuilder;
 import org.inventivetalent.menubuilder.inventory.ItemListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -97,7 +91,7 @@ public class FriendsMenu {
             String name = PlayerUtilities.getNameFromUUID(uuid);
             if(name == null || name.isEmpty()) continue;
 
-            PlayerWhereAmI cloudPlayer = CloudNetAPI.getInstance().getOnlinePlayer(uuid);
+            CloudPlayer cloudPlayer = CloudAPI.getInstance().getOnlinePlayer(uuid);
             boolean online = cloudPlayer != null && cloudPlayer.getServer() != null && !cloudPlayer.getServer().isEmpty();
 
             if(status == FriendStatus.FRIENDS){

@@ -342,13 +342,12 @@ public class DungeonRPG extends JavaPlugin {
                         if(GameUser.isLoaded(p)){
                             GameUser u = GameUser.getUser(p);
 
-                            if(u.getCurrentCharacter() != null){
-                                u.updateHPBar();
-                            }
+                            if(u.getCurrentCharacter() != null)
+                                u.updateActionBar();
                         }
                     }
                 }
-            }.runTaskTimer(this,20,20);
+            }.runTaskTimerAsynchronously(this,20,20);
         }
 
         // TELEPORT MOB NAME PLATES
@@ -834,7 +833,7 @@ public class DungeonRPG extends JavaPlugin {
                     }
                 }
             }
-        }.runTaskTimer(DungeonRPG.getInstance(),20,20);
+        }.runTaskTimerAsynchronously(DungeonRPG.getInstance(),20,20);
 
         // ORES PARTICLES
 
@@ -875,7 +874,7 @@ public class DungeonRPG extends JavaPlugin {
                     }
                 }
             }
-        }.runTaskTimer(DungeonRPG.getInstance(),20,20);
+        }.runTaskTimerAsynchronously(DungeonRPG.getInstance(),20,20);
 
         // UPDATE TAB
 
