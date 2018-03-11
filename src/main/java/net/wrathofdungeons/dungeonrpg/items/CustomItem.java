@@ -780,7 +780,7 @@ public class CustomItem {
                         iL.add(" ");
                     }
 
-                    iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
+                    if(getData().getRarity() != null && getData().getRarity() != ItemRarity.NONE) iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
 
                     if(getData().getDescription() != null) iL.add(" ");
                 } else if(getData().getCategory() == ItemCategory.ARMOR){
@@ -951,7 +951,7 @@ public class CustomItem {
                         iL.add(" ");
                     }
 
-                    iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
+                    if(getData().getRarity() != null && getData().getRarity() != ItemRarity.NONE) iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
 
                     if(getData().getDescription() != null) iL.add(" ");
                 } else if(getData().getCategory() == ItemCategory.PICKAXE){
@@ -1061,7 +1061,7 @@ public class CustomItem {
                         iL.add(" ");
                     }
 
-                    iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
+                    if(getData().getRarity() != null && getData().getRarity() != ItemRarity.NONE) iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
 
                     if(getData().getDescription() != null) iL.add(" ");
                 } else if(getData().getCategory() == ItemCategory.FOOD){
