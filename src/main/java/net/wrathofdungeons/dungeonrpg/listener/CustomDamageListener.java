@@ -168,7 +168,7 @@ public class CustomDamageListener implements Listener {
 
         if(u2.isDying()) return;
 
-        if(Duel.isDuelingWith(p,p2)){
+        if(DungeonRPG.mayAttack(p,p2)){
             if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null) {
                 CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
                 long itemCooldown = u.getCurrentCharacter().getAttackSpeedTicks();

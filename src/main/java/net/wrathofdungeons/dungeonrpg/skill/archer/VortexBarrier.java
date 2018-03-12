@@ -134,7 +134,7 @@ public class VortexBarrier implements Skill {
                         if(ent instanceof Player){
                             Player p2 = (Player)ent;
 
-                            if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
+                            if(DungeonRPG.mayAttack(p,p2)){
                                 GameUser u2 = GameUser.getUser(p2);
 
                                 if(u2.getCurrentCharacter() != null) launch = true;
@@ -158,7 +158,7 @@ public class VortexBarrier implements Skill {
                     if(pr.getShooter() instanceof Player){
                         Player p2 = (Player)pr.getShooter();
 
-                        if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
+                        if(DungeonRPG.mayAttack(p,p2)){
                             GameUser u2 = GameUser.getUser(p2);
 
                             if(u2.getCurrentCharacter() != null) launch = true;

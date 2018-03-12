@@ -167,7 +167,7 @@ public class DamageListener implements Listener {
                                             if(u2.getCurrentCharacter() != null){
                                                 e.setCancelled(true);
                                                 e.getDamager().remove();
-                                                if(Duel.isDuelingWith(p,p2)) DungeonRPG.callPlayerToPlayerDamage(p2,p,projectile);
+                                                if(DungeonRPG.mayAttack(p,p2)) DungeonRPG.callPlayerToPlayerDamage(p2,p,projectile);
                                             }
                                         }
                                     }

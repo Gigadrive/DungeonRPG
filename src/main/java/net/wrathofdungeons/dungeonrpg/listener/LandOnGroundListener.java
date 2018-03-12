@@ -99,7 +99,7 @@ public class LandOnGroundListener implements Listener {
                                 if(ent.getType() == EntityType.PLAYER){
                                     Player p2 = (Player)ent;
 
-                                    if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
+                                    if(DungeonRPG.mayAttack(p,p2)){
                                         GameUser u2 = GameUser.getUser(p2);
 
                                         DungeonRPG.showBloodEffect(livingEntity.getLocation());

@@ -13,6 +13,10 @@ import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
+import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
+import net.wrathofdungeons.dungeonrpg.regions.Region;
+import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
+import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,12 +37,15 @@ import org.mineskin.data.Skin;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static net.citizensnpcs.api.npc.NPC.*;
 import static net.citizensnpcs.api.npc.NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA;
 import static net.citizensnpcs.api.npc.NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA;
 
 public class WorldUtilities {
+    public static HashMap<Location,Boolean> pvpArenaResults = new HashMap<Location,Boolean>();
+
     public static Item dropItem(Location loc, CustomItem item){
         return dropItem(loc,item,null);
     }
@@ -90,6 +97,32 @@ public class WorldUtilities {
         }
 
         return locations;
+    }
+
+    public static boolean isPvPArena(Location loc){
+        if(pvpArenaResults.containsKey(loc)){
+            return pvpArenaResults.get(loc);
+        } else {
+            boolean b = false;
+
+            for(Region region : Region.STORAGE){
+                if(region.getLocations().size() > 0){
+                    for(RegionLocation location : region.getLocations(RegionLocationType.PVP_ARENA)){
+                        if(location.world.equalsIgnoreCase(loc.getWorld().getName()) && location.toBukkitLocation().getBlockX() == loc.getBlockX() && location.toBukkitLocation().getBlockZ() == loc.getBlockZ()){
+                            b = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            pvpArenaResults.put(loc,b);
+            return b;
+        }
+    }
+
+    public static boolean isValidEntity(LivingEntity e){
+        return e.getType() == EntityType.PLAYER || CustomNPC.fromEntity(e) != null || CustomEntity.fromEntity(e) != null;
     }
 
     public static CustomItem[] convertNuggetAmount(int nuggets){

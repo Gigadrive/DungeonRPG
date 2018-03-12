@@ -198,7 +198,7 @@ public class StabbingStorm implements Skill {
                                         if(GameUser.isLoaded(p2)){
                                             GameUser u2 = GameUser.getUser(p2);
 
-                                            if(Duel.isDuelingWith(p,p2)){
+                                            if(DungeonRPG.mayAttack(p,p2)){
                                                 DungeonRPG.showBloodEffect(entity.getLocation());
                                                 DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,stabbingStorm);
                                                 DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());

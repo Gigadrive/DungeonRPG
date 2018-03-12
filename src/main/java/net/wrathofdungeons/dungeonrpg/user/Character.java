@@ -559,6 +559,10 @@ public class Character {
                     u.updateWalkSpeed();
                     p.teleport(DungeonRPG.getCharSelLocation());
                     DungeonRPG.updateVanishing();
+                    u.lastDamageSource = null;
+                    for(Player a : Bukkit.getOnlinePlayers())
+                        if(GameUser.isLoaded(a) && GameUser.getUser(a).lastDamageSource == p)
+                            GameUser.getUser(a).lastDamageSource = null;
 
                     CharacterSelectionMenu.openSelection(p);
 

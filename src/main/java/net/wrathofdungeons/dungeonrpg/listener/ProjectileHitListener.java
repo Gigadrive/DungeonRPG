@@ -90,9 +90,10 @@ public class ProjectileHitListener implements Listener {
                                         if(ent.getType() == EntityType.PLAYER){
                                             Player p2 = (Player)ent;
 
-                                            if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
+                                            if(DungeonRPG.mayAttack(p,p2)){
                                                 GameUser u2 = GameUser.getUser(p2);
 
+                                                p2.damage(0);
                                                 DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,data.getSkill());
                                                 DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
                                                 u2.damage(damageData.getDamage(),p);

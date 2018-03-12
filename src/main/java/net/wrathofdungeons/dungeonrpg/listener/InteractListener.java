@@ -146,6 +146,14 @@ public class InteractListener implements Listener {
                                         rl.type = CRAFTING_STATION;
                                         region.getLocations().add(rl);
                                         p.sendMessage(ChatColor.GREEN + "Location added!");
+                                    } else if(dis.equals("PvP Arena Setter")){
+                                        rl.type = PVP_ARENA;
+                                        region.getLocations().add(rl);
+                                        p.sendMessage(ChatColor.GREEN + "Location added!");
+                                    } else if(dis.equals("PvP Respawn Setter")){
+                                        rl.type = PVP_RESPAWN;
+                                        region.getLocations().add(rl);
+                                        p.sendMessage(ChatColor.GREEN + "Location added!");
                                     }
 
                                     if(rl.type != null) DungeonRPG.setLocationIndicator(loc,rl.type);

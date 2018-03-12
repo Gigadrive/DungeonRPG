@@ -10,9 +10,13 @@ import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
+import net.wrathofdungeons.dungeonrpg.regions.Region;
+import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
+import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -47,12 +51,13 @@ public class DeathListener implements Listener {
                     u.setMP(u.getMaxMP());
                     u.setPoisonData(null);
 
-                    if(!Duel.isDueling(p)){
-                        for(PotionEffect pe : p.getActivePotionEffects()) p.removePotionEffect(pe.getType());
+                    for(PotionEffect pe : p.getActivePotionEffects()) p.removePotionEffect(pe.getType());
 
-                        p.teleport(DungeonRPG.getNearestTown(p));
-                        p.sendMessage(ChatColor.RED + "You died!");
-                    } else {
+                    Location respawn = null;
+
+                    Player killer = u.lastDamageSource != null && u.lastDamageSource instanceof Player && ((Player)u.lastDamageSource).isOnline() && ((Player)u.lastDamageSource).isValid() ? ((Player)u.lastDamageSource) : null;
+
+                    if(Duel.isDueling(p)){
                         Duel d = Duel.getDuel(p);
 
                         if(d.isPlayer1(p)){
@@ -60,7 +65,40 @@ public class DeathListener implements Listener {
                         } else {
                             d.endGame(d.getPlayer1());
                         }
+                    } else if(WorldUtilities.isPvPArena(p.getLocation())){
+                        if(killer != null){
+                            GameUser u2 = GameUser.getUser(killer);
+
+                            if(u2.getCurrentCharacter() != null){
+                                u2.getCurrentCharacter().getVariables().statisticsManager.playersDefeatedInArena++;
+                                killer.sendMessage(ChatColor.GREEN + "You killed " + ChatColor.YELLOW + p.getName() + ChatColor.GREEN + "!");
+                                p.sendMessage(ChatColor.RED + "You were killed by " + ChatColor.YELLOW + killer.getName() + ChatColor.RED + "!");
+                            } else {
+                                p.sendMessage(ChatColor.RED + "You died!");
+                            }
+                        } else {
+                            p.sendMessage(ChatColor.RED + "You died!");
+                        }
+
+                        for(Region region : Region.STORAGE){
+                            if(region.getLocations().size() > 0){
+                                for(RegionLocation loc : region.getLocations(RegionLocationType.PVP_RESPAWN)){
+                                    if(loc.world.equals(p.getWorld().getName())){
+                                        Location bukkitLocation = loc.toBukkitLocation();
+
+                                        if(respawn == null || p.getLocation().distance(bukkitLocation) < p.getLocation().distance(respawn)){
+                                            respawn = bukkitLocation;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        respawn = DungeonRPG.getNearestTown(p);
+                        p.sendMessage(ChatColor.RED + "You died!");
                     }
+
+                    if(respawn != null) p.teleport(respawn);
 
                     new BukkitRunnable(){
                         @Override

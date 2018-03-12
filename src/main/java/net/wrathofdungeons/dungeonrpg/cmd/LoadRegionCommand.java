@@ -44,26 +44,8 @@ public class LoadRegionCommand extends Command {
                             int i = 0;
                             for(RegionLocation l : region.getLocations()){
                                 Location loc = l.toBukkitLocation();
-                                Block b = loc.getBlock();
-                                b.setType(Material.WOOL);
 
-                                switch(l.type){
-                                    case MOB_LOCATION:
-                                        b.setData((byte)5);
-                                        break;
-                                    case TOWN_LOCATION:
-                                        b.setData((byte)3);
-                                        break;
-                                    case MOB_ACTIVATION_1:
-                                        b.setData((byte)14);
-                                        break;
-                                    case MOB_ACTIVATION_2:
-                                        b.setData((byte)13);
-                                        break;
-                                    case CRAFTING_STATION:
-                                        b.setData((byte)11);
-                                        break;
-                                }
+                                DungeonRPG.setLocationIndicator(loc,l.type);
 
                                 i++;
                             }

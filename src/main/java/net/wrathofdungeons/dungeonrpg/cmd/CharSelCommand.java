@@ -23,6 +23,7 @@ public class CharSelCommand extends Command {
                 Duel.clearRequests(p);
                 GuildUtil.clearInvites(p);
                 u.cancelAllTasks();
+                u.removeHoloPlate();
                 u.saveData(true);
             } else {
                 p.sendMessage(ChatColor.RED + "You are already in the character selection screen.");

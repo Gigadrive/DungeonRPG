@@ -149,6 +149,7 @@ public class GameUser extends User {
     private TextLine titlePlate;
 
     private PoisonData poisonData;
+    public LivingEntity lastDamageSource;
 
     public GameUser(Player p){
         super(p);
@@ -606,6 +607,7 @@ public class GameUser extends User {
     public void damage(double damage, LivingEntity source){
         if(isDying()) return;
 
+        lastDamageSource = source;
         this.hp -= damage;
 
         if(this.hp <= 0){
@@ -1201,6 +1203,7 @@ public class GameUser extends User {
         if(this.setupMode){
             if(getCurrentCharacter() != null) getCurrentCharacter().saveData(false,false);
 
+            removeHoloPlate();
             setCurrentCharacter(null);
             bukkitReset();
             p.setGameMode(GameMode.CREATIVE);
@@ -1211,6 +1214,8 @@ public class GameUser extends User {
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Mob Activation Setter (2)",null));
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Ore Setter",null));
             p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"Crafting Station Setter",null));
+            p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"PvP Arena Setter",null));
+            p.getInventory().addItem(ItemUtil.namedItem(Material.STICK,"PvP Respawn Setter",null));
         } else {
             bukkitReset();
             setCurrentCharacter(null);

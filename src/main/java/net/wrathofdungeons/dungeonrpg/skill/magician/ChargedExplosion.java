@@ -174,7 +174,7 @@ public class ChargedExplosion implements Skill {
                                 if(entity instanceof Player){
                                     Player p2 = (Player)entity;
 
-                                    if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
+                                    if(DungeonRPG.mayAttack(p,p2)){
                                         GameUser u2 = GameUser.getUser(p2);
                                         DungeonRPG.showBloodEffect(entity.getLocation());
                                         DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,chargedExplosion);

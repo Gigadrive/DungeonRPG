@@ -145,7 +145,7 @@ public class FlameBurst implements Skill {
                                         if(GameUser.isLoaded(p2)){
                                             GameUser u2 = GameUser.getUser(p2);
 
-                                            if(Duel.isDuelingWith(p,p2)){
+                                            if(DungeonRPG.mayAttack(p,p2)){
                                                 entities.add(livingEntity);
                                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                                 u2.giveNormalKnockback(loc);

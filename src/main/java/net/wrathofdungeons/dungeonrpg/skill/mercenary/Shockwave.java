@@ -109,7 +109,7 @@ public class Shockwave implements Skill {
                                         if(livingEntity instanceof Player){
                                             Player p2 = (Player)livingEntity;
 
-                                            if(GameUser.isLoaded(p2) && Duel.isDuelingWith(p,p2)){
+                                            if(DungeonRPG.mayAttack(p,p2)){
                                                 GameUser u2 = GameUser.getUser(p2);
                                                 entities.add(livingEntity);
                                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());

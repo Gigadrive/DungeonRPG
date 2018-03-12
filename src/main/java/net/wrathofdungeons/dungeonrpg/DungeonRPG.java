@@ -50,6 +50,7 @@ import net.wrathofdungeons.dungeonrpg.skill.mercenary.Shockwave;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
+import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.*;
@@ -891,6 +892,13 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(DungeonRPG.getInstance(),10*20,10*20);
 
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                WorldUtilities.pvpArenaResults.clear();
+            }
+        }.runTaskTimer(this,20*20,20*20);
+
         Bukkit.getServer().clearRecipes();
         EntityManager.registerEntities();
     }
@@ -1139,6 +1147,12 @@ public class DungeonRPG extends JavaPlugin {
         new WorldBroadcastCommand();
     }
 
+    public static boolean mayAttack(Player p, Player p2){
+        return p != p2 && GameUser.isLoaded(p) && GameUser.isLoaded(p2) && GameUser.getUser(p).getCurrentCharacter() != null && GameUser.getUser(p2).getCurrentCharacter() != null &&
+                (Duel.isDuelingWith(p,p2) ||
+                (WorldUtilities.isPvPArena(p.getLocation()) && WorldUtilities.isPvPArena(p2.getLocation())));
+    }
+
     public static void setLocationIndicator(Location loc, RegionLocationType type){
         if(loc == null || type == null) return;
 
@@ -1162,6 +1176,14 @@ public class DungeonRPG extends JavaPlugin {
             case CRAFTING_STATION:
                 loc.getBlock().setType(Material.WOOL);
                 loc.getBlock().setData((byte)11);
+                break;
+            case PVP_ARENA:
+                loc.getBlock().setType(Material.WOOL);
+                loc.getBlock().setData((byte)4);
+                break;
+            case PVP_RESPAWN:
+                loc.getBlock().setType(Material.WOOL);
+                loc.getBlock().setData((byte)1);
                 break;
         }
     }

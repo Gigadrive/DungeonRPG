@@ -9,6 +9,7 @@ import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -65,6 +66,14 @@ public class PlayerMoveListener implements Listener {
                 }
 
                 if(newBlock){
+                    if(!WorldUtilities.isPvPArena(e.getFrom()) && WorldUtilities.isPvPArena(e.getTo())){
+                        // ENTERING PVP ARENA
+                        BountifulAPI.sendTitle(p,0,2*20,0,ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() + "PVP ENABLED",ChatColor.GRAY + "You have entered the PvP Arena!");
+                    } else if(WorldUtilities.isPvPArena(e.getFrom()) && !WorldUtilities.isPvPArena(e.getTo())){
+                        // LEAVING PVP ARENA
+                        BountifulAPI.sendTitle(p,0,2*20,0,ChatColor.DARK_GREEN.toString() + ChatColor.BOLD.toString() + "PVP DISABLED",ChatColor.GRAY + "You have left the PvP Arena!");
+                    }
+
                     for(Region region : Region.STORAGE){
                         if(region.isInRegion(e.getTo())){
                             if(!region.isInRegion(e.getFrom())){

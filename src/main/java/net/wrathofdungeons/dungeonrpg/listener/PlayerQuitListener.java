@@ -4,6 +4,7 @@ import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.Trade;
 import net.wrathofdungeons.dungeonrpg.guilds.GuildUtil;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,6 +29,10 @@ public class PlayerQuitListener implements Listener {
             u.cancelAllTasks();
             u.resetMount();
             u.removeHoloPlate();
+
+            for(Player a : Bukkit.getOnlinePlayers())
+                if(GameUser.isLoaded(a) && GameUser.getUser(a).lastDamageSource == p)
+                    GameUser.getUser(a).lastDamageSource = null;
         }
     }
 }

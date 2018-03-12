@@ -146,7 +146,7 @@ public class WhirlingBlade implements Skill {
                                         Player p2 = (Player)l;
                                         GameUser u2 = GameUser.getUser(p2);
 
-                                        if(Duel.isDuelingWith(p,p2)){
+                                        if(DungeonRPG.mayAttack(p,p2)){
                                             entities.add(l);
                                             DungeonRPG.showBloodEffect(l.getLocation());
                                             u2.giveNormalKnockback(playerLoc);
