@@ -16,7 +16,8 @@ public enum ItemCategory {
     QUEST,
     PICKAXE,
     MOUNT,
-    CRYSTAL;
+    CRYSTAL,
+    ELYTRA;
 
     public boolean wrongClass(RPGClass clazz){
         return

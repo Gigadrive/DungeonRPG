@@ -13,6 +13,7 @@ import net.wrathofdungeons.dungeonapi.util.ChatIcons;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.dungeon.DungeonType;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.npc.dialogue.NPCDialogue;
@@ -116,6 +117,9 @@ public class CustomNPC {
 
     public CustomItem keyMasterItem;
     public KeyMasterLocation keyMasterLocation;
+    public DungeonType dungeonType;
+
+    private CustomNPCData additionalData;
 
     private boolean hasUnsavedData;
 
@@ -157,6 +161,15 @@ public class CustomNPC {
                 } else {
                     this.keyMasterLocation = null;
                 }
+
+                String dataString = rs.getString("additionalData");
+                if(dataString != null){
+                    this.additionalData = gson.fromJson(dataString,CustomNPCData.class);
+                } else {
+                    this.additionalData = new CustomNPCData();
+                }
+
+                this.dungeonType = rs.getString("dungeonType") != null ? DungeonType.valueOf(rs.getString("dungeonType")) : null;
 
                 String keyMasterItemString = rs.getString("keyMaster.item");
                 if(keyMasterItemString != null && !keyMasterItemString.isEmpty()){
@@ -610,7 +623,7 @@ public class CustomNPC {
             if(getKeyMasterLocation() != null) keyMasterLocationString = gson.toJson(getKeyMasterLocation());
 
             try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `villager.profession` = ?, `player.skin` = ?, `textLines` = ?, `merchant.offers` = ?, `keyMaster.item` = ?, `keyMaster.location` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ? WHERE `id` = ?");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `npcs` SET `customName` = ?, `npcType` = ?, `entityType` = ?, `villager.profession` = ?, `player.skin` = ?, `textLines` = ?, `merchant.offers` = ?, `keyMaster.item` = ?, `keyMaster.location` = ?, `location.world` = ?, `location.x` = ?, `location.y` = ?, `location.z` = ?, `location.yaw`= ?, `location.pitch` = ?, `dungeonType` = ?, `additionalData` = ? WHERE `id` = ?");
                 ps.setString(1,getCustomName());
                 ps.setString(2,getNpcType().toString());
                 ps.setString(3,getEntityType().toString());
@@ -626,7 +639,9 @@ public class CustomNPC {
                 ps.setDouble(13,getLocation().getZ());
                 ps.setFloat(14,getLocation().getYaw());
                 ps.setFloat(15,getLocation().getPitch());
-                ps.setInt(16,getId());
+                ps.setString(16,dungeonType != null ? dungeonType.name() : null);
+                ps.setString(17,gson.toJson(additionalData));
+                ps.setInt(18,getId());
                 ps.executeUpdate();
                 ps.close();
             } catch(Exception e){

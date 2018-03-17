@@ -297,13 +297,17 @@ public class InteractListener implements Listener {
 
                         if(item.getData().getCategory() == ItemCategory.TELEPORT_SCROLL){
                             if(item.getData().getTpScrollRegion() > 0){
-                                Region region = Region.getRegion(item.getData().getTpScrollRegion());
+                                Region region = Region.getRegion(item.getData().getTpScrollRegion(),true);
 
                                 if(region != null){
                                     ArrayList<RegionLocation> locs = region.getLocations(TOWN_LOCATION,1);
 
                                     if(locs.size() > 0){
-                                        tpScroll(p,locs.get(0).toBukkitLocation());
+                                        if(!u.isInDungeon()){
+                                            tpScroll(p,locs.get(0).toBukkitLocation());
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + "You can't use that item here.");
+                                        }
                                     } else {
                                         p.sendMessage(ChatColor.RED + "Teleport failed.");
                                     }

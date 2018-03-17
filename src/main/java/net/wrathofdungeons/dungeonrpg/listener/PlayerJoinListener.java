@@ -5,6 +5,7 @@ import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
+import net.wrathofdungeons.dungeonrpg.user.Character;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +37,20 @@ public class PlayerJoinListener implements Listener {
 
         DungeonRPG.updateVanishing();
         u.bukkitReset();
-        p.teleport(DungeonRPG.getCharSelLocation());
-        CharacterSelectionMenu.openSelection(p);
+
+        Character character = null;
+        for(Character c : u.getCharacters()){
+            if(c.getVariables() != null && c.getVariables().autoJoin){
+                character = c;
+                break;
+            }
+        }
+
+        if(u.getSettingsManager().autoJoin() && character != null){
+            u.playCharacter(character);
+        } else {
+            p.teleport(DungeonRPG.getCharSelLocation());
+            CharacterSelectionMenu.openSelection(p);
+        }
     }
 }

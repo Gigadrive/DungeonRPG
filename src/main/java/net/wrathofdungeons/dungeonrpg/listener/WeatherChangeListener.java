@@ -19,6 +19,9 @@ public class WeatherChangeListener implements Listener {
 
     @EventHandler
     public void onLoad(WorldInitEvent e){
+        if(DungeonRPG.WORLDS_LOADING.contains(e.getWorld().getName()))
+            e.getWorld().setKeepSpawnInMemory(false);
+
         System.out.println("INIT: " + e.getWorld().getName());
 
         new BukkitRunnable(){

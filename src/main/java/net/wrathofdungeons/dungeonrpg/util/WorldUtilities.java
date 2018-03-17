@@ -105,7 +105,7 @@ public class WorldUtilities {
         } else {
             boolean b = false;
 
-            for(Region region : Region.STORAGE){
+            for(Region region : Region.getRegions(false)){
                 if(region.getLocations().size() > 0){
                     for(RegionLocation location : region.getLocations(RegionLocationType.PVP_ARENA)){
                         if(location.world.equalsIgnoreCase(loc.getWorld().getName()) && location.toBukkitLocation().getBlockX() == loc.getBlockX() && location.toBukkitLocation().getBlockZ() == loc.getBlockZ()){

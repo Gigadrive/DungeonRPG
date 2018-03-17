@@ -12,6 +12,8 @@ import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
 import net.wrathofdungeons.dungeonrpg.damage.SkillData;
+import net.wrathofdungeons.dungeonrpg.dungeon.Dungeon;
+import net.wrathofdungeons.dungeonrpg.dungeon.DungeonType;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageEvent;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageMobToMobEvent;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamagePlayerToPlayerEvent;
@@ -51,6 +53,7 @@ import net.wrathofdungeons.dungeonrpg.skill.mercenary.Stomper;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.*;
@@ -59,6 +62,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
 import org.mineskin.MineskinClient;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
@@ -91,6 +96,7 @@ public class DungeonRPG extends JavaPlugin {
     private int broadcastCurrent = 0;
 
     public static int RESTART_COUNT = Util.randomInteger(2*60*60,3*60*60);
+    public static ArrayList<String> WORLDS_LOADING = new ArrayList<String>();
 
     public static int SETUP_REGION = 0;
     private static MineskinClient mineskinClient;
@@ -137,7 +143,7 @@ public class DungeonRPG extends JavaPlugin {
         for(Hologram h : craftingStationHolos) if(!h.isDeleted()) h.delete();
         craftingStationHolos.clear();
 
-        for(Region region : Region.STORAGE){
+        for(Region region : Region.getRegions()){
             for(RegionLocation l : region.getLocations(RegionLocationType.CRAFTING_STATION)){
                 l.toBukkitLocation().getBlock().setType(Material.WORKBENCH);
 
@@ -167,6 +173,14 @@ public class DungeonRPG extends JavaPlugin {
         }.runTaskLater(this,5*20);
 
         DUNGEON_WORLD = new WorldCreator("Dungeons").createWorld();
+
+        if(isTestServer()){
+            for(DungeonType type : DungeonType.values()){
+                String name = "dungeonTemplate_" + type.getWorldTemplateName();
+                File file = new File(Bukkit.getWorldContainer() + "/" + name);
+                if(file.exists() || file.isDirectory()) new WorldCreator(name).createWorld();
+            }
+        }
 
         MobSkillStorage.init();
         ItemData.init();
@@ -899,6 +913,19 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(this,20*20,20*20);
 
+        // DUNGEON CHECK
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Dungeon dungeon : Dungeon.STORAGE){
+                    if(dungeon.getWorld().getPlayers().size() == 0 || dungeon.getParty() == null || dungeon.getParty().getMembers().size() == 0){
+                        dungeon.unregister();
+                    }
+                }
+            }
+        }.runTaskTimer(this,30*20,30*20);
+
         Bukkit.getServer().clearRecipes();
         EntityManager.registerEntities();
     }
@@ -928,6 +955,38 @@ public class DungeonRPG extends JavaPlugin {
     public void onDisable(){
         for(CustomNPC npc : CustomNPC.getUnsavedData()){
             npc.saveData(false);
+        }
+    }
+
+    public static void copyWorldToNewWorld(final String originalName, String newName) throws Exception {
+        if(originalName.equals(newName)) throw new IllegalArgumentException("Cannot copy to original folder");
+
+        String originalPath = Bukkit.getWorldContainer().getAbsolutePath().substring(0,Bukkit.getWorldContainer().getAbsolutePath().length()-1) + originalName + "/";
+        String newPath = Bukkit.getWorldContainer().getAbsolutePath().substring(0,Bukkit.getWorldContainer().getAbsolutePath().length()-1) + newName + "/";
+
+        System.out.println("COPYING FROM: " + originalPath);
+        System.out.println("TO: " + newPath);
+
+        final File originalFile = new File(originalPath);
+
+        File copy = new File(newPath);
+
+        if(originalFile.exists() || originalFile.isDirectory()){
+            FileUtils.copyDirectory(originalFile,copy);
+
+            File worldDataFile = new File(copy.getAbsolutePath() + "/" + "uid.dat");
+            if(worldDataFile.exists()){
+                System.out.println("UID File deleted: " + String.valueOf(worldDataFile.delete()));
+                //FileUtils.forceDelete(worldDataFile);
+            } else {
+                System.out.println("UID File not found: " + worldDataFile.getAbsolutePath());
+            }
+
+            WORLDS_LOADING.add(newName);
+            DungeonRPG.prepareWorld(new WorldCreator(newName).createWorld());
+            WORLDS_LOADING.remove(newName);
+        } else {
+            throw new FileNotFoundException("Original file " + originalName + " not found");
         }
     }
 
@@ -1185,6 +1244,14 @@ public class DungeonRPG extends JavaPlugin {
                 loc.getBlock().setType(Material.WOOL);
                 loc.getBlock().setData((byte)1);
                 break;
+            case DUNGEON_GATEWAY:
+                loc.getBlock().setType(Material.WOOL);
+                loc.getBlock().setData((byte)7);
+                break;
+            case DUNGEON_ENTRY_POINT:
+                loc.getBlock().setType(Material.WOOL);
+                loc.getBlock().setData((byte)7);
+                break;
         }
     }
 
@@ -1203,10 +1270,14 @@ public class DungeonRPG extends JavaPlugin {
         w.setGameRuleValue("doDaylightCycle","true");
     }
 
+    public static String pathSuffix(String path){
+        return path.endsWith(File.separator) ? "" : File.separator;
+    }
+
     public static ArrayList<RegionLocation> sortedTownLocations(){
         ArrayList<RegionLocation> potential = new ArrayList<RegionLocation>();
         ArrayList<Region> regions = new ArrayList<Region>();
-        regions.addAll(Region.STORAGE);
+        regions.addAll(Region.getRegions(false));
 
         Collections.sort(regions, new Comparator<Region>() {
             @Override
@@ -1215,7 +1286,7 @@ public class DungeonRPG extends JavaPlugin {
             }
         });
 
-        for(Region region : Region.STORAGE) potential.addAll(region.getLocations(RegionLocationType.TOWN_LOCATION));
+        for(Region region : Region.getRegions(false)) potential.addAll(region.getLocations(RegionLocationType.TOWN_LOCATION));
 
         return potential;
     }
@@ -1225,41 +1296,45 @@ public class DungeonRPG extends JavaPlugin {
             GameUser u = GameUser.getUser(p);
 
             if(u.getCurrentCharacter() != null){
-                ArrayList<Location> potential = new ArrayList<Location>();
-                Location loc = null;
-
-                for(Region region : Region.STORAGE){
-                    for(RegionLocation l : region.getLocations(RegionLocationType.TOWN_LOCATION)){
-                        potential.add(l.toBukkitLocation());
-                    }
-                }
-
-                for(Location l : potential){
-                    if(loc == null){
-                        loc = l;
-                    } else {
-                        if(l.getWorld().getName().equals(p.getLocation().getWorld().getName())){
-                            if(!loc.getWorld().getName().equals(p.getLocation().getWorld().getName())){
-                                loc = l;
-                            } else {
-                                if(l.distance(p.getLocation()) < loc.distance(p.getLocation())){
-                                    loc = l;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if(loc == null){
-                    return MAIN_WORLD.getSpawnLocation();
-                } else {
-                    return loc;
-                }
+                return getNearestTown(p.getLocation());
             } else {
                 return getCharSelLocation();
             }
         } else {
             return getCharSelLocation();
+        }
+    }
+
+    public static Location getNearestTown(Location location){
+        ArrayList<Location> potential = new ArrayList<Location>();
+        Location loc = null;
+
+        for(Region region : Region.getRegions(false)){
+            for(RegionLocation l : region.getLocations(RegionLocationType.TOWN_LOCATION)){
+                potential.add(l.toBukkitLocation());
+            }
+        }
+
+        for(Location l : potential){
+            if(loc == null){
+                loc = l;
+            } else {
+                if(l.getWorld().getName().equals(location.getWorld().getName())){
+                    if(!loc.getWorld().getName().equals(location.getWorld().getName())){
+                        loc = l;
+                    } else {
+                        if(l.distance(location) < loc.distance(location)){
+                            loc = l;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(loc == null){
+            return MAIN_WORLD.getSpawnLocation();
+        } else {
+            return loc;
         }
     }
 

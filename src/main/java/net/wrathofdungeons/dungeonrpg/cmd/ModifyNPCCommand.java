@@ -7,6 +7,7 @@ import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.dungeon.DungeonType;
 import net.wrathofdungeons.dungeonrpg.inv.MerchantSetupMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
@@ -48,6 +49,7 @@ public class ModifyNPCCommand extends Command {
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> dialogues");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> copy");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> customname [Name]");
+        p.sendMessage(ChatColor.RED + "/" + label + " <NPC> dungeonType <Dungeon Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> type <NPC-Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> entity <Entity Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <NPC> profession <Profession>");
@@ -182,13 +184,25 @@ public class ModifyNPCCommand extends Command {
                             } else if(args[1].equalsIgnoreCase("type")){
                                 CustomNPCType type = null;
 
-                                for(CustomNPCType c : CustomNPCType.values()) if(type.toString().equalsIgnoreCase(args[2])) type = c;
+                                for(CustomNPCType c : CustomNPCType.values()) if(c.name().equalsIgnoreCase(args[2])) type = c;
 
                                 if(type != null){
                                     npc.setNpcType(type);
                                     p.sendMessage(ChatColor.GREEN + "Success!");
                                 } else {
                                     p.sendMessage(ChatColor.RED + "Invalid NPC type!");
+                                }
+                            } else if(args[1].equalsIgnoreCase("dungeonType")){
+                                DungeonType type = null;
+
+                                for(DungeonType d : DungeonType.values()) if(d.name().equalsIgnoreCase(args[2])) type = d;
+
+                                if(type != null){
+                                    npc.dungeonType = type;
+                                    p.sendMessage(ChatColor.GREEN + "Success!");
+                                    npc.saveData();
+                                } else {
+                                    p.sendMessage(ChatColor.RED + "Invalid Dungeon type!");
                                 }
                             } else if(args[1].equalsIgnoreCase("profession")){
                                 Villager.Profession profession = null;
@@ -199,7 +213,7 @@ public class ModifyNPCCommand extends Command {
                                     npc.setVillagerProfession(profession);
                                     p.sendMessage(ChatColor.GREEN + "Success!");
                                 } else {
-                                    p.sendMessage(ChatColor.RED + "Invalid NPC type!");
+                                    p.sendMessage(ChatColor.RED + "Invalid profession!");
                                 }
                             } else if(args[1].equalsIgnoreCase("skin")){
                                 if(Util.isValidInteger(args[2])){

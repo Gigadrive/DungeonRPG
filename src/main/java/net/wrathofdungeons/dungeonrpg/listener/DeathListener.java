@@ -80,7 +80,7 @@ public class DeathListener implements Listener {
                             p.sendMessage(ChatColor.RED + "You died!");
                         }
 
-                        for(Region region : Region.STORAGE){
+                        for(Region region : Region.getRegions(false)){
                             if(region.getLocations().size() > 0){
                                 for(RegionLocation loc : region.getLocations(RegionLocationType.PVP_RESPAWN)){
                                     if(loc.world.equals(p.getWorld().getName())){
@@ -94,8 +94,13 @@ public class DeathListener implements Listener {
                             }
                         }
                     } else {
-                        respawn = DungeonRPG.getNearestTown(p);
-                        p.sendMessage(ChatColor.RED + "You died!");
+                        if(u.isInDungeon()){
+                            respawn = DungeonRPG.getNearestTown(u.getCurrentDungeon().getType().getPortalEntranceLocation());
+                            p.sendMessage(ChatColor.RED + "You died!");
+                        } else {
+                            respawn = DungeonRPG.getNearestTown(p);
+                            p.sendMessage(ChatColor.RED + "You died!");
+                        }
                     }
 
                     if(respawn != null) p.teleport(respawn);

@@ -11,6 +11,8 @@ import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonapi.util.*;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.StatPointType;
+import net.wrathofdungeons.dungeonrpg.dungeon.Dungeon;
+import net.wrathofdungeons.dungeonrpg.dungeon.DungeonType;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.guilds.Guild;
@@ -868,6 +870,14 @@ public class GameUser extends User {
             DungeonRPG.updateNames();
             c.setLastLogin(new Timestamp(System.currentTimeMillis()));
 
+            for(Character character : getCharacters())
+                if(c != character && character.getVariables() != null && character.getVariables().autoJoin){
+                    character.getVariables().autoJoin = false;
+                    character.saveLoggedOutData();
+                }
+
+            c.getVariables().autoJoin = true;
+
             bukkitReset();
             p.teleport(c.getStoredLocation());
             p.setGameMode(DungeonRPG.PLAYER_DEFAULT_GAMEMODE);
@@ -1651,6 +1661,20 @@ public class GameUser extends User {
 
     public void saveData(){
         saveData(false);
+    }
+
+    public Dungeon getCurrentDungeon(){
+        if(getParty() != null){
+            for(Dungeon dungeon : Dungeon.STORAGE)
+                if(dungeon.getParty() == getParty())
+                    return dungeon;
+        }
+
+        return null;
+    }
+
+    public boolean isInDungeon(){
+        return getCurrentDungeon() != null;
     }
 
     public void saveData(boolean continueCharsel){

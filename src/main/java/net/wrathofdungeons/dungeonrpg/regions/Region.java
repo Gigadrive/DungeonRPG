@@ -23,7 +23,45 @@ import java.util.Collections;
 import java.util.List;
 
 public class Region {
-    public static ArrayList<Region> STORAGE = new ArrayList<Region>();
+    private static ArrayList<Region> STORAGE = new ArrayList<Region>();
+
+    public static ArrayList<Region> getRegions(){
+        return getRegions(true);
+    }
+
+    public static ArrayList<Region> getRegions(boolean skipCopy){
+        ArrayList<Region> a = new ArrayList<Region>();
+
+        for(Region region : STORAGE){
+            if(skipCopy && region.isCopy()) continue;
+
+            a.add(region);
+        }
+
+        return a;
+    }
+
+    public static ArrayList<Region> getRegions(String worldName){
+        ArrayList<Region> a = new ArrayList<Region>();
+
+        regionLoop:
+        for(Region region : STORAGE){
+            if(region.isCopy()) continue;
+
+            for(RegionLocation location : region.getLocations()){
+                if(location.world.equalsIgnoreCase(worldName)){
+                    a.add(region);
+                    continue regionLoop;
+                }
+            }
+        }
+
+        return a;
+    }
+
+    public static ArrayList<Region> getStorage() {
+        return STORAGE;
+    }
 
     public static void init(){
         STORAGE.clear();
@@ -43,8 +81,17 @@ public class Region {
     }
 
     public static Region getRegion(int id){
+        return getRegion(id,true);
+    }
+
+    public static Region getRegion(int id, boolean skipCopy){
         for(Region r : STORAGE){
-            if(r.getID() == id) return r;
+            if(r.getID() == id){
+                if(skipCopy && r.isCopy())
+                    continue;
+
+                return r;
+            }
         }
 
         return null;
@@ -59,39 +106,64 @@ public class Region {
     private int cooldown;
     private int spawnChance;
     private boolean active;
+    private RegionData additionalData;
 
     private boolean mayActivateMobs = true;
     private BukkitTask activationTimer = null;
 
-    public Region(int id){
-        try {
-            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `regions` WHERE `id` = ?");
-            ps.setInt(1,id);
-            ResultSet rs = ps.executeQuery();
+    private boolean copy = false;
 
-            if(rs.first()){
-                this.id = rs.getInt("id");
-                this.mobDataID = rs.getInt("mobDataID");
-                this.mobLimit = rs.getInt("mobLimit");
-                this.entranceTitleTop = rs.getString("entranceTitle.top");
-                this.entranceTitleBottom = rs.getString("entranceTitle.bottom");
-                this.cooldown = rs.getInt("cooldown");
-                this.spawnChance = rs.getInt("spawnChance");
-                String locationString = rs.getString("locations");
-                this.active = rs.getBoolean("active");
-                Gson gson = DungeonAPI.GSON;
-                if(locationString != null){
-                    this.locations = gson.fromJson(locationString, new TypeToken<ArrayList<RegionLocation>>(){}.getType());
-                } else {
-                    this.locations = new ArrayList<RegionLocation>();
+    public Region(int id){
+        this.id = id;
+
+        l();
+    }
+
+    public Region(int id, boolean isCopy){
+        this.id = id;
+        this.copy = isCopy;
+
+        l();
+    }
+
+    private void l(){
+        if(!isCopy()){
+            try {
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("SELECT * FROM `regions` WHERE `id` = ?");
+                ps.setInt(1,id);
+                ResultSet rs = ps.executeQuery();
+
+                if(rs.first()){
+                    this.id = rs.getInt("id");
+                    this.mobDataID = rs.getInt("mobDataID");
+                    this.mobLimit = rs.getInt("mobLimit");
+                    this.entranceTitleTop = rs.getString("entranceTitle.top");
+                    this.entranceTitleBottom = rs.getString("entranceTitle.bottom");
+                    this.cooldown = rs.getInt("cooldown");
+                    this.spawnChance = rs.getInt("spawnChance");
+                    String locationString = rs.getString("locations");
+                    this.active = rs.getBoolean("active");
+                    Gson gson = DungeonAPI.GSON;
+                    if(locationString != null){
+                        this.locations = gson.fromJson(locationString, new TypeToken<ArrayList<RegionLocation>>(){}.getType());
+                    } else {
+                        this.locations = new ArrayList<RegionLocation>();
+                    }
+
+                    String dataString = rs.getString("additionalData");
+                    if(dataString != null){
+                        this.additionalData = gson.fromJson(dataString,RegionData.class);
+                    } else {
+                        this.additionalData = new RegionData();
+                    }
+
+                    STORAGE.add(this);
                 }
 
-                STORAGE.add(this);
+                MySQLManager.getInstance().closeResources(rs,ps);
+            } catch(Exception e){
+                e.printStackTrace();
             }
-
-            MySQLManager.getInstance().closeResources(rs,ps);
-        } catch(Exception e){
-            e.printStackTrace();
         }
     }
 
@@ -112,7 +184,7 @@ public class Region {
     }
 
     public void setMobData(MobData data) {
-        this.mobDataID = data.getId();
+        this.mobDataID = data != null ? data.getId() : 0;
     }
 
     public int getMobLimit(){
@@ -157,6 +229,14 @@ public class Region {
 
     public void setSpawnChance(int spawnChance) {
         this.spawnChance = spawnChance;
+    }
+
+    public boolean isCopy() {
+        return copy;
+    }
+
+    public void setCopy(boolean copy) {
+        this.copy = copy;
     }
 
     public ArrayList<RegionLocation> getLocations() {
@@ -267,14 +347,16 @@ public class Region {
         if(mayActivateMobs && activationTimer == null){
             setMayActivateMobs(false);
 
-            activationTimer = new BukkitRunnable(){
-                @Override
-                public void run() {
-                    setMayActivateMobs(true);
-                    cancel();
-                    activationTimer = null;
-                }
-            }.runTaskLater(DungeonRPG.getInstance(),(cooldown > 0 ? cooldown : 10)*20);
+            if(cooldown >= 0){
+                activationTimer = new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        setMayActivateMobs(true);
+                        cancel();
+                        activationTimer = null;
+                    }
+                }.runTaskLater(DungeonRPG.getInstance(),(cooldown > 0 ? cooldown : 10)*20);
+            }
         }
     }
 
@@ -282,9 +364,17 @@ public class Region {
         return activationTimer;
     }
 
+    public void setLocations(ArrayList<RegionLocation> locations) {
+        this.locations = locations;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void saveData(){
         try {
-            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `regions` SET `locations` = ?, `active` = ?, `mobDataID` = ?, `mobLimit` = ?, `entranceTitle.top` = ?, `entranceTitle.bottom` = ?, `cooldown` = ?, `spawnChance` = ? WHERE `id` = ?");
+            PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `regions` SET `locations` = ?, `active` = ?, `mobDataID` = ?, `mobLimit` = ?, `entranceTitle.top` = ?, `entranceTitle.bottom` = ?, `cooldown` = ?, `spawnChance` = ?, `additionalData` = ? WHERE `id` = ?");
             ps.setString(1,new Gson().toJson(getLocations()));
             ps.setBoolean(2,active);
             ps.setInt(3,mobDataID);
@@ -293,7 +383,8 @@ public class Region {
             ps.setString(6,entranceTitleBottom);
             ps.setInt(7,cooldown);
             ps.setInt(8,spawnChance);
-            ps.setInt(9,getID());
+            ps.setString(9,DungeonAPI.GSON.toJson(additionalData));
+            ps.setInt(10,getID());
             ps.executeUpdate();
             ps.close();
         } catch(Exception e){
@@ -301,9 +392,43 @@ public class Region {
         }
     }
 
+    public RegionData getAdditionalData() {
+        return additionalData;
+    }
+
+    public void setAdditionalData(RegionData additionalData) {
+        this.additionalData = additionalData;
+    }
+
     public void reload(){
         STORAGE.remove(this);
         new Region(1);
+    }
+
+    @Override
+    public Region clone(){
+        Region region = new Region(this.id);
+
+        region.setMobData(getMobData());
+        region.setMobLimit(getMobLimit());
+        region.setLocations(getLocations());
+        region.setEntranceTitleTop(getEntranceTitleTop());
+        region.setEntranceTitleBottom(getEntranceTitleBottom());
+        region.setCooldown(getCooldown());
+        region.setSpawnChance(getSpawnChance());
+        region.setActive(isActive());
+        region.setAdditionalData(getAdditionalData());
+
+        return region;
+    }
+
+    public Region clone(String worldName){
+        Region region = clone();
+
+        for(RegionLocation location : region.getLocations())
+            location.world = worldName;
+
+        return region;
     }
 
     public static RegionLocationType getOverallType(Location loc){

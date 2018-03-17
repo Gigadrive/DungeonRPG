@@ -1,6 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.party;
 
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.dungeon.Dungeon;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,6 +21,8 @@ public class Party {
 
     private ArrayList<PartyMember> members;
     private ArrayList<Player> invited;
+
+    public boolean loadingDungeon = false;
 
     public Party(Player p){
         this.members = new ArrayList<PartyMember>();
@@ -105,6 +108,9 @@ public class Party {
         p.closeInventory();
 
         if(u.getParty() == this){
+            if(u.isInDungeon())
+                p.teleport(getDungeon().getType().getPortalEntranceLocation());
+
             if(getRank(p) == PartyRank.LEADER){
                 disband();
             } else {
@@ -119,11 +125,25 @@ public class Party {
         DungeonRPG.updateNames();
     }
 
+    public Dungeon getDungeon(){
+        for(Dungeon dungeon : Dungeon.STORAGE)
+            if(dungeon.getParty() == this)
+                return dungeon;
+
+        return null;
+    }
+
+    public boolean isInDungeon(){
+        return getDungeon() != null;
+    }
+
     public void disband(){
         for(Player all : getOnlinePlayers()){
             all.closeInventory();
             all.sendMessage(ChatColor.DARK_RED + "The party has been disbanded.");
         }
+
+        if(isInDungeon()) getDungeon().unregister();
 
         STORAGE.remove(this);
         DungeonRPG.updateNames();

@@ -26,6 +26,7 @@ import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.dungeon.Dungeon;
 import net.wrathofdungeons.dungeonrpg.items.*;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.handler.TargetHandler;
@@ -142,7 +143,7 @@ public class CustomEntity {
         if(bukkitEntity != null){
             bukkitEntity.damage(0);
             DungeonRPG.showBloodEffect(bukkitEntity.getLocation());
-            bukkitEntity.getWorld().playSound(bukkitEntity.getEyeLocation(), Sound.ENTITY_PLAYER_HURT,1f,1f);
+            bukkitEntity.getWorld().playSound(bukkitEntity.getEyeLocation(), Sound.ENTITY_PLAYER_HURT,0.5f,1f);
             getData().playSound(bukkitEntity.getLocation());
         }
     }
@@ -190,10 +191,28 @@ public class CustomEntity {
     }
 
     public void die(){
-        bukkitEntity.damage(bukkitEntity.getHealth());
-
         getData().playDeathSound(bukkitEntity.getLocation());
         MobData mob = getData();
+
+        if(getOriginRegion().getAdditionalData().isBoss && getOriginRegion().getAdditionalData().dungeonType != null){
+            // IS DUNGEON BOSS
+
+            Dungeon dungeon = Dungeon.fromWorld(bukkitEntity.getLocation().getWorld());
+            if(dungeon != null){
+                for(CustomEntity entity : dungeon.getMobs())
+                    if(entity != this)
+                        entity.die();
+
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        dungeon.unregister();
+                    }
+                }.runTaskLater(DungeonRPG.getInstance(),10*20);
+            }
+        }
+
+        bukkitEntity.damage(bukkitEntity.getHealth());
 
         if(lastDamager != null && lastDamager.isOnline()){
             if(GameUser.isLoaded(lastDamager)){

@@ -124,6 +124,18 @@ public class SettingsMenu {
             }),ClickType.LEFT);
         }
 
+        if(u.getSettingsManager().autoJoin()){
+            inv.withItem(9, ItemUtil.hideFlags(ItemUtil.namedItem(Material.WOOD_DOOR, ChatColor.YELLOW + "Auto Join",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "Activated"})),((player, action, item) -> {
+                u.getSettingsManager().setAutoJoin(false);
+                SettingsMenu.openFor(p);
+            }),ClickType.LEFT);
+        } else {
+            inv.withItem(9, ItemUtil.hideFlags(ItemUtil.namedItem(Material.WOOD_DOOR, ChatColor.YELLOW + "Auto Join",new String[]{ChatColor.DARK_GRAY + "> " + ChatColor.RED + "Deactivated"})),((player, action, item) -> {
+                u.getSettingsManager().setAutoJoin(true);
+                SettingsMenu.openFor(p);
+            }),ClickType.LEFT);
+        }
+
         inv.withItem(size-1,ItemUtil.namedItem(Material.BARRIER,ChatColor.DARK_RED + "Close",null),((player, action, item) -> GameMenu.openFor(p)), ClickType.LEFT);
 
         inv.show(p);

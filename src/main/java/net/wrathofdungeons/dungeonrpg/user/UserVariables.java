@@ -14,6 +14,8 @@ public class UserVariables {
     public boolean hasSeenChatRangeInfo = false;
     public boolean hasSeenBindSkillInfo = false;
 
+    public boolean autoJoin = false;
+
     public StatisticsManager statisticsManager = new StatisticsManager();
 
     private HashMap<ClickComboType,String> comboDefinitions = new HashMap<ClickComboType,String>();

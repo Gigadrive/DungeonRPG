@@ -5,6 +5,7 @@ import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.dungeon.DungeonType;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
@@ -27,6 +28,7 @@ public class ModifyRegionCommand extends Command {
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> moblimit <Stage Index>");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> cooldown <seconds>");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> spawnChance <Value>");
+        p.sendMessage(ChatColor.RED + "/" + label + " <ID> dungeonType <Dungeon Type>");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> entranceTitleTop [Title]");
         p.sendMessage(ChatColor.RED + "/" + label + " <ID> entranceTitleBottom [Title]");
     }
@@ -43,8 +45,8 @@ public class ModifyRegionCommand extends Command {
         if(u.isInSetupMode()){
             if(args.length == 1){
                 if(args[0].equalsIgnoreCase("list")){
-                    if(Region.STORAGE.size() > 0){
-                        for(Region region : Region.STORAGE){
+                    if(Region.getRegions().size() > 0){
+                        for(Region region : Region.getRegions()){
                             if(region.getMobData() != null){
                                 if(region.getLocations().size() == 1){
                                     p.sendMessage(ChatColor.YELLOW + "#" + region.getID() + ChatColor.GREEN + " - " + ChatColor.YELLOW + region.getMobLimit() + "x " + region.getMobData().getName() + ChatColor.GREEN + " - " + ChatColor.YELLOW + region.getLocations().size() + " location");
@@ -182,6 +184,26 @@ public class ModifyRegionCommand extends Command {
                                 }
                             } else {
                                 p.sendMessage(ChatColor.RED + "Please enter a valid spawn chance (must be at least 0).");
+                            }
+                        } else if(args[1].equalsIgnoreCase("dungeonType")){
+                            DungeonType type = null;
+
+                            for(DungeonType d : DungeonType.values()) if(d.name().equalsIgnoreCase(args[2])) type = d;
+
+                            if(type != null){
+                                region.getAdditionalData().dungeonType = type;
+                                p.sendMessage(ChatColor.GREEN + "Success!");
+                                region.saveData();
+                            } else {
+                                p.sendMessage(ChatColor.RED + "Invalid Dungeon type!");
+                            }
+                        } else if(args[1].equalsIgnoreCase("boss")){
+                            if(Util.isValidInteger(args[2])){
+                                region.getAdditionalData().isBoss = Util.convertIntegerToBoolean(Integer.parseInt(args[2]));
+                                region.saveData();
+                                p.sendMessage(ChatColor.GREEN + "Success!");
+                            } else {
+                                p.sendMessage(ChatColor.RED + "Please enter a integer.");
                             }
                         } else if(args[1].equalsIgnoreCase("entranceTitleTop")){
                             StringBuilder sb = new StringBuilder();

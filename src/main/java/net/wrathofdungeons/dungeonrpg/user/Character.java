@@ -6,8 +6,10 @@ import com.google.gson.reflect.TypeToken;
 import eu.the5zig.mod.server.api.Stat;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
+import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.StatPointType;
+import net.wrathofdungeons.dungeonrpg.dungeon.DungeonType;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
@@ -75,7 +77,19 @@ public class Character {
                 this.dexterity = rs.getInt("statpoints.dex");
                 this.agility = rs.getInt("statpoints.agi");
                 this.statpointsLeft = rs.getInt("statpoints.left");
-                this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
+
+                if(Bukkit.getWorld(rs.getString("location.world")) != null && !rs.getString("location.world").startsWith("dungeonTemplate_")){
+                    this.storedLocation = new Location(Bukkit.getWorld(rs.getString("location.world")),rs.getDouble("location.x"),rs.getDouble("location.y"),rs.getDouble("location.z"),rs.getFloat("location.yaw"),rs.getFloat("location.pitch"));
+                } else {
+                    DungeonType type = DungeonType.fromWorldName(rs.getString("location.world"));
+
+                    if(type != null){
+                        this.storedLocation = type.getPortalEntranceLocation();
+                    } else {
+                        this.storedLocation = DungeonRPG.sortedTownLocations().get(Util.randomInteger(0,DungeonRPG.sortedTownLocations().size()-1)).toBukkitLocation();
+                    }
+                }
+
                 if(rs.getString("variables") != null){
                     this.variables = gson.fromJson(rs.getString("variables"),UserVariables.class);
                 } else {
@@ -516,6 +530,17 @@ public class Character {
             DungeonAPI.async(() -> saveData(continueCharsel,false));
         } else {
             try {
+                if(!p.getLocation().getWorld().getName().startsWith("dungeonTemplate_")){
+                    this.storedLocation = p.getLocation();
+                } else {
+                    DungeonType type = DungeonType.fromWorldName(p.getLocation().getWorld().getName());
+
+                    if(type != null){
+                        this.storedLocation = type.getPortalEntranceLocation();
+                    } else {
+                        this.storedLocation = DungeonRPG.sortedTownLocations().get(Util.randomInteger(0,DungeonRPG.sortedTownLocations().size()-1)).toBukkitLocation();
+                    }
+                }
                 this.storedLocation = p.getLocation();
                 this.storedInventory = getConvertedInventory(p);
                 Gson gson = DungeonAPI.GSON;
@@ -572,5 +597,33 @@ public class Character {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void saveLoggedOutData(){
+        GameUser u = GameUser.getUser(p);
+
+        DungeonAPI.async(() -> {
+            try {
+                Gson gson = DungeonAPI.GSON;
+
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("UPDATE `characters` SET `level` = ?, `exp` = ?, `statpoints.str` = ?, `statpoints.sta` = ?, `statpoints.int` = ?, `statpoints.dex` = ?, `statpoints.agi` = ?, `statpoints.left` = ?, `questProgress` = ?, `variables` = ?, `lastLogin` = ? WHERE `id` = ?");
+                ps.setInt(1,getLevel());
+                ps.setDouble(2,getExp());
+                ps.setInt(3,strength);
+                ps.setInt(4,stamina);
+                ps.setInt(5,intelligence);
+                ps.setInt(6,dexterity);
+                ps.setInt(7,agility);
+                ps.setInt(8,statpointsLeft);
+                ps.setString(9,gson.toJson(questProgress));
+                ps.setString(10,gson.toJson(variables));
+                ps.setTimestamp(11,lastLogin);
+                ps.setInt(12,getId());
+                ps.executeUpdate();
+                ps.close();
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+        });
     }
 }
