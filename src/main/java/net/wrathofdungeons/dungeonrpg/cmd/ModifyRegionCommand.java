@@ -69,7 +69,7 @@ public class ModifyRegionCommand extends Command {
                 }
             } else if(args.length == 2){
                 if(Util.isValidInteger(args[0])){
-                    Region region = Region.getRegion(Integer.parseInt(args[0]));
+                    Region region = Region.getRegion(Integer.parseInt(args[0]),true);
 
                     if(region != null){
                         if(args[1].equalsIgnoreCase("info")){
@@ -122,7 +122,7 @@ public class ModifyRegionCommand extends Command {
                 }
             } else if(args.length == 3){
                 if(Util.isValidInteger(args[0])){
-                    Region region = Region.getRegion(Integer.parseInt(args[0]));
+                    Region region = Region.getRegion(Integer.parseInt(args[0]),true);
 
                     if(region != null){
                         if(args[1].equalsIgnoreCase("mob")){
@@ -238,7 +238,7 @@ public class ModifyRegionCommand extends Command {
                 }
             } else if(args.length > 3) {
                 if(Util.isValidInteger(args[0])){
-                    Region region = Region.getRegion(Integer.parseInt(args[0]));
+                    Region region = Region.getRegion(Integer.parseInt(args[0]),true);
 
                     if(region != null){
                         if(args[1].equalsIgnoreCase("entranceTitleTop")){

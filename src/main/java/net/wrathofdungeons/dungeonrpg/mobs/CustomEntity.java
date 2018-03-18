@@ -400,11 +400,7 @@ public class CustomEntity {
     }
 
     public Region getOriginRegion(){
-        if(this.origin > 0){
-            return Region.getRegion(origin);
-        } else {
-            return null;
-        }
+        return Region.getRegion(origin,false);
     }
 
     public void setOriginRegion(Region region){

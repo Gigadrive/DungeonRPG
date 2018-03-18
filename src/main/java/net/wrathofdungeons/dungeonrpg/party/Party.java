@@ -143,6 +143,8 @@ public class Party {
             all.sendMessage(ChatColor.DARK_RED + "The party has been disbanded.");
         }
 
+        getMembers().clear();
+
         if(isInDungeon()) getDungeon().unregister();
 
         STORAGE.remove(this);

@@ -51,7 +51,7 @@ public class NPCInteractListener implements Listener {
             } else if(npc.getNpcType() == CustomNPCType.PROFESSION_MASTER){
                 ProfessionMasterMenu.openFor(p);
             } else if(npc.getNpcType() == CustomNPCType.DUNGEON_KEY_MASTER){
-                if(npc.getKeyMasterItem() != null && npc.getKeyMasterItem().getAmount() > 0 && npc.dungeonType != null && npc.dungeonType.getEntryLocation() != null){
+                if(npc.getKeyMasterItem() != null && npc.getKeyMasterItem().getAmount() > 0 && npc.dungeonType != null && npc.dungeonType.getEntryLocation(p.getWorld().getName()) != null){
                     if(u.hasInInventory(npc.getKeyMasterItem().getData(),npc.getKeyMasterItem().getAmount())){
                         if(u.getParty() != null){
                             if(u.getParty().isLeader(p)){
@@ -94,7 +94,7 @@ public class NPCInteractListener implements Listener {
 
                                                             if(u2.getCurrentCharacter() != null && u2.getParty() == u.getParty()){
                                                                 if(u2.getCurrentCharacter().getLevel() >= npc.dungeonType.getMinLevel()){
-                                                                    DungeonAPI.sync(() -> p2.teleport(npc.dungeonType.getEntryLocation()));
+                                                                    DungeonAPI.sync(() -> p2.teleport(npc.dungeonType.getEntryLocation(dungeon.getWorldName())));
                                                                 }
                                                             }
                                                         }

@@ -164,6 +164,8 @@ public class Region {
             } catch(Exception e){
                 e.printStackTrace();
             }
+        } else {
+            STORAGE.add(this);
         }
     }
 
@@ -314,10 +316,17 @@ public class Region {
 
     public boolean isInRegion(Location loc){
         if(getLocations(RegionLocationType.MOB_ACTIVATION_1).size() > 0 && getLocations(RegionLocationType.MOB_ACTIVATION_2).size() > 0){
-            return DungeonAPI.isInRectangleMaximized(loc,getLocations(RegionLocationType.MOB_ACTIVATION_1,1).get(0).toBukkitLocation(),getLocations(RegionLocationType.MOB_ACTIVATION_2,1).get(0).toBukkitLocation());
+            RegionLocation loc1 = getLocations(RegionLocationType.MOB_ACTIVATION_1,1).get(0);
+            RegionLocation loc2 = getLocations(RegionLocationType.MOB_ACTIVATION_2,1).get(0);
+
+            return loc.getWorld().getName().equals(loc1.world) && loc.getWorld().getName().equals(loc2.world) && DungeonAPI.isInRectangleMaximized(loc,loc1.toBukkitLocation(),loc2.toBukkitLocation());
         } else {
             return false;
         }
+    }
+
+    public String getWorld(){
+        return getLocations().size() == 0 ? null : getRandomizedLocations().get(0).world;
     }
 
     public RegionLocationType getType(Location loc){
@@ -344,6 +353,12 @@ public class Region {
     }
 
     public void startMobActivationTimer(){
+        if(cooldown <= -1){
+            setMayActivateMobs(false);
+
+            return;
+        }
+
         if(mayActivateMobs && activationTimer == null){
             setMayActivateMobs(false);
 
@@ -393,6 +408,8 @@ public class Region {
     }
 
     public RegionData getAdditionalData() {
+        if(additionalData == null) additionalData = new RegionData();
+
         return additionalData;
     }
 
@@ -402,31 +419,37 @@ public class Region {
 
     public void reload(){
         STORAGE.remove(this);
-        new Region(1);
+        new Region(id);
     }
 
-    @Override
-    public Region clone(){
-        Region region = new Region(this.id);
+    public Region clone(String worldName){
+        Region region = new Region(-1,true);
 
         region.setMobData(getMobData());
         region.setMobLimit(getMobLimit());
-        region.setLocations(getLocations());
+
+        ArrayList<RegionLocation> locations = new ArrayList<RegionLocation>();
+        for(RegionLocation l : getLocations()){
+            RegionLocation loc = new RegionLocation();
+
+            loc.type = l.type;
+            loc.world = worldName;
+            loc.x = l.x;
+            loc.y = l.y;
+            loc.z = l.z;
+            loc.yaw = l.yaw;
+            loc.pitch = l.pitch;
+            locations.add(loc);
+        }
+
+        region.setLocations(locations);
         region.setEntranceTitleTop(getEntranceTitleTop());
         region.setEntranceTitleBottom(getEntranceTitleBottom());
         region.setCooldown(getCooldown());
         region.setSpawnChance(getSpawnChance());
         region.setActive(isActive());
         region.setAdditionalData(getAdditionalData());
-
-        return region;
-    }
-
-    public Region clone(String worldName){
-        Region region = clone();
-
-        for(RegionLocation location : region.getLocations())
-            location.world = worldName;
+        region.setCopy(true);
 
         return region;
     }

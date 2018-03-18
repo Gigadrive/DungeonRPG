@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,8 +32,11 @@ public class Dungeon {
         }
 
         DungeonRPG.copyWorldToNewWorld(originalName,worldName);
+        Bukkit.getWorld(worldName).setAutoSave(false);
 
         Dungeon dungeon = new Dungeon(worldName,type);
+
+        int i = 0;
 
         for(Region region : Region.getRegions(originalName)){
             Region r = region.clone(worldName);
@@ -40,8 +44,8 @@ public class Dungeon {
             r.setCooldown(-1);
 
             dungeon.getRegions().add(r);
+            i++;
         }
-
 
         return dungeon;
     }
@@ -59,10 +63,22 @@ public class Dungeon {
     private Party party;
     private ArrayList<Region> regions;
 
+    private BukkitTask regionCooldownTask;
+
     public Dungeon(String worldName, DungeonType type){
         this.worldName = worldName;
         this.type = type;
         this.regions = new ArrayList<Region>();
+
+        STORAGE.add(this);
+
+        regionCooldownTask = new BukkitRunnable(){
+            @Override
+            public void run() {
+                for(Region r : getRegions())
+                    r.setCooldown(-1);
+            }
+        }.runTaskTimer(DungeonRPG.getInstance(),20,20);
     }
 
     public String getWorldName() {
@@ -103,13 +119,14 @@ public class Dungeon {
         World world = getWorld();
 
         if(world != null){
+            for(Region region : getRegions())
+                Region.getStorage().remove(region);
+
             for(Player p : getWorld().getPlayers()){
                 p.teleport(getType().getPortalEntranceLocation());
             }
 
-            for(Region region : getRegions())
-                Region.getStorage().remove(region);
-
+            regionCooldownTask.cancel();
             STORAGE.remove(this);
 
             new BukkitRunnable(){
@@ -117,7 +134,7 @@ public class Dungeon {
                 public void run() {
                     try {
                         Bukkit.unloadWorld(world,false);
-                        FileUtils.deleteDirectory(new File(Bukkit.getWorldContainer() + File.pathSeparator + worldName));
+                        FileUtils.deleteDirectory(new File(Bukkit.getWorldContainer().getAbsolutePath().substring(0,Bukkit.getWorldContainer().getAbsolutePath().length()-1) + getWorldName() + "/"));
                     } catch(Exception e){
                         e.printStackTrace();
                     }

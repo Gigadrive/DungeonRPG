@@ -964,9 +964,6 @@ public class DungeonRPG extends JavaPlugin {
         String originalPath = Bukkit.getWorldContainer().getAbsolutePath().substring(0,Bukkit.getWorldContainer().getAbsolutePath().length()-1) + originalName + "/";
         String newPath = Bukkit.getWorldContainer().getAbsolutePath().substring(0,Bukkit.getWorldContainer().getAbsolutePath().length()-1) + newName + "/";
 
-        System.out.println("COPYING FROM: " + originalPath);
-        System.out.println("TO: " + newPath);
-
         final File originalFile = new File(originalPath);
 
         File copy = new File(newPath);
@@ -975,12 +972,8 @@ public class DungeonRPG extends JavaPlugin {
             FileUtils.copyDirectory(originalFile,copy);
 
             File worldDataFile = new File(copy.getAbsolutePath() + "/" + "uid.dat");
-            if(worldDataFile.exists()){
-                System.out.println("UID File deleted: " + String.valueOf(worldDataFile.delete()));
-                //FileUtils.forceDelete(worldDataFile);
-            } else {
-                System.out.println("UID File not found: " + worldDataFile.getAbsolutePath());
-            }
+            if(worldDataFile.exists())
+                worldDataFile.delete();
 
             WORLDS_LOADING.add(newName);
             DungeonRPG.prepareWorld(new WorldCreator(newName).createWorld());

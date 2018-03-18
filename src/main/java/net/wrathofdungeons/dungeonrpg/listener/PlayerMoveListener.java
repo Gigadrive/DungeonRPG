@@ -86,6 +86,8 @@ public class PlayerMoveListener implements Listener {
                                 if(region.getMobData() != null && region.getMobLimit() > 0 && region.mayActivateMobs() && region.isActive()){
                                     region.startMobActivationTimer();
 
+                                    System.out.println("ID: " + region.getID() + " IS COPY: " + region.isCopy() + " | " + region.getWorld());
+
                                     if(region.getSpawnChance() > 0 && !Util.getChanceBoolean(1,region.getSpawnChance())){} else {
                                         ArrayList<RegionLocation> a = region.getLocations(RegionLocationType.MOB_LOCATION,region.getMobLimit());
                                         Collections.shuffle(a);
