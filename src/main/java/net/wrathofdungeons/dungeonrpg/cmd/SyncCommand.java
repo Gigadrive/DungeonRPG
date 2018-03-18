@@ -88,7 +88,7 @@ public class SyncCommand extends Command {
                             });
 
                             for(String directory : directories){
-                                if(!directory.equalsIgnoreCase("plugins") && !directory.equalsIgnoreCase("CLOUD")){
+                                if(!directory.equalsIgnoreCase("plugins") && !directory.equalsIgnoreCase("CLOUD") && !directory.equalsIgnoreCase("logs")){
                                     syncFile(p,"/home/wod/wrapper/local/templates/Test/default/" + directory + "/","/home/wod/wrapper/local/templates/Game/default/" + directory + "/");
                                 }
                             }
