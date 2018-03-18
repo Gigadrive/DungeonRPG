@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.sql.PreparedStatement;
 
 public class SyncCommand extends Command {
@@ -79,8 +80,18 @@ public class SyncCommand extends Command {
 
                             /*syncFile(p,"/home/wod/wrapper/local/templates/Test/default/wod/","/home/wod/wrapper/local/templates/Game/default/wod/");
                             syncFile(p,"/home/wod/wrapper/local/templates/Test/default/Dungeons/","/home/wod/wrapper/local/templates/Game/default/Dungeons/");*/
-                            syncFile(p,"/home/wod/wrapper/local/templates/Test/default/wod/","/home/wod/wrapper/local/templates/Game/default/wod/");
-                            syncFile(p,"/home/wod/wrapper/local/templates/Test/default/Dungeons/","/home/wod/wrapper/local/templates/Game/default/Dungeons/");
+                            String[] directories = Bukkit.getWorldContainer().list(new FilenameFilter() {
+                                @Override
+                                public boolean accept(File current, String name) {
+                                    return new File(current, name).isDirectory();
+                                }
+                            });
+
+                            for(String directory : directories){
+                                if(!directory.equalsIgnoreCase("plugins") && !directory.equalsIgnoreCase("CLOUD")){
+                                    syncFile(p,"/home/wod/wrapper/local/templates/Test/default/" + directory + "/","/home/wod/wrapper/local/templates/Game/default/" + directory + "/");
+                                }
+                            }
 
                             sync = false;
                             for(Player a : Bukkit.getOnlinePlayers()) a.sendMessage(ChatColor.GRAY + "** " + ChatColor.GREEN + p.getName() + "'s sync action finished! " + ChatColor.GRAY + "**");
