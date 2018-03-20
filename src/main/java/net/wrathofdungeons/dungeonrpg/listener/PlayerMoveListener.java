@@ -77,8 +77,11 @@ public class PlayerMoveListener implements Listener {
                     for(Region region : Region.getRegions(false)){
                         if(region.isInRegion(e.getTo())){
                             if(!region.isInRegion(e.getFrom())){
-                                if((region.getEntranceTitleTop() != null && !region.getEntranceTitleTop().isEmpty()) || (region.getEntranceTitleBottom() != null && !region.getEntranceTitleBottom().isEmpty())){
-                                    BountifulAPI.sendTitle(p,10,3*20,10, region.getEntranceTitleTop() != null ? ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + region.getEntranceTitleTop() : "",region.getEntranceTitleBottom() != null ? ChatColor.DARK_AQUA + region.getEntranceTitleBottom() : "");
+                                if(!u.getCurrentCharacter().getVariables().seenRegionTitles.contains(region.getID())){
+                                    if((region.getEntranceTitleTop() != null && !region.getEntranceTitleTop().isEmpty()) || (region.getEntranceTitleBottom() != null && !region.getEntranceTitleBottom().isEmpty())){
+                                        BountifulAPI.sendTitle(p,10,3*20,10, region.getEntranceTitleTop() != null ? ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + region.getEntranceTitleTop() : "",region.getEntranceTitleBottom() != null ? ChatColor.DARK_AQUA + region.getEntranceTitleBottom() : "");
+                                        u.getCurrentCharacter().getVariables().seenRegionTitles.add(region.getID());
+                                    }
                                 }
                             }
 
