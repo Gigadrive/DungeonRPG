@@ -7,6 +7,7 @@ import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UserVariables {
@@ -15,6 +16,8 @@ public class UserVariables {
     public boolean hasSeenBindSkillInfo = false;
 
     public boolean autoJoin = false;
+
+    public ArrayList<Integer> seenRegionTitles = new ArrayList<Integer>();
 
     public StatisticsManager statisticsManager = new StatisticsManager();
 

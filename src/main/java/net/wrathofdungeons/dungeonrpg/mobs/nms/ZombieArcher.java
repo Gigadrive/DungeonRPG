@@ -14,7 +14,7 @@ public class ZombieArcher extends DungeonZombie implements IRangedEntity {
     public void a(EntityLiving entityLiving, float f){
         /*EntityArrow entityarrow = new EntityArrow(this.world, this, entityLiving, 1.6F, (float) (14 - this.world.getDifficulty().a() * 4));
         entityLiving.a*/
-        Arrow a = ((LivingEntity)entityLiving.getBukkitEntity()).launchProjectile(Arrow.class);
+        Arrow a = ((LivingEntity)this.getBukkitEntity()).launchProjectile(Arrow.class);
 
         //entityarrow.b((double) (f * 2.0F) + this.random.nextGaussian() * 0.25D + (double) ((float) this.world.getDifficulty().a() * 0.11F));
         //entityarrow.c(0);
