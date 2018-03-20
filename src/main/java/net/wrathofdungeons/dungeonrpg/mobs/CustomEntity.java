@@ -194,7 +194,7 @@ public class CustomEntity {
         getData().playDeathSound(bukkitEntity.getLocation());
         MobData mob = getData();
 
-        if(getOriginRegion().getAdditionalData().isBoss && getOriginRegion().getAdditionalData().dungeonType != null){
+        if(getOriginRegion() != null && getOriginRegion().getAdditionalData().isBoss && getOriginRegion().getAdditionalData().dungeonType != null){
             // IS DUNGEON BOSS
 
             Dungeon dungeon = Dungeon.fromWorld(bukkitEntity.getLocation().getWorld());
@@ -400,7 +400,7 @@ public class CustomEntity {
     }
 
     public Region getOriginRegion(){
-        return Region.getRegion(origin,false);
+        return origin != 0 ? Region.getRegion(origin,false) : null;
     }
 
     public void setOriginRegion(Region region){
