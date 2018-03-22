@@ -3,27 +3,12 @@ package net.wrathofdungeons.dungeonrpg.mobs;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
-import com.google.common.collect.Iterables;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.ai.Goal;
-import net.citizensnpcs.api.ai.GoalController;
 import net.citizensnpcs.api.ai.goals.WanderGoal;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
-import net.citizensnpcs.npc.CitizensNPC;
-import net.citizensnpcs.npc.entity.EntityHumanNPC;
-import net.citizensnpcs.npc.skin.Skin;
-import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.minecraft.server.v1_9_R2.*;
-import net.minecraft.server.v1_9_R2.World;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
-import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.dungeon.Dungeon;
@@ -43,8 +28,10 @@ import net.wrathofdungeons.dungeonrpg.skill.PoisonData;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.AttributeOperation;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftLivingEntity;
@@ -58,18 +45,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static net.citizensnpcs.api.npc.NPC.*;
-import static net.citizensnpcs.npc.skin.Skin.CACHED_SKIN_UUID_METADATA;
-import static net.citizensnpcs.npc.skin.Skin.CACHED_SKIN_UUID_NAME_METADATA;
-import static net.citizensnpcs.npc.skin.Skin.get;
+import net.citizensnpcs.api.npc.NPC;
 
 public class CustomEntity {
     public static HashMap<LivingEntity,CustomEntity> STORAGE = new HashMap<LivingEntity,CustomEntity>();
@@ -518,7 +499,7 @@ public class CustomEntity {
 
                 giveNormalKnockback(finalLoc,false);
             } else {
-                bukkitEntity.setVelocity(bukkitEntity.getLocation().toVector().subtract(from.toVector()).setY(-1).multiply(0.5));
+                bukkitEntity.setVelocity(WorldUtilities.safenVelocity(bukkitEntity.getLocation().toVector().subtract(from.toVector()).setY(-1).multiply(0.5)));
             }
         }
     }

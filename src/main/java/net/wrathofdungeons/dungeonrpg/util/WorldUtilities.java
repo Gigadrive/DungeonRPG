@@ -8,7 +8,6 @@ import net.minecraft.server.v1_9_R2.AttributeInstance;
 import net.minecraft.server.v1_9_R2.AttributeModifier;
 import net.minecraft.server.v1_9_R2.EntityInsentient;
 import net.minecraft.server.v1_9_R2.GenericAttributes;
-import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
@@ -19,18 +18,14 @@ import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.mineskin.data.Skin;
@@ -40,8 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static net.citizensnpcs.api.npc.NPC.*;
-import static net.citizensnpcs.api.npc.NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA;
-import static net.citizensnpcs.api.npc.NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA;
 
 public class WorldUtilities {
     public static HashMap<Location,Boolean> pvpArenaResults = new HashMap<Location,Boolean>();
@@ -119,6 +112,27 @@ public class WorldUtilities {
             pvpArenaResults.put(loc,b);
             return b;
         }
+    }
+
+    public static boolean isUnsafeVelocity(Vector vel) {
+        double x = vel.getX();
+        double y = vel.getY();
+        double z = vel.getZ();
+
+        return x > 4 || x < -4 || y > 4 || y < -4 || z > 4 || z < -4;
+    }
+
+    public static Vector safenVelocity(Vector vel) {
+        if (vel.getX() > 4) vel.setX(4);
+        if (vel.getX() < -4) vel.setX(-4);
+
+        if (vel.getY() > 4) vel.setY(4);
+        if (vel.getY() < -4) vel.setY(-4);
+
+        if (vel.getZ() > 4) vel.setZ(4);
+        if (vel.getZ() < -4) vel.setZ(-4);
+
+        return vel;
     }
 
     public static boolean isValidEntity(LivingEntity e){

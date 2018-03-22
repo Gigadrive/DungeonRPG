@@ -5,7 +5,6 @@ import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import org.bukkit.Sound;
-import org.bukkit.entity.SmallFireball;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Fireball implements MobSkill {
@@ -34,11 +33,13 @@ public class Fireball implements MobSkill {
             new BukkitRunnable(){
                 @Override
                 public void run() {
+                    if (entity.getBukkitEntity() == null) return;
                     entity.playAttackAnimation();
 
                     entity.getBukkitEntity().getWorld().playSound(entity.getBukkitEntity().getLocation(), Sound.BLOCK_FIRE_AMBIENT,1f,1f);
 
                     org.bukkit.entity.Fireball fireball = entity.getBukkitEntity().launchProjectile(org.bukkit.entity.Fireball.class);
+                    fireball.setShooter(entity.getBukkitEntity());
                     fireball.setYield(0f);
                     fireball.setVelocity(fireball.getVelocity().multiply(3));
 
