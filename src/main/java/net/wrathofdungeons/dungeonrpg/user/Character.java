@@ -1,9 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import eu.the5zig.mod.server.api.Stat;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.util.Util;
@@ -19,21 +17,17 @@ import net.wrathofdungeons.dungeonrpg.quests.*;
 import net.wrathofdungeons.dungeonrpg.skill.ClickComboType;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
-import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import javax.naming.ldap.PagedResultsControl;
-import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 
 public class Character {
     private int id;
@@ -315,6 +309,10 @@ public class Character {
         }
 
         return 1;
+    }
+
+    public boolean mayEnterDungeon(DungeonType type){
+        return getVariables().getLastDungeonEntry(type) == null || (new Timestamp(getVariables().getLastDungeonEntry(type).getTime()+DungeonRPG.DUNGEON_ENTRANCE_INTERVAL).after(new Timestamp(System.currentTimeMillis())));
     }
 
     private void registerProgress(Quest q){

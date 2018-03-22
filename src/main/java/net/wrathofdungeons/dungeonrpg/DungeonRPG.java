@@ -11,7 +11,6 @@ import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.cmd.*;
-import net.wrathofdungeons.dungeonrpg.damage.SkillData;
 import net.wrathofdungeons.dungeonrpg.dungeon.Dungeon;
 import net.wrathofdungeons.dungeonrpg.dungeon.DungeonType;
 import net.wrathofdungeons.dungeonrpg.event.CustomDamageEvent;
@@ -43,8 +42,8 @@ import net.wrathofdungeons.dungeonrpg.skill.assassin.DashAttack;
 import net.wrathofdungeons.dungeonrpg.skill.assassin.StabbingStorm;
 import net.wrathofdungeons.dungeonrpg.skill.assassin.WhirlingBlade;
 import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
-import net.wrathofdungeons.dungeonrpg.skill.magician.FlameBurst;
 import net.wrathofdungeons.dungeonrpg.skill.magician.ChargedExplosion;
+import net.wrathofdungeons.dungeonrpg.skill.magician.FlameBurst;
 import net.wrathofdungeons.dungeonrpg.skill.magician.MagicCure;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.AxeBlast;
 import net.wrathofdungeons.dungeonrpg.skill.mercenary.BlazingAxe;
@@ -56,7 +55,10 @@ import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
@@ -100,6 +102,8 @@ public class DungeonRPG extends JavaPlugin {
 
     public static int SETUP_REGION = 0;
     private static MineskinClient mineskinClient;
+
+    public static final long DUNGEON_ENTRANCE_INTERVAL = 1*60*60*1000; // 1 hour
 
     public static void reloadBroadcastLines(){
         BROADCAST_LINES.clear();
@@ -1184,6 +1188,7 @@ public class DungeonRPG extends JavaPlugin {
         new ModifyRegionCommand();
         new PartyCommand();
         new ReloadCommand();
+        new ResetDungeonTimerCommand();
         new SaveNPCsCommand();
         new SaveRecipesCommand();
         new SaveRegionCommand();

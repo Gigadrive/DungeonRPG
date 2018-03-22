@@ -1,7 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.citizensnpcs.api.event.NPCSpawnEvent;
-import net.citizensnpcs.trait.VillagerProfession;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
@@ -28,6 +27,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.sql.Timestamp;
+
 public class NPCInteractListener implements Listener {
     @EventHandler
     public void onInteact(CustomNPCInteractEvent e){
@@ -53,73 +54,77 @@ public class NPCInteractListener implements Listener {
             } else if(npc.getNpcType() == CustomNPCType.DUNGEON_KEY_MASTER){
                 if(npc.getKeyMasterItem() != null && npc.getKeyMasterItem().getAmount() > 0 && npc.dungeonType != null && npc.dungeonType.getEntryLocation(p.getWorld().getName()) != null){
                     if(u.hasInInventory(npc.getKeyMasterItem().getData(),npc.getKeyMasterItem().getAmount())){
-                        if(u.getParty() != null){
-                            if(u.getParty().isLeader(p)){
-                                if(u.getCurrentCharacter().getLevel() >= npc.dungeonType.getMinLevel()){
-                                    if(!u.getParty().isInDungeon()){
-                                        if(u.getParty().loadingDungeon) return;
-                                        u.getParty().loadingDungeon = true;
+                        if(u.getCurrentCharacter().mayEnterDungeon(npc.dungeonType)){
+                            if(u.getParty() != null){
+                                if(u.getParty().isLeader(p)){
+                                    if(u.getCurrentCharacter().getLevel() >= npc.dungeonType.getMinLevel()){
+                                        if(!u.getParty().isInDungeon()){
+                                            if(u.getParty().loadingDungeon) return;
+                                            u.getParty().loadingDungeon = true;
 
-                                        u.removeFromInventory(npc.getKeyMasterItem().getData(),npc.getKeyMasterItem().getAmount());
-                                        p.sendMessage(ChatColor.GREEN + "Creating dungeon..");
+                                            u.removeFromInventory(npc.getKeyMasterItem().getData(),npc.getKeyMasterItem().getAmount());
+                                            p.sendMessage(ChatColor.GREEN + "Creating dungeon..");
 
-                                        for(PartyMember m : u.getParty().getMembers()){
-                                            Player p2 = m.p;
+                                            for(PartyMember m : u.getParty().getMembers()){
+                                                Player p2 = m.p;
 
-                                            if(GameUser.isLoaded(p2) && GameUser.getUser(p2).getCurrentCharacter() != null && GameUser.getUser(p2).getCurrentCharacter().getLevel() >= npc.dungeonType.getMinLevel()){
-                                                p2.sendMessage(ChatColor.DARK_GREEN + "The party is entering: " + ChatColor.GREEN + npc.dungeonType.getName() + ChatColor.GRAY + " (Min. Level: " + npc.dungeonType.getMinLevel() + ")" + ChatColor.DARK_GREEN + "!");
-                                                p2.sendMessage(ChatColor.DARK_GREEN + "Get ready!");
+                                                if(GameUser.isLoaded(p2) && GameUser.getUser(p2).getCurrentCharacter() != null && GameUser.getUser(p2).getCurrentCharacter().getLevel() >= npc.dungeonType.getMinLevel() && GameUser.getUser(p2).getCurrentCharacter().mayEnterDungeon(npc.dungeonType)){
+                                                    p2.sendMessage(ChatColor.DARK_GREEN + "The party is entering: " + ChatColor.GREEN + npc.dungeonType.getName() + ChatColor.GRAY + " (Min. Level: " + npc.dungeonType.getMinLevel() + ")" + ChatColor.DARK_GREEN + "!");
+                                                    p2.sendMessage(ChatColor.DARK_GREEN + "Get ready!");
+                                                }
                                             }
-                                        }
 
-                                        new BukkitRunnable(){
-                                            @Override
-                                            public void run() {
-                                                try {
-                                                    if(u.getParty() == null) return;
+                                            new BukkitRunnable(){
+                                                @Override
+                                                public void run() {
+                                                    try {
+                                                        if(u.getParty() == null) return;
 
-                                                    Dungeon dungeon = Dungeon.loadNewTemplate(npc.dungeonType);
-                                                    dungeon.setParty(u.getParty());
+                                                        Dungeon dungeon = Dungeon.loadNewTemplate(npc.dungeonType);
+                                                        dungeon.setParty(u.getParty());
 
-                                                    if(u.getParty() == null){
-                                                        dungeon.unregister();
-                                                        return;
-                                                    }
+                                                        if(u.getParty() == null){
+                                                            dungeon.unregister();
+                                                            return;
+                                                        }
 
-                                                    for(PartyMember member : u.getParty().getMembers()){
-                                                        Player p2 = member.p;
+                                                        for(PartyMember member : u.getParty().getMembers()){
+                                                            Player p2 = member.p;
 
-                                                        if(GameUser.isLoaded(p2)){
-                                                            GameUser u2 = GameUser.getUser(p2);
+                                                            if(GameUser.isLoaded(p2)){
+                                                                GameUser u2 = GameUser.getUser(p2);
 
-                                                            if(u2.getCurrentCharacter() != null && u2.getParty() == u.getParty()){
-                                                                if(u2.getCurrentCharacter().getLevel() >= npc.dungeonType.getMinLevel()){
-                                                                    DungeonAPI.sync(() -> p2.teleport(npc.dungeonType.getEntryLocation(dungeon.getWorldName())));
+                                                                if(u2.getCurrentCharacter() != null && u2.getParty() == u.getParty()){
+                                                                    if(u2.getCurrentCharacter().getLevel() >= npc.dungeonType.getMinLevel() && u2.getCurrentCharacter().mayEnterDungeon(npc.dungeonType)){
+                                                                        DungeonAPI.sync(() -> p2.teleport(npc.dungeonType.getEntryLocation(dungeon.getWorldName())));
+                                                                    }
                                                                 }
                                                             }
                                                         }
-                                                    }
 
-                                                    p.sendMessage(ChatColor.GREEN + "Dungeon created! Teleporting..");
-                                                    u.getParty().loadingDungeon = false;
-                                                } catch(Exception ex){
-                                                    u.getParty().loadingDungeon = false;
-                                                    p.sendMessage(ChatColor.RED + "An error occurred while loading the dungeon. Please try again later.");
-                                                    ex.printStackTrace();
+                                                        p.sendMessage(ChatColor.GREEN + "Dungeon created! Teleporting..");
+                                                        u.getParty().loadingDungeon = false;
+                                                    } catch(Exception ex){
+                                                        u.getParty().loadingDungeon = false;
+                                                        p.sendMessage(ChatColor.RED + "An error occurred while loading the dungeon. Please try again later.");
+                                                        ex.printStackTrace();
+                                                    }
                                                 }
-                                            }
-                                        }.runTaskLaterAsynchronously(DungeonRPG.getInstance(),2*20);
+                                            }.runTaskLaterAsynchronously(DungeonRPG.getInstance(),2*20);
+                                        } else {
+                                            p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "The party is already in a dungeon.");
+                                        }
                                     } else {
-                                        p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "The party is already in a dungeon.");
+                                        p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "You must be at least level " + npc.dungeonType.getMinLevel() + " to enter this dungeon.");
                                     }
                                 } else {
-                                    p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "You must be at least level " + npc.dungeonType.getMinLevel() + " to enter this dungeon.");
+                                    p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "Only the party leader may enter a dungeon.");
                                 }
                             } else {
-                                p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "Only the party leader may enter a dungeon.");
+                                p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "You must be in a party to enter a dungeon.");
                             }
                         } else {
-                            p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "You must be in a party to enter a dungeon.");
+                            p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + String.format("You have to wait another %d minutes before you can enter this dungeon again.",(new Timestamp(u.getCurrentCharacter().getVariables().getLastDungeonEntry(npc.dungeonType).getTime()+DungeonRPG.DUNGEON_ENTRANCE_INTERVAL).getTime()-new Timestamp(System.currentTimeMillis()).getTime())/(60*1000)));
                         }
                     } else {
                         p.sendMessage(ChatColor.DARK_GRAY + "<" + npc.getDisplayName() + ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "This gate requires the following item: " + ChatColor.DARK_AQUA + "[" + npc.getKeyMasterItem().getAmount() + "x " + ChatColor.stripColor(npc.getKeyMasterItem().getData().getName()) + "]");

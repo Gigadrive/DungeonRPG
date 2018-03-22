@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.user;
 
+import net.wrathofdungeons.dungeonrpg.dungeon.DungeonType;
 import net.wrathofdungeons.dungeonrpg.professions.Profession;
 import net.wrathofdungeons.dungeonrpg.professions.ProfessionProgress;
 import net.wrathofdungeons.dungeonrpg.skill.ClickComboType;
@@ -7,6 +8,7 @@ import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,6 +27,7 @@ public class UserVariables {
     private HashMap<String,Integer> skillPoints = new HashMap<String,Integer>();
     private HashMap<Profession,ProfessionProgress> professionProgress = new HashMap<Profession,ProfessionProgress>();
     private HashMap<String,Integer> skillUses = new HashMap<String,Integer>();
+    private HashMap<DungeonType,Timestamp> dungeonEntrances = new HashMap<DungeonType,Timestamp>();
 
     public int getSkillUses(Skill skill){
         return skillUses.getOrDefault(skill.getClass().getSimpleName(),0);
@@ -108,6 +111,16 @@ public class UserVariables {
 
     public void resetSkillCombo(ClickComboType type){
         if(getSkillFromCombo(type) != null) comboDefinitions.remove(type);
+    }
+
+    public Timestamp getLastDungeonEntry(DungeonType type){
+        return dungeonEntrances.getOrDefault(type,null);
+    }
+
+    public void setLastDungeonEntry(DungeonType type, Timestamp timestamp){
+        if(getLastDungeonEntry(type) != null) dungeonEntrances.remove(type);
+
+        if(timestamp != null) dungeonEntrances.put(type,timestamp);
     }
 
     public ProfessionProgress getProfessionProgress(Profession profession){
