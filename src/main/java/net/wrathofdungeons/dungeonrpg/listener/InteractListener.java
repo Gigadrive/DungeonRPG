@@ -46,6 +46,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -63,15 +64,25 @@ import static net.wrathofdungeons.dungeonrpg.regions.RegionLocationType.*;
 public class InteractListener implements Listener {
     private ArrayList<String> TP_SCROLL_COOLDOWN = new ArrayList<String>();
 
-    private void tpScroll(Player p, Location loc){
+    private void tpScroll(Player p, Location loc, EquipmentSlot hand){
+        ItemStack iStack = hand == EquipmentSlot.HAND ? p.getInventory().getItemInMainHand() : p.getInventory().getItemInOffHand();
+
         if(TP_SCROLL_COOLDOWN.contains(p.getName())){
             p.sendMessage(ChatColor.RED + "Please wait a little while before teleporting again.");
         } else {
-            if(p.getItemInHand() != null){
-                if(p.getItemInHand().getAmount() == 1){
-                    p.setItemInHand(new ItemStack(Material.AIR));
+            if(iStack != null){
+                if(iStack.getAmount() == 1){
+                    if(hand == EquipmentSlot.HAND){
+                        p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                    } else {
+                        p.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                    }
                 } else {
-                    p.getItemInHand().setAmount(p.getItemInHand().getAmount()-1);
+                    if(hand == EquipmentSlot.HAND){
+                        p.getInventory().getItemInMainHand().setAmount(p.getInventory().getItemInMainHand().getAmount()-1);
+                    } else {
+                        p.getInventory().getItemInOffHand().setAmount(p.getInventory().getItemInOffHand().getAmount()-1);
+                    }
                 }
             }
 
@@ -103,8 +114,10 @@ public class InteractListener implements Listener {
                         e.setUseItemInHand(Event.Result.DENY);
                     }
 
-                    if(p.getItemInHand() != null && p.getItemInHand().hasItemMeta() && p.getItemInHand().getItemMeta().hasDisplayName()){
-                        String dis = p.getItemInHand().getItemMeta().getDisplayName();
+                    ItemStack iStack = e.getHand() == EquipmentSlot.HAND ? p.getInventory().getItemInMainHand() : p.getInventory().getItemInOffHand();
+
+                    if(iStack != null && iStack.hasItemMeta() && iStack.getItemMeta().hasDisplayName()){
+                        String dis = iStack.getItemMeta().getDisplayName();
 
                         if(DungeonRPG.SETUP_REGION > 0){
                             Location loc = e.getClickedBlock().getLocation();
@@ -289,8 +302,10 @@ public class InteractListener implements Listener {
                     }
                 }
 
-                if(p.getItemInHand() != null && CustomItem.fromItemStack(p.getItemInHand()) != null && e.getAction() != Action.PHYSICAL) {
-                    CustomItem item = CustomItem.fromItemStack(p.getItemInHand());
+                ItemStack iStack = e.getHand() == EquipmentSlot.HAND ? p.getInventory().getItemInMainHand() : p.getInventory().getItemInOffHand();
+
+                if(iStack != null && CustomItem.fromItemStack(iStack) != null && e.getAction() != Action.PHYSICAL) {
+                    CustomItem item = CustomItem.fromItemStack(iStack);
 
                     if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
                         // TELEPORT SCROLLS
@@ -304,7 +319,7 @@ public class InteractListener implements Listener {
 
                                     if(locs.size() > 0){
                                         if(!u.isInDungeon()){
-                                            tpScroll(p,locs.get(0).toBukkitLocation());
+                                            tpScroll(p,locs.get(0).toBukkitLocation(),e.getHand());
                                         } else {
                                             p.sendMessage(ChatColor.RED + "You can't use that item here.");
                                         }
@@ -640,8 +655,8 @@ public class InteractListener implements Listener {
                     }
                 }
 
-                if(p.getItemInHand() != null && p.getItemInHand().getType() != null && p.getItemInHand().getItemMeta() != null && CustomItem.fromItemStack(p.getItemInHand()) != null) {
-                    final CustomItem customItem = CustomItem.fromItemStack(p.getItemInHand());
+                if(iStack != null && iStack.getType() != null && iStack.getItemMeta() != null && CustomItem.fromItemStack(iStack) != null) {
+                    final CustomItem customItem = CustomItem.fromItemStack(iStack);
 
                     if (u.getCurrentCharacter() == null) return;
 
