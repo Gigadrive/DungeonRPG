@@ -97,6 +97,7 @@ public class NPCInteractListener implements Listener {
                                                                 if(u2.getCurrentCharacter() != null && u2.getParty() == u.getParty()){
                                                                     if(u2.getCurrentCharacter().getLevel() >= npc.dungeonType.getMinLevel() && u2.getCurrentCharacter().mayEnterDungeon(npc.dungeonType)){
                                                                         DungeonAPI.sync(() -> p2.teleport(npc.dungeonType.getEntryLocation(dungeon.getWorldName())));
+                                                                        u2.getCurrentCharacter().getVariables().setLastDungeonEntry(npc.dungeonType, new Timestamp(System.currentTimeMillis()));
                                                                     }
                                                                 }
                                                             }
