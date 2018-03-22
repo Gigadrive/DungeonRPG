@@ -312,7 +312,7 @@ public class Character {
     }
 
     public boolean mayEnterDungeon(DungeonType type){
-        return getVariables().getLastDungeonEntry(type) == null || (new Timestamp(getVariables().getLastDungeonEntry(type).getTime()+DungeonRPG.DUNGEON_ENTRANCE_INTERVAL).after(new Timestamp(System.currentTimeMillis())));
+        return getVariables().getLastDungeonEntry(type) == null || (new Timestamp(getVariables().getLastDungeonEntry(type).getTime() + DungeonRPG.DUNGEON_ENTRANCE_INTERVAL).before(new Timestamp(System.currentTimeMillis())));
     }
 
     private void registerProgress(Quest q){
