@@ -8,11 +8,13 @@ import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.user.User;
-import net.wrathofdungeons.dungeonapi.util.*;
+import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
+import net.wrathofdungeons.dungeonapi.util.ChatIcons;
+import net.wrathofdungeons.dungeonapi.util.ItemUtil;
+import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.dungeon.Dungeon;
-import net.wrathofdungeons.dungeonrpg.dungeon.DungeonType;
 import net.wrathofdungeons.dungeonrpg.event.CharacterCreationDoneEvent;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.guilds.Guild;
@@ -54,7 +56,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
-import org.mcsg.double0negative.tabapi.TabAPI;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -62,7 +63,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 public class GameUser extends User {
     public static HashMap<Player,GameUser> TEMP = new HashMap<Player,GameUser>();
@@ -807,7 +807,7 @@ public class GameUser extends User {
 
             giveNormalKnockback(finalLoc,false);
         } else {
-            p.setVelocity(p.getLocation().toVector().subtract(from.toVector()).setY(-1).multiply(0.5));
+            p.setVelocity(WorldUtilities.safenVelocity(p.getLocation().toVector().subtract(from.toVector()).setY(-1).multiply(0.5)));
         }
     }
 
@@ -880,6 +880,12 @@ public class GameUser extends User {
 
             bukkitReset();
             p.teleport(c.getStoredLocation());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    p.teleport(c.getStoredLocation());
+                }
+            }.runTaskLater(DungeonRPG.getInstance(), 20);
             p.setGameMode(DungeonRPG.PLAYER_DEFAULT_GAMEMODE);
             updateLevelBar();
             updateTabList();

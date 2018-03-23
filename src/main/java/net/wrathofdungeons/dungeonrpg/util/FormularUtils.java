@@ -79,7 +79,7 @@ public class FormularUtils {
     }
 
     public static int getNeededSkillUsesForLevel(int level){
-        return ((int)((Math.pow(level,2.25))*level+34));
+        return ((int) ((Math.pow(level, 2.45)) * level + 94));
     }
 
     public static int calculateSkillPointsForLevel(int level){

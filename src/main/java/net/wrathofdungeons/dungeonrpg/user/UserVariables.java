@@ -36,7 +36,7 @@ public class UserVariables {
     public int getCurrentSkillUses(Skill skill){
         int uses = getSkillUses(skill);
 
-        for(int i = 1; i <= getInvestedSkillPoints(skill); i++)
+        for (int i = 2; i <= getInvestedSkillPoints(skill); i++)
             uses -= FormularUtils.getNeededSkillUsesForLevel(i);
 
         if(uses < 0) uses = 0;
