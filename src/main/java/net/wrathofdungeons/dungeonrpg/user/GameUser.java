@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.user;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
+import com.mojang.authlib.GameProfile;
 import net.citizensnpcs.api.CitizensAPI;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
@@ -39,10 +40,13 @@ import net.wrathofdungeons.dungeonrpg.skill.PoisonData;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.skill.SkillValues;
+import net.wrathofdungeons.dungeonrpg.skins.StoredSkin;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.craftbukkit.v1_9_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
@@ -56,7 +60,16 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
+import org.inventivetalent.nicknamer.api.NickNamerAPI;
+import org.mineskin.SkinOptions;
+import org.mineskin.Visibility;
+import org.mineskin.data.Skin;
+import org.mineskin.data.SkinCallback;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -152,6 +165,8 @@ public class GameUser extends User {
 
     private PoisonData poisonData;
     public LivingEntity lastDamageSource;
+
+    public boolean updatingArmorSkin = false;
 
     public GameUser(Player p){
         super(p);
@@ -1048,6 +1063,7 @@ public class GameUser extends User {
 
     public void checkRequirements(){
         updateWalkSpeed();
+        updateArmorDisplay();
 
         if(getCurrentCharacter() != null){
             DungeonAPI.sync(() -> {
@@ -1499,6 +1515,240 @@ public class GameUser extends User {
 
     public void resetVanillaAttackSpeed(){
         p.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(16);
+    }
+
+    public void forceReloadWorld() {
+        try {
+            int newDimension = -1;
+            int oldDimension = ((CraftPlayer) p).getHandle().dimension;
+
+            while (newDimension == oldDimension)
+                newDimension = Util.randomInteger(-1, 1);
+
+            /*PacketContainer firstRespawn = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.RESPAWN);
+            firstRespawn.getIntegers().write(0,newDimension);
+            /*firstRespawn.getDifficulties().write(1, EnumWrappers.Difficulty.valueOf(p.getWorld().getDifficulty().name()));
+            firstRespawn.getGameModes().write(2, EnumWrappers.NativeGameMode.valueOf(p.getGameMode().name()));
+            firstRespawn.getWorldTypeModifier().write(3,p.getWorld().getWorldType());
+
+            PacketContainer secondRespawn = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.RESPAWN);
+            secondRespawn.getIntegers().write(0,oldDimension);
+            /*secondRespawn.getDifficulties().write(1, EnumWrappers.Difficulty.valueOf(p.getWorld().getDifficulty().name()));
+            secondRespawn.getGameModes().write(2, EnumWrappers.NativeGameMode.valueOf(p.getGameMode().name()));
+            secondRespawn.getWorldTypeModifier().write(3,p.getWorld().getWorldType());
+
+            ProtocolLibrary.getProtocolManager().sendServerPacket(p,firstRespawn);
+            ProtocolLibrary.getProtocolManager().sendServerPacket(p,secondRespawn);*/
+            Location loc = p.getLocation().clone();
+            ((CraftServer) ((CraftPlayer) p).getServer()).getHandle().getServer().getPlayerList().moveToWorld(((CraftPlayer) p).getHandle(), 0, false);
+            p.teleport(loc);
+
+            p.setGameMode(p.getGameMode());
+            p.setMaxHealth(p.getMaxHealth());
+            p.setHealth(p.getHealth());
+            p.setLevel(p.getLevel());
+            p.setExp(p.getExp());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public StoredSkin storedSkin;
+    public Integer[] lastArmorSkinCheckEquipment;
+
+    public void updateArmorDisplay() {
+        if (DungeonRPG.PREVENT_MINECRAFT_ARMOR) {
+            if (p.getInventory().getHelmet() != null)
+                p.getInventory().setHelmet(CustomItem.fromItemStack(p.getInventory().getHelmet()).build(p, DungeonRPG.ARMOR_SKIN_DISPLAY_ITEM, DungeonRPG.ARMOR_SKIN_DISPLAY_DURABILITY));
+            if (p.getInventory().getChestplate() != null && p.getInventory().getChestplate().getType() != Material.ELYTRA)
+                p.getInventory().setChestplate(CustomItem.fromItemStack(p.getInventory().getChestplate()).build(p, DungeonRPG.ARMOR_SKIN_DISPLAY_ITEM, DungeonRPG.ARMOR_SKIN_DISPLAY_DURABILITY));
+            if (p.getInventory().getLeggings() != null)
+                p.getInventory().setLeggings(CustomItem.fromItemStack(p.getInventory().getLeggings()).build(p, DungeonRPG.ARMOR_SKIN_DISPLAY_ITEM, DungeonRPG.ARMOR_SKIN_DISPLAY_DURABILITY));
+            if (p.getInventory().getBoots() != null)
+                p.getInventory().setBoots(CustomItem.fromItemStack(p.getInventory().getBoots()).build(p, DungeonRPG.ARMOR_SKIN_DISPLAY_ITEM, DungeonRPG.ARMOR_SKIN_DISPLAY_DURABILITY));
+
+            for (int i = 0; i < 36; i++) {
+                ItemStack itemStack = p.getInventory().getItem(i);
+                if (itemStack == null) continue;
+                CustomItem item = CustomItem.fromItemStack(itemStack);
+
+                if (item != null && item.getData().getCategory() == ItemCategory.ARMOR && itemStack.getType() == DungeonRPG.ARMOR_SKIN_DISPLAY_ITEM && itemStack.getDurability() == (short) DungeonRPG.ARMOR_SKIN_DISPLAY_DURABILITY) {
+                    p.getInventory().setItem(p.getInventory().first(itemStack), item.build(p));
+                }
+            }
+
+            p.updateInventory();
+        }
+    }
+
+    private boolean noArmor = false;
+    private static boolean timeout = false;
+
+    public void updateArmorSkin() {
+        final boolean sendMessages = true;
+        if (timeout) return;
+
+        try {
+            if (getCurrentCharacter() != null) {
+                ArrayList<ItemData> skinsToLoad = new ArrayList<ItemData>();
+
+                for (CustomItem item : getCurrentCharacter().getEquipment())
+                    if (item.getData().hasArmorSkin())
+                        skinsToLoad.add(item.getData());
+
+                if (skinsToLoad.size() > 0) {
+                    noArmor = false;
+                    if (!updatingArmorSkin) {
+                        if (sendMessages) p.sendMessage(ChatColor.YELLOW + "Your skin is being updated..");
+                        GameProfile profile = ((CraftPlayer) p).getProfile();
+                        String originalSkinURL = WorldUtilities.getSkinURLFromGameProfile(profile);
+                        updatingArmorSkin = true;
+                        ArrayList<Integer> a = new ArrayList<Integer>();
+                        for (ItemData data : skinsToLoad) a.add(data.getId());
+                        StoredSkin storedSkin = StoredSkin.getEqualSkin(a.toArray(new Integer[]{}), originalSkinURL);
+
+                        String key = Util.randomString(1, 60);
+
+                        if (storedSkin != null) {
+                            key = storedSkin.key;
+
+                            if (storedSkin.equals(this.storedSkin)) {
+                                updatingArmorSkin = false;
+                                return;
+                            }
+
+                            NickNamerAPI.getNickManager().setSkin(p.getUniqueId(), key);
+                            this.storedSkin = storedSkin;
+
+                            if (sendMessages) p.sendMessage(ChatColor.GREEN + "Your skin has been updated!");
+                            updatingArmorSkin = false;
+                        } else {
+                            String[] s = originalSkinURL.split("/");
+                            File originalSkin = new File(DungeonRPG.getTemporaryFolder() + "texture_" + s[s.length - 1] + ".png");
+
+                            if (!originalSkin.exists())
+                                Util.saveRemoteImageLocally(originalSkinURL, "png", originalSkin);
+
+                            BufferedImage skinImage = ImageIO.read(originalSkin);
+                            BufferedImage finalSkin = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+
+                            Graphics g = finalSkin.getGraphics();
+                            g.drawImage(skinImage, 0, 0, null);
+
+                            for (ItemData itemData : skinsToLoad) {
+                                try {
+                                    String url = "https://skins.wrathofdungeons.net/armorSkinParts/" + itemData.getId() + ".png";
+                                    File skinPartFile = new File(DungeonRPG.getTemporaryFolder() + "armorSkinPart_" + itemData.getId() + ".png");
+
+                                    if (!skinPartFile.exists())
+                                        Util.saveRemoteImageLocally(url, "png", skinPartFile);
+
+                                    if (!skinPartFile.exists())
+                                        continue;
+
+                                    BufferedImage skinPartImage = ImageIO.read(skinPartFile);
+                                    g.drawImage(skinPartImage, 0, 0, null);
+                                } catch (Exception e) {
+                                }
+                            }
+
+                            File outputFile = new File(DungeonRPG.getTemporaryFolder() + "finalSkin_" + key + ".png");
+                            if (ImageIO.write(finalSkin, "png", outputFile)) {
+                                final String k = key;
+                                final GameUser self = this;
+
+                                DungeonRPG.getMineskinClient().generateUpload(outputFile, SkinOptions.create("wod_" + key, WorldUtilities.getModelFromGameProfile(profile), Visibility.PRIVATE), new SkinCallback() {
+                                    @Override
+                                    public void done(Skin skin) {
+                                        GameProfile newProfile = WorldUtilities.getGameProfileFromSkinData(skin.data);
+
+                                        NickNamerAPI.getNickManager().loadCustomSkin(k, newProfile);
+                                        NickNamerAPI.getNickManager().setSkin(p.getUniqueId(), k);
+
+                                        if (sendMessages)
+                                            p.sendMessage(ChatColor.GREEN + "Your skin has been updated!");
+                                        updatingArmorSkin = false;
+
+                                        self.storedSkin = new StoredSkin(k, a.toArray(new Integer[]{}), originalSkinURL);
+                                        self.lastArmorSkinCheckEquipment = a.toArray(new Integer[]{});
+                                    }
+
+                                    @Override
+                                    public void error(String errorMessage) {
+                                        if (sendMessages)
+                                            p.sendMessage(ChatColor.RED + "Failed to update your skin! Please try again later.");
+                                        updatingArmorSkin = false;
+                                        self.storedSkin = null;
+
+                                        if (errorMessage.equalsIgnoreCase("Too many requests")) {
+                                            if (!timeout) {
+                                                timeout = true;
+                                                new BukkitRunnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        timeout = false;
+                                                    }
+                                                }.runTaskLater(DungeonRPG.getInstance(), 10 * 20);
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void exception(Exception exception) {
+                                        if (sendMessages)
+                                            p.sendMessage(ChatColor.RED + "Failed to update your skin! Please try again later.");
+                                        updatingArmorSkin = false;
+                                        self.storedSkin = null;
+                                        exception.printStackTrace();
+                                    }
+                                });
+                            } else {
+                                if (sendMessages)
+                                    p.sendMessage(ChatColor.RED + "Failed to update your skin! Please try again later.");
+                                updatingArmorSkin = false;
+                                this.storedSkin = null;
+                            }
+                        }
+                    }
+                } else {
+                    if (noArmor) return;
+                    if (sendMessages) p.sendMessage(ChatColor.YELLOW + "Your skin is being updated..");
+
+                    if (NickNamerAPI.getNickManager().hasSkin(p.getUniqueId()))
+                        NickNamerAPI.getNickManager().removeSkin(p.getUniqueId());
+
+                    this.storedSkin = null;
+                    this.lastArmorSkinCheckEquipment = new Integer[]{};
+
+                    if (sendMessages) p.sendMessage(ChatColor.GREEN + "Your skin has been updated!");
+                    noArmor = true;
+                }
+            } else {
+                if (NickNamerAPI.getNickManager().hasSkin(p.getUniqueId()))
+                    NickNamerAPI.getNickManager().removeSkin(p.getUniqueId());
+
+                this.storedSkin = null;
+                this.lastArmorSkinCheckEquipment = new Integer[]{};
+            }
+
+            updateArmorDisplay();
+        } catch (Exception e) {
+            if (sendMessages) p.sendMessage(ChatColor.RED + "Failed to update your skin! Please try again later.");
+            this.storedSkin = null;
+            this.lastArmorSkinCheckEquipment = new Integer[]{};
+            updatingArmorSkin = false;
+            e.printStackTrace();
+        }
+    }
+
+    private File s(String base, String suffix) {
+        File file = null;
+
+        while (file == null || file.exists() || file.isDirectory()) {
+            file = new File(base + Util.randomString(1, 25) + suffix);
+        }
+
+        return file;
     }
 
     @Override

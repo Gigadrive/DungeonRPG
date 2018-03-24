@@ -1,5 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.util;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.citizensnpcs.api.npc.NPC;
@@ -28,10 +30,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.mineskin.Model;
 import org.mineskin.data.Skin;
+import org.mineskin.data.SkinData;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 
 import static net.citizensnpcs.api.npc.NPC.*;
@@ -277,9 +282,7 @@ public class WorldUtilities {
             SkinnableEntity skinnable = npc.getEntity() instanceof SkinnableEntity ? (SkinnableEntity)npc.getEntity() : null;
             if(skinnable != null){
                 try {
-                    //GameProfile profile = new Gson().fromJson("{\"id\":\"" + skin.data.uuid.toString() + "\",\"name\":\"" + skinName + "\",\"properties\":[{\"signature\":\"" + skin.data.texture.signature + "\",\"name\":\"textures\",\"value\":\"" + skin.data.texture.value + "\"}]}",GameProfile.class);
-                    GameProfile profile = new GameProfile(skin.data.uuid,skinName);
-                    profile.getProperties().put("textures",new Property("textures",skin.data.texture.value,skin.data.texture.signature));
+                    GameProfile profile = getGameProfileFromSkinData(skin.data, skinName);
 
                     Class<net.citizensnpcs.npc.skin.Skin> clazz = net.citizensnpcs.npc.skin.Skin.class;
                     Method met = clazz.getDeclaredMethod("setData", GameProfile.class);
@@ -298,5 +301,46 @@ public class WorldUtilities {
             npc.data().remove(PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA);
             npc.data().remove(PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA);
         }
+    }
+
+    public static GameProfile getGameProfileFromSkinData(SkinData skinData) {
+        String skinName = Util.randomString(3, 16);
+
+        GameProfile profile = new GameProfile(skinData.uuid, skinName);
+        profile.getProperties().put("textures", new Property("textures", skinData.texture.value, skinData.texture.signature));
+
+        return profile;
+    }
+
+    public static String getSkinURLFromGameProfile(GameProfile profile) {
+        for (Property property : profile.getProperties().get("textures"))
+            if (property.getName().equals("textures")) {
+                String s = new String(Base64.getDecoder().decode(property.getValue()));
+
+                JsonObject o = new JsonParser().parse(s).getAsJsonObject();
+                return o.get("textures").getAsJsonObject().get("SKIN").getAsJsonObject().get("url").getAsString();
+            }
+
+        return null;
+    }
+
+    public static Model getModelFromGameProfile(GameProfile profile) {
+        for (Property property : profile.getProperties().get("textures"))
+            if (property.getName().equals("textures")) {
+                String s = new String(Base64.getDecoder().decode(property.getValue()));
+
+                JsonObject skin = new JsonParser().parse(s).getAsJsonObject().get("textures").getAsJsonObject().get("SKIN").getAsJsonObject();
+                if (skin.get("metadata") != null)
+                    return skin.get("metadata").getAsJsonObject().get("model").getAsString().equalsIgnoreCase("slim") ? Model.SLIM : Model.DEFAULT;
+            }
+
+        return Model.DEFAULT;
+    }
+
+    public static GameProfile getGameProfileFromSkinData(SkinData skinData, String skinName) {
+        GameProfile profile = new GameProfile(skinData.uuid, skinName);
+        profile.getProperties().put("textures", new Property("textures", skinData.texture.value, skinData.texture.signature));
+
+        return profile;
     }
 }

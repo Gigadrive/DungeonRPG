@@ -10,7 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
@@ -19,8 +18,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Arrays;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class InventoryClickListener implements Listener {
     @EventHandler
@@ -47,12 +45,20 @@ public class InventoryClickListener implements Listener {
                 GameUser u = GameUser.getUser(p);
 
                 if(u.getCurrentCharacter() != null){
-                    u.checkRequirements();
+                    //u.checkRequirements();
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            u.checkRequirements();
+                        }
+                    }.runTaskLater(DungeonRPG.getInstance(), 3);
 
                     /*if(e.getInventory() != null && e.getInventory().getName() != null) p.sendMessage("INVENTORY: " + e.getInventory().getName());
                     if(e.getClickedInventory() != null && e.getClickedInventory().getName() != null) p.sendMessage("CLICKED INVENTORY: " + e.getClickedInventory().getName());
                     p.sendMessage("ACTION: " + e.getAction().toString());
                     p.sendMessage("CLICK: " + e.getClick().toString());
+                    p.sendMessage("SLOT: " + e.getSlot());
+                    p.sendMessage("RAW SLOT: " + e.getRawSlot());
                     if(e.getCurrentItem() != null && CustomItem.fromItemStack(e.getCurrentItem()) != null){
                         p.sendMessage("CURRENT ITEM: " + CustomItem.fromItemStack(e.getCurrentItem()).getData().getId());
                     }
@@ -86,6 +92,34 @@ public class InventoryClickListener implements Listener {
                     if(CustomNPC.READING.contains(p.getName())){
                         e.setCancelled(true);
                         return;
+                    }
+
+                    if (DungeonRPG.PREVENT_MINECRAFT_ARMOR) {
+                        if (e.getInventory() != null && e.getInventory().getName() != null && e.getInventory().getName().equals("container.crafting") && e.getClickedInventory() != null && e.getClickedInventory().getName() != null && e.getClickedInventory().getName().equals("container.inventory")) {
+                            if (e.getRawSlot() >= 5 && e.getRawSlot() <= 8) {
+                                if (e.getAction().name().startsWith("PICKUP_")) {
+                                    if (e.getCurrentItem() != null && CustomItem.fromItemStack(e.getCurrentItem()) != null) {
+                                        ItemStack i = CustomItem.fromItemStack(e.getCurrentItem()).build(p);
+                                        new BukkitRunnable() {
+                                            @Override
+                                            public void run() {
+                                                p.setItemOnCursor(i);
+                                            }
+                                        }.runTaskLater(DungeonRPG.getInstance(), 5);
+                                    }
+                                } else if (e.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
+                                    if (e.getCursor() != null && CustomItem.fromItemStack(e.getCursor()) != null) {
+                                        ItemStack i = CustomItem.fromItemStack(e.getCursor()).build(p);
+                                        new BukkitRunnable() {
+                                            @Override
+                                            public void run() {
+                                                p.setItemOnCursor(i);
+                                            }
+                                        }.runTaskLater(DungeonRPG.getInstance(), 5);
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     if(e.getInventory() != null && e.getInventory().getName() != null && e.getInventory().getName().equals("container.crafting") && e.getClickedInventory() != null && e.getClickedInventory().getName() != null &&e.getClickedInventory().getName().equals("container.inventory")){

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
-import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.items.crystals.CrystalType;
@@ -13,6 +12,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ public class ItemData {
     private int neededMiningLevel;
 
     private boolean untradeable;
+    private boolean hasArmorSkin;
 
     public static ItemData getData(int id){
         for(ItemData d : STORAGE){
@@ -125,10 +127,29 @@ public class ItemData {
                 this.neededMiningLevel = rs.getInt("neededMiningLevel");
 
                 this.untradeable = rs.getBoolean("untradeable");
+
+                DungeonAPI.async(() -> reloadArmorSkin());
             }
 
             MySQLManager.getInstance().closeResources(rs,ps);
         } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void reloadArmorSkin() {
+        if (getCategory() != ItemCategory.ARMOR) {
+            hasArmorSkin = false;
+            return;
+        }
+
+        try {
+            URL url = new URL(getArmorSkinURL());
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            int statusCode = http.getResponseCode();
+
+            this.hasArmorSkin = statusCode == 200;
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -265,6 +286,14 @@ public class ItemData {
 
     public boolean isUntradeable() {
         return untradeable;
+    }
+
+    public boolean hasArmorSkin() {
+        return hasArmorSkin;
+    }
+
+    public String getArmorSkinURL() {
+        return "https://skins.wrathofdungeons.net/armorSkinParts/" + getId() + ".png";
     }
 
     public boolean isMatchingWeapon(RPGClass rpgClass){

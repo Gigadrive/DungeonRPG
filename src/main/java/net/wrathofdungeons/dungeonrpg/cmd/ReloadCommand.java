@@ -5,7 +5,6 @@ import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.ItemData;
-import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.professions.CraftingRecipe;
@@ -15,8 +14,6 @@ import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import java.util.ConcurrentModificationException;
 
 public class ReloadCommand extends Command {
     public ReloadCommand(){
@@ -135,11 +132,18 @@ public class ReloadCommand extends Command {
 
                     p.sendMessage(ChatColor.GREEN + "Done!");
                 });
+            } else if (mode.equalsIgnoreCase("armorSkins")) {
+                DungeonAPI.async(() -> {
+                    for (ItemData data : ItemData.STORAGE)
+                        data.reloadArmorSkin();
+
+                    p.sendMessage(ChatColor.GREEN + "Done!");
+                });
             } else {
-                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests|ores|recipes>");
+                p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests|ores|recipes|armorSkins>");
             }
         } else {
-            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests|ores|recipes>");
+            p.sendMessage(ChatColor.RED + "/" + label + " <mobs|items|regions|npcs|broadcast|quests|ores|recipes|armorSkins>");
         }
     }
 }

@@ -8,7 +8,6 @@ import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.util.PlayerUtilities;
 import net.wrathofdungeons.dungeonapi.util.Util;
-import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.guilds.Guild;
 import net.wrathofdungeons.dungeonrpg.guilds.GuildMember;
 import net.wrathofdungeons.dungeonrpg.guilds.GuildRank;
@@ -17,7 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.lang.ref.PhantomReference;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.UUID;

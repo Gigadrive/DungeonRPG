@@ -17,6 +17,10 @@
             <id>viaversion</id>
             <url>https://repo.viaversion.com</url>
         </repository>
+        <repository>
+            <id>inventive-repo</id>
+            <url>https://repo.inventivetalent.org/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <build>
@@ -94,6 +98,11 @@
             <groupId>org.mcsg.double0negative</groupId>
             <artifactId>TabAPI</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.inventivetalent.nicknamer</groupId>
+            <artifactId>api</artifactId>
+            <version>3.14.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

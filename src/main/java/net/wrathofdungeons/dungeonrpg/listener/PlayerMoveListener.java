@@ -4,6 +4,7 @@ import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
+import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
@@ -35,6 +36,22 @@ public class PlayerMoveListener implements Listener {
             GameUser u = GameUser.getUser(p);
 
             if(u.getCurrentCharacter() != null){
+                ArrayList<Integer> b = new ArrayList<Integer>();
+                for (CustomItem item : u.getCurrentCharacter().getEquipment())
+                    if (item.getData().hasArmorSkin())
+                        b.add(item.getData().getId());
+
+                //if(u.lastArmorSkinCheckEquipment == null || (u.lastArmorSkinCheckEquipment.length != b.size() || !Arrays.asList(u.lastArmorSkinCheckEquipment).containsAll(b))){
+                if (u.storedSkin == null || !u.storedSkin.matchesEquipment(u.getCurrentCharacter())) {
+                    /*if(u.lastArmorSkinCheckEquipment != null){
+                        p.sendMessage(u.lastArmorSkinCheckEquipment.length + " " + b.size());
+                    } else {
+                        //p.sendMessage(" " + b.size());
+                    }*/
+                    //u.updateSkin = false;
+                    u.updateArmorSkin();
+                }
+
                 u.updateHoloPlate();
 
                 Location from = e.getFrom();
@@ -54,10 +71,10 @@ public class PlayerMoveListener implements Listener {
 
                         if(!p.isSprinting()){
                             if(velocity.length() <= 1.0)
-                                p.setVelocity(velocity.normalize().multiply(1.1));
+                                p.setVelocity(WorldUtilities.safenVelocity(velocity.normalize().multiply(1.1)));
                         } else {
                             if(velocity.length() < 1.6)
-                                p.setVelocity(velocity.normalize().multiply(1.6));
+                                p.setVelocity(WorldUtilities.safenVelocity(velocity.normalize().multiply(1.6)));
 
                             ParticleEffect.CLOUD.display(0.05f,0.05f,0.05f,0.05f,15,p.getLocation(),600);
                             p.getWorld().playSound(p.getLocation(), Sound.ENTITY_FIREWORK_TWINKLE,0.05f,2.0f);
@@ -154,7 +171,7 @@ public class PlayerMoveListener implements Listener {
 
             if(u.getCurrentCharacter() != null){
                 if(e.isSneaking() && u.getSkillValues().stomperActive){
-                    p.setVelocity(new Vector(0,-2.5,0));
+                    p.setVelocity(WorldUtilities.safenVelocity(new Vector(0, -2.5, 0)));
                 }
             }
         }

@@ -103,6 +103,11 @@ public class DungeonRPG extends JavaPlugin {
     public static int SETUP_REGION = 0;
     private static MineskinClient mineskinClient;
 
+    public static final Material ARMOR_SKIN_DISPLAY_ITEM = Material.NAME_TAG;
+    public static final int ARMOR_SKIN_DISPLAY_DURABILITY = 0;
+
+    public static final boolean PREVENT_MINECRAFT_ARMOR = true;
+
     public static final long DUNGEON_ENTRANCE_INTERVAL = 1*60*60*1000; // 1 hour
 
     public static void reloadBroadcastLines(){
@@ -164,6 +169,11 @@ public class DungeonRPG extends JavaPlugin {
         mineskinClient = new MineskinClient();
         instance = this;
         saveDefaultConfig();
+
+        File tmpFolder = new File(getTemporaryFolder());
+        if (!tmpFolder.exists())
+            if (!tmpFolder.mkdir())
+                System.err.println("Failed to create temp folder!");
 
         registerListeners();
         registerCommands();
@@ -962,6 +972,10 @@ public class DungeonRPG extends JavaPlugin {
         }
     }
 
+    public static String getTemporaryFolder() {
+        return Bukkit.getWorldContainer().getAbsolutePath().substring(0, Bukkit.getWorldContainer().getAbsolutePath().length() - 1) + "plugins/DungeonRPG/tmp/";
+    }
+
     public static void copyWorldToNewWorld(final String originalName, String newName) throws Exception {
         if(originalName.equals(newName)) throw new IllegalArgumentException("Cannot copy to original folder");
 
@@ -1154,6 +1168,7 @@ public class DungeonRPG extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(),this);
         Bukkit.getPluginManager().registerEvents(new ProjectileHitListener(),this);
         Bukkit.getPluginManager().registerEvents(new ShootBowListener(),this);
+        Bukkit.getPluginManager().registerEvents(new SkinListener(), this);
         Bukkit.getPluginManager().registerEvents(new SplitListener(),this);
         Bukkit.getPluginManager().registerEvents(new SwitchItemListener(),this);
         Bukkit.getPluginManager().registerEvents(new TargetListener(),this);

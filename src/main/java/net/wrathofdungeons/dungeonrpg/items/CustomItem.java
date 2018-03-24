@@ -30,7 +30,6 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class CustomItem {
     private int dataID;
@@ -590,6 +589,18 @@ public class CustomItem {
         if(crystals == null) crystals = new ArrayList<Crystal>();
 
         return crystals;
+    }
+
+    public ItemStack build(Player p, Material material) {
+        return build(p, material, 0);
+    }
+
+    public ItemStack build(Player p, Material material, int durability) {
+        ItemStack i = build(p);
+        i.setType(material);
+        i.setDurability((short) durability);
+
+        return i;
     }
 
     public ItemStack build(Player p){

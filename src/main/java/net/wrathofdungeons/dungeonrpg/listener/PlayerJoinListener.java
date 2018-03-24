@@ -1,7 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
 import net.wrathofdungeons.dungeonapi.event.PlayerCoreDataLoadedEvent;
-import net.wrathofdungeons.dungeonapi.user.User;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.FinalDataLoadedEvent;
 import net.wrathofdungeons.dungeonrpg.inv.CharacterSelectionMenu;
@@ -11,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.inventivetalent.nicknamer.api.NickNamerAPI;
 
 public class PlayerJoinListener implements Listener {
     @EventHandler
@@ -20,6 +20,9 @@ public class PlayerJoinListener implements Listener {
         e.setJoinMessage(null);
         DungeonRPG.updateVanishing();
         DungeonRPG.updateNames();
+
+        if (NickNamerAPI.getNickManager().hasSkin(p.getUniqueId()))
+            NickNamerAPI.getNickManager().removeSkin(p.getUniqueId());
     }
 
     @EventHandler
