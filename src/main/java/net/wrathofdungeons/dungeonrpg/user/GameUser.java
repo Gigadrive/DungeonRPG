@@ -516,6 +516,8 @@ public class GameUser extends User {
                 String hpString = ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() + ChatIcons.HEART + " HP: " + ChatColor.RED + getHP() + "/" + getMaxHP();
                 String mpString = ChatColor.DARK_AQUA.toString() + ChatColor.BOLD.toString() + "✸ MP: " + ChatColor.AQUA + getMP() + "/" + getMaxMP();
 
+                String toSend = "            ";
+
                 if(!currentCombo.isEmpty()){
                     String left = ChatColor.GREEN + "L";
                     String middle = ChatColor.GREEN + "M";
@@ -523,8 +525,6 @@ public class GameUser extends User {
                     String unknown = ChatColor.GRAY + "?";
                     String unknownPrime = ChatColor.GRAY.toString() + ChatColor.UNDERLINE.toString() + "?" + ChatColor.RESET;
                     String seperator = ChatColor.GRAY + "-" + ChatColor.RESET;
-
-                    String toSend = "";
 
                     if(currentCombo.equals("L")) toSend = left + seperator + unknownPrime + seperator + unknown;
                     if(currentCombo.equals("LR")) toSend = left + seperator + right + seperator + unknownPrime;
@@ -565,11 +565,12 @@ public class GameUser extends User {
                     if(currentCombo.equals("MLL")) toSend = middle + seperator + left + seperator + left;
                     if(currentCombo.equals("MLM")) toSend = middle + seperator + left + seperator + middle;
                     if(currentCombo.equals("MLR")) toSend = middle + seperator + left + seperator + right;
-
-                    BountifulAPI.sendActionBar(p, hpString + "  " + toSend + "  " + mpString);
                 } else {
-                    BountifulAPI.sendActionBar(p, hpString + "         " + mpString);
+                    if (actionBarSkillDisplay != null)
+                        toSend = actionBarSkillDisplay;
                 }
+
+                BountifulAPI.sendActionBar(p, hpString + "  " + toSend + "  " + mpString);
             }
             p.setMaxHealth(20);
 
@@ -702,14 +703,18 @@ public class GameUser extends User {
         TabAPI.updatePlayer(p);*/
     }
 
+    private String actionBarSkillDisplay = null;
+
     public void updateClickComboBar(Skill toCast, int manaCost){
         String s = ChatColor.GREEN + toCast.getName() + " " + ChatColor.GRAY + "[-" + manaCost + " MP]";
 
         if(!DungeonRPG.SHOW_HP_IN_ACTION_BAR){
             BountifulAPI.sendActionBar(p,s);
         } else {
-            p.setItemInHand(WorldUtilities.updateDisplayName(p.getItemInHand(),DungeonRPG.getSkillIndicatorPrefix() + s));
+            //p.setItemInHand(WorldUtilities.updateDisplayName(p.getItemInHand(),DungeonRPG.getSkillIndicatorPrefix() + s));
+            actionBarSkillDisplay = s;
             startClickComboClearTask();
+            updateActionBar();
         }
 
         /*p.setItemInHand(WorldUtilities.updateDisplayName(p.getItemInHand(),DungeonRPG.getSkillIndicatorPrefix() + toSend));
@@ -1466,12 +1471,13 @@ public class GameUser extends User {
                 clearClickCombo = null;
             }
 
-            CustomItem i = CustomItem.fromItemStack(p.getInventory().getItem(slot));
+            actionBarSkillDisplay = null;
+            /*CustomItem i = CustomItem.fromItemStack(p.getInventory().getItem(slot));
             if(i != null && p.getInventory().getItem(slot) != null){
                 i.setAmount(p.getInventory().getItem(slot).getAmount());
 
                 p.setItemInHand(i.build(p));
-            }
+            }*/
 
             //currentCombo = "";
         }
