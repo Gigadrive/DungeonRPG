@@ -1621,6 +1621,8 @@ public class GameUser extends User {
                             this.storedSkin = storedSkin;
 
                             if (sendMessages) p.sendMessage(ChatColor.GREEN + "Your skin has been updated!");
+                            if (sendMessages)
+                                p.sendMessage(ChatColor.GREEN + "Press F3+A if you experience world loading issues.");
                             updatingArmorSkin = false;
                         } else {
                             String[] s = originalSkinURL.split("/");

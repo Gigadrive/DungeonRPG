@@ -108,8 +108,8 @@ public class InventoryClickListener implements Listener {
                                         }.runTaskLater(DungeonRPG.getInstance(), 5);
                                     }
                                 } else if (e.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
-                                    if (e.getCursor() != null && CustomItem.fromItemStack(e.getCursor()) != null) {
-                                        ItemStack i = CustomItem.fromItemStack(e.getCursor()).build(p);
+                                    if (e.getCurrentItem() != null && CustomItem.fromItemStack(e.getCurrentItem()) != null) {
+                                        ItemStack i = CustomItem.fromItemStack(e.getCurrentItem()).build(p);
                                         new BukkitRunnable() {
                                             @Override
                                             public void run() {
