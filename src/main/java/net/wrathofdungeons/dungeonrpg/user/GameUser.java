@@ -1067,6 +1067,9 @@ public class GameUser extends User {
                 updateWalkSpeed();
                 updateArmorDisplay();
 
+                if (!hasElytraOnChestplate() && isInElytraMode())
+                    toggleElytraMode();
+
                 CustomItem helmet = null;
                 CustomItem chestplate = null;
                 CustomItem leggings = null;
@@ -1232,7 +1235,7 @@ public class GameUser extends User {
                 if (isInElytraMode())
                     toggleElytraMode();
             }
-        }.runTaskLater(DungeonRPG.getInstance(), 10 * 20);
+        }.runTaskLater(DungeonRPG.getInstance(), 5 * 20);
     }
 
     public void toggleElytraMode() {
