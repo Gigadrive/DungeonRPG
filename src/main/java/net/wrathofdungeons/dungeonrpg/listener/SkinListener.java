@@ -8,7 +8,13 @@ import org.inventivetalent.nicknamer.api.event.NickNamerSelfUpdateEvent;
 public class SkinListener implements Listener {
     @EventHandler
     public void onUpdate(NickNamerSelfUpdateEvent e) {
-        if (GameUser.isLoaded(e.getPlayer()))
-            GameUser.getUser(e.getPlayer()).forceReloadWorld();
+        if (GameUser.isLoaded(e.getPlayer())) {
+            GameUser u = GameUser.getUser(e.getPlayer());
+
+            if (u.reloadWorld) {
+                u.reloadWorld = false;
+                u.forceReloadWorld();
+            }
+        }
     }
 }

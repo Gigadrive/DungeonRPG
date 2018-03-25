@@ -1579,6 +1579,7 @@ public class GameUser extends User {
 
     private boolean noArmor = false;
     private static boolean timeout = false;
+    public boolean reloadWorld = false;
 
     public void updateArmorSkin() {
         final boolean sendMessages = true;
@@ -1612,6 +1613,8 @@ public class GameUser extends User {
                                 updatingArmorSkin = false;
                                 return;
                             }
+
+                            reloadWorld = true;
 
                             NickNamerAPI.getNickManager().setSkin(p.getUniqueId(), key);
                             this.storedSkin = storedSkin;
@@ -1658,6 +1661,7 @@ public class GameUser extends User {
                                 DungeonRPG.getMineskinClient().generateUpload(outputFile, SkinOptions.create("wod_" + key, WorldUtilities.getModelFromGameProfile(profile), Visibility.PRIVATE), new SkinCallback() {
                                     @Override
                                     public void done(Skin skin) {
+                                        reloadWorld = true;
                                         GameProfile newProfile = WorldUtilities.getGameProfileFromSkinData(skin.data);
 
                                         NickNamerAPI.getNickManager().loadCustomSkin(k, newProfile);
@@ -1713,6 +1717,7 @@ public class GameUser extends User {
                 } else {
                     if (noArmor) return;
                     if (sendMessages) p.sendMessage(ChatColor.YELLOW + "Your skin is being updated..");
+                    reloadWorld = true;
 
                     if (NickNamerAPI.getNickManager().hasSkin(p.getUniqueId()))
                         NickNamerAPI.getNickManager().removeSkin(p.getUniqueId());
@@ -1726,6 +1731,7 @@ public class GameUser extends User {
                     noArmor = true;
                 }
             } else {
+                reloadWorld = true;
                 if (NickNamerAPI.getNickManager().hasSkin(p.getUniqueId()))
                     NickNamerAPI.getNickManager().removeSkin(p.getUniqueId());
 
