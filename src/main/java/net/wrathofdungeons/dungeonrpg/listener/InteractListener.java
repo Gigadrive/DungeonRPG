@@ -6,7 +6,6 @@ import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
-import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
 import net.wrathofdungeons.dungeonapi.util.PlayerUtilities;
 import net.wrathofdungeons.dungeonapi.util.Util;
@@ -31,14 +30,14 @@ import net.wrathofdungeons.dungeonrpg.regions.Region;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.skill.ClickComboType;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
-import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
-import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -374,6 +373,30 @@ public class InteractListener implements Listener {
                                 } else {
                                     p.sendMessage(ChatColor.DARK_RED + "This item is for level " + item.getData().getNeededLevel() + "+ only.");
                                 }
+                            }
+                        } else if (item.getData().getCategory() == ItemCategory.ELYTRA) {
+                            e.setCancelled(true);
+                            e.setUseInteractedBlock(Event.Result.DENY);
+                            e.setUseItemInHand(Event.Result.DENY);
+
+                            if (u.getCurrentCharacter().getLevel() >= item.getData().getNeededLevel()) {
+                                if (u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() >= item.getData().getNeededBlacksmithingLevel()) {
+                                    if (u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() >= item.getData().getNeededCraftingLevel()) {
+                                        if (u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() >= item.getData().getNeededMiningLevel()) {
+                                            u.toggleElytraMode();
+                                            if (u.isInElytraMode())
+                                                p.playSound(p.getEyeLocation(), Sound.ITEM_ARMOR_EQUIP_GENERIC, 1f, 1f);
+                                        } else {
+                                            p.sendMessage(ChatColor.DARK_RED + "This item is for Mining level " + item.getData().getNeededMiningLevel() + "+ only.");
+                                        }
+                                    } else {
+                                        p.sendMessage(ChatColor.DARK_RED + "This item is for Crafting level " + item.getData().getNeededCraftingLevel() + "+ only.");
+                                    }
+                                } else {
+                                    p.sendMessage(ChatColor.DARK_RED + "This item is for Blacksmithing level " + item.getData().getNeededBlacksmithingLevel() + "+ only.");
+                                }
+                            } else {
+                                p.sendMessage(ChatColor.DARK_RED + "This item is for level " + item.getData().getNeededLevel() + "+ only.");
                             }
                         } else if(item.getData().getCategory() == ItemCategory.MOUNT){
                             e.setCancelled(true);

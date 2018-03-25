@@ -1062,11 +1062,11 @@ public class GameUser extends User {
     }
 
     public void checkRequirements(){
-        updateWalkSpeed();
-        updateArmorDisplay();
-
         if(getCurrentCharacter() != null){
             DungeonAPI.sync(() -> {
+                updateWalkSpeed();
+                updateArmorDisplay();
+
                 CustomItem helmet = null;
                 CustomItem chestplate = null;
                 CustomItem leggings = null;
@@ -1102,26 +1102,37 @@ public class GameUser extends User {
                 }
 
                 if(chestplate != null){
-                    if(getCurrentCharacter().getLevel() < chestplate.getData().getNeededLevel()){
-                        if(p.getInventory().firstEmpty() != -1){
+                    if (chestplate.getData().getCategory() == ItemCategory.ELYTRA) {
+                        if (p.getInventory().firstEmpty() != -1) {
                             p.getInventory().setChestplate(null);
                             p.getInventory().addItem(chestplate.build(p));
                         } else {
-                            WorldUtilities.dropItem(p.getLocation(),chestplate,p);
+                            WorldUtilities.dropItem(p.getLocation(), chestplate, p);
                         }
 
-                        p.sendMessage(ChatColor.DARK_RED + "This chestplate is for level " + chestplate.getData().getNeededLevel() + "+ only.");
-                    }
+                        p.sendMessage(ChatColor.DARK_RED + "To use your " + chestplate.getData().getName() + ", right-click it whilst holding it in your hand.");
+                    } else {
+                        if (getCurrentCharacter().getLevel() < chestplate.getData().getNeededLevel()) {
+                            if (p.getInventory().firstEmpty() != -1) {
+                                p.getInventory().setChestplate(null);
+                                p.getInventory().addItem(chestplate.build(p));
+                            } else {
+                                WorldUtilities.dropItem(p.getLocation(), chestplate, p);
+                            }
 
-                    if(chestplate.getData().getNeededClass() != RPGClass.NONE && !chestplate.getData().getNeededClass().matches(getCurrentCharacter().getRpgClass())){
-                        if(p.getInventory().firstEmpty() != -1){
-                            p.getInventory().setChestplate(null);
-                            p.getInventory().addItem(chestplate.build(p));
-                        } else {
-                            WorldUtilities.dropItem(p.getLocation(),chestplate,p);
+                            p.sendMessage(ChatColor.DARK_RED + "This chestplate is for level " + chestplate.getData().getNeededLevel() + "+ only.");
                         }
 
-                        p.sendMessage(ChatColor.DARK_RED + "This chestplate is for a different class.");
+                        if (chestplate.getData().getNeededClass() != RPGClass.NONE && !chestplate.getData().getNeededClass().matches(getCurrentCharacter().getRpgClass())) {
+                            if (p.getInventory().firstEmpty() != -1) {
+                                p.getInventory().setChestplate(null);
+                                p.getInventory().addItem(chestplate.build(p));
+                            } else {
+                                WorldUtilities.dropItem(p.getLocation(), chestplate, p);
+                            }
+
+                            p.sendMessage(ChatColor.DARK_RED + "This chestplate is for a different class.");
+                        }
                     }
                 }
 
@@ -1174,6 +1185,89 @@ public class GameUser extends User {
                 }
             });
         }
+    }
+
+    public CustomItem getHelmet() {
+        return CustomItem.fromItemStack(p.getInventory().getHelmet());
+    }
+
+    public boolean hasHelmet() {
+        return getHelmet() != null;
+    }
+
+    public CustomItem getChestplate() {
+        return CustomItem.fromItemStack(p.getInventory().getChestplate());
+    }
+
+    public boolean hasChestplate() {
+        return getChestplate() != null;
+    }
+
+    public CustomItem getLeggings() {
+        return CustomItem.fromItemStack(p.getInventory().getLeggings());
+    }
+
+    public boolean hasLeggings() {
+        return getLeggings() != null;
+    }
+
+    public CustomItem getBoots() {
+        return CustomItem.fromItemStack(p.getInventory().getBoots());
+    }
+
+    public boolean hasBoots() {
+        return getBoots() != null;
+    }
+
+    private boolean inElytraMode;
+    public BukkitTask elytraResetTask;
+
+    public void startElytraResetTask() {
+        if (elytraResetTask != null)
+            elytraResetTask.cancel();
+
+        elytraResetTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (isInElytraMode())
+                    toggleElytraMode();
+            }
+        }.runTaskLater(DungeonRPG.getInstance(), 10 * 20);
+    }
+
+    public void toggleElytraMode() {
+        toggleElytraMode(null);
+    }
+
+    public void toggleElytraMode(CustomItem glider) {
+        this.inElytraMode = !this.inElytraMode;
+
+        if (this.inElytraMode) {
+            if (hasChestplate()) {
+                p.getInventory().setChestplate(getChestplate().build(p, Material.ELYTRA));
+            } else {
+                if (glider == null) return;
+                ItemStack original = glider.build(p);
+
+                p.getInventory().setChestplate(ItemUtil.setUnbreakable(ItemUtil.hideFlags(ItemUtil.namedItem(Material.ELYTRA, original.getItemMeta().getDisplayName(), null, original.getDurability()))));
+            }
+
+            startElytraResetTask();
+        } else {
+            if (elytraResetTask != null)
+                elytraResetTask.cancel();
+
+            if (hasChestplate()) {
+                p.getInventory().setChestplate(getChestplate().build(p));
+                updateArmorDisplay();
+            } else {
+                p.getInventory().setChestplate(null);
+            }
+        }
+    }
+
+    public boolean isInElytraMode() {
+        return this.inElytraMode;
     }
 
     public int getEmptySlotsInInventory(){

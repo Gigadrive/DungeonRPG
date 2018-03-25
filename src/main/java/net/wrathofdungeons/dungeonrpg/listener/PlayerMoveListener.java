@@ -66,8 +66,16 @@ public class PlayerMoveListener implements Listener {
 
                 if(((Entity)p).isOnGround()) u.getSkillValues().leapIsInAir = false;
 
-                if(u.hasElytraOnChestplate()){
+                if (u.isInElytraMode()) {
+                    if (!u.hasElytraOnChestplate()) {
+                        u.toggleElytraMode();
+                        return;
+                    }
+
                     if(p.isGliding()){
+                        if (u.elytraResetTask != null)
+                            u.elytraResetTask.cancel();
+
                         Vector velocity = p.getVelocity();
 
                         if(!p.isSprinting()){
@@ -80,6 +88,9 @@ public class PlayerMoveListener implements Listener {
                             ParticleEffect.CLOUD.display(0.05f,0.05f,0.05f,0.05f,15,p.getLocation(),600);
                             p.getWorld().playSound(p.getLocation(), Sound.ENTITY_FIREWORK_TWINKLE,0.05f,2.0f);
                         }
+                    } else {
+                        if (u.elytraResetTask == null)
+                            u.startElytraResetTask();
                     }
                 }
 
