@@ -10,10 +10,13 @@ import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.professions.CraftingRecipe;
 import net.wrathofdungeons.dungeonrpg.quests.Quest;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
+import net.wrathofdungeons.dungeonrpg.skins.StoredSkin;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import java.io.File;
 
 public class ReloadCommand extends Command {
     public ReloadCommand(){
@@ -136,6 +139,12 @@ public class ReloadCommand extends Command {
                 DungeonAPI.async(() -> {
                     for (ItemData data : ItemData.STORAGE)
                         data.reloadArmorSkin();
+
+                    for (File file : new File(DungeonRPG.getTemporaryFolder()).listFiles())
+                        if (file.getName().startsWith("finalSkin_") || file.getName().startsWith("armorSkinPart_") || file.getName().startsWith("texture_"))
+                            file.delete();
+
+                    StoredSkin.getStorage().clear();
 
                     p.sendMessage(ChatColor.GREEN + "Done!");
                 });
