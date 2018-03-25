@@ -80,7 +80,7 @@ public class SyncCommand extends Command {
 
                             /*syncFile(p,"/home/wod/wrapper/local/templates/Test/default/wod/","/home/wod/wrapper/local/templates/Game/default/wod/");
                             syncFile(p,"/home/wod/wrapper/local/templates/Test/default/Dungeons/","/home/wod/wrapper/local/templates/Game/default/Dungeons/");*/
-                            String[] directories = new File("/home/wod/wrapper/local/templates/Test/").list(new FilenameFilter() {
+                            String[] directories = new File("/home/wod/wrapper/local/templates/Test/default/").list(new FilenameFilter() {
                                 @Override
                                 public boolean accept(File current, String name) {
                                     return new File(current, name).isDirectory();
