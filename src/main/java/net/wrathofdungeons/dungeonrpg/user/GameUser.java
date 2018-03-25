@@ -1520,76 +1520,33 @@ public class GameUser extends User {
     public boolean mayExecuteArmorCheck = true;
 
     public void forceReloadWorld() {
-        try {
-            int newDimension = -1;
-            int oldDimension = ((CraftPlayer) p).getHandle().dimension;
+        Location loc = p.getLocation().clone();
 
-            while (newDimension == oldDimension)
-                newDimension = Util.randomInteger(-1, 1);
+        World w = DungeonRPG.MAIN_WORLD;
+        while (w == p.getWorld())
+            w = Bukkit.getWorlds().get(Util.randomInteger(0, Bukkit.getWorlds().size() - 1));
 
-            /*PacketContainer firstRespawn = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.RESPAWN);
-            firstRespawn.getIntegers().write(0,newDimension);
-            /*firstRespawn.getDifficulties().write(1, EnumWrappers.Difficulty.valueOf(p.getWorld().getDifficulty().name()));
-            firstRespawn.getGameModes().write(2, EnumWrappers.NativeGameMode.valueOf(p.getGameMode().name()));
-            firstRespawn.getWorldTypeModifier().write(3,p.getWorld().getWorldType());
+        final World world = w;
 
-            PacketContainer secondRespawn = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.RESPAWN);
-            secondRespawn.getIntegers().write(0,oldDimension);
-            /*secondRespawn.getDifficulties().write(1, EnumWrappers.Difficulty.valueOf(p.getWorld().getDifficulty().name()));
-            secondRespawn.getGameModes().write(2, EnumWrappers.NativeGameMode.valueOf(p.getGameMode().name()));
-            secondRespawn.getWorldTypeModifier().write(3,p.getWorld().getWorldType());
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                p.teleport(world.getSpawnLocation());
+            }
+        }.runTaskLater(DungeonRPG.getInstance(), 1);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                p.teleport(loc);
+            }
+        }.runTaskLater(DungeonRPG.getInstance(), 3);
 
-            ProtocolLibrary.getProtocolManager().sendServerPacket(p,firstRespawn);
-            ProtocolLibrary.getProtocolManager().sendServerPacket(p,secondRespawn);
-            Location loc = p.getLocation().clone();
-            ((CraftServer) ((CraftPlayer) p).getServer()).getHandle().getServer().getPlayerList().moveToWorld(((CraftPlayer) p).getHandle(), 0, false);
-            p.teleport(loc);*/
-
-            /*for(Chunk chunk : p.getWorld().getLoadedChunks()){
-                new PacketMapChunk(chunk).send(p);
-                p.getWorld().refreshChunk(chunk.getX(),chunk.getZ());
-            }*/
-
-            Location loc = p.getLocation().clone();
-
-            World w = DungeonRPG.MAIN_WORLD;
-            while (w == p.getWorld())
-                w = Bukkit.getWorlds().get(Util.randomInteger(0, Bukkit.getWorlds().size() - 1));
-
-            p.teleport(w.getSpawnLocation());
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    p.teleport(loc);
-                }
-            }.runTaskLater(DungeonRPG.getInstance(), 5);
-
-            /*net.minecraft.server.v1_9_R2.WorldType worldType = null;
-            if(p.getWorld().getWorldType() == WorldType.NORMAL) worldType = net.minecraft.server.v1_9_R2.WorldType.NORMAL;
-            if(p.getWorld().getWorldType() == WorldType.FLAT) worldType = net.minecraft.server.v1_9_R2.WorldType.FLAT;
-            if(p.getWorld().getWorldType() == WorldType.LARGE_BIOMES) worldType = net.minecraft.server.v1_9_R2.WorldType.LARGE_BIOMES;
-            if(p.getWorld().getWorldType() == WorldType.AMPLIFIED) worldType = net.minecraft.server.v1_9_R2.WorldType.AMPLIFIED;
-            if(p.getWorld().getWorldType() == WorldType.CUSTOMIZED) worldType = net.minecraft.server.v1_9_R2.WorldType.CUSTOMIZED;
-            if(p.getWorld().getWorldType() == WorldType.VERSION_1_1) worldType = net.minecraft.server.v1_9_R2.WorldType.NORMAL_1_1;
-
-            final net.minecraft.server.v1_9_R2.WorldType w = worldType;
-            ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutRespawn(newDimension, EnumDifficulty.valueOf(p.getWorld().getDifficulty().name()), w, WorldSettings.EnumGamemode.valueOf(p.getGameMode().name())));
-            new BukkitRunnable(){
-                @Override
-                public void run() {
-                    ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutRespawn(oldDimension, EnumDifficulty.valueOf(p.getWorld().getDifficulty().name()), w, WorldSettings.EnumGamemode.valueOf(p.getGameMode().name())));
-                }
-            }.runTaskLater(DungeonRPG.getInstance(),10);*/
-
-            p.setAllowFlight(p.getAllowFlight());
-            p.setGameMode(p.getGameMode());
-            p.setMaxHealth(p.getMaxHealth());
-            p.setHealth(p.getHealth());
-            p.setLevel(p.getLevel());
-            p.setExp(p.getExp());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        p.setAllowFlight(p.getAllowFlight());
+        p.setGameMode(p.getGameMode());
+        p.setMaxHealth(p.getMaxHealth());
+        p.setHealth(p.getHealth());
+        p.setLevel(p.getLevel());
+        p.setExp(p.getExp());
     }
 
     public StoredSkin storedSkin;
