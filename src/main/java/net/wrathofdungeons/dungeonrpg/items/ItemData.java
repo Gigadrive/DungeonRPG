@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
+import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.items.crystals.CrystalType;
@@ -11,6 +12,7 @@ import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -298,5 +300,23 @@ public class ItemData {
 
     public boolean isMatchingWeapon(RPGClass rpgClass){
         return (getCategory() == ItemCategory.WEAPON_BOW && rpgClass.matches(RPGClass.ARCHER)) || (getCategory() == ItemCategory.WEAPON_SHEARS && rpgClass.matches(RPGClass.ASSASSIN)) || (getCategory() == ItemCategory.WEAPON_AXE && rpgClass.matches(RPGClass.MERCENARY)) || (getCategory() == ItemCategory.WEAPON_STICK && rpgClass.matches(RPGClass.MAGICIAN));
+    }
+
+    public ArmorType getArmorType() {
+        if (getCategory() == ItemCategory.ARMOR) {
+            ItemStack i = new ItemStack(getIcon(), 1, (short) getDurability());
+
+            if (ItemUtil.isHelmet(i)) {
+                return ArmorType.HELMET;
+            } else if (ItemUtil.isChestplate(i)) {
+                return ArmorType.CHESTPLATE;
+            } else if (ItemUtil.isLeggings(i)) {
+                return ArmorType.LEGGINGS;
+            } else if (ItemUtil.isBoots(i)) {
+                return ArmorType.BOOTS;
+            }
+        }
+
+        return null;
     }
 }

@@ -103,7 +103,7 @@ public class DungeonRPG extends JavaPlugin {
     public static int SETUP_REGION = 0;
     private static MineskinClient mineskinClient;
 
-    public static final Material ARMOR_SKIN_DISPLAY_ITEM = Material.NAME_TAG;
+    public static final Material ARMOR_SKIN_DISPLAY_ITEM = Material.WOOD_BUTTON;
     public static final int ARMOR_SKIN_DISPLAY_DURABILITY = 0;
 
     public static final boolean PREVENT_MINECRAFT_ARMOR = true;

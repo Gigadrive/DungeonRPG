@@ -1667,6 +1667,8 @@ public class GameUser extends User {
 
                                         if (sendMessages)
                                             p.sendMessage(ChatColor.GREEN + "Your skin has been updated!");
+                                        if (sendMessages)
+                                            p.sendMessage(ChatColor.GREEN + "Press F3+A if you experience world loading issues.");
                                         updatingArmorSkin = false;
 
                                         self.storedSkin = new StoredSkin(k, a.toArray(new Integer[]{}), originalSkinURL);
@@ -1721,6 +1723,8 @@ public class GameUser extends User {
                     this.lastArmorSkinCheckEquipment = new Integer[]{};
 
                     if (sendMessages) p.sendMessage(ChatColor.GREEN + "Your skin has been updated!");
+                    if (sendMessages)
+                        p.sendMessage(ChatColor.GREEN + "Press F3+A if you experience world loading issues.");
                     noArmor = true;
                 }
             } else {
