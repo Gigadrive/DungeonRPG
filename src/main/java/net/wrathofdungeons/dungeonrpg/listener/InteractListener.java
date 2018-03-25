@@ -978,7 +978,6 @@ public class InteractListener implements Listener {
                                         p.sendMessage(ChatColor.RED + "You haven't unlocked that skill yet.");
                                     }
                                 } else {
-                                    u.updateActionBar();
                                     p.sendMessage(ChatColor.RED + "That skill could not be found.");
 
                                     if(!u.getCurrentCharacter().getVariables().hasSeenBindSkillInfo){
@@ -990,6 +989,7 @@ public class InteractListener implements Listener {
 
                                 u.currentCombo = "";
                                 u.comboDelay = 0;
+                                u.updateActionBar();
                                 //u.updateClickComboBar();
                                 return;
                             }
