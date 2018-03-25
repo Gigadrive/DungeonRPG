@@ -477,7 +477,7 @@ public class Character {
         if(p.getInventory().getBoots() != null && CustomItem.fromItemStack(p.getInventory().getBoots()) != null && CustomItem.fromItemStack(p.getInventory().getBoots()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getBoots()));
 
         //if(CustomItem.fromItemStack(p.getItemInHand()) != null && !CustomItem.fromItemStack(p.getItemInHand()).isMatchingWeapon(getRpgClass())){
-        if(CustomItem.fromItemStack(p.getItemInHand()) != null && CustomItem.fromItemStack(p.getItemInHand()).getData().getId() == 5){
+        if (CustomItem.fromItemStack(p.getInventory().getItemInMainHand()) != null && CustomItem.fromItemStack(p.getItemInHand()).getData().getId() == 5) {
             for(int i = 0; i < 8; i++){
                 CustomItem item = CustomItem.fromItemStack(p.getInventory().getItem(i));
 
@@ -491,7 +491,8 @@ public class Character {
                 }
             }
         } else {
-            if(p.getInventory().getItemInHand() != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()) != null && CustomItem.fromItemStack(p.getInventory().getItemInHand()).mayUse(p)) a.add(CustomItem.fromItemStack(p.getInventory().getItemInHand()));
+            if (p.getInventory().getItemInMainHand() != null && CustomItem.fromItemStack(p.getInventory().getItemInMainHand()) != null && CustomItem.fromItemStack(p.getInventory().getItemInMainHand()).getData().getCategory().name().startsWith("WEAPON_") && CustomItem.fromItemStack(p.getInventory().getItemInMainHand()).mayUse(p))
+                a.add(CustomItem.fromItemStack(p.getInventory().getItemInMainHand()));
         }
 
         return a.toArray(new CustomItem[]{});
