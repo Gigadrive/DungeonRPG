@@ -44,6 +44,8 @@ public class InventoryClickListener implements Listener {
             if(GameUser.isLoaded(p)){
                 GameUser u = GameUser.getUser(p);
 
+                if (u.armorSkinClickTask != null) u.armorSkinClickTask.cancel();
+
                 if(u.getCurrentCharacter() != null){
                     //u.checkRequirements();
                     new BukkitRunnable() {
@@ -100,7 +102,7 @@ public class InventoryClickListener implements Listener {
                                 if (e.getAction().name().startsWith("PICKUP_")) {
                                     if (e.getCurrentItem() != null && CustomItem.fromItemStack(e.getCurrentItem()) != null) {
                                         ItemStack i = CustomItem.fromItemStack(e.getCurrentItem()).build(p);
-                                        new BukkitRunnable() {
+                                        u.armorSkinClickTask = new BukkitRunnable() {
                                             @Override
                                             public void run() {
                                                 p.setItemOnCursor(i);
@@ -110,7 +112,7 @@ public class InventoryClickListener implements Listener {
                                 } else if (e.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
                                     if (e.getCurrentItem() != null && CustomItem.fromItemStack(e.getCurrentItem()) != null) {
                                         ItemStack i = CustomItem.fromItemStack(e.getCurrentItem()).build(p);
-                                        new BukkitRunnable() {
+                                        u.armorSkinClickTask = new BukkitRunnable() {
                                             @Override
                                             public void run() {
                                                 p.setItemOnCursor(i);

@@ -45,7 +45,6 @@ import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_9_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -167,6 +166,7 @@ public class GameUser extends User {
     public LivingEntity lastDamageSource;
 
     public boolean updatingArmorSkin = false;
+    public BukkitTask armorSkinClickTask;
 
     public GameUser(Player p){
         super(p);
@@ -1538,11 +1538,48 @@ public class GameUser extends User {
             secondRespawn.getWorldTypeModifier().write(3,p.getWorld().getWorldType());
 
             ProtocolLibrary.getProtocolManager().sendServerPacket(p,firstRespawn);
-            ProtocolLibrary.getProtocolManager().sendServerPacket(p,secondRespawn);*/
+            ProtocolLibrary.getProtocolManager().sendServerPacket(p,secondRespawn);
             Location loc = p.getLocation().clone();
             ((CraftServer) ((CraftPlayer) p).getServer()).getHandle().getServer().getPlayerList().moveToWorld(((CraftPlayer) p).getHandle(), 0, false);
-            p.teleport(loc);
+            p.teleport(loc);*/
 
+            /*for(Chunk chunk : p.getWorld().getLoadedChunks()){
+                new PacketMapChunk(chunk).send(p);
+                p.getWorld().refreshChunk(chunk.getX(),chunk.getZ());
+            }*/
+
+            Location loc = p.getLocation().clone();
+
+            World w = DungeonRPG.MAIN_WORLD;
+            while (w == p.getWorld())
+                w = Bukkit.getWorlds().get(Util.randomInteger(0, Bukkit.getWorlds().size() - 1));
+
+            p.teleport(w.getSpawnLocation());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    p.teleport(loc);
+                }
+            }.runTaskLater(DungeonRPG.getInstance(), 5);
+
+            /*net.minecraft.server.v1_9_R2.WorldType worldType = null;
+            if(p.getWorld().getWorldType() == WorldType.NORMAL) worldType = net.minecraft.server.v1_9_R2.WorldType.NORMAL;
+            if(p.getWorld().getWorldType() == WorldType.FLAT) worldType = net.minecraft.server.v1_9_R2.WorldType.FLAT;
+            if(p.getWorld().getWorldType() == WorldType.LARGE_BIOMES) worldType = net.minecraft.server.v1_9_R2.WorldType.LARGE_BIOMES;
+            if(p.getWorld().getWorldType() == WorldType.AMPLIFIED) worldType = net.minecraft.server.v1_9_R2.WorldType.AMPLIFIED;
+            if(p.getWorld().getWorldType() == WorldType.CUSTOMIZED) worldType = net.minecraft.server.v1_9_R2.WorldType.CUSTOMIZED;
+            if(p.getWorld().getWorldType() == WorldType.VERSION_1_1) worldType = net.minecraft.server.v1_9_R2.WorldType.NORMAL_1_1;
+
+            final net.minecraft.server.v1_9_R2.WorldType w = worldType;
+            ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutRespawn(newDimension, EnumDifficulty.valueOf(p.getWorld().getDifficulty().name()), w, WorldSettings.EnumGamemode.valueOf(p.getGameMode().name())));
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    ((CraftPlayer)p).getHandle().playerConnection.sendPacket(new PacketPlayOutRespawn(oldDimension, EnumDifficulty.valueOf(p.getWorld().getDifficulty().name()), w, WorldSettings.EnumGamemode.valueOf(p.getGameMode().name())));
+                }
+            }.runTaskLater(DungeonRPG.getInstance(),10);*/
+
+            p.setAllowFlight(p.getAllowFlight());
             p.setGameMode(p.getGameMode());
             p.setMaxHealth(p.getMaxHealth());
             p.setHealth(p.getHealth());

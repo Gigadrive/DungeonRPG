@@ -20,6 +20,8 @@ public class PlayerDropListener implements Listener {
         if(GameUser.isLoaded(p)){
             GameUser u = GameUser.getUser(p);
 
+            if (u.armorSkinClickTask != null) u.armorSkinClickTask.cancel();
+
             if(CustomNPC.READING.contains(p.getName())){
                 e.setCancelled(true);
                 return;
@@ -41,6 +43,8 @@ public class PlayerDropListener implements Listener {
                                 p.sendMessage(ChatColor.RED + "You might need this item later.");
                                 return;
                             }
+
+                            e.getItemDrop().setItemStack(item.build(p));
                         }
 
                         if(!e.isCancelled() && e.getItemDrop() != null){
