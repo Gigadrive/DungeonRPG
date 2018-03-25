@@ -1517,6 +1517,8 @@ public class GameUser extends User {
         p.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(16);
     }
 
+    public boolean mayExecuteArmorCheck = true;
+
     public void forceReloadWorld() {
         try {
             int newDimension = -1;

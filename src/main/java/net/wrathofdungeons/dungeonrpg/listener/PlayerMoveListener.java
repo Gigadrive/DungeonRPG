@@ -42,14 +42,15 @@ public class PlayerMoveListener implements Listener {
                         b.add(item.getData().getId());
 
                 //if(u.lastArmorSkinCheckEquipment == null || (u.lastArmorSkinCheckEquipment.length != b.size() || !Arrays.asList(u.lastArmorSkinCheckEquipment).containsAll(b))){
-                if (u.storedSkin == null || !u.storedSkin.matchesEquipment(u.getCurrentCharacter())) {
-                    /*if(u.lastArmorSkinCheckEquipment != null){
-                        p.sendMessage(u.lastArmorSkinCheckEquipment.length + " " + b.size());
-                    } else {
-                        //p.sendMessage(" " + b.size());
-                    }*/
-                    //u.updateSkin = false;
-                    u.updateArmorSkin();
+                if (u.mayExecuteArmorCheck) {
+                    u.mayExecuteArmorCheck = false;
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (u.storedSkin == null || !u.storedSkin.matchesEquipment(u.getCurrentCharacter()))
+                                u.updateArmorSkin();
+                        }
+                    }.runTaskLater(DungeonRPG.getInstance(), 5 * 20);
                 }
 
                 u.updateHoloPlate();
