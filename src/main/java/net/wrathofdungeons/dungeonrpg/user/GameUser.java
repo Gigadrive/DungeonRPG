@@ -5,6 +5,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.mojang.authlib.GameProfile;
 import net.citizensnpcs.api.CitizensAPI;
+import net.minecraft.server.v1_9_R2.PacketPlayOutWorldBorder;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.user.Rank;
@@ -574,9 +575,16 @@ public class GameUser extends User {
             }
             p.setMaxHealth(20);
 
+            double healthPercentage = ((double) hp) / ((double) getMaxHP());
+
+            if (healthPercentage <= 0.35)
+                addRedScreenEffect();
+            else
+                removeRedScreenEffect();
+
             if(hp > getMaxHP()) hp = getMaxHP();
             if(hp < 0) hp = 0;
-            double healthDis = (((double)hp)/((double)getMaxHP()))*p.getMaxHealth();
+            double healthDis = healthPercentage * p.getMaxHealth();
             if(healthDis > p.getMaxHealth()) healthDis = p.getMaxHealth();
             if(healthDis < 0.5){
                 healthDis = 20;
@@ -616,6 +624,34 @@ public class GameUser extends User {
 
     public boolean isInGuild(){
         return getGuild() != null;
+    }
+
+    private boolean screenRed = false;
+
+    public void addRedScreenEffect() {
+        if (!screenRed) {
+            screenRed = true;
+
+            net.minecraft.server.v1_9_R2.WorldBorder w = new net.minecraft.server.v1_9_R2.WorldBorder();
+            w.setSize(1);
+            w.setCenter(p.getLocation().getX() + 10_000, p.getLocation().getZ() + 10_000);
+            ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutWorldBorder(w, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
+        }
+    }
+
+    public void removeRedScreenEffect() {
+        if (screenRed) {
+            screenRed = false;
+
+            net.minecraft.server.v1_9_R2.WorldBorder w = new net.minecraft.server.v1_9_R2.WorldBorder();
+            w.setSize(30_000_000);
+            w.setCenter(p.getLocation().getX(), p.getLocation().getZ());
+            ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutWorldBorder(w, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
+        }
+    }
+
+    public boolean isScreenRed() {
+        return screenRed;
     }
 
     public void damage(double damage){
