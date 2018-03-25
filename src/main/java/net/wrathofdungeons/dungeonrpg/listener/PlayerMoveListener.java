@@ -43,12 +43,14 @@ public class PlayerMoveListener implements Listener {
 
                 //if(u.lastArmorSkinCheckEquipment == null || (u.lastArmorSkinCheckEquipment.length != b.size() || !Arrays.asList(u.lastArmorSkinCheckEquipment).containsAll(b))){
                 if (u.mayExecuteArmorCheck) {
+                    if (u.storedSkin == null || !u.storedSkin.matchesEquipment(u.getCurrentCharacter()))
+                        u.updateArmorSkin();
+
                     u.mayExecuteArmorCheck = false;
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            if (u.storedSkin == null || !u.storedSkin.matchesEquipment(u.getCurrentCharacter()))
-                                u.updateArmorSkin();
+                            u.mayExecuteArmorCheck = true;
                         }
                     }.runTaskLater(DungeonRPG.getInstance(), 5 * 20);
                 }
