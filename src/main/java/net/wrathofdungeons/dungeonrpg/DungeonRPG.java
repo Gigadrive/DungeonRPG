@@ -1232,6 +1232,7 @@ public class DungeonRPG extends JavaPlugin {
         new GiveItemCommand();
         new GuildCommand();
         new ItemInfoCommand();
+        new KillCommand();
         new LoadRegionCommand();
         new ModifyNPCCommand();
         new ModifyQuestCommand();

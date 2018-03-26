@@ -665,7 +665,7 @@ public class GameUser extends User {
     }
 
     public void damage(double damage, LivingEntity source){
-        if(isDying()) return;
+        if (isDying() || isRespawning()) return;
 
         lastDamageSource = source;
         this.hp -= damage;
