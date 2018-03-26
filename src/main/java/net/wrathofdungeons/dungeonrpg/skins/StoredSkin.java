@@ -1,7 +1,9 @@
 package net.wrathofdungeons.dungeonrpg.skins;
 
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.user.Character;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +33,17 @@ public class StoredSkin {
         this.equipmentRequired = equipmentRequired;
         this.originalURL = originalURL;
 
+        final StoredSkin self = this;
         getStorage().add(this);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (getStorage().contains(self))
+                    getStorage().remove(self);
+
+            }
+        }.runTaskLater(DungeonRPG.getInstance(), 5 * 60 * 20);
     }
 
     public boolean matchesEquipment(Character character) {
