@@ -522,16 +522,20 @@ public class Character {
         saveData(continueCharsel,true);
     }
 
-    public void saveData(boolean continueCharsel, boolean async){
+    public void saveData(boolean continueCharsel, boolean resetSaveLocation) {
+        saveData(continueCharsel, resetSaveLocation, true);
+    }
+
+    public void saveData(boolean continueCharsel, boolean resetSaveLocation, boolean async) {
         GameUser u = GameUser.getUser(p);
-        
+
         if(async){
             DungeonAPI.async(() -> saveData(continueCharsel,false));
         } else {
             try {
                 if (getVariables().saveLocation != null) {
                     this.storedLocation = getVariables().saveLocation.toBukkitLocation();
-                    getVariables().saveLocation = null;
+                    if (resetSaveLocation) getVariables().saveLocation = null;
                 } else {
                     if (!p.getLocation().getWorld().getName().startsWith("dungeonTemplate_")) {
                         this.storedLocation = p.getLocation();

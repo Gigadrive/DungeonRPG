@@ -1417,11 +1417,19 @@ public class GameUser extends User {
         resetTemporaryData();
 
         if(this.setupMode){
-            if(getCurrentCharacter() != null) getCurrentCharacter().saveData(false,false);
+            if (getCurrentCharacter() != null) getCurrentCharacter().saveData(false, true, true);
 
             removeHoloPlate();
-            setCurrentCharacter(null);
+            removeSoulLight();
             bukkitReset();
+            getSkillValues().reset();
+            stopMPRegenTask();
+            stopHPRegenTask();
+            resetTemporaryData();
+            resetMount();
+            updateWalkSpeed();
+            DungeonRPG.updateVanishing();
+            setCurrentCharacter(null);
             p.setGameMode(GameMode.CREATIVE);
             p.sendMessage(ChatColor.GREEN + "You are now in setup mode!");
 
@@ -2137,12 +2145,12 @@ public class GameUser extends User {
     }
 
     public void saveData(boolean continueCharsel){
-        if(!Bukkit.getPluginManager().isPluginEnabled(DungeonRPG.getInstance())){
-            if(getCurrentCharacter() != null && !setupMode) getCurrentCharacter().saveData(continueCharsel,false);
-        } else {
-            if(getCurrentCharacter() != null && !setupMode) getCurrentCharacter().saveData(continueCharsel);
-        }
+        saveData(continueCharsel, true);
+    }
 
+    public void saveData(boolean continueCharsel, boolean resetSaveLocation) {
+        if (getCurrentCharacter() != null && !setupMode)
+            getCurrentCharacter().saveData(continueCharsel, resetSaveLocation, !Bukkit.getPluginManager().isPluginEnabled(DungeonRPG.getInstance()));
         super.saveData();
     }
 }
