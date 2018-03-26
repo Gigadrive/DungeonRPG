@@ -381,12 +381,13 @@ public class InteractListener implements Listener {
                             e.setCancelled(true);
                             e.setUseInteractedBlock(Event.Result.DENY);
                             e.setUseItemInHand(Event.Result.DENY);
+                            p.updateInventory();
 
                             if (u.getCurrentCharacter().getLevel() >= item.getData().getNeededLevel()) {
                                 if (u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.BLACKSMITHING).getLevel() >= item.getData().getNeededBlacksmithingLevel()) {
                                     if (u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.CRAFTING).getLevel() >= item.getData().getNeededCraftingLevel()) {
                                         if (u.getCurrentCharacter().getVariables().getProfessionProgress(Profession.MINING).getLevel() >= item.getData().getNeededMiningLevel()) {
-                                            u.toggleElytraMode();
+                                            u.toggleElytraMode(item);
                                             if (u.isInElytraMode())
                                                 p.playSound(p.getEyeLocation(), Sound.ITEM_ARMOR_EQUIP_GENERIC, 1f, 1f);
                                         } else {

@@ -43,6 +43,8 @@ public class PlayerMoveListener implements Listener {
 
                 //if(u.lastArmorSkinCheckEquipment == null || (u.lastArmorSkinCheckEquipment.length != b.size() || !Arrays.asList(u.lastArmorSkinCheckEquipment).containsAll(b))){
                 if (u.mayExecuteArmorCheck) {
+                    u.checkRequirements();
+
                     if (u.storedSkin == null || !u.storedSkin.matchesEquipment(u.getCurrentCharacter()))
                         u.updateArmorSkin();
 
