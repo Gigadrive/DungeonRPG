@@ -21,12 +21,12 @@ import net.wrathofdungeons.dungeonrpg.npc.dialogue.NPCDialogueConditionType;
 import net.wrathofdungeons.dungeonrpg.quests.Quest;
 import net.wrathofdungeons.dungeonrpg.quests.QuestProgressStatus;
 import net.wrathofdungeons.dungeonrpg.quests.QuestStage;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
-import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
-import org.bukkit.entity.*;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -39,8 +39,6 @@ import org.mineskin.data.SkinCallback;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class CustomNPC {

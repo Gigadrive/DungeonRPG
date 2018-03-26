@@ -8,7 +8,6 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.dungeon.DungeonType;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

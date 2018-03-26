@@ -7,8 +7,8 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
+import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.ChatColor;
@@ -121,7 +121,7 @@ public class PlayerMoveListener implements Listener {
                                     region.startMobActivationTimer();
 
                                     if(region.getSpawnChance() > 0 && !Util.getChanceBoolean(1,region.getSpawnChance())){} else {
-                                        ArrayList<RegionLocation> a = region.getLocations(RegionLocationType.MOB_LOCATION,region.getMobLimit());
+                                        ArrayList<StoredLocation> a = region.getLocations(RegionLocationType.MOB_LOCATION, region.getMobLimit());
                                         Collections.shuffle(a);
 
                                         if(a.size() > 0){
@@ -129,7 +129,7 @@ public class PlayerMoveListener implements Listener {
 
                                             for(int i = region.getEntitiesSpawned().size(); i < region.getMobLimit(); i++){
                                                 if(j >= a.size()) j = 0;
-                                                RegionLocation l = a.get(j);
+                                                StoredLocation l = a.get(j);
 
                                                 CustomEntity entity = new CustomEntity(region.getMobData());
                                                 entity.setOriginRegion(region);

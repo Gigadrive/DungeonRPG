@@ -1,25 +1,14 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
-import net.wrathofdungeons.dungeonrpg.items.*;
-import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
-import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
-import net.wrathofdungeons.dungeonrpg.mobs.MobData;
-import net.wrathofdungeons.dungeonrpg.mobs.MobType;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
+import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -82,7 +71,7 @@ public class DeathListener implements Listener {
 
                         for(Region region : Region.getRegions(false)){
                             if(region.getLocations().size() > 0){
-                                for(RegionLocation loc : region.getLocations(RegionLocationType.PVP_RESPAWN)){
+                                for (StoredLocation loc : region.getLocations(RegionLocationType.PVP_RESPAWN)) {
                                     if(loc.world.equals(p.getWorld().getName())){
                                         Location bukkitLocation = loc.toBukkitLocation();
 

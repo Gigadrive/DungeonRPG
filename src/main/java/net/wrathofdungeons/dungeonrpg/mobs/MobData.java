@@ -2,31 +2,26 @@ package net.wrathofdungeons.dungeonrpg.mobs;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
-import net.wrathofdungeons.dungeonapi.util.GameProfileBuilder;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkill;
 import net.wrathofdungeons.dungeonrpg.mobs.skills.MobSkillStorage;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
-import org.bukkit.*;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.StringUtil;
-import org.mineskin.MineskinClient;
 import org.mineskin.data.Skin;
 import org.mineskin.data.SkinCallback;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class MobData {
     public static ArrayList<MobData> STORAGE = new ArrayList<MobData>();

@@ -3,7 +3,7 @@ package net.wrathofdungeons.dungeonrpg.regions;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-public class RegionLocation {
+public class StoredLocation {
     public RegionLocationType type;
     public String world;
     public double x;

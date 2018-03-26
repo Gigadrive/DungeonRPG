@@ -27,7 +27,7 @@ import net.wrathofdungeons.dungeonrpg.professions.Profession;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
+import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import net.wrathofdungeons.dungeonrpg.skill.ClickComboType;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.magician.Blinkpool;
@@ -130,12 +130,12 @@ public class InteractListener implements Listener {
                             if(region != null){
                                 boolean b = true;
 
-                                for(RegionLocation l : region.getLocations()){
+                                for (StoredLocation l : region.getLocations()) {
                                     if(Util.isLocationEqual(loc,l.toBukkitLocation())) b = false;
                                 }
 
                                 if(b){
-                                    RegionLocation rl = new RegionLocation();
+                                    StoredLocation rl = new StoredLocation();
 
                                     rl.world = loc.getWorld().getName();
                                     rl.x = loc.getBlockX();
@@ -314,7 +314,7 @@ public class InteractListener implements Listener {
                                 Region region = Region.getRegion(item.getData().getTpScrollRegion(),true);
 
                                 if(region != null){
-                                    ArrayList<RegionLocation> locs = region.getLocations(TOWN_LOCATION,1);
+                                    ArrayList<StoredLocation> locs = region.getLocations(TOWN_LOCATION, 1);
 
                                     if(locs.size() > 0){
                                         if(!u.isInDungeon()){

@@ -6,7 +6,6 @@ import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
-import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobData;
 import org.bukkit.Location;
@@ -14,8 +13,6 @@ import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import javax.naming.ldap.PagedResultsControl;
-import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -48,7 +45,7 @@ public class Region {
         for(Region region : STORAGE){
             if(region.isCopy()) continue;
 
-            for(RegionLocation location : region.getLocations()){
+            for (StoredLocation location : region.getLocations()) {
                 if(location.world.equalsIgnoreCase(worldName)){
                     a.add(region);
                     continue regionLoop;
@@ -100,7 +97,7 @@ public class Region {
     private int id;
     private int mobDataID;
     private int mobLimit;
-    private ArrayList<RegionLocation> locations;
+    private ArrayList<StoredLocation> locations;
     private String entranceTitleTop;
     private String entranceTitleBottom;
     private int cooldown;
@@ -145,9 +142,10 @@ public class Region {
                     this.active = rs.getBoolean("active");
                     Gson gson = DungeonAPI.GSON;
                     if(locationString != null){
-                        this.locations = gson.fromJson(locationString, new TypeToken<ArrayList<RegionLocation>>(){}.getType());
+                        this.locations = gson.fromJson(locationString, new TypeToken<ArrayList<StoredLocation>>() {
+                        }.getType());
                     } else {
-                        this.locations = new ArrayList<RegionLocation>();
+                        this.locations = new ArrayList<StoredLocation>();
                     }
 
                     String dataString = rs.getString("additionalData");
@@ -241,22 +239,22 @@ public class Region {
         this.copy = copy;
     }
 
-    public ArrayList<RegionLocation> getLocations() {
+    public ArrayList<StoredLocation> getLocations() {
         return locations;
     }
 
-    public ArrayList<RegionLocation> getLocations(RegionLocationType type) {
-        ArrayList<RegionLocation> a = new ArrayList<RegionLocation>();
+    public ArrayList<StoredLocation> getLocations(RegionLocationType type) {
+        ArrayList<StoredLocation> a = new ArrayList<StoredLocation>();
 
-        for(RegionLocation l : getLocations()){
+        for (StoredLocation l : getLocations()) {
             if(l.type == type) a.add(l);
         }
 
         return a;
     }
 
-    public ArrayList<RegionLocation> getRandomizedLocations() {
-        ArrayList<RegionLocation> a = new ArrayList<RegionLocation>();
+    public ArrayList<StoredLocation> getRandomizedLocations() {
+        ArrayList<StoredLocation> a = new ArrayList<StoredLocation>();
 
         a.addAll(getLocations());
 
@@ -265,10 +263,10 @@ public class Region {
         return a;
     }
 
-    public ArrayList<RegionLocation> getRandomizedLocations(RegionLocationType type) {
-        ArrayList<RegionLocation> a = new ArrayList<RegionLocation>();
+    public ArrayList<StoredLocation> getRandomizedLocations(RegionLocationType type) {
+        ArrayList<StoredLocation> a = new ArrayList<StoredLocation>();
 
-        for(RegionLocation l : getLocations()){
+        for (StoredLocation l : getLocations()) {
             if(l.type == type) a.add(l);
         }
 
@@ -287,12 +285,12 @@ public class Region {
         return a;
     }
 
-    public ArrayList<RegionLocation> getLocations(RegionLocationType type, int limit) {
-        ArrayList<RegionLocation> a = new ArrayList<RegionLocation>();
+    public ArrayList<StoredLocation> getLocations(RegionLocationType type, int limit) {
+        ArrayList<StoredLocation> a = new ArrayList<StoredLocation>();
 
         Collections.shuffle(getLocations());
 
-        for(RegionLocation l : getLocations()){
+        for (StoredLocation l : getLocations()) {
             if(limit == 0){
                 break;
             } else {
@@ -316,8 +314,8 @@ public class Region {
 
     public boolean isInRegion(Location loc){
         if(getLocations(RegionLocationType.MOB_ACTIVATION_1).size() > 0 && getLocations(RegionLocationType.MOB_ACTIVATION_2).size() > 0){
-            RegionLocation loc1 = getLocations(RegionLocationType.MOB_ACTIVATION_1,1).get(0);
-            RegionLocation loc2 = getLocations(RegionLocationType.MOB_ACTIVATION_2,1).get(0);
+            StoredLocation loc1 = getLocations(RegionLocationType.MOB_ACTIVATION_1, 1).get(0);
+            StoredLocation loc2 = getLocations(RegionLocationType.MOB_ACTIVATION_2, 1).get(0);
 
             return loc.getWorld().getName().equals(loc1.world) && loc.getWorld().getName().equals(loc2.world) && DungeonAPI.isInRectangleMaximized(loc,loc1.toBukkitLocation(),loc2.toBukkitLocation());
         } else {
@@ -333,7 +331,7 @@ public class Region {
         loc = loc.getBlock().getLocation();
         RegionLocationType type = null;
 
-        for(RegionLocation l : getLocations()){
+        for (StoredLocation l : getLocations()) {
             if(Util.isLocationEqual(l.toBukkitLocation(),loc)) type = l.type;
         }
 
@@ -379,7 +377,7 @@ public class Region {
         return activationTimer;
     }
 
-    public void setLocations(ArrayList<RegionLocation> locations) {
+    public void setLocations(ArrayList<StoredLocation> locations) {
         this.locations = locations;
     }
 
@@ -428,9 +426,9 @@ public class Region {
         region.setMobData(getMobData());
         region.setMobLimit(getMobLimit());
 
-        ArrayList<RegionLocation> locations = new ArrayList<RegionLocation>();
-        for(RegionLocation l : getLocations()){
-            RegionLocation loc = new RegionLocation();
+        ArrayList<StoredLocation> locations = new ArrayList<StoredLocation>();
+        for (StoredLocation l : getLocations()) {
+            StoredLocation loc = new StoredLocation();
 
             loc.type = l.type;
             loc.world = worldName;

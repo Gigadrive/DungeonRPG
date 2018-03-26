@@ -9,7 +9,7 @@ import net.wrathofdungeons.dungeonrpg.items.ItemData;
 import net.wrathofdungeons.dungeonrpg.professions.Ore;
 import net.wrathofdungeons.dungeonrpg.professions.Profession;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
+import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.ChatColor;
@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.util.Vector;
@@ -44,9 +43,9 @@ public class BlockListener implements Listener {
                     Region region = Region.getRegion(DungeonRPG.SETUP_REGION);
 
                     if(region != null){
-                        RegionLocation toRemove = null;
+                        StoredLocation toRemove = null;
 
-                        for(RegionLocation l : region.getLocations()){
+                        for (StoredLocation l : region.getLocations()) {
                             if(Util.isLocationEqual(l.toBukkitLocation(),e.getBlock().getLocation())) toRemove = l;
                         }
 

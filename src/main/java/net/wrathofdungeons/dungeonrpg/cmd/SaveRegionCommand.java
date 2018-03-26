@@ -4,7 +4,7 @@ import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
+import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -33,7 +33,7 @@ public class SaveRegionCommand extends Command {
                     p.sendMessage(ChatColor.RED + "Saving region #" + DungeonRPG.SETUP_REGION + ".");
                     region.saveData();
 
-                    for(RegionLocation loc : region.getLocations()){
+                    for (StoredLocation loc : region.getLocations()) {
                         Location location = loc.toBukkitLocation();
 
                         location.getBlock().setType(Material.AIR);

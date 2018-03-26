@@ -1,20 +1,15 @@
 package net.wrathofdungeons.dungeonrpg.cmd;
 
-import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
+import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.material.Wool;
 
 public class LoadRegionCommand extends Command {
     public LoadRegionCommand(){
@@ -42,7 +37,7 @@ public class LoadRegionCommand extends Command {
                             p.sendMessage(ChatColor.GREEN + "Loading region..");
 
                             int i = 0;
-                            for(RegionLocation l : region.getLocations()){
+                            for (StoredLocation l : region.getLocations()) {
                                 Location loc = l.toBukkitLocation();
 
                                 DungeonRPG.setLocationIndicator(loc,l.type);

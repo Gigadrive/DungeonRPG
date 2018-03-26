@@ -3,8 +3,8 @@ package net.wrathofdungeons.dungeonrpg.dungeon;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
+import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -38,7 +38,7 @@ public enum DungeonType {
     public Location getPortalEntranceLocation(){
         for(Region region : Region.getRegions()){
             if(!region.isCopy()){
-                ArrayList<RegionLocation> loc = region.getLocations(RegionLocationType.DUNGEON_GATEWAY,1);
+                ArrayList<StoredLocation> loc = region.getLocations(RegionLocationType.DUNGEON_GATEWAY, 1);
 
                 if(region.getAdditionalData().dungeonType == this && loc.size() > 0){
                     Location location = loc.get(0).toBukkitLocation();
@@ -54,7 +54,7 @@ public enum DungeonType {
     public Location getEntryLocation(String worldName){
         for(Region region : Region.getRegions()){
             if(!region.isCopy()){
-                ArrayList<RegionLocation> loc = region.getLocations(RegionLocationType.DUNGEON_ENTRY_POINT,1);
+                ArrayList<StoredLocation> loc = region.getLocations(RegionLocationType.DUNGEON_ENTRY_POINT, 1);
 
                 if(region.getAdditionalData().dungeonType == this && loc.size() > 0){
                     Location location = loc.get(0).toBukkitLocation();

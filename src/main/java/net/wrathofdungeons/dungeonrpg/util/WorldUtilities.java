@@ -16,8 +16,8 @@ import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
+import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -105,7 +105,7 @@ public class WorldUtilities {
 
             for(Region region : Region.getRegions(false)){
                 if(region.getLocations().size() > 0){
-                    for(RegionLocation location : region.getLocations(RegionLocationType.PVP_ARENA)){
+                    for (StoredLocation location : region.getLocations(RegionLocationType.PVP_ARENA)) {
                         if(location.world.equalsIgnoreCase(loc.getWorld().getName()) && location.toBukkitLocation().getBlockX() == loc.getBlockX() && location.toBukkitLocation().getBlockZ() == loc.getBlockZ()){
                             b = true;
                             break;

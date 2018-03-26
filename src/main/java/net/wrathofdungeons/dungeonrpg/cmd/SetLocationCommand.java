@@ -4,8 +4,8 @@ import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
+import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -34,7 +34,7 @@ public class SetLocationCommand extends Command {
 
                         if(type != null){
                             if(!region.hasLocation(p.getLocation())){
-                                RegionLocation loc = new RegionLocation();
+                                StoredLocation loc = new StoredLocation();
                                 loc.world = p.getLocation().getWorld().getName();
                                 loc.x = p.getLocation().getX();
                                 loc.y = p.getLocation().getY();

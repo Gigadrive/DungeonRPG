@@ -33,8 +33,8 @@ import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.quests.Quest;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
-import net.wrathofdungeons.dungeonrpg.regions.RegionLocation;
 import net.wrathofdungeons.dungeonrpg.regions.RegionLocationType;
+import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
 import net.wrathofdungeons.dungeonrpg.skill.archer.*;
@@ -166,7 +166,7 @@ public class DungeonRPG extends JavaPlugin {
         craftingStationHolos.clear();
 
         for(Region region : Region.getRegions()){
-            for(RegionLocation l : region.getLocations(RegionLocationType.CRAFTING_STATION)){
+            for (StoredLocation l : region.getLocations(RegionLocationType.CRAFTING_STATION)) {
                 l.toBukkitLocation().getBlock().setType(Material.WORKBENCH);
 
                 Hologram h = HologramsAPI.createHologram(DungeonRPG.getInstance(),DungeonAPI.getBlockCenter(l.toBukkitLocation()).clone().add(0,2.5,0));
@@ -1300,8 +1300,8 @@ public class DungeonRPG extends JavaPlugin {
         return path.endsWith(File.separator) ? "" : File.separator;
     }
 
-    public static ArrayList<RegionLocation> sortedTownLocations(){
-        ArrayList<RegionLocation> potential = new ArrayList<RegionLocation>();
+    public static ArrayList<StoredLocation> sortedTownLocations() {
+        ArrayList<StoredLocation> potential = new ArrayList<StoredLocation>();
         ArrayList<Region> regions = new ArrayList<Region>();
         regions.addAll(Region.getRegions(false));
 
@@ -1336,7 +1336,7 @@ public class DungeonRPG extends JavaPlugin {
         Location loc = null;
 
         for(Region region : Region.getRegions(false)){
-            for(RegionLocation l : region.getLocations(RegionLocationType.TOWN_LOCATION)){
+            for (StoredLocation l : region.getLocations(RegionLocationType.TOWN_LOCATION)) {
                 potential.add(l.toBukkitLocation());
             }
         }
