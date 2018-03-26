@@ -68,6 +68,15 @@ public class PlayerMoveListener implements Listener {
 
                 if(((Entity)p).isOnGround()) u.getSkillValues().leapIsInAir = false;
 
+                if (u.isRespawning()) {
+                    Location deathLocation = u.getCurrentCharacter().getVariables().lastDeathLocation.toBukkitLocation();
+
+                    if (deathLocation.distance(p.getLocation()) >= 50) {
+                        p.playSound(p.getEyeLocation(), Sound.BLOCK_NOTE_BASS, 1f, 0.5f);
+                        p.setVelocity(WorldUtilities.safenVelocity(p.getLocation().toVector().subtract(deathLocation.toVector()).multiply(-1.5)));
+                    }
+                }
+
                 if (u.isInElytraMode()) {
                     if (!u.hasElytraOnChestplate()) {
                         u.toggleElytraMode();

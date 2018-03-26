@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.user;
 import net.wrathofdungeons.dungeonrpg.dungeon.DungeonType;
 import net.wrathofdungeons.dungeonrpg.professions.Profession;
 import net.wrathofdungeons.dungeonrpg.professions.ProfessionProgress;
+import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import net.wrathofdungeons.dungeonrpg.skill.ClickComboType;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.SkillStorage;
@@ -28,6 +29,9 @@ public class UserVariables {
     private HashMap<Profession,ProfessionProgress> professionProgress = new HashMap<Profession,ProfessionProgress>();
     private HashMap<String,Integer> skillUses = new HashMap<String,Integer>();
     private HashMap<DungeonType,Timestamp> dungeonEntrances = new HashMap<DungeonType,Timestamp>();
+
+    public StoredLocation saveLocation;
+    public StoredLocation lastDeathLocation;
 
     public int getSkillUses(Skill skill){
         return skillUses.getOrDefault(skill.getClass().getSimpleName(),0);

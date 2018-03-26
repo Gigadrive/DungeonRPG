@@ -210,7 +210,7 @@ public class GameUser extends User {
 
     public void updateHoloPlate(){
         DungeonAPI.sync(() -> {
-            if(!isInGuild() && !hasFameTitle() || getCurrentCharacter() == null){
+            if ((!isInGuild() && !hasFameTitle()) || getCurrentCharacter() == null || isRespawning()) {
                 removeHoloPlate();
                 return;
             }
@@ -571,29 +571,33 @@ public class GameUser extends User {
                         toSend = actionBarSkillDisplay;
                 }
 
-                BountifulAPI.sendActionBar(p, hpString + "  " + toSend + "  " + mpString);
+                if (!isRespawning()) BountifulAPI.sendActionBar(p, hpString + "  " + toSend + "  " + mpString);
             }
             p.setMaxHealth(20);
 
-            double healthPercentage = ((double) hp) / ((double) getMaxHP());
+            if (!isRespawning()) {
+                double healthPercentage = ((double) hp) / ((double) getMaxHP());
 
-            if (healthPercentage <= 0.35)
-                addRedScreenEffect();
-            else
-                removeRedScreenEffect();
+                if (healthPercentage <= 0.35)
+                    addRedScreenEffect();
+                else
+                    removeRedScreenEffect();
 
-            if(hp > getMaxHP()) hp = getMaxHP();
-            if(hp < 0) hp = 0;
-            double healthDis = healthPercentage * p.getMaxHealth();
-            if(healthDis > p.getMaxHealth()) healthDis = p.getMaxHealth();
-            if(healthDis < 0.5){
-                healthDis = 20;
+                if (hp > getMaxHP()) hp = getMaxHP();
+                if (hp < 0) hp = 0;
+                double healthDis = healthPercentage * p.getMaxHealth();
+                if (healthDis > p.getMaxHealth()) healthDis = p.getMaxHealth();
+                if (healthDis < 0.5) {
+                    healthDis = 20;
 
-                PlayerDeathEvent event = new PlayerDeathEvent(p,null,0,null);
-                Bukkit.getPluginManager().callEvent(event);
+                    PlayerDeathEvent event = new PlayerDeathEvent(p, null, 0, null);
+                    Bukkit.getPluginManager().callEvent(event);
+                }
+
+                p.setHealth(healthDis);
+            } else {
+                p.setHealth(20);
             }
-
-            p.setHealth(healthDis);
         }
     }
 
@@ -942,12 +946,12 @@ public class GameUser extends User {
                 @Override
                 public void run() {
                     p.teleport(c.getStoredLocation());
+                    p.setGameMode(DungeonRPG.PLAYER_DEFAULT_GAMEMODE);
+                    updateLevelBar();
+                    updateTabList();
+                    updateWalkSpeed();
                 }
             }.runTaskLater(DungeonRPG.getInstance(), 20);
-            p.setGameMode(DungeonRPG.PLAYER_DEFAULT_GAMEMODE);
-            updateLevelBar();
-            updateTabList();
-            updateWalkSpeed();
 
             getGuild(); // load guild
             for(Profession p : Profession.values()) c.getVariables().getProfessionProgress(p); // load professions
@@ -1331,11 +1335,45 @@ public class GameUser extends User {
         return setupMode;
     }
 
+    private Hologram soulLightHologram;
+
+    public Hologram getSoulLightHologram() {
+        return soulLightHologram;
+    }
+
+    public void spawnSoulLight(Location loc, int secondsLeft) {
+        if (getSoulLightHologram() == null) {
+            soulLightHologram = HologramsAPI.createHologram(DungeonRPG.getInstance(), loc);
+
+            soulLightHologram.appendTextLine(ChatColor.DARK_RED + p.getName());
+            soulLightHologram.appendTextLine(ChatColor.RED + "Respawns in " + ChatColor.GRAY + Util.secondsToString((long) secondsLeft));
+
+            soulLightHologram.getVisibilityManager().setVisibleByDefault(true);
+            soulLightHologram.getVisibilityManager().hideTo(p);
+        }
+    }
+
+    public void updateSoulLight(int respawnSecondsLeft) {
+        if (getSoulLightHologram() != null)
+            ((TextLine) getSoulLightHologram().getLine(1)).setText(ChatColor.RED + "Respawns in " + ChatColor.GRAY + Util.secondsToString((long) respawnSecondsLeft));
+    }
+
+    public void removeSoulLight() {
+        if (getSoulLightHologram() != null) {
+            if (!getSoulLightHologram().isDeleted()) getSoulLightHologram().delete();
+            soulLightHologram = null;
+        }
+    }
+
+    public boolean isRespawning() {
+        return getSoulLightHologram() != null && respawnCountdown != null && p.getGameMode() == GameMode.SPECTATOR;
+    }
+
     public void resetTemporaryData(){
         resetTemporaryData(true);
     }
 
-    public void resetTemporaryData(boolean withRegenTasks){
+    public void resetTemporaryData(boolean withTasks) {
         // GAME
         currentCombo = "";
         getSkillValues().reset();
@@ -1351,9 +1389,11 @@ public class GameUser extends User {
         friendsMenuRemovePlayer = false;
         if(comboResetTask != null) comboResetTask.cancel();
 
-        if(withRegenTasks){
+        if (withTasks) {
             stopMPRegenTask();
             stopHPRegenTask();
+
+            if (respawnCountdown != null) respawnCountdown.cancel();
         }
 
         // SETUP
@@ -2055,6 +2095,9 @@ public class GameUser extends User {
 
         CustomNPC.READING.remove(p);
     }
+
+    public int respawnCountdownCount = 0;
+    public BukkitTask respawnCountdown;
 
     private void loadCharacters(){
         try {

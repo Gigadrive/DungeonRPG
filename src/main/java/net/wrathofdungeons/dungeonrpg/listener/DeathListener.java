@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
+import net.wrathofdungeons.dungeonapi.util.BountifulAPI;
 import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.regions.Region;
@@ -8,6 +9,7 @@ import net.wrathofdungeons.dungeonrpg.regions.StoredLocation;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -83,13 +85,56 @@ public class DeathListener implements Listener {
                             }
                         }
                     } else {
-                        if(u.isInDungeon()){
-                            respawn = DungeonRPG.getNearestTown(u.getCurrentDungeon().getType().getPortalEntranceLocation());
-                            p.sendMessage(ChatColor.RED + "You died!");
-                        } else {
-                            respawn = DungeonRPG.getNearestTown(p);
-                            p.sendMessage(ChatColor.RED + "You died!");
-                        }
+                        Location loc;
+
+                        if (u.isInDungeon())
+                            loc = DungeonRPG.getNearestTown(u.getCurrentDungeon().getType().getPortalEntranceLocation());
+                        else
+                            loc = DungeonRPG.getNearestTown(p);
+
+                        u.getCurrentCharacter().getVariables().saveLocation = new StoredLocation();
+                        u.getCurrentCharacter().getVariables().saveLocation.world = loc.getWorld().getName();
+                        u.getCurrentCharacter().getVariables().saveLocation.x = loc.getX();
+                        u.getCurrentCharacter().getVariables().saveLocation.y = loc.getY();
+                        u.getCurrentCharacter().getVariables().saveLocation.z = loc.getZ();
+                        u.getCurrentCharacter().getVariables().saveLocation.yaw = loc.getYaw();
+                        u.getCurrentCharacter().getVariables().saveLocation.pitch = loc.getPitch();
+
+                        u.getCurrentCharacter().getVariables().lastDeathLocation = new StoredLocation();
+                        u.getCurrentCharacter().getVariables().lastDeathLocation.world = p.getLocation().getWorld().getName();
+                        u.getCurrentCharacter().getVariables().lastDeathLocation.x = p.getLocation().getX();
+                        u.getCurrentCharacter().getVariables().lastDeathLocation.y = p.getLocation().getY();
+                        u.getCurrentCharacter().getVariables().lastDeathLocation.z = p.getLocation().getZ();
+                        u.getCurrentCharacter().getVariables().lastDeathLocation.yaw = p.getLocation().getYaw();
+                        u.getCurrentCharacter().getVariables().lastDeathLocation.pitch = p.getLocation().getPitch();
+
+                        u.respawnCountdownCount = 30;
+                        u.spawnSoulLight(p.getLocation().clone().add(0.0, 2.0, 0.0), u.respawnCountdownCount);
+                        u.removeHoloPlate();
+
+                        p.setGameMode(GameMode.SPECTATOR);
+
+                        u.respawnCountdown = new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if (u.respawnCountdownCount > 0) {
+                                    if (u.respawnCountdownCount == 1) {
+                                        BountifulAPI.sendTitle(p, 0, 30, 0, ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() + "YOU DIED!", ChatColor.RED + "Respawn in: " + ChatColor.GRAY + String.valueOf(u.respawnCountdownCount) + " second");
+                                    } else {
+                                        BountifulAPI.sendTitle(p, 0, 30, 0, ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() + "YOU DIED!", ChatColor.RED + "Respawn in: " + ChatColor.GRAY + String.valueOf(u.respawnCountdownCount) + " seconds");
+                                    }
+
+                                    u.respawnCountdownCount--;
+                                    u.updateSoulLight(u.respawnCountdownCount);
+                                } else {
+                                    p.teleport(u.getCurrentCharacter().getVariables().saveLocation.toBukkitLocation());
+                                    p.setGameMode(DungeonRPG.PLAYER_DEFAULT_GAMEMODE);
+                                    u.removeSoulLight();
+                                    u.updateHoloPlate();
+                                    cancel();
+                                }
+                            }
+                        }.runTaskTimer(DungeonRPG.getInstance(), 20, 20);
                     }
 
                     if(respawn != null) p.teleport(respawn);

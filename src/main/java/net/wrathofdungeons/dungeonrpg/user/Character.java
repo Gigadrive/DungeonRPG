@@ -529,18 +529,23 @@ public class Character {
             DungeonAPI.async(() -> saveData(continueCharsel,false));
         } else {
             try {
-                if(!p.getLocation().getWorld().getName().startsWith("dungeonTemplate_")){
-                    this.storedLocation = p.getLocation();
+                if (getVariables().saveLocation != null) {
+                    this.storedLocation = getVariables().saveLocation.toBukkitLocation();
+                    getVariables().saveLocation = null;
                 } else {
-                    DungeonType type = DungeonType.fromWorldName(p.getLocation().getWorld().getName());
-
-                    if(type != null){
-                        this.storedLocation = type.getPortalEntranceLocation();
+                    if (!p.getLocation().getWorld().getName().startsWith("dungeonTemplate_")) {
+                        this.storedLocation = p.getLocation();
                     } else {
-                        this.storedLocation = DungeonRPG.sortedTownLocations().get(Util.randomInteger(0,DungeonRPG.sortedTownLocations().size()-1)).toBukkitLocation();
+                        DungeonType type = DungeonType.fromWorldName(p.getLocation().getWorld().getName());
+
+                        if (type != null) {
+                            this.storedLocation = type.getPortalEntranceLocation();
+                        } else {
+                            this.storedLocation = DungeonRPG.sortedTownLocations().get(Util.randomInteger(0, DungeonRPG.sortedTownLocations().size() - 1)).toBukkitLocation();
+                        }
                     }
                 }
-                this.storedLocation = p.getLocation();
+
                 this.storedInventory = getConvertedInventory(p);
                 Gson gson = DungeonAPI.GSON;
 
@@ -556,12 +561,12 @@ public class Character {
                 ps.setInt(6,dexterity);
                 ps.setInt(7,agility);
                 ps.setInt(8,statpointsLeft);
-                ps.setString(9,p.getLocation().getWorld().getName());
-                ps.setDouble(10,p.getLocation().getX());
-                ps.setDouble(11,p.getLocation().getY());
-                ps.setDouble(12,p.getLocation().getZ());
-                ps.setFloat(13,p.getLocation().getYaw());
-                ps.setFloat(14,p.getLocation().getPitch());
+                ps.setString(9, this.storedLocation.getWorld().getName());
+                ps.setDouble(10, this.storedLocation.getX());
+                ps.setDouble(11, this.storedLocation.getY());
+                ps.setDouble(12, this.storedLocation.getZ());
+                ps.setFloat(13, this.storedLocation.getYaw());
+                ps.setFloat(14, this.storedLocation.getPitch());
                 ps.setInt(15,playtime);
                 ps.setString(16,gson.toJson(questProgress));
                 ps.setString(17,gson.toJson(variables));
@@ -573,13 +578,16 @@ public class Character {
 
                 if(continueCharsel){
                     u.setCurrentCharacter(null);
+                    u.removeSoulLight();
                     u.bukkitReset();
                     u.getSkillValues().reset();
                     u.stopMPRegenTask();
                     u.stopHPRegenTask();
                     u.resetTemporaryData();
+                    if (u.respawnCountdown != null) u.respawnCountdown.cancel();
                     u.resetMount();
                     u.removeHoloPlate();
+                    u.removeSoulLight();
                     u.updateWalkSpeed();
                     p.teleport(DungeonRPG.getCharSelLocation());
                     DungeonRPG.updateVanishing();

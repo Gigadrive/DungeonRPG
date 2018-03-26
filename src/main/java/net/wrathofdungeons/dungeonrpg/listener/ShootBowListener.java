@@ -23,7 +23,7 @@ public class ShootBowListener implements Listener {
             if(GameUser.isLoaded(p)){
                 GameUser u = GameUser.getUser(p);
 
-                if(u.getCurrentCharacter() == null || (u.getCurrentCharacter() != null && !u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER)) || CustomItem.fromItemStack(e.getBow()) == null){
+                if (u.getCurrentCharacter() == null || (u.getCurrentCharacter() != null && !u.getCurrentCharacter().getRpgClass().matches(RPGClass.ARCHER)) || CustomItem.fromItemStack(e.getBow()) == null || u.isRespawning()) {
                     e.setCancelled(true);
                     return;
                 }

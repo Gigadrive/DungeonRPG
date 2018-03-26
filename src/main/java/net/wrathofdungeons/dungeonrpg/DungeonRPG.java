@@ -472,6 +472,29 @@ public class DungeonRPG extends JavaPlugin {
             }
         }.runTaskTimer(this,1,1);
 
+        // SOUL LIGHTS
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (GameUser.isLoaded(p)) {
+                        GameUser u = GameUser.getUser(p);
+
+                        if (u.getCurrentCharacter() != null) {
+                            if (u.getSoulLightHologram() != null && !u.getSoulLightHologram().isDeleted()) {
+                                Location loc = u.getSoulLightHologram().getLocation().clone().add(0, -1, 0);
+
+                                for (Player a : loc.getWorld().getPlayers())
+                                    if (p != a && a.getLocation().distance(loc) <= 140)
+                                        ParticleEffect.FLAME.display(0.05f, 0.5f, 0.05f, 0.05f, 35, loc, a);
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(this, 10, 10);
+
         // ARROW TRAILS
 
         new BukkitRunnable(){

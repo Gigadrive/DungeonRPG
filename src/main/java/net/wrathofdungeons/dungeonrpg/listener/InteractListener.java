@@ -301,6 +301,9 @@ public class InteractListener implements Listener {
                     }
                 }
 
+                if (u.isRespawning())
+                    return;
+
                 ItemStack iStack = e.getHand() == EquipmentSlot.HAND ? p.getInventory().getItemInMainHand() : p.getInventory().getItemInOffHand();
 
                 if(iStack != null && CustomItem.fromItemStack(iStack) != null && e.getAction() != Action.PHYSICAL) {

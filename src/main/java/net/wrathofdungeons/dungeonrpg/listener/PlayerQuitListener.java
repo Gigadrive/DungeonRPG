@@ -26,9 +26,11 @@ public class PlayerQuitListener implements Listener {
             if(u.getParty() != null) u.getParty().leaveParty(p);
             u.stopMPRegenTask();
             u.stopHPRegenTask();
+            if (u.respawnCountdown != null) u.respawnCountdown.cancel();
             u.cancelAllTasks();
             u.resetMount();
             u.removeHoloPlate();
+            u.removeSoulLight();
 
             for(Player a : Bukkit.getOnlinePlayers())
                 if(GameUser.isLoaded(a) && GameUser.getUser(a).lastDamageSource == p)
