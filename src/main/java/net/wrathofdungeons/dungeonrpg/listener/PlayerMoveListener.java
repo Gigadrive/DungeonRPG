@@ -86,8 +86,10 @@ public class PlayerMoveListener implements Listener {
                     }
 
                     if(p.isGliding()){
-                        if (u.elytraResetTask != null)
+                        if (u.elytraResetTask != null) {
                             u.elytraResetTask.cancel();
+                            u.elytraResetTask = null;
+                        }
 
                         Vector velocity = p.getVelocity();
 

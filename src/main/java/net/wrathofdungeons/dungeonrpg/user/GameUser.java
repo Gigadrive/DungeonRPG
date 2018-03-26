@@ -1273,8 +1273,10 @@ public class GameUser extends User {
     public BukkitTask elytraResetTask;
 
     public void startElytraResetTask() {
-        if (elytraResetTask != null)
+        if (elytraResetTask != null) {
             elytraResetTask.cancel();
+            elytraResetTask = null;
+        }
 
         elytraResetTask = new BukkitRunnable() {
             @Override
@@ -1304,8 +1306,10 @@ public class GameUser extends User {
 
             startElytraResetTask();
         } else {
-            if (elytraResetTask != null)
+            if (elytraResetTask != null) {
                 elytraResetTask.cancel();
+                elytraResetTask = null;
+            }
 
             if (hasChestplate()) {
                 p.getInventory().setChestplate(getChestplate().build(p));
