@@ -628,6 +628,8 @@ public class GameUser extends User {
 
     private boolean screenRed = false;
 
+    private String reloadingWorld = null;
+
     public void addRedScreenEffect() {
         if (!screenRed) {
             screenRed = true;
@@ -1658,8 +1660,13 @@ public class GameUser extends User {
 
     public boolean mayExecuteArmorCheck = true;
 
+    public String getReloadingWorld() {
+        return reloadingWorld;
+    }
+
     public void forceReloadWorld() {
         Location loc = p.getLocation().clone();
+        reloadingWorld = p.getWorld().getName();
 
         World w = DungeonRPG.MAIN_WORLD;
         while (w == p.getWorld())
@@ -1686,6 +1693,8 @@ public class GameUser extends User {
         p.setHealth(p.getHealth());
         p.setLevel(p.getLevel());
         p.setExp(p.getExp());
+
+        reloadingWorld = null;
     }
 
     public StoredSkin storedSkin;

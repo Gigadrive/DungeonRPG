@@ -127,6 +127,19 @@ public class DungeonRPG extends JavaPlugin {
         }
     }
 
+    public static boolean isWorldReloading(World w) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (GameUser.isLoaded(p)) {
+                GameUser u = GameUser.getUser(p);
+
+                if (u.getReloadingWorld() != null && u.getReloadingWorld().equalsIgnoreCase(w.getName()))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
     private static String skillIndicatorPrefix;
 
     public static String getSkillIndicatorPrefix(){
@@ -933,7 +946,7 @@ public class DungeonRPG extends JavaPlugin {
             @Override
             public void run() {
                 for(Dungeon dungeon : Dungeon.STORAGE){
-                    if(dungeon.getWorld().getPlayers().size() == 0 || dungeon.getParty() == null || dungeon.getParty().getMembers().size() == 0){
+                    if (dungeon.getWorld().getPlayers().size() == 0 || dungeon.getParty() == null || dungeon.getParty().getMembers().size() == 0 && !isWorldReloading(dungeon.getWorld())) {
                         dungeon.unregister();
                     }
                 }
