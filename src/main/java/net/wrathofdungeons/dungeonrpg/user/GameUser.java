@@ -1417,7 +1417,7 @@ public class GameUser extends User {
         resetTemporaryData();
 
         if(this.setupMode){
-            if (getCurrentCharacter() != null) getCurrentCharacter().saveData(false, true, true);
+            if (getCurrentCharacter() != null) getCurrentCharacter().saveData(false, true, false);
 
             removeHoloPlate();
             removeSoulLight();

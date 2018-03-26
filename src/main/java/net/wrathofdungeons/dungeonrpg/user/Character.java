@@ -530,7 +530,7 @@ public class Character {
         GameUser u = GameUser.getUser(p);
 
         if(async){
-            DungeonAPI.async(() -> saveData(continueCharsel,false));
+            DungeonAPI.async(() -> saveData(continueCharsel, resetSaveLocation, false));
         } else {
             try {
                 if (getVariables().saveLocation != null) {
