@@ -1754,13 +1754,13 @@ public class GameUser extends User {
 
     public void updateArmorDisplay() {
         if (DungeonRPG.PREVENT_MINECRAFT_ARMOR) {
-            if (p.getInventory().getHelmet() != null)
+            if (getHelmet() != null && getHelmet().getData().hasArmorSkin())
                 p.getInventory().setHelmet(CustomItem.fromItemStack(p.getInventory().getHelmet()).build(p, DungeonRPG.ARMOR_SKIN_DISPLAY_ITEM, DungeonRPG.ARMOR_SKIN_DISPLAY_DURABILITY));
-            if (p.getInventory().getChestplate() != null && p.getInventory().getChestplate().getType() != Material.ELYTRA)
+            if (p.getInventory().getChestplate() != null && p.getInventory().getChestplate().getType() != Material.ELYTRA && getChestplate() != null && getChestplate().getData().hasArmorSkin())
                 p.getInventory().setChestplate(CustomItem.fromItemStack(p.getInventory().getChestplate()).build(p, DungeonRPG.ARMOR_SKIN_DISPLAY_ITEM, DungeonRPG.ARMOR_SKIN_DISPLAY_DURABILITY));
-            if (p.getInventory().getLeggings() != null)
+            if (getLeggings() != null && getLeggings().getData().hasArmorSkin())
                 p.getInventory().setLeggings(CustomItem.fromItemStack(p.getInventory().getLeggings()).build(p, DungeonRPG.ARMOR_SKIN_DISPLAY_ITEM, DungeonRPG.ARMOR_SKIN_DISPLAY_DURABILITY));
-            if (p.getInventory().getBoots() != null)
+            if (getBoots() != null && getBoots().getData().hasArmorSkin())
                 p.getInventory().setBoots(CustomItem.fromItemStack(p.getInventory().getBoots()).build(p, DungeonRPG.ARMOR_SKIN_DISPLAY_ITEM, DungeonRPG.ARMOR_SKIN_DISPLAY_DURABILITY));
 
             for (int i = 0; i < 36; i++) {
