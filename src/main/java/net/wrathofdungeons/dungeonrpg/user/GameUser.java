@@ -76,6 +76,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class GameUser extends User {
     public static HashMap<Player,GameUser> TEMP = new HashMap<Player,GameUser>();
@@ -874,7 +875,8 @@ public class GameUser extends User {
     }
 
     public void playItemPickupSound(){
-        // TODO
+        Random random = new Random();
+        p.playSound(p.getEyeLocation(), Sound.ENTITY_ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
     }
 
     public void updateHandSpeed(){
