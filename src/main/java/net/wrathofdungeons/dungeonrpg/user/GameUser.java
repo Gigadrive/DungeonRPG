@@ -5,6 +5,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.mojang.authlib.GameProfile;
 import net.citizensnpcs.api.CitizensAPI;
+import net.minecraft.server.v1_9_R2.EntityLiving;
 import net.minecraft.server.v1_9_R2.PacketPlayOutWorldBorder;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
@@ -46,6 +47,7 @@ import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftItem;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -877,6 +879,14 @@ public class GameUser extends User {
     public void playItemPickupSound(){
         Random random = new Random();
         p.playSound(p.getEyeLocation(), Sound.ENTITY_ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+    }
+
+    public void playItemPickupEffect(org.bukkit.entity.Item item) {
+        if (item != null && item.isValid()) {
+            ((EntityLiving) ((CraftPlayer) p).getHandle()).receive(((CraftItem) item).getHandle(), 1);
+
+            item.remove();
+        }
     }
 
     public void updateHandSpeed(){

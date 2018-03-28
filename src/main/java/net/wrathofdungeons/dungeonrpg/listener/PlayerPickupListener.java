@@ -1,6 +1,5 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
-import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.npc.CustomNPC;
 import net.wrathofdungeons.dungeonrpg.quests.Quest;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemMergeEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class PlayerPickupListener implements Listener {
@@ -46,9 +44,9 @@ public class PlayerPickupListener implements Listener {
                             String assignedPlayer = e.getItem().getMetadata("assignedPlayer").get(0).asString();
 
                             if(assignedPlayer.equalsIgnoreCase(p.getName())){
-                                e.getItem().remove();
                                 p.getInventory().addItem(item.build(p));
                                 u.playItemPickupSound();
+                                u.playItemPickupEffect(e.getItem());
 
                                 for(Quest q : Quest.STORAGE.values()){
                                     if(u.getCurrentCharacter().getStatus(q) == QuestProgressStatus.STARTED){
