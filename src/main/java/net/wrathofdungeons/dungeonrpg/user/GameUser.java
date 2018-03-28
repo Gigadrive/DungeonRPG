@@ -726,7 +726,10 @@ public class GameUser extends User {
 
         if(speed > 1) speed = 1;
 
-        p.setWalkSpeed((float)speed);
+        final float s = (float) speed;
+
+        if (s != p.getWalkSpeed())
+            p.setWalkSpeed(s);
     }
 
     public void updateTabList(){
