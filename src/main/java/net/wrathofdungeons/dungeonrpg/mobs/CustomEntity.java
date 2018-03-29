@@ -268,14 +268,14 @@ public class CustomEntity {
 
                     // DROP CRYSTALS
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
-                        if(Util.getChanceBoolean(1,3800)){
+                        if (Util.getChanceBoolean(1, 3420)) {
                             WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(DungeonRPG.CRYSTAL_IDS[Util.randomInteger(0,DungeonRPG.CRYSTAL_IDS.length-1)]),p);
                         }
                     }
 
                     // DROP UPGRADING STONE
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
-                        if(Util.getChanceBoolean(1,4200)){
+                        if (Util.getChanceBoolean(1, 4400)) {
                             WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(DungeonRPG.UPGRADING_STONE),p);
                         }
                     }
@@ -284,7 +284,7 @@ public class CustomEntity {
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
                         int limit = 2;
 
-                        if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 125)){
+                        if (Util.getChanceBoolean(15 + u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 275)) {
                             int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
 
                             for(ItemData data : ItemData.STORAGE){
@@ -307,7 +307,7 @@ public class CustomEntity {
                     // DROP MATERIAL
                     ItemData materialData = ItemData.getData(mob.getMaterialDrop());
                     if(materialData != null){
-                        if(Util.getChanceBoolean(15+u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 95)){
+                        if (Util.getChanceBoolean(15 + u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 125)) {
                             WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(materialData),p);
                         }
                     }
