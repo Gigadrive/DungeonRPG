@@ -1346,7 +1346,39 @@ public class DungeonRPG extends JavaPlugin {
             GameUser u = GameUser.getUser(p);
 
             if(u.getCurrentCharacter() != null){
-                return getNearestTown(p.getLocation());
+                Location location = p.getLocation().clone();
+
+                ArrayList<Location> potential = new ArrayList<Location>();
+                Location loc = null;
+
+                for (Region region : Region.getRegions(false)) {
+                    for (StoredLocation l : region.getLocations(RegionLocationType.TOWN_LOCATION)) {
+                        if (region.getID() == 2 || u.getCurrentCharacter().getVariables().visitedRegions.contains(region.getID()))
+                            potential.add(l.toBukkitLocation());
+                    }
+                }
+
+                for (Location l : potential) {
+                    if (loc == null) {
+                        loc = l;
+                    } else {
+                        if (l.getWorld().getName().equals(location.getWorld().getName())) {
+                            if (!loc.getWorld().getName().equals(location.getWorld().getName())) {
+                                loc = l;
+                            } else {
+                                if (l.distance(location) < loc.distance(location)) {
+                                    loc = l;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (loc == null) {
+                    return MAIN_WORLD.getSpawnLocation();
+                } else {
+                    return loc;
+                }
             } else {
                 return getCharSelLocation();
             }
