@@ -321,7 +321,11 @@ public class InteractListener implements Listener {
 
                                     if(locs.size() > 0){
                                         if(!u.isInDungeon()){
-                                            tpScroll(p,locs.get(0).toBukkitLocation(),e.getHand());
+                                            if (u.getCurrentCharacter().getVariables().visitedRegions.contains(region.getID())) {
+                                                tpScroll(p, locs.get(0).toBukkitLocation(), e.getHand());
+                                            } else {
+                                                p.sendMessage(ChatColor.RED + "You can only teleport to places you have visited before.");
+                                            }
                                         } else {
                                             p.sendMessage(ChatColor.RED + "You can't use that item here.");
                                         }
