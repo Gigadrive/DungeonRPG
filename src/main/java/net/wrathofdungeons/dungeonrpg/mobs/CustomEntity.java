@@ -236,7 +236,7 @@ public class CustomEntity {
                         int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
 
                         for(ItemData data : ItemData.STORAGE){
-                            if(data.getRarity().getSources() != null){
+                            if (data.mayDropFromMonsters() && data.getRarity().getSources() != null) {
                                 for(ItemSource s : data.getRarity().getSources()){
                                     if(s.mobClass != null){
                                         if(s.mobClass == mob.getMobClass()){
@@ -288,7 +288,7 @@ public class CustomEntity {
                             int[] usableLvls = new int[]{mob.getLevel()-2, mob.getLevel()-1, mob.getLevel(), mob.getLevel()+1, mob.getLevel()+2};
 
                             for(ItemData data : ItemData.STORAGE){
-                                if(data.getCategory() == ItemCategory.FOOD){
+                                if (data.getCategory() == ItemCategory.FOOD && data.mayDropFromMonsters()) {
                                     for(int i : usableLvls){
                                         if(i == data.getNeededLevel()){
                                             if(limit != 0){

@@ -75,6 +75,7 @@ public class ItemData {
 
     private boolean untradeable;
     private boolean hasArmorSkin;
+    private boolean mayDropFromMonsters;
 
     public static ItemData getData(int id){
         for(ItemData d : STORAGE){
@@ -130,6 +131,7 @@ public class ItemData {
                 this.neededMiningLevel = rs.getInt("neededMiningLevel");
 
                 this.untradeable = rs.getBoolean("untradeable");
+                this.mayDropFromMonsters = rs.getBoolean("mayDropFromMonsters");
 
                 DungeonAPI.async(() -> reloadArmorSkin());
             }
@@ -297,6 +299,10 @@ public class ItemData {
 
     public String getArmorSkinURL() {
         return "https://skins.wrathofdungeons.net/armorSkinParts/" + getId() + ".png";
+    }
+
+    public boolean mayDropFromMonsters() {
+        return mayDropFromMonsters;
     }
 
     public boolean isMatchingWeapon(RPGClass rpgClass){
