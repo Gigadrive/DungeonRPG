@@ -967,32 +967,8 @@ public class CustomItem {
                     if(getData().getDescription() != null) iL.add(" ");
                 } else if(getData().getCategory() == ItemCategory.PICKAXE){
                     iL.add(" ");
-                    iL.add(ChatColor.YELLOW + "Pickaxe Strength: " + (int)getModifiedPickaxeStrength());
-                    if(getModifiedAtkMin() > 0 && getModifiedAtkMax() > 0) iL.add(ChatColor.YELLOW + "Damage: " + (int)getModifiedAtkMin() + "-" + (int)getModifiedAtkMax());
-                    for(Awakening a : getData().getAdditionalStats()){
-                        if(a.value > 0){
-                            // IS POSITIVE
-                            if(a.isPercentage){
-                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
-                            } else {
-                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
-                            }
-                        } else if(a.value == 0){
-                            // IS NEUTRAL (shouldn't really happen)
-                            if(a.isPercentage){
-                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
-                            } else {
-                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
-                            }
-                        } else {
-                            // IS NEGATIVE
-                            if(a.isPercentage){
-                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
-                            } else {
-                                iL.add(ChatColor.YELLOW + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
-                            }
-                        }
-                    }
+                    iL.add(ChatColor.YELLOW + "Pickaxe Strength: " + getData().getPickaxeStrength());
+                    iL.add(ChatColor.YELLOW + "Cooldown: " + getData().getFoodDelayInSeconds());
                     iL.add(" ");
                     if(character.getLevel() >= getData().getNeededLevel()){
                         iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
@@ -1036,43 +1012,6 @@ public class CustomItem {
                             iL.add(ChatColor.DARK_RED + ChatIcons.X + ChatColor.GRAY + " Required Mining Level: " + b);
                         }
                     }
-
-                    iL.add(" ");
-
-                    if(canHoldAwakenings()){
-                        if(hasAwakenings()){
-                            for(Awakening a : getAwakenings()){
-                                if(a.value > 0){
-                                    // IS POSITIVE
-                                    if(a.isPercentage){
-                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value + "%");
-                                    } else {
-                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.GREEN + "+" + a.value);
-                                    }
-                                } else if(a.value == 0){
-                                    // IS NEUTRAL (shouldn't really happen)
-                                    if(a.isPercentage){
-                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value + "%");
-                                    } else {
-                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + a.value);
-                                    }
-                                } else {
-                                    // IS NEGATIVE
-                                    if(a.isPercentage){
-                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value + "%");
-                                    } else {
-                                        iL.add(ChatColor.AQUA + a.type.getDisplayName() + ": " + ChatColor.RED + a.value);
-                                    }
-                                }
-                            }
-                        } else {
-                            iL.add(ChatColor.AQUA + "Awakening available!");
-                        }
-
-                        iL.add(" ");
-                    }
-
-                    if(getData().getRarity() != null && getData().getRarity() != ItemRarity.NONE) iL.add(getData().getRarity().getColor() + getData().getRarity().getName() + " Item");
 
                     if(getData().getDescription() != null) iL.add(" ");
                 } else if(getData().getCategory() == ItemCategory.FOOD){

@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
+import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.items.crystals.CrystalType;
@@ -263,7 +264,7 @@ public class ItemData {
     }
 
     public double getFoodDelayInSeconds() {
-        return (double)foodDelay*20;
+        return Util.round((double) foodDelay * 20, 1);
     }
 
     public int getNeededLevel() {
