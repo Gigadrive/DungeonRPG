@@ -20,7 +20,7 @@ public class UserVariables {
 
     public boolean autoJoin = false;
 
-    public ArrayList<Integer> seenRegionTitles = new ArrayList<Integer>();
+    public ArrayList<Integer> visitedRegions = new ArrayList<Integer>();
 
     public StatisticsManager statisticsManager = new StatisticsManager();
 
