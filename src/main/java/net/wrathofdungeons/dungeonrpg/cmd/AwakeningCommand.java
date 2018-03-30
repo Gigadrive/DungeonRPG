@@ -6,7 +6,7 @@ import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
-import net.wrathofdungeons.dungeonrpg.skill.SkillValues;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningValueType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -34,7 +34,7 @@ public class AwakeningCommand extends Command {
                             if(Util.isValidInteger(args[2])){
                                 boolean isPercentage = Util.convertIntegerToBoolean(Integer.parseInt(args[2]));
 
-                                if((isPercentage && type.mayBePercentage()) || (!isPercentage && type.mayBeStatic())){
+                                if ((isPercentage && type.getValueType() == AwakeningValueType.PERCENTAGE) || (!isPercentage && type.getValueType() == AwakeningValueType.STATIC)) {
                                     if(!weapon.hasAwakening(type)){
                                         Awakening a = new Awakening(type,value,isPercentage);
                                         weapon.addAwakening(a);

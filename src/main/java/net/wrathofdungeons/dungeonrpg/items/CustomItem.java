@@ -13,6 +13,7 @@ import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningValueType;
 import net.wrathofdungeons.dungeonrpg.items.crystals.Crystal;
 import net.wrathofdungeons.dungeonrpg.professions.Profession;
 import net.wrathofdungeons.dungeonrpg.user.Character;
@@ -737,21 +738,21 @@ public class CustomItem {
                                 if(value != 0){
                                     if(value > 0){
                                         // IS POSITIVE
-                                        if(type.mayBePercentage()){
+                                        if (type.getValueType() == AwakeningValueType.PERCENTAGE) {
                                             iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.GREEN + "+" + value + "%");
                                         } else {
                                             iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.GREEN + "+" + value);
                                         }
                                     } else if(value == 0){
                                         // IS NEUTRAL (shouldn't really happen)
-                                        if(type.mayBePercentage()){
+                                        if (type.getValueType() == AwakeningValueType.PERCENTAGE) {
                                             iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + value + "%");
                                         } else {
                                             iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + value);
                                         }
                                     } else {
                                         // IS NEGATIVE
-                                        if(type.mayBePercentage()){
+                                        if (type.getValueType() == AwakeningValueType.PERCENTAGE) {
                                             iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.RED + value + "%");
                                         } else {
                                             iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.RED + value);
@@ -909,21 +910,21 @@ public class CustomItem {
                             if(value != 0){
                                 if(value > 0){
                                     // IS POSITIVE
-                                    if(type.mayBePercentage()){
+                                    if (type.getValueType() == AwakeningValueType.PERCENTAGE) {
                                         iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.GREEN + "+" + value + "%");
                                     } else {
                                         iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.GREEN + "+" + value);
                                     }
                                 } else if(value == 0){
                                     // IS NEUTRAL (shouldn't really happen)
-                                    if(type.mayBePercentage()){
+                                    if (type.getValueType() == AwakeningValueType.PERCENTAGE) {
                                         iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + value + "%");
                                     } else {
                                         iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.YELLOW + "+" + value);
                                     }
                                 } else {
                                     // IS NEGATIVE
-                                    if(type.mayBePercentage()){
+                                    if (type.getValueType() == AwakeningValueType.PERCENTAGE) {
                                         iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.RED + value + "%");
                                     } else {
                                         iL.add(ChatColor.LIGHT_PURPLE + type.getDisplayName() + ": " + ChatColor.RED + value);

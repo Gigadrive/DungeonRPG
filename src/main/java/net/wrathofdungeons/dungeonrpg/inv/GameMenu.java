@@ -1,13 +1,11 @@
 package net.wrathofdungeons.dungeonrpg.inv;
 
-import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.util.ItemUtil;
 import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.StatPointType;
-import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
-import net.wrathofdungeons.dungeonrpg.party.PartyMember;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningValueType;
 import net.wrathofdungeons.dungeonrpg.professions.OreLevel;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.FormularUtils;
@@ -63,7 +61,7 @@ public class GameMenu {
 
             if(value != 0){
                 if(value > 0){
-                    if(a.mayBePercentage()){
+                    if (a.getValueType() == AwakeningValueType.PERCENTAGE) {
                         statsLore.add(ChatColor.GRAY + a.getDisplayName() + ": " + ChatColor.GREEN + "+" + value + "%");
                         b = true;
                     } else {
@@ -71,7 +69,7 @@ public class GameMenu {
                         b = true;
                     }
                 } else {
-                    if(a.mayBePercentage()){
+                    if (a.getValueType() == AwakeningValueType.PERCENTAGE) {
                         statsLore.add(ChatColor.GRAY + a.getDisplayName() + ": " + ChatColor.RED + value + "%");
                         b = true;
                     } else {

@@ -6,6 +6,7 @@ import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.awakening.Awakening;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningCategory;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
+import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningValueType;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.util.WorldUtilities;
 import org.bukkit.Bukkit;
@@ -83,12 +84,10 @@ public class AwakeningMenu implements Listener {
 
                                                     boolean isPercentage;
 
-                                                    if(!type.mayBePercentage() && type.mayBeStatic()){
-                                                        isPercentage = false;
-                                                    } else if(type.mayBePercentage() && !type.mayBeStatic()){
+                                                    if (type.getValueType() == AwakeningValueType.PERCENTAGE) {
                                                         isPercentage = true;
                                                     } else {
-                                                        isPercentage = Util.convertIntegerToBoolean(Util.randomInteger(0,1));
+                                                        isPercentage = false;
                                                     }
 
                                                     Awakening a = new Awakening(type,value,isPercentage);
