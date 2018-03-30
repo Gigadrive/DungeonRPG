@@ -1768,6 +1768,10 @@ public class GameUser extends User {
     public Integer[] lastArmorSkinCheckEquipment;
 
     public void updateArmorDisplay() {
+        updateArmorDisplay(true);
+    }
+
+    public void updateArmorDisplay(boolean updateInventory) {
         if (DungeonRPG.PREVENT_MINECRAFT_ARMOR) {
             if (getHelmet() != null && getHelmet().getData().hasArmorSkin())
                 p.getInventory().setHelmet(CustomItem.fromItemStack(p.getInventory().getHelmet()).build(p, DungeonRPG.ARMOR_SKIN_DISPLAY_ITEM, DungeonRPG.ARMOR_SKIN_DISPLAY_DURABILITY));
@@ -1788,7 +1792,7 @@ public class GameUser extends User {
                 }
             }
 
-            p.updateInventory();
+            if (updateInventory) p.updateInventory();
         }
     }
 
