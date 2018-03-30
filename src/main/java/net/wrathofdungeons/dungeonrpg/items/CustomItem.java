@@ -968,7 +968,6 @@ public class CustomItem {
                 } else if(getData().getCategory() == ItemCategory.PICKAXE){
                     iL.add(" ");
                     iL.add(ChatColor.YELLOW + "Pickaxe Strength: " + getData().getPickaxeStrength());
-                    iL.add(ChatColor.YELLOW + "Cooldown: " + getData().getFoodDelayInSeconds());
                     iL.add(" ");
                     if(character.getLevel() >= getData().getNeededLevel()){
                         iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
@@ -1017,6 +1016,7 @@ public class CustomItem {
                 } else if(getData().getCategory() == ItemCategory.FOOD){
                     iL.add(" ");
                     iL.add(ChatColor.YELLOW + "HP Regeneration: " + getData().getFoodRegeneration());
+                    iL.add(ChatColor.YELLOW + "Cooldown: " + getData().getFoodDelayInSeconds() + "s");
                     iL.add(" ");
                     if(character.getLevel() >= getData().getNeededLevel()){
                         iL.add(ChatColor.DARK_GREEN + ChatIcons.CHECK_MARK + ChatColor.GRAY + " Required Level: " + getData().getNeededLevel());
