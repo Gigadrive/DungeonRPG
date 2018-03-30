@@ -68,6 +68,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class DungeonRPG extends JavaPlugin {
@@ -1385,6 +1386,14 @@ public class DungeonRPG extends JavaPlugin {
         } else {
             return getCharSelLocation();
         }
+    }
+
+    public static double getDifferenceInSeconds(Timestamp timestamp) {
+        return getDifferenceInSeconds(timestamp, new Timestamp(System.currentTimeMillis()));
+    }
+
+    public static double getDifferenceInSeconds(Timestamp timestamp, Timestamp timestamp2) {
+        return (Math.max(timestamp.getTime(), timestamp2.getTime()) - Math.min(timestamp.getTime(), timestamp2.getTime())) * 1000;
     }
 
     public static Location getNearestTown(Location location){

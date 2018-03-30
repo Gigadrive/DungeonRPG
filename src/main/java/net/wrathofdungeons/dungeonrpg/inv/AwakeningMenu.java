@@ -72,7 +72,7 @@ public class AwakeningMenu implements Listener {
                                             for(CustomItem item : toAwaken){
                                                 ArrayList<AwakeningType> types = new ArrayList<AwakeningType>();
                                                 for(AwakeningType t : AwakeningType.getAwakenings(AwakeningCategory.WEAPON_ARMOR)){
-                                                    if (!item.hasAwakening(t) && t != AwakeningType.ADDITIONAL_MP && t != AwakeningType.MP_LEECH && t != AwakeningType.HP_LEECH)
+                                                    if (!item.hasAwakening(t))
                                                         types.add(t);
                                                 }
                                                 Collections.shuffle(types);

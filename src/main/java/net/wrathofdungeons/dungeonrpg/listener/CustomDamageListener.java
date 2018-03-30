@@ -1,6 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
-import net.wrathofdungeons.dungeonrpg.Duel;
+import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
@@ -11,17 +11,16 @@ import net.wrathofdungeons.dungeonrpg.items.CustomItem;
 import net.wrathofdungeons.dungeonrpg.items.ItemCategory;
 import net.wrathofdungeons.dungeonrpg.items.awakening.AwakeningType;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
-import net.wrathofdungeons.dungeonrpg.skill.PoisonData;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
 import net.wrathofdungeons.dungeonrpg.skill.archer.PoisonArrow;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import net.wrathofdungeons.dungeonrpg.user.RPGClass;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
+
+import java.sql.Timestamp;
 
 public class CustomDamageListener implements Listener {
 
@@ -72,14 +71,24 @@ public class CustomDamageListener implements Listener {
                 c.giveNormalKnockback(p.getLocation(),e.isProjectile());
 
                 if(e.getSkill() == null){
-                    int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
-                    if(hpLeech > 0){
-                        u.addHP(damage*(hpLeech*0.01));
+                    if (u.lastHPLeechTime == null || DungeonRPG.getDifferenceInSeconds(u.lastHPLeechTime) >= 2) {
+                        u.lastHPLeechTime = new Timestamp(System.currentTimeMillis());
+
+                        int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
+                        if (hpLeech > 0 && (hpLeech >= 100 || Util.getChanceBoolean(hpLeech, 100 - hpLeech))) {
+                            int toAdd = Double.valueOf(((double) u.getMaxHP()) * 0.166).intValue();
+                            u.setHP(u.getHP() + toAdd);
+                        }
                     }
 
-                    int mpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.MP_LEECH);
-                    if(mpLeech > 0){
-                        u.addMP(damage*(mpLeech*0.01));
+                    if (u.lastMPLeechTime == null || DungeonRPG.getDifferenceInSeconds(u.lastMPLeechTime) >= 2) {
+                        u.lastMPLeechTime = new Timestamp(System.currentTimeMillis());
+
+                        int mpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.MP_LEECH);
+                        if (mpLeech > 0 && (mpLeech >= 100 || Util.getChanceBoolean(mpLeech, 100 - mpLeech))) {
+                            int toAdd = Double.valueOf(((double) u.getMaxMP()) * 0.166).intValue();
+                            u.setMP(u.getMP() + toAdd);
+                        }
                     }
                 } else {
                     if(e.getSkill() instanceof PoisonArrow){

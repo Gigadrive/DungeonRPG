@@ -173,6 +173,9 @@ public class GameUser extends User {
     public boolean updatingArmorSkin = false;
     public BukkitTask armorSkinClickTask;
 
+    public Timestamp lastHPLeechTime = null;
+    public Timestamp lastMPLeechTime = null;
+
     public GameUser(Player p){
         super(p);
 
@@ -419,7 +422,7 @@ public class GameUser extends User {
             if (getCurrentCharacter().getTotalValue(AwakeningType.MP_REGENERATION) > 0)
                 mp += mp * (getCurrentCharacter().getTotalValue(AwakeningType.MP_REGENERATION) * 0.01);
 
-            addMP(mp);
+            setMP(mp);
         }
     }
 
@@ -430,7 +433,7 @@ public class GameUser extends User {
 
             if(getCurrentCharacter().getTotalValue(AwakeningType.HP_REGENERATION) > 0) hp += hp*(getCurrentCharacter().getTotalValue(AwakeningType.HP_REGENERATION)*0.01);
 
-            addHP(hp);
+            setHP(hp);
         }
     }
 
@@ -511,7 +514,7 @@ public class GameUser extends User {
     }
 
     public void addMP(int mp){
-        setMP(mp);
+        setMP(this.mp + mp);
     }
 
     public int getMPPercentage(){
