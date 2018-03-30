@@ -266,7 +266,7 @@ public class ItemData {
     }
 
     public double getFoodDelayInSeconds() {
-        return Util.round((double) foodDelay * 20, 1);
+        return Util.round(((double) ((double) foodDelay) / 20), 1);
     }
 
     public int getNeededLevel() {

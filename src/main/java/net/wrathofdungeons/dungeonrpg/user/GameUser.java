@@ -109,6 +109,7 @@ public class GameUser extends User {
     private SkillValues skillValues;
 
     private int hp = 20;
+    private int mp = 20;
 
     private boolean init = false;
     public boolean __associateDamageWithSystem = true;
@@ -383,6 +384,8 @@ public class GameUser extends User {
             maxHP += FormularUtils.getBaseHP(c);
 
             maxHP += Math.pow(getCurrentCharacter().getStatpointsTotal(StatPointType.STAMINA),2);
+
+            maxHP += maxHP * (getCurrentCharacter().getTotalValue(AwakeningType.ADDITIONAL_HP) * 0.01);
         } else {
             maxHP = 20;
         }
@@ -409,15 +412,14 @@ public class GameUser extends User {
             int mpToAdd = 1;
 
             mpToAdd += getCurrentCharacter().getStatpointsTotal(StatPointType.INTELLIGENCE)*0.3125;
-
             if(mpToAdd < 1) mpToAdd = 1;
+
             mp += mpToAdd;
 
-            if(getCurrentCharacter().getTotalValue(AwakeningType.MP_REGENERATION) > 0) hp += hp*(getCurrentCharacter().getTotalValue(AwakeningType.MP_REGENERATION)*0.01);
+            if (getCurrentCharacter().getTotalValue(AwakeningType.MP_REGENERATION) > 0)
+                mp += mp * (getCurrentCharacter().getTotalValue(AwakeningType.MP_REGENERATION) * 0.01);
 
-            if(mp > getMaxMP()) mp = getMaxMP();
-
-            setMP(mp);
+            addMP(mp);
         }
     }
 
@@ -428,9 +430,7 @@ public class GameUser extends User {
 
             if(getCurrentCharacter().getTotalValue(AwakeningType.HP_REGENERATION) > 0) hp += hp*(getCurrentCharacter().getTotalValue(AwakeningType.HP_REGENERATION)*0.01);
 
-            if(hp > getMaxHP()) hp = getMaxHP();
-
-            setHP(hp);
+            addHP(hp);
         }
     }
 
@@ -484,17 +484,26 @@ public class GameUser extends User {
     }
 
     public int getMP(){
-        return p.getFoodLevel();
+        return this.mp;
     }
 
     public void setMP(int mp){
         if(mp > getMaxMP()) mp = getMaxMP();
-        p.setFoodLevel(mp);
+
+        this.mp = mp;
+
         updateHPBar();
     }
 
     public int getMaxMP(){
-        return 20;
+        int mp = 20;
+
+        if (getCurrentCharacter() != null) {
+            mp += mp * (getCurrentCharacter().getTotalValue(AwakeningType.ADDITIONAL_HP) * 0.01);
+        }
+
+        if (mp < 1) mp = 1;
+        return mp;
     }
 
     public void addMP(double mp){
@@ -580,6 +589,7 @@ public class GameUser extends User {
 
             if (!isRespawning()) {
                 double healthPercentage = ((double) hp) / ((double) getMaxHP());
+                double manaPercentage = ((double) mp) / ((double) getMaxMP());
 
                 if (healthPercentage <= 0.35)
                     addRedScreenEffect();
@@ -598,8 +608,15 @@ public class GameUser extends User {
                 }
 
                 p.setHealth(healthDis);
+
+                if (mp > getMaxMP()) mp = getMaxMP();
+                if (mp < 0) mp = 0;
+                double manaDis = manaPercentage * 20;
+
+                p.setFoodLevel((int) manaDis);
             } else {
                 p.setHealth(20);
+                p.setFoodLevel(20);
             }
         }
     }
