@@ -134,12 +134,12 @@ public class CustomDamageListener implements Listener {
 
             DamageData damageData = DamageHandler.calculateMobToPlayerDamage(u,c);
             double damage = damageData.getDamage();
-            int thorns = u.getCurrentCharacter().getTotalValue(AwakeningType.THORNS);
             u.damage(damage,c.getBukkitEntity());
 
+            int thorns = u.getCurrentCharacter().getTotalValue(AwakeningType.THORNS);
             if(thorns > 0){
-                damage *= thorns*0.01;
-                c.getBukkitEntity().damage(damage,p);
+                double newDamage = damage * (((double) thorns) / ((double) 100));
+                c.damage(newDamage, p);
             }
 
             u.giveNormalKnockback(c.getBukkitEntity().getLocation(),e.isProjectile());
@@ -222,13 +222,15 @@ public class CustomDamageListener implements Listener {
                 DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,(Skill)null);
                 double damage = damageData.getDamage();
                 int hpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.HP_LEECH);
-                if(hpLeech > 0){
-                    u.addHP(damage*(hpLeech*0.01));
+                if (hpLeech > 0 && (hpLeech >= 100 || Util.getChanceBoolean(hpLeech, 100 - hpLeech))) {
+                    int toAdd = Double.valueOf(((double) u.getMaxHP()) * 0.166).intValue();
+                    u.setHP(u.getHP() + toAdd);
                 }
 
                 int mpLeech = u.getCurrentCharacter().getTotalValue(AwakeningType.MP_LEECH);
-                if(mpLeech > 0){
-                    u.addMP(damage*(mpLeech*0.01));
+                if (mpLeech > 0 && (mpLeech >= 100 || Util.getChanceBoolean(mpLeech, 100 - mpLeech))) {
+                    int toAdd = Double.valueOf(((double) u.getMaxMP()) * 0.166).intValue();
+                    u.setMP(u.getMP() + toAdd);
                 }
 
                 p2.damage(0);
@@ -240,6 +242,12 @@ public class CustomDamageListener implements Listener {
                     u2.getPoisonData().targetPlayer = p2;
                     u2.getPoisonData().startTask();
                     return;
+                } else {
+                    int thorns = u2.getCurrentCharacter().getTotalValue(AwakeningType.THORNS);
+                    if (thorns > 0) {
+                        double newDamage = damage * (((double) thorns) / ((double) 100));
+                        u.damage(newDamage, p2);
+                    }
                 }
 
                 u2.damage(damage,p);

@@ -25,7 +25,7 @@ public enum AwakeningType {
     MINING_SPEED(20, "Mining Speed", "MSPEED", AwakeningValueType.STATIC, -6, +6, AwakeningCategory.PICKAXE),
     WALK_SPEED(21, "Walk Speed", "SPEED", AwakeningValueType.PERCENTAGE, -21, +14, AwakeningCategory.WEAPON_ARMOR),
     ADDITIONAL_HP(22, "HP", "HP", AwakeningValueType.PERCENTAGE, -76, +81, AwakeningCategory.WEAPON_ARMOR),
-    ADDITIONAL_MP(23, "MP", "MP", AwakeningValueType.PERCENTAGE, -76, +81, AwakeningCategory.WEAPON_ARMOR),
+    ADDITIONAL_MP(23, "MP", "MP", AwakeningValueType.PERCENTAGE, -46, +17, AwakeningCategory.WEAPON_ARMOR),
     CRIT_CHANCE(24, "Critical Chance", "CRIT", AwakeningValueType.PERCENTAGE, -39, +16, AwakeningCategory.WEAPON_ARMOR);
 
     private int id;
