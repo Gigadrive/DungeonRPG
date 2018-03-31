@@ -176,6 +176,8 @@ public class GameUser extends User {
     public Timestamp lastHPLeechTime = null;
     public Timestamp lastMPLeechTime = null;
 
+    private Random random = new Random();
+
     public GameUser(Player p){
         super(p);
 
@@ -900,7 +902,6 @@ public class GameUser extends User {
     }
 
     public void playItemPickupSound(){
-        Random random = new Random();
         p.playSound(p.getEyeLocation(), Sound.ENTITY_ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
     }
 
@@ -910,6 +911,10 @@ public class GameUser extends User {
 
             item.remove();
         }
+    }
+
+    public void playShootArrowSound() {
+        p.getWorld().playSound(p.getEyeLocation(), Sound.ENTITY_ARROW_SHOOT, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.7F * 0.5F);
     }
 
     public void updateHandSpeed(){

@@ -6,6 +6,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
+import net.minecraft.server.v1_9_R2.MinecraftServer;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
@@ -1319,6 +1320,7 @@ public class DungeonRPG extends JavaPlugin {
         w.setGameRuleValue("doFireTick","false");
         w.setGameRuleValue("naturalRegeneration","false");
         w.setGameRuleValue("doDaylightCycle","true");
+        w.setGameRuleValue("randomTickSpeed", "3");
     }
 
     public static String pathSuffix(String path){
@@ -1394,6 +1396,10 @@ public class DungeonRPG extends JavaPlugin {
 
     public static double getDifferenceInSeconds(Timestamp timestamp, Timestamp timestamp2) {
         return (Math.max(timestamp.getTime(), timestamp2.getTime()) - Math.min(timestamp.getTime(), timestamp2.getTime())) * 1000;
+    }
+
+    public static double getTPS() {
+        return MinecraftServer.getServer().recentTps.length > 0 ? MinecraftServer.getServer().recentTps[0] : 20.0;
     }
 
     public static Location getNearestTown(Location location){

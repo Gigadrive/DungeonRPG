@@ -3,6 +3,7 @@ package net.wrathofdungeons.dungeonrpg.cmd;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.cmd.manager.Command;
 import net.wrathofdungeons.dungeonapi.user.Rank;
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.user.GameUser;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -20,6 +21,8 @@ public class WorldCommand extends Command {
         if(p.getWorld() != null){
             World w = p.getWorld();
 
+            p.sendMessage(ChatColor.YELLOW + "TPS: " + DungeonRPG.getTPS());
+            p.sendMessage(ChatColor.YELLOW + "Random Tickspeed: " + w.getGameRuleValue("randomTickSpeed"));
             p.sendMessage(ChatColor.YELLOW + "Server: " + DungeonAPI.getServerName());
             p.sendMessage(ChatColor.YELLOW + "Name: " + w.getName());
             p.sendMessage(ChatColor.YELLOW + "Loaded Chunks: " + w.getLoadedChunks().length);

@@ -57,6 +57,7 @@ public class ShootBowListener implements Listener {
                 DungeonRPG.SHOT_PROJECTILE_DATA.put(projectile.getUniqueId().toString(), data);
 
                 u.setAttackCooldown(true);
+                u.playShootArrowSound();
 
                 Bukkit.getScheduler().scheduleSyncDelayedTask(DungeonRPG.getInstance(), new Runnable(){
                     public void run(){

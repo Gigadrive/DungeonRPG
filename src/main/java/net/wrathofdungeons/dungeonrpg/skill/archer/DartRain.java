@@ -1,10 +1,7 @@
 package net.wrathofdungeons.dungeonrpg.skill.archer;
 
-import net.wrathofdungeons.dungeonapi.util.Util;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
-import net.wrathofdungeons.dungeonrpg.StatPointType;
 import net.wrathofdungeons.dungeonrpg.items.CustomItem;
-import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectile;
 import net.wrathofdungeons.dungeonrpg.projectile.DungeonProjectileType;
 import net.wrathofdungeons.dungeonrpg.skill.Skill;
@@ -21,7 +18,6 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 public class DartRain implements Skill {
     @Override
@@ -165,7 +161,7 @@ public class DartRain implements Skill {
                                 arrows.add(third);
                             }
 
-                            p.getWorld().playSound(p.getEyeLocation(), Sound.ENTITY_ARROW_SHOOT,1f,1f);
+                            u.playShootArrowSound();
 
                             for(Arrow a : arrows){
                                 DungeonProjectile data = new DungeonProjectile(p, DungeonProjectileType.DART_RAIN, p.getLocation(), 0, damage, true);
