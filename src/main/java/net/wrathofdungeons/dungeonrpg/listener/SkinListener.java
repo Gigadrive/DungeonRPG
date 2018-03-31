@@ -14,6 +14,8 @@ public class SkinListener implements Listener {
             if (u.reloadWorld) {
                 u.reloadWorld = false;
                 u.forceReloadWorld();
+            } else {
+                e.setCancelled(true);
             }
         }
     }
