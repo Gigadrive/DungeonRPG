@@ -402,7 +402,7 @@ public class DungeonRPG extends JavaPlugin {
                 try {
                     for(CustomEntity e : CustomEntity.STORAGE.values()){
                         if(e.getBukkitEntity() != null && e.getBukkitEntity().isValid() && !e.getBukkitEntity().isDead()){
-                            if(e.getHologram() != null && e.getBukkitEntity() != null){
+                            if (e.getHologram() != null && e.getBukkitEntity() != null && !e.getHologram().isDeleted()) {
                                 e.getHologram().teleport(e.getSupposedHologramLocation());
                             }
                         }

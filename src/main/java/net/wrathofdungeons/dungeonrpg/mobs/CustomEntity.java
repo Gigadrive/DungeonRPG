@@ -362,7 +362,19 @@ public class CustomEntity {
             }
         }
 
-        remove();
+        if (getData().getEntityType() != EntityType.PLAYER) {
+            if (!getHologram().isDeleted())
+                getHologram().delete();
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    remove();
+                }
+            }.runTaskLater(DungeonRPG.getInstance(), 20);
+        } else {
+            remove();
+        }
     }
 
     public void damage(double hp){
