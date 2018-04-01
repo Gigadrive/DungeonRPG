@@ -1019,7 +1019,7 @@ public class CustomEntity {
     }
 
     public void updateHealthBar(boolean delay){
-        if(!damaged) return;
+        if (!damaged || getHologram() == null || getHologram().isDeleted()) return;
 
         if(delay){
             updateHealthBar(false);
