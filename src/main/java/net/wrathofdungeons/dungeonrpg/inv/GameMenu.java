@@ -36,7 +36,7 @@ public class GameMenu {
         int oresMined = 0;
         for(OreLevel level : u.getCurrentCharacter().getVariables().statisticsManager.oresMined.keySet()) oresMined += u.getCurrentCharacter().getVariables().statisticsManager.oresMined.get(level);
 
-        ItemStack cashShop = ItemUtil.namedItem(Material.GOLD_INGOT, ChatColor.GOLD + "Cash Shop", null, 0, 104);
+        ItemStack cashShop = ItemUtil.namedItem(Material.GOLD_INGOT, ChatColor.GOLD + "Cash Shop", null);
         ItemStack quests = ItemUtil.namedItem(Material.BOOK, ChatColor.GOLD + "Quest Diary",null);
         ItemStack skills = ItemUtil.namedItem(Material.ARROW, ChatColor.GOLD + "Skills",null);
         ItemStack horse = ItemUtil.namedItem(Material.SADDLE, ChatColor.GOLD + "Horse",null);
