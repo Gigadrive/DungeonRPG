@@ -36,7 +36,7 @@ public class GameMenu {
         int oresMined = 0;
         for(OreLevel level : u.getCurrentCharacter().getVariables().statisticsManager.oresMined.keySet()) oresMined += u.getCurrentCharacter().getVariables().statisticsManager.oresMined.get(level);
 
-        ItemStack cashShop = ItemUtil.namedItem(Material.GOLD_INGOT, ChatColor.GOLD + "Cash Shop", null);
+        ItemStack cashShop = ItemUtil.namedItem(Material.GOLD_INGOT, ChatColor.GOLD + "Cash Shop", new String[]{ChatColor.GRAY + "Coming soon!"});
         ItemStack quests = ItemUtil.namedItem(Material.BOOK, ChatColor.GOLD + "Quest Diary",null);
         ItemStack skills = ItemUtil.namedItem(Material.ARROW, ChatColor.GOLD + "Skills",null);
         ItemStack horse = ItemUtil.namedItem(Material.SADDLE, ChatColor.GOLD + "Horse",null);
@@ -110,7 +110,7 @@ public class GameMenu {
         inv.withItem(33, f(u, StatPointType.AGILITY, "Increases the chance to dodge enemy attacks."), ((player, action, item) -> c(p, StatPointType.AGILITY, action)), ClickType.LEFT, ClickType.RIGHT);
 
         inv.withItem(2,ItemUtil.hideFlags(cashShop),((player, action, item) -> {
-            // TODO
+            p.sendMessage(ChatColor.RED + "Coming soon.");
         }),ClickType.LEFT);
 
         inv.withItem(4,ItemUtil.hideFlags(quests),((player, action, item) -> {
