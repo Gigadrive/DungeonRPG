@@ -142,7 +142,11 @@ public class GameMenu {
         }),ClickType.LEFT);
 
         inv.withItem(47,ItemUtil.hideFlags(guild),((player, action, item) -> {
-            // TODO
+            if (u.isInGuild()) {
+                GuildMenu.openFor(p);
+            } else {
+                p.sendMessage(ChatColor.RED + "You are not in a guild.");
+            }
         }),ClickType.LEFT);
 
         inv.withItem(36,ItemUtil.hideFlags(statsInfo));

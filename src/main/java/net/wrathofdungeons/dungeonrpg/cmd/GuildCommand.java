@@ -145,10 +145,10 @@ public class GuildCommand extends Command {
                                     if(!name.equalsIgnoreCase(p.getName())){
                                         DungeonAPI.async(() -> {
                                             UUID uuid = u.getGuild().toGuildMember(name).getUUID();
-                                            u.getGuild().getMembers().remove(u.getGuild().toGuildMember(name));
-                                            u.getGuild().saveMembers();
                                             DungeonAPI.executeBungeeCommand("BungeeConsole","guildaction " + p.getName() + " " + u.getGuild().getId() + " reloadMembers");
                                             u.getGuild().sendMessage(ChatColor.LIGHT_PURPLE + PlayerUtilities.getNameFromUUID(uuid) + " was kicked from the guild by " + p.getName() + ".",GuildRank.MEMBER);
+                                            u.getGuild().getMembers().remove(u.getGuild().toGuildMember(name));
+                                            u.getGuild().saveMembers();
                                         });
                                     } else {
                                         p.sendMessage(ChatColor.RED + "You can't kick yourself from the guild.");
