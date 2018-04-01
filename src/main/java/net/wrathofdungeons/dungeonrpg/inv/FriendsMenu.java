@@ -38,7 +38,7 @@ public class FriendsMenu {
         ItemStack remove = ItemUtil.namedItem(Material.STAINED_CLAY,ChatColor.RED + "Remove someone from your friends list",null,14);
         ItemStack info = ItemUtil.namedItem(Material.SIGN,ChatColor.GOLD + "Information",new String[]{
                 ChatColor.GRAY + "Total: " + ChatColor.WHITE + u.getFriends().size(),
-                ChatColor.GRAY + "Online: " + ChatColor.WHITE + "?"
+                ChatColor.GRAY + "Online: " + ChatColor.WHITE + u.getOnlineFriends().size()
         });
 
         ArrayList<Friend> friends = new ArrayList<Friend>();
