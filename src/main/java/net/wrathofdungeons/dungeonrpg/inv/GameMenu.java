@@ -36,7 +36,7 @@ public class GameMenu {
         int oresMined = 0;
         for(OreLevel level : u.getCurrentCharacter().getVariables().statisticsManager.oresMined.keySet()) oresMined += u.getCurrentCharacter().getVariables().statisticsManager.oresMined.get(level);
 
-        ItemStack cashShop = ItemUtil.namedItem(Material.GOLD_INGOT, ChatColor.GOLD + "Cash Shop",null);
+        ItemStack cashShop = ItemUtil.namedItem(Material.GOLD_INGOT, ChatColor.GOLD + "Cash Shop", null, 0, 104);
         ItemStack quests = ItemUtil.namedItem(Material.BOOK, ChatColor.GOLD + "Quest Diary",null);
         ItemStack skills = ItemUtil.namedItem(Material.ARROW, ChatColor.GOLD + "Skills",null);
         ItemStack horse = ItemUtil.namedItem(Material.SADDLE, ChatColor.GOLD + "Horse",null);
@@ -51,6 +51,9 @@ public class GameMenu {
                 ChatColor.GRAY + "Items awakened: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.itemsAwakened,
                 ChatColor.GRAY + "Chests looted: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.chestsLooted,
                 ChatColor.GRAY + "Blocks walked: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.blocksWalked,
+                ChatColor.GRAY + "Duels played: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.duelsPlayed,
+                ChatColor.GRAY + "Duels won: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.duelsWon,
+                ChatColor.GRAY + "Players defeated in the PvP Arena: " + ChatColor.WHITE + u.getCurrentCharacter().getVariables().statisticsManager.playersDefeatedInArena,
                 ChatColor.GRAY + "Ores mined: " + ChatColor.WHITE + oresMined
         },2);
 
@@ -100,11 +103,11 @@ public class GameMenu {
         profile.setItemMeta(m);
 
         inv.withItem(22,profile);
-        inv.withItem(29,b(u,StatPointType.STRENGTH,"Increases all damage dealt."),((player, action, item) -> c(p,StatPointType.STRENGTH,action)), ClickType.LEFT, ClickType.RIGHT);
-        inv.withItem(30,b(u,StatPointType.STAMINA,"Increases total health."),((player, action, item) -> c(p,StatPointType.STAMINA,action)), ClickType.LEFT, ClickType.RIGHT);
-        inv.withItem(31,b(u,StatPointType.INTELLIGENCE,"Increases mana regeneration."),((player, action, item) -> c(p,StatPointType.INTELLIGENCE,action)), ClickType.LEFT, ClickType.RIGHT);
-        inv.withItem(32,b(u,StatPointType.DEXTERITY,"Increases the chance to do critical hits."),((player, action, item) -> c(p,StatPointType.DEXTERITY,action)), ClickType.LEFT, ClickType.RIGHT);
-        inv.withItem(33,b(u,StatPointType.AGILITY,"Increases the chance to dodge enemy attacks."),((player, action, item) -> c(p,StatPointType.AGILITY,action)), ClickType.LEFT, ClickType.RIGHT);
+        inv.withItem(29, f(u, StatPointType.STRENGTH, "Increases all damage dealt."), ((player, action, item) -> c(p, StatPointType.STRENGTH, action)), ClickType.LEFT, ClickType.RIGHT);
+        inv.withItem(30, f(u, StatPointType.STAMINA, "Increases total health."), ((player, action, item) -> c(p, StatPointType.STAMINA, action)), ClickType.LEFT, ClickType.RIGHT);
+        inv.withItem(31, f(u, StatPointType.INTELLIGENCE, "Increases mana regeneration."), ((player, action, item) -> c(p, StatPointType.INTELLIGENCE, action)), ClickType.LEFT, ClickType.RIGHT);
+        inv.withItem(32, f(u, StatPointType.DEXTERITY, "Increases the chance to do critical hits."), ((player, action, item) -> c(p, StatPointType.DEXTERITY, action)), ClickType.LEFT, ClickType.RIGHT);
+        inv.withItem(33, f(u, StatPointType.AGILITY, "Increases the chance to dodge enemy attacks."), ((player, action, item) -> c(p, StatPointType.AGILITY, action)), ClickType.LEFT, ClickType.RIGHT);
 
         inv.withItem(2,ItemUtil.hideFlags(cashShop),((player, action, item) -> {
             // TODO
@@ -174,6 +177,46 @@ public class GameMenu {
         } else {
             p.sendMessage(ChatColor.RED + "You don't have any statpoints left.");
         }
+    }
+
+    private static ItemStack f(GameUser u, StatPointType type, String description) {
+        ArrayList<String> iStackLore = new ArrayList<String>();
+
+        ItemStack iStack = new ItemStack(Material.BOOK, u.getCurrentCharacter().getStatpointsPure(type));
+        ItemMeta iStackMeta = iStack.getItemMeta();
+
+        iStackMeta.setDisplayName(type.getColor() + type.getName() + ChatColor.DARK_GRAY + " [" + type.getAbbreviation() + "]");
+
+        for (String s : Util.getWordWrapLore(description))
+            iStackLore.add(ChatColor.GOLD + s);
+
+        iStackLore.add(" ");
+
+        iStackLore.add(ChatColor.GRAY + "Pure value: " + ChatColor.WHITE + u.getCurrentCharacter().getStatpointsPure(type));
+        iStackLore.add(ChatColor.GRAY + "Additional value: " + ChatColor.WHITE + u.getCurrentCharacter().getStatpointsArtificial(type));
+        iStackLore.add(ChatColor.GREEN + "Total value: " + ChatColor.YELLOW.toString() + ChatColor.BOLD + u.getCurrentCharacter().getStatpointsTotal(type));
+
+        if (u.getCurrentCharacter().getStatpointsLeft() > 0) {
+            iStackLore.add(" ");
+
+            iStackLore.add(ChatColor.DARK_GRAY + "Left-click to add 1 stat point");
+
+            if (u.getCurrentCharacter().getStatpointsLeft() > 1) {
+                if (u.getCurrentCharacter().getStatpointsLeft() >= 5) {
+                    iStackLore.add(ChatColor.DARK_GRAY + "Right-click to add 5 stat points");
+                } else {
+                    iStackLore.add(ChatColor.DARK_GRAY + "Right-click to add " + u.getCurrentCharacter().getStatpointsLeft() + " stat points");
+                }
+            }
+        }
+
+        iStackMeta.setLore(iStackLore);
+        iStack.setItemMeta(iStackMeta);
+
+        iStack = ItemUtil.hideFlags(iStack);
+        iStack.setAmount(u.getCurrentCharacter().getStatpointsPure(type));
+
+        return iStack;
     }
 
     private static ItemStack b(GameUser u, StatPointType type, String description){

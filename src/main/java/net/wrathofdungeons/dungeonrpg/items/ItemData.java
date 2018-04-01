@@ -250,11 +250,7 @@ public class ItemData {
     }
 
     public int getStackLimit(){
-        if(getCategory() == ItemCategory.WEAPON_STICK){
-            return 1;
-        } else {
-            return getIcon().getMaxStackSize();
-        }
+        return getCategory() == ItemCategory.WEAPON_STICK || getCategory() == ItemCategory.WEAPON_BOW || getCategory() == ItemCategory.WEAPON_AXE || getCategory() == ItemCategory.WEAPON_SHEARS || getCategory() == ItemCategory.ELYTRA || getCategory() == ItemCategory.ARMOR || getCategory() == ItemCategory.MOUNT || getCategory() == ItemCategory.PICKAXE || getCategory() == ItemCategory.QUEST ? 1 : 64;
     }
 
     public int getFoodRegeneration() {

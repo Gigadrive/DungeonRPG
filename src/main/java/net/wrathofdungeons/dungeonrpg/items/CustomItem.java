@@ -1297,6 +1297,8 @@ public class CustomItem {
             }
         }
 
+        nmsItem.getItem().d(getData().getStackLimit());
+
         if(getData().getStackLimit() == 1) tag.set("stackProtection", new NBTTagInt(Util.randomInteger(-5000, 5000)));
 
         nmsItem.setTag(tag);
