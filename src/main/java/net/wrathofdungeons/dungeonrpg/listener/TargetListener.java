@@ -89,7 +89,7 @@ public class TargetListener implements Listener {
                         e.setCancelled(true);
                     } else if(m == MobType.SUPPORTING && mt == MobType.SUPPORTING){
                         e.setCancelled(true);
-                    } else if(mt == MobType.PASSIVE){
+                    } else if (mt == MobType.PASSIVE && m != MobType.AGGRO) {
                         e.setCancelled(true);
                     } else if(m == MobType.NEUTRAL && !c.getDamagers().contains(target)){
                         e.setCancelled(true);
