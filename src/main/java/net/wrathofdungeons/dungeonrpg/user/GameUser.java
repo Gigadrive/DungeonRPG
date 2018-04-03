@@ -1769,7 +1769,7 @@ public class GameUser extends User {
         new BukkitRunnable() {
             @Override
             public void run() {
-                p.teleport(world.getSpawnLocation());
+                if (world != null && world.getSpawnLocation() != null) p.teleport(world.getSpawnLocation());
             }
         }.runTaskLater(DungeonRPG.getInstance(), 1);
         new BukkitRunnable() {

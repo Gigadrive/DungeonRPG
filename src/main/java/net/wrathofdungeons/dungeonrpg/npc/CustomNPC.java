@@ -367,6 +367,7 @@ public class CustomNPC {
             npc = CitizensAPI.getNPCRegistry().createNPC(getEntityType(),DungeonRPG.randomColor().toString());
 
             npc.spawn(getLocation());
+            npc.data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, false);
 
             if(getEntityType() == EntityType.VILLAGER){
                 npc.getTrait(VillagerProfession.class).setProfession(getVillagerProfession());

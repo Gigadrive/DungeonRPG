@@ -368,19 +368,15 @@ public class CustomEntity {
             }
         }
 
-        if (getData().getEntityType() != EntityType.PLAYER) {
-            if (!getHologram().isDeleted())
-                getHologram().delete();
+        if (!getHologram().isDeleted())
+            getHologram().delete();
 
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    remove();
-                }
-            }.runTaskLater(DungeonRPG.getInstance(), 20);
-        } else {
-            remove();
-        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                remove();
+            }
+        }.runTaskLater(DungeonRPG.getInstance(), 20);
     }
 
     public void damage(double hp){
@@ -635,6 +631,8 @@ public class CustomEntity {
             npc.setProtected(false);
             npc.getNavigator().getDefaultParameters().baseSpeed((float) getData().getSpeed()).useNewPathfinder(false).stationaryTicks(5 * 20).avoidWater(true);
             npc.data().setPersistent(NPC.TARGETABLE_METADATA, true);
+            npc.data().setPersistent(NPC.DEFAULT_PROTECTED_METADATA, false);
+            npc.data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, false);
             if (getData().getAiSettings().mayDoRandomStroll()/* && getData().getMobType() == MobType.PASSIVE*/)
                 addWanderGoal();
             npc.getDefaultGoalController().setPaused(false);

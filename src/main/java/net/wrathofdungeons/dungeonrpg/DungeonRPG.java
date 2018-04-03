@@ -427,7 +427,7 @@ public class DungeonRPG extends JavaPlugin {
                     for(CustomEntity entity : toRemove) entity.remove();
                 } catch(ConcurrentModificationException e){}
             }
-        }.runTaskTimerAsynchronously(this,0,10*20);
+        }.runTaskTimerAsynchronously(this, 0, 60 * 20);
 
         // SAVE PLAYER DATA
 
@@ -718,7 +718,8 @@ public class DungeonRPG extends JavaPlugin {
             @Override
             public void run() {
                 for(CustomEntity entity : CustomEntity.STORAGE.values()){
-                    if(entity.getBukkitEntity() == null || !entity.requiresNewDamageHandler()) continue;
+                    if (entity.getBukkitEntity() == null || !entity.requiresNewDamageHandler() || entity.getBukkitEntity().isDead() || !entity.getBukkitEntity().isValid())
+                        continue;
 
                     if(entity.attackDelay > 0){
                         entity.attackDelay--;
