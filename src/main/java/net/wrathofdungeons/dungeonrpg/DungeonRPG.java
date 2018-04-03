@@ -554,7 +554,12 @@ public class DungeonRPG extends JavaPlugin {
                                     if (ct != null) {
                                         MobType mt = ct.getData().getMobType();
 
-                                        if (m == MobType.AGGRO && mt == MobType.AGGRO) {
+                                        if (!mayAttack(c.getData().getMobType(), mt)) {
+                                            c.setTarget(null);
+                                            return;
+                                        }
+
+                                        /*if (m == MobType.AGGRO && mt == MobType.AGGRO) {
                                             n.cancelNavigation();
                                             return;
                                         } else if (m == MobType.SUPPORTING && mt == MobType.SUPPORTING) {
@@ -563,22 +568,25 @@ public class DungeonRPG extends JavaPlugin {
                                         } else if (m == MobType.PASSIVE || mt == MobType.PASSIVE) {
                                             n.cancelNavigation();
                                             return;
-                                        }
+                                        }*/
 
-                                        c.addWanderGoal();
+                                        //c.addWanderGoal();
                                     } else {
                                         if (target instanceof Player && GameUser.isLoaded((Player) target)) {
                                             if (m == MobType.PASSIVE) {
-                                                n.cancelNavigation();
+                                                //n.cancelNavigation();
+                                                c.setTarget(null);
                                                 return;
                                             } else if (m == MobType.SUPPORTING) {
-                                                n.cancelNavigation();
+                                                //n.cancelNavigation();
+                                                c.setTarget(null);
                                                 return;
                                             }
 
-                                            c.addWanderGoal();
+                                            //c.addWanderGoal();
                                         } else {
-                                            n.cancelNavigation();
+                                            c.setTarget(null);
+                                            //n.cancelNavigation();
                                         }
                                     }
                                 } else {

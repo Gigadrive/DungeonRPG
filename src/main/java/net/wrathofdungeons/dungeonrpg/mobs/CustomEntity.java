@@ -176,7 +176,7 @@ public class CustomEntity {
         if (getBukkitEntity() == null || getBukkitEntity().isDead() || !getBukkitEntity().isValid())
             return;
 
-        getData().playDeathSound(bukkitEntity.getLocation());
+        getData().playDeathSound(getBukkitEntity().getLocation());
         MobData mob = getData();
 
         stopLogicTask();
@@ -184,7 +184,7 @@ public class CustomEntity {
         if(getOriginRegion() != null && getOriginRegion().getAdditionalData().isBoss && getOriginRegion().getAdditionalData().dungeonType != null){
             // IS DUNGEON BOSS
 
-            Dungeon dungeon = Dungeon.fromWorld(bukkitEntity.getLocation().getWorld());
+            Dungeon dungeon = Dungeon.fromWorld(getBukkitEntity().getLocation().getWorld());
             if(dungeon != null){
                 for(CustomEntity entity : dungeon.getMobs())
                     if(entity != this)
@@ -199,7 +199,7 @@ public class CustomEntity {
             }
         }
 
-        bukkitEntity.damage(bukkitEntity.getHealth());
+        getBukkitEntity().damage(getBukkitEntity().getHealth());
 
         if(lastDamager != null && lastDamager.isOnline()){
             if(GameUser.isLoaded(lastDamager)){
@@ -415,11 +415,12 @@ public class CustomEntity {
     }
 
     public LivingEntity getBukkitEntity() {
-        if(getData().getEntityType() == EntityType.PLAYER){
+        /*if(getData().getEntityType() == EntityType.PLAYER){
             return npc != null && npc.getEntity() instanceof LivingEntity ? (LivingEntity)npc.getEntity() : null;
         } else {
             return bukkitEntity;
-        }
+        }*/
+        return bukkitEntity;
     }
 
     public NPC toCitizensNPC(){
@@ -633,7 +634,7 @@ public class CustomEntity {
         if (toCitizensNPC() != null) {
             npc.setProtected(false);
             npc.getNavigator().getDefaultParameters().baseSpeed((float) getData().getSpeed()).useNewPathfinder(false).stationaryTicks(5 * 20).avoidWater(true);
-            npc.data().set(NPC.TARGETABLE_METADATA, true);
+            npc.data().setPersistent(NPC.TARGETABLE_METADATA, true);
             if (getData().getAiSettings().mayDoRandomStroll()/* && getData().getMobType() == MobType.PASSIVE*/)
                 addWanderGoal();
             npc.getDefaultGoalController().setPaused(false);
@@ -959,7 +960,7 @@ public class CustomEntity {
             }.runTaskTimer(DungeonRPG.getInstance(),Util.randomInteger(0,skill.getInterval()*20),skill.getInterval()*20));
         }
 
-        STORAGE.put(bukkitEntity,this);
+        STORAGE.put(getBukkitEntity(), this);
     }
 
     public void playAttackAnimation(){
@@ -1061,8 +1062,6 @@ public class CustomEntity {
     }
 
     public void setTarget(LivingEntity livingEntity){
-        if (getData().getMobType() == MobType.PASSIVE || getTarget() == livingEntity) return;
-
         if (bukkitEntity != null) {
             if (getData().getEntityType() == EntityType.PLAYER) {
                 this.target = livingEntity;
@@ -1072,10 +1071,8 @@ public class CustomEntity {
 
                     faceForward();
 
-                    if (toCitizensNPC().getDefaultGoalController().isPaused()) {
-                        toCitizensNPC().getDefaultGoalController().setPaused(false);
-                        initNPCValues();
-                    }
+                    toCitizensNPC().getDefaultGoalController().setPaused(false);
+                    initNPCValues();
                 } else {
                     toCitizensNPC().getNavigator().setTarget(livingEntity, true);
 
@@ -1098,9 +1095,11 @@ public class CustomEntity {
 
             if(npc != null){
                 npc.destroy();
-            } else {
+            }
+
+            if (bukkitEntity != null) {
                 bukkitEntity.remove();
-                bukkitEntity = null;
+                //bukkitEntity = null;
             }
         }
 
