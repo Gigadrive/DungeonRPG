@@ -427,7 +427,7 @@ public class DungeonRPG extends JavaPlugin {
                     for(CustomEntity entity : toRemove) entity.remove();
                 } catch(ConcurrentModificationException e){}
             }
-        }.runTaskTimerAsynchronously(this, 0, 60 * 20);
+        }.runTaskTimerAsynchronously(this, 0, 10 * 20);
 
         // SAVE PLAYER DATA
 
