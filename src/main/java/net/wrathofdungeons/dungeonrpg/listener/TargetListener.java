@@ -1,5 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.listener;
 
+import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.event.EntityStopTargetEvent;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
@@ -85,13 +86,9 @@ public class TargetListener implements Listener {
                 } else {
                     MobType mt = ct.getData().getMobType();
 
-                    if(m == MobType.AGGRO && mt == MobType.AGGRO){
+                    if (m == MobType.NEUTRAL && !c.getDamagers().contains(target)) {
                         e.setCancelled(true);
-                    } else if(m == MobType.SUPPORTING && mt == MobType.SUPPORTING){
-                        e.setCancelled(true);
-                    } else if (mt == MobType.PASSIVE && m != MobType.AGGRO) {
-                        e.setCancelled(true);
-                    } else if(m == MobType.NEUTRAL && !c.getDamagers().contains(target)){
+                    } else if (!DungeonRPG.mayAttack(c.getData().getMobType(), mt)) {
                         e.setCancelled(true);
                     }
                 }

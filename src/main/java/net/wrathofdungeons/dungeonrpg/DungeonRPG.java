@@ -3,7 +3,6 @@ package net.wrathofdungeons.dungeonrpg;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.ai.EntityTarget;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_9_R2.MinecraftServer;
@@ -546,47 +545,45 @@ public class DungeonRPG extends JavaPlugin {
                             MobType m = c.getData().getMobType();
 
                             if(n.getEntityTarget() != null){
-                                EntityTarget entityTarget = n.getEntityTarget();
+                                //LivingEntity target = c.getTarget();
+                                LivingEntity target = n.getEntityTarget().getTarget() instanceof LivingEntity ? (LivingEntity) n.getEntityTarget().getTarget() : null;
 
-                                if(entityTarget != null){
-                                    LivingEntity target = entityTarget.getTarget() != null && entityTarget.getTarget() instanceof LivingEntity ? (LivingEntity)entityTarget.getTarget() : null;
+                                if (target != null) {
+                                    CustomEntity ct = CustomEntity.fromEntity(target);
 
-                                    if(target != null){
-                                        CustomEntity ct = CustomEntity.fromEntity(target);
+                                    if (ct != null) {
+                                        MobType mt = ct.getData().getMobType();
 
-                                        if(ct != null){
-                                            MobType mt = ct.getData().getMobType();
+                                        if (m == MobType.AGGRO && mt == MobType.AGGRO) {
+                                            n.cancelNavigation();
+                                            return;
+                                        } else if (m == MobType.SUPPORTING && mt == MobType.SUPPORTING) {
+                                            n.cancelNavigation();
+                                            return;
+                                        } else if (m == MobType.PASSIVE || mt == MobType.PASSIVE) {
+                                            n.cancelNavigation();
+                                            return;
+                                        }
 
-                                            if(m == MobType.AGGRO && mt == MobType.AGGRO){
+                                        c.addWanderGoal();
+                                    } else {
+                                        if (target instanceof Player && GameUser.isLoaded((Player) target)) {
+                                            if (m == MobType.PASSIVE) {
                                                 n.cancelNavigation();
                                                 return;
-                                            } else if(m == MobType.SUPPORTING && mt == MobType.SUPPORTING){
-                                                n.cancelNavigation();
-                                                return;
-                                            } else if(m == MobType.PASSIVE || mt == MobType.PASSIVE){
+                                            } else if (m == MobType.SUPPORTING) {
                                                 n.cancelNavigation();
                                                 return;
                                             }
 
                                             c.addWanderGoal();
                                         } else {
-                                            if(target instanceof Player && GameUser.isLoaded((Player)target)){
-                                                if(m == MobType.PASSIVE){
-                                                    n.cancelNavigation();
-                                                    return;
-                                                } else if(m == MobType.SUPPORTING){
-                                                    n.cancelNavigation();
-                                                    return;
-                                                }
-
-                                                c.addWanderGoal();
-                                            } else {
-                                                n.cancelNavigation();
-                                            }
+                                            n.cancelNavigation();
                                         }
-                                    } else {
-                                        if(c.hasWanderGoal() && !c.getData().getAiSettings().mayDoRandomStroll()) c.removeWanderGoal();
                                     }
+                                } else {
+                                    if (c.hasWanderGoal() && !c.getData().getAiSettings().mayDoRandomStroll())
+                                        c.removeWanderGoal();
                                 }
                             }
                         }
@@ -622,12 +619,20 @@ public class DungeonRPG extends JavaPlugin {
 
                     if(c.getData().getEntityType() == EntityType.PLAYER && c.getData().getAiSettings().mayDoRandomStroll()){
                         if(c.getBukkitEntity() != null && c.toCitizensNPC() != null){
-                            if(Util.getChanceBoolean(50,15)){
+                            if (Util.getChanceBoolean(20, 5)) {
                                 if(c.playerMobSpeed){
-                                    c.toCitizensNPC().getNavigator().getDefaultParameters().baseSpeed(0f);
+                                    //c.toCitizensNPC().getNavigator().getDefaultParameters().baseSpeed(0f);
+                                    if (!c.toCitizensNPC().getDefaultGoalController().isPaused())
+                                        c.toCitizensNPC().getDefaultGoalController().setPaused(true);
+
                                     c.playerMobSpeed = false;
                                 } else {
-                                    c.toCitizensNPC().getNavigator().getDefaultParameters().baseSpeed((float)c.getData().getSpeed());
+                                    //c.toCitizensNPC().getNavigator().getDefaultParameters().baseSpeed((float)c.getData().getSpeed());
+                                    if (!c.toCitizensNPC().getDefaultGoalController().isPaused())
+                                        c.toCitizensNPC().getDefaultGoalController().setPaused(false);
+
+                                    c.initNPCValues();
+
                                     c.playerMobSpeed = true;
                                 }
                             }
@@ -635,7 +640,7 @@ public class DungeonRPG extends JavaPlugin {
                     }
                 }
             }
-        }.runTaskTimer(this,2*20,2*20);
+        }.runTaskTimer(this, 5 * 20, 5 * 20);
 
         // LOOTCHEST PARTICLES
 

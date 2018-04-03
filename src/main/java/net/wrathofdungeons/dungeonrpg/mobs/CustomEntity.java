@@ -48,6 +48,7 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import net.citizensnpcs.api.npc.NPC;
@@ -172,8 +173,13 @@ public class CustomEntity {
     }
 
     public void die(){
+        if (getBukkitEntity() == null || getBukkitEntity().isDead() || !getBukkitEntity().isValid())
+            return;
+
         getData().playDeathSound(bukkitEntity.getLocation());
         MobData mob = getData();
+
+        stopLogicTask();
 
         if(getOriginRegion() != null && getOriginRegion().getAdditionalData().isBoss && getOriginRegion().getAdditionalData().dungeonType != null){
             // IS DUNGEON BOSS
@@ -623,6 +629,17 @@ public class CustomEntity {
         }
     }
 
+    public void initNPCValues() {
+        if (toCitizensNPC() != null) {
+            npc.setProtected(false);
+            npc.getNavigator().getDefaultParameters().baseSpeed((float) getData().getSpeed()).useNewPathfinder(false).stationaryTicks(5 * 20).avoidWater(true);
+            npc.data().set(NPC.TARGETABLE_METADATA, true);
+            if (getData().getAiSettings().mayDoRandomStroll()/* && getData().getMobType() == MobType.PASSIVE*/)
+                addWanderGoal();
+            npc.getDefaultGoalController().setPaused(false);
+        }
+    }
+
     public void spawn(Location loc){
         if(bukkitEntity == null && !STORAGE.containsValue(this) && npc == null){
             if(getData().getEntityType() == EntityType.PLAYER){
@@ -638,9 +655,10 @@ public class CustomEntity {
                     }
                 }
 
-                npc.setProtected(false);
-                npc.getNavigator().getDefaultParameters().baseSpeed((float)getData().getSpeed())/*.useNewPathfinder(true)*/;
-                if(getData().getAiSettings().mayDoRandomStroll()/* && getData().getMobType() == MobType.PASSIVE*/) addWanderGoal();
+                initNPCValues();
+
+                if (getData().getMobType() != MobType.PASSIVE)
+                    startLogicTask();
 
                 new BukkitRunnable(){
                     public void run() {
@@ -954,17 +972,119 @@ public class CustomEntity {
         }
     }
 
+    private LivingEntity target;
+
     public LivingEntity getTarget(){
-        if(bukkitEntity != null && bukkitEntity instanceof Creature){
-            return ((Creature)bukkitEntity).getTarget();
-        } else {
-            return null;
+        if (bukkitEntity != null) {
+            if (getData().getEntityType() == EntityType.PLAYER) {
+                return target != null && target.isValid() && !target.isDead() && target.getWorld() == getBukkitEntity().getWorld() ? target : null;
+            } else if (bukkitEntity != null && bukkitEntity instanceof Creature) {
+                return ((Creature) bukkitEntity).getTarget();
+            }
+        }
+
+        return null;
+    }
+
+    public void findTarget() {
+        if (getTarget() != null) return;
+        setTarget(null);
+
+        final int range = 20;
+        final List<Entity> entitiesWithinRange = getBukkitEntity().getNearbyEntities(range, range, range);
+
+        for (final Entity potential : entitiesWithinRange) {
+            if (getData().getMobType() == MobType.NEUTRAL && !damagers.contains(potential))
+                continue;
+
+            if (!(potential instanceof LivingEntity))
+                continue;
+
+            LivingEntity livingEntity = (LivingEntity) potential;
+
+            if (livingEntity instanceof Player && GameUser.isLoaded((Player) livingEntity)) {
+                if (getData().getMobType() == MobType.AGGRO || getData().getMobType() == MobType.NEUTRAL) {
+                    Player p = (Player) livingEntity;
+                    GameUser u = GameUser.getUser(p);
+
+                    if (u.getCurrentCharacter() != null) {
+                        setTarget(livingEntity);
+                        break;
+                    }
+                }
+            } else if (CustomEntity.fromEntity(livingEntity) != null) {
+                CustomEntity c = CustomEntity.fromEntity(livingEntity);
+
+                if (DungeonRPG.mayAttack(getData().getMobType(), c.getData().getMobType())) {
+                    setTarget(livingEntity);
+                    break;
+                }
+            }
         }
     }
 
+    public void faceEntity(LivingEntity entity) {
+        if (getBukkitEntity() == null) return;
+
+        if (!getBukkitEntity().getWorld().equals(entity.getWorld())) {
+            return;
+        }
+        final Location loc = getBukkitEntity().getLocation();
+
+        final double xDiff = entity.getLocation().getX() - loc.getX();
+        final double yDiff = entity.getLocation().getY() - loc.getY();
+        final double zDiff = entity.getLocation().getZ() - loc.getZ();
+
+        final double distanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
+        final double distanceY = Math.sqrt(distanceXZ * distanceXZ + yDiff * yDiff);
+
+        double yaw = (Math.acos(xDiff / distanceXZ) * 180 / Math.PI);
+        final double pitch = (Math.acos(yDiff / distanceY) * 180 / Math.PI) - 90;
+        if (zDiff < 0.0) {
+            yaw = yaw + (Math.abs(180 - yaw) * 2);
+        }
+
+        net.citizensnpcs.util.NMS.look(getBukkitEntity(), (float) yaw - 90, (float) pitch);
+    }
+
+    public void faceForward() {
+        if (getBukkitEntity() == null) return;
+
+        net.citizensnpcs.util.NMS.look(getBukkitEntity(), getBukkitEntity().getLocation().getYaw(), 0);
+    }
+
+    public void faceAlignWithVehicle() {
+        if (getBukkitEntity() == null) return;
+
+        final org.bukkit.entity.Entity v = getBukkitEntity().getVehicle();
+        net.citizensnpcs.util.NMS.look(getBukkitEntity(), v.getLocation().getYaw(), 0);
+    }
+
     public void setTarget(LivingEntity livingEntity){
-        if(bukkitEntity != null && bukkitEntity instanceof Creature){
-            ((Creature)bukkitEntity).setTarget(livingEntity);
+        if (getData().getMobType() == MobType.PASSIVE || getTarget() == livingEntity) return;
+
+        if (bukkitEntity != null) {
+            if (getData().getEntityType() == EntityType.PLAYER) {
+                this.target = livingEntity;
+
+                if (this.target == null) {
+                    toCitizensNPC().getNavigator().cancelNavigation();
+
+                    faceForward();
+
+                    if (toCitizensNPC().getDefaultGoalController().isPaused()) {
+                        toCitizensNPC().getDefaultGoalController().setPaused(false);
+                        initNPCValues();
+                    }
+                } else {
+                    toCitizensNPC().getNavigator().setTarget(livingEntity, true);
+
+                    if (!toCitizensNPC().getDefaultGoalController().isPaused())
+                        toCitizensNPC().getDefaultGoalController().setPaused(true);
+                }
+            } else if (bukkitEntity instanceof Creature) {
+                ((Creature) bukkitEntity).setTarget(livingEntity);
+            }
         }
     }
 
@@ -991,6 +1111,7 @@ public class CustomEntity {
 
         if(tasks != null) for(BukkitTask t : tasks) t.cancel();
 
+        stopLogicTask();
         stopRegenTask();
         setPoisonData(null);
     }
@@ -1043,6 +1164,39 @@ public class CustomEntity {
                     }
                 }
             }
+        }
+    }
+
+    private BukkitTask logicTask;
+
+    public void startLogicTask() {
+        stopLogicTask();
+
+        final int delay = Util.randomInteger(2, 5) * 20;
+
+        logicTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (getTarget() != null) {
+                    double distance = toCitizensNPC() != null ? toCitizensNPC().getEntity().getLocation().distance(getTarget().getLocation()) : getBukkitEntity().getLocation().distance(getTarget().getLocation());
+
+                    if (distance < 30) {
+                        faceEntity(getTarget());
+                    } else {
+                        setTarget(null);
+                    }
+                }
+
+                if (getTarget() == null)
+                    findTarget();
+            }
+        }.runTaskTimer(DungeonRPG.getInstance(), delay, delay);
+    }
+
+    public void stopLogicTask() {
+        if (logicTask != null) {
+            logicTask.cancel();
+            logicTask = null;
         }
     }
 

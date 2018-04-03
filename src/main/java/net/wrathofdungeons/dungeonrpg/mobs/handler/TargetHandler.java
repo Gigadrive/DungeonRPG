@@ -1,7 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.mobs.handler;
 
 import com.google.common.collect.Sets;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.goals.TargetNearbyEntityGoal;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_9_R2.*;
@@ -9,9 +8,7 @@ import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.mobs.CustomEntity;
 import net.wrathofdungeons.dungeonrpg.mobs.MobAIType;
 import net.wrathofdungeons.dungeonrpg.mobs.MobType;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_9_R2.util.UnsafeList;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
