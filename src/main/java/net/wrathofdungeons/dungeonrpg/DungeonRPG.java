@@ -5,6 +5,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.npc.ai.CitizensNavigator;
 import net.minecraft.server.v1_9_R2.MinecraftServer;
 import net.wrathofdungeons.dungeonapi.DungeonAPI;
 import net.wrathofdungeons.dungeonapi.MySQLManager;
@@ -552,13 +553,15 @@ public class DungeonRPG extends JavaPlugin {
 
                                 if (target != null) {
                                     CustomEntity ct = CustomEntity.fromEntity(target);
+                                    boolean update = true;
 
                                     if (ct != null) {
                                         MobType mt = ct.getData().getMobType();
 
                                         if (!mayAttack(c.getData().getMobType(), mt)) {
                                             c.setTarget(null);
-                                            return;
+                                            update = false;
+                                            continue;
                                         }
 
                                         /*if (m == MobType.AGGRO && mt == MobType.AGGRO) {
@@ -578,17 +581,39 @@ public class DungeonRPG extends JavaPlugin {
                                             if (m == MobType.PASSIVE) {
                                                 //n.cancelNavigation();
                                                 c.setTarget(null);
-                                                return;
+                                                update = false;
+                                                continue;
                                             } else if (m == MobType.SUPPORTING) {
                                                 //n.cancelNavigation();
                                                 c.setTarget(null);
-                                                return;
+                                                update = false;
+                                                continue;
                                             }
 
                                             //c.addWanderGoal();
                                         } else {
                                             c.setTarget(null);
+                                            update = false;
                                             //n.cancelNavigation();
+                                        }
+                                    }
+
+                                    if (update) {
+                                        if (n instanceof CitizensNavigator) {
+                                            CitizensNavigator cn = (CitizensNavigator) n;
+                                            cn.run();
+                                            /*try {
+                                                CitizensNavigator cn = (CitizensNavigator)n;
+
+                                                Field field = cn.getClass().getField("executing");
+                                                field.setAccessible(true);
+
+                                                PathStrategy executing = field.get(cn) != null && (field.get(cn) instanceof PathStrategy) ? (PathStrategy)field.get(cn) : null;
+                                                if(executing != null)
+                                                    executing.update();
+                                            } catch(Exception e){
+                                                e.printStackTrace();
+                                            }*/
                                         }
                                     }
                                 } else {
