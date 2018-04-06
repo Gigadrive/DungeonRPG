@@ -1,7 +1,6 @@
 package net.wrathofdungeons.dungeonrpg.skill.magician;
 
 import net.wrathofdungeons.dungeonapi.util.ParticleEffect;
-import net.wrathofdungeons.dungeonrpg.Duel;
 import net.wrathofdungeons.dungeonrpg.DungeonRPG;
 import net.wrathofdungeons.dungeonrpg.damage.DamageData;
 import net.wrathofdungeons.dungeonrpg.damage.DamageHandler;
@@ -133,7 +132,7 @@ public class FlameBurst implements Skill {
                                     entities.add(livingEntity);
                                     DungeonRPG.showBloodEffect(livingEntity.getLocation());
                                     c.getData().playSound(livingEntity.getLocation());
-                                    c.giveNormalKnockback(loc);
+                                    c.giveNormalKnockback(loc, true);
                                     DamageData damageData = DamageHandler.calculatePlayerToMobDamage(u,c,flameBurst);
                                     DamageHandler.spawnDamageIndicator(p,damageData,c.getBukkitEntity().getLocation());
                                     c.damage(damageData.getDamage(),p);
@@ -148,7 +147,7 @@ public class FlameBurst implements Skill {
                                             if(DungeonRPG.mayAttack(p,p2)){
                                                 entities.add(livingEntity);
                                                 DungeonRPG.showBloodEffect(livingEntity.getLocation());
-                                                u2.giveNormalKnockback(loc);
+                                                u2.giveNormalKnockback(loc, true);
                                                 DamageData damageData = DamageHandler.calculatePlayerToPlayerDamage(u,u2,flameBurst);
                                                 DamageHandler.spawnDamageIndicator(p,damageData,p2.getLocation());
                                                 u2.damage(damageData.getDamage(),p);

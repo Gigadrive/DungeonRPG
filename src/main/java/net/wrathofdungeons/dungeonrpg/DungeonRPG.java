@@ -192,13 +192,15 @@ public class DungeonRPG extends JavaPlugin {
         registerListeners();
         registerCommands();
 
-        new BukkitRunnable(){
-            @Override
-            public void run() {
+        MAIN_WORLD = Bukkit.getWorlds().get(0);
+        if (MAIN_WORLD != null) prepareWorld(MAIN_WORLD);
+
+        DungeonAPI.async(() -> {
+            while (MAIN_WORLD == null) {
                 MAIN_WORLD = Bukkit.getWorlds().get(0);
-                prepareWorld(MAIN_WORLD);
+                if (MAIN_WORLD != null) prepareWorld(MAIN_WORLD);
             }
-        }.runTaskLater(this,5*20);
+        });
 
         DUNGEON_WORLD = new WorldCreator("Dungeons").createWorld();
 

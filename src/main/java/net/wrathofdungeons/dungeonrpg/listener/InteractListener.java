@@ -743,12 +743,12 @@ public class InteractListener implements Listener {
                                                 //if(entity != null) target.damage(5,p);
                                                 //if(entity != null) entity.damage(DamageHandler.calculatePlayerToMobDamage(u,entity,null),p);
                                                 if(entity != null){
-                                                    DungeonRPG.callPlayerToMobDamage(p,entity,null);
+                                                    DungeonRPG.callPlayerToMobDamage(p, entity, DungeonProjectile.getFakeProjectile());
                                                 } else {
                                                     if(target instanceof Player){
                                                         Player p2 = (Player)target;
 
-                                                        DungeonRPG.callPlayerToPlayerDamage(p,p2,null);
+                                                        DungeonRPG.callPlayerToPlayerDamage(p, p2, DungeonProjectile.getFakeProjectile());
                                                     }
                                                 }
                                             }
