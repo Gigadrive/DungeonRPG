@@ -88,6 +88,7 @@ public class DungeonRPG extends JavaPlugin {
     public static final int ANCIENT_POWDER = 803;
     public static final GameMode PLAYER_DEFAULT_GAMEMODE = GameMode.ADVENTURE;
     public static final double UPGRADING_STONE_DIVIDING_VALUE = 25d;
+    public static final int RESURRECT_SCROLL = 815;
 
     public static HashMap<String, DungeonProjectile> SHOT_PROJECTILE_DATA = new HashMap<String, DungeonProjectile>();
     public static ArrayList<Material> DISALLOWED_BLOCKS = new ArrayList<Material>();
