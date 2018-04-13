@@ -1828,7 +1828,7 @@ public class GameUser extends User {
     private void logMineSkinError(String message) {
         DungeonAPI.async(() -> {
             try {
-                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `mineSkinErrors` (`message`,`server`,`uuid`) VALUES(?,?,?);");
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `wrathofdungeons`.`mineSkinErrors` (`message`,`server`,`uuid`) VALUES(?,?,?);");
                 ps.setString(1, message);
                 ps.setString(2, DungeonAPI.getServerName());
                 ps.setString(3, p.getUniqueId().toString());
