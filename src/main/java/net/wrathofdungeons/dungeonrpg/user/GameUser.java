@@ -1825,6 +1825,21 @@ public class GameUser extends User {
     private static boolean timeout = false;
     public boolean reloadWorld = false;
 
+    private void logMineSkinError(String message) {
+        DungeonAPI.async(() -> {
+            try {
+                PreparedStatement ps = MySQLManager.getInstance().getConnection().prepareStatement("INSERT INTO `mineSkinErrors` (`message`,`server`,`uuid`) VALUES(?,?,?);");
+                ps.setString(1, message);
+                ps.setString(2, DungeonAPI.getServerName());
+                ps.setString(3, p.getUniqueId().toString());
+                ps.executeUpdate();
+                ps.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public void updateArmorSkin() {
         final boolean sendMessages = true;
         if (timeout) return;
@@ -1928,6 +1943,8 @@ public class GameUser extends User {
                                         updatingArmorSkin = false;
                                         self.storedSkin = null;
 
+                                        logMineSkinError(errorMessage);
+
                                         if (errorMessage.equalsIgnoreCase("Too many requests")) {
                                             if (!timeout) {
                                                 timeout = true;
@@ -1943,6 +1960,8 @@ public class GameUser extends User {
 
                                     @Override
                                     public void exception(Exception exception) {
+                                        logMineSkinError("[" + exception.getClass().getSimpleName() + "] " + exception.getMessage());
+
                                         if (sendMessages)
                                             p.sendMessage(ChatColor.RED + "Failed to update your skin! Please try again later.");
                                         updatingArmorSkin = false;
