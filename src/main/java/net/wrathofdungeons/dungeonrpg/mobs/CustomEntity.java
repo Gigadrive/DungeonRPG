@@ -216,7 +216,9 @@ public class CustomEntity {
                     u.getCurrentCharacter().getVariables().statisticsManager.mobsKilled.put(getData().getId(),currentValue+1);
 
                     // DROP GOLD
-                    if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL) if(Util.getChanceBoolean(50+u.getCurrentCharacter().getTotalValue(AwakeningType.FORTUNE),190)) WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(7),p);
+                    if (mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL)
+                        if (Util.getChanceBoolean(1 + u.getCurrentCharacter().getTotalValue(AwakeningType.FORTUNE), 190))
+                            WorldUtilities.dropItem(bukkitEntity.getLocation(), new CustomItem(7), p);
 
                     // DROP PREDEFINED ITEMS
                     if(mob.getPredefinedItemDrops() != null && mob.getPredefinedItemDrops().size() > 0){
@@ -274,14 +276,14 @@ public class CustomEntity {
 
                     // DROP CRYSTALS
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
-                        if (Util.getChanceBoolean(1 + u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 3420)) {
+                        if (Util.getChanceBoolean(1 + u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 4420)) {
                             WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(DungeonRPG.CRYSTAL_IDS[Util.randomInteger(0,DungeonRPG.CRYSTAL_IDS.length-1)]),p);
                         }
                     }
 
                     // DROP UPGRADING STONE
                     if(mob.getMobType() == MobType.AGGRO || mob.getMobType() == MobType.NEUTRAL){
-                        if (Util.getChanceBoolean(1 + u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 4400)) {
+                        if (Util.getChanceBoolean(1 + u.getCurrentCharacter().getTotalValue(AwakeningType.LOOT_BONUS), 7400)) {
                             WorldUtilities.dropItem(bukkitEntity.getLocation(),new CustomItem(DungeonRPG.UPGRADING_STONE),p);
                         }
                     }
